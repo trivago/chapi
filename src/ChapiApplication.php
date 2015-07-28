@@ -1,0 +1,36 @@
+<?php
+/**
+ * @package: Chapi
+ *
+ * @author:  msiebeneicher
+ * @since:   2015-07-28
+ *
+ */
+namespace Chapi;
+
+use Symfony\Component\Console\Application;
+
+class ChapiApplication extends Application
+{
+    public function __construct($sName = 'trivago chapi', $sVersion = '@package_version@')
+    {
+        if ('@package_version@' !== $sVersion) {
+            $sVersion = ltrim($sVersion, 'v');
+        }
+
+        parent::__construct($sName, $sVersion);
+
+        #$this->addCommands($this->getCommands());
+    }
+
+    /**
+     * @return Command[]
+     */
+    private function getCommands()
+    {
+//        return [
+//             GENERAL COMMANDS
+//            new Commands\CompareCommand(),
+//        ];
+    }
+}

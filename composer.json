@@ -1,0 +1,36 @@
+{
+  "name": "trivago/chapi",
+  "description": "chronos api client based on symfony console",
+  "type": "project",
+  "authors": [
+    {
+      "name": "msiebeneicher",
+      "email": "marc.siebeneicher@trivago.com",
+      "role": "developer"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0",
+
+    "symfony/console": "~2.7",
+    "symfony/process": "~2.7",
+    "symfony/dependency-injection": "~2.7",
+    "symfony/yaml": "~2.7",
+    "symfony/filesystem": "~2.7",
+    "symfony/config": "~2.7",
+
+    "guzzlehttp/guzzle": "~3.7"
+
+  },
+  "autoload":
+  {
+    "psr-4": {
+      "Chapi\\": ["src/"]
+    }
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "minimum-stability": "stable"
+}
