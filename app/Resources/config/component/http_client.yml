@@ -1,0 +1,9 @@
+services:
+  HttpClientGuzzle:
+    class: Chapi\Component\Http\HttpGuzzlClient
+    arguments: ["@ExternalGuzzleClientInterface"]
+
+  ExternalGuzzleClientInterface:
+    class: GuzzleHttp\Client
+    arguments:
+      - base_url: "%chronos_url%"

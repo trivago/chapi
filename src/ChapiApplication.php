@@ -20,17 +20,18 @@ class ChapiApplication extends Application
 
         parent::__construct($sName, $sVersion);
 
-        #$this->addCommands($this->getCommands());
+        $this->addCommands($this->getCommands());
     }
 
     /**
-     * @return Command[]
+     * @return \Symfony\Component\Console\Command\Command[]
      */
     private function getCommands()
     {
-//        return [
-//             GENERAL COMMANDS
-//            new Commands\CompareCommand(),
-//        ];
+        return [
+            // GENERAL COMMANDS
+            new Commands\AddJobCommand(),
+            new Commands\ConfigureCommand(),
+        ];
     }
 }

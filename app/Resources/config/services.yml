@@ -1,0 +1,18 @@
+#parameters:
+#    # ...
+#    mailer.transport: sendmail
+#
+#services:
+#    mailer:
+#        class:     Mailer
+#        arguments: ["%mailer.transport%"]
+#    newsletter_manager:
+#        class:     NewsletterManager
+#        calls:
+#            - [setMailer, ["@mailer"]]
+
+imports:
+    - { resource: "component/chronos_api_client.yml" }
+    - { resource: "component/http_client.yml" }
+    - { resource: "service/chronos_job_service.yml" }
+

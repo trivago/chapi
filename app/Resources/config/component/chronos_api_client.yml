@@ -1,0 +1,4 @@
+services:
+  ApiClientInterface:
+    class: Chapi\Component\Chronos\ApiClient
+    arguments: ["@HttpClientGuzzle"]
