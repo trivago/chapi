@@ -45,9 +45,19 @@ class JobService implements JobServiceInterface
         //TODO: implement method
     }
 
+    /**
+     * @param string $sJobName
+     * @return array
+     */
     public function getJob($sJobName)
     {
-        //TODO: implement method
+        $_aJobs = $this->getJobs();
+        if (isset($_aJobs[$sJobName]))
+        {
+            return $_aJobs[$sJobName];
+        }
+
+        return [];
     }
 
     /**
@@ -64,13 +74,23 @@ class JobService implements JobServiceInterface
             return $_aResult;
         }
 
+        $_aReturn = [];
         $_aResult = $this->oApiClient->listingJobs();
         if (!empty($_aResult))
         {
+            //TODO: change to collection
+            // prepare return value
+
+            foreach ($_aResult as $_aJobData)
+            {
+                $_sJobName = $_aJobData['name'];
+                $_aReturn[$_sJobName] = $_aJobData;
+            }
+
             // set result to cache
-            $this->oCache->set($_sCacheKey, $_aResult, self::CACHE_TIME_JOB_LIST);
+            $this->oCache->set($_sCacheKey, $_aReturn, self::CACHE_TIME_JOB_LIST);
         }
 
-        return $_aResult;
+        return $_aReturn;
     }
 }
