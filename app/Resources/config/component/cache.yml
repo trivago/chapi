@@ -1,0 +1,8 @@
+services:
+  CacheInterface:
+    class: Chapi\Component\Cache\DoctrineCache
+    arguments: ["@ExternalDoctrineCacheInterface"]
+
+  ExternalDoctrineCacheInterface:
+    class: Doctrine\Common\Cache\FilesystemCache
+    arguments: ["%cache_dir%"]

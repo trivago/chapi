@@ -87,6 +87,7 @@ class ConfigureCommand extends AbstractCommand
         $_aResult = [];
 
         $_aResult['chronos_url'] = $this->printQuestion('Please enter the chronos url (inclusive port)');
+        $_aResult['cache_dir'] = $this->printQuestion('Please enter a cache directory', realpath(__DIR__ . '/../../app/cache/'));
 
         return $_aResult;
     }

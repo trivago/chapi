@@ -1,5 +1,7 @@
 services:
   JobServiceInterface:
     class: Chapi\Service\Chronos\JobService
-    arguments: ["@ApiClientInterface"]
+    arguments:
+      - "@ApiClientInterface"
+      - "@CacheInterface"
 
