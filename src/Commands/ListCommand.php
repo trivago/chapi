@@ -34,15 +34,15 @@ class ListCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var JobRepositoryServiceInterface  $_oJobService */
-        $_oJobService = $this->getContainer()->get(JobRepositoryServiceInterface::DIC_NAME_CHRONOS);
+        /** @var JobRepositoryServiceInterface  $_oJobRepositoryChronos */
+        $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryServiceInterface::DIC_NAME_CHRONOS);
 
         $_sJobName = $this->oInput->getArgument('jobName');
         $_bOnlyFailed = (bool) $this->oInput->getOption('onlyFailed');
 
         if (!empty($_sJobName) && $_sJobName != self::DEFAULT_VALUE_JOB_NAME)
         {
-            $_aJobData = $_oJobService->getJob($_sJobName);
+            $_aJobData = $_oJobRepositoryChronos->getJob($_sJobName);
             foreach ($_aJobData as $_sKey => $_sValue)
             {
                 if (is_array($_sValue))
@@ -55,7 +55,7 @@ class ListCommand extends AbstractCommand
         }
         else
         {
-            foreach ($_oJobService->getJobs() as $_aJobData)
+            foreach ($_oJobRepositoryChronos->getJobs() as $_aJobData)
             {
                 if (
                     ($_bOnlyFailed && $_aJobData->errorsSinceLastSuccess > 0)
