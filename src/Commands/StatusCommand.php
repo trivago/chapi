@@ -10,8 +10,6 @@
 namespace Chapi\Commands;
 
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class StatusCommand extends AbstractCommand
 {
@@ -69,7 +67,7 @@ class StatusCommand extends AbstractCommand
 
             foreach ($_aMissingJobs as $_sValue)
             {
-                $this->oOutput->writeln(sprintf("\t<comment>missing job:\t%s</comment>", $_sValue));
+                $this->oOutput->writeln(sprintf("\t<comment>delete job:\t%s</comment>", $_sValue));
             }
 
             $this->oOutput->writeln("\n");
