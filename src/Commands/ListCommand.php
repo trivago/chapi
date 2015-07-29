@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DisplayJobsCommand extends AbstractCommand
+class ListCommand extends AbstractCommand
 {
     const DEFAULT_VALUE_JOB_NAME = 'all';
 
@@ -27,7 +27,7 @@ class DisplayJobsCommand extends AbstractCommand
      */
     protected function configure()
     {
-        $this->setName('display')
+        $this->setName('list')
             ->setDescription('Display your job(s) and filter they by status')
             ->addArgument('jobName', InputArgument::OPTIONAL, 'display a specific job', self::DEFAULT_VALUE_JOB_NAME)
             ->addOption('onlyFailed', 'f', InputOption::VALUE_OPTIONAL, 'Display only failed jobs', false)
