@@ -20,14 +20,13 @@ Display your job(s) and filter they by failed
 Show the working tree status
 
 ### add
-(comming soone)
+(coming soon)
 Add file contents to the index 
 
 ### dump
-(comming soon)
+(coming soon)
 Dump a job from chronos and store it to local repository
 
 ### commit
-(comming soon)
+(coming soon)
 Record changes to chronos
-
