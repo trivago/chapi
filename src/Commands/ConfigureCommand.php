@@ -9,24 +9,12 @@
 
 namespace Chapi\Commands;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Dumper;
 
 class ConfigureCommand extends AbstractCommand
 {
-    /**
-     * @var InputInterface
-     */
-    private $oInput;
-
-    /**
-     * @var OutputInterface
-     */
-    private $oOutput;
-
     /**
      * Configures the current command.
      */
@@ -38,33 +26,19 @@ class ConfigureCommand extends AbstractCommand
     }
 
     /**
-     * Executes the current command.
      *
-     * This method is not abstract because you can use this class
-     * as a concrete class. In this case, instead of defining the
-     * execute() method, you set the code to execute by passing
-     * a Closure to the setCode() method.
-     *
-     * @param InputInterface $input An InputInterface instance
-     * @param OutputInterface $output An OutputInterface instance
-     *
-     * @return null|int null or 0 if everything went fine, or an error code
-     *
-     * @throws \LogicException When this abstract method is not implemented
-     *
-     * @see setCode()
      */
-    protected function execute(InputInterface $oInput, OutputInterface $oOutput)
+    protected function process()
     {
-        $this->oInput = $oInput;
-        $this->oOutput = $oOutput;
-
         $_aParams = $this->getUserValuesFromQuestions();
 
         if ($this->validateUserInput($_aParams))
         {
             $this->saveParameters($_aParams);
+            return 0;
         }
+
+        return 1;
     }
 
     /**

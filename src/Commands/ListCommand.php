@@ -1,22 +1,18 @@
 <?php
 /**
- * @package: orchestra-
+ * @package: chapi
  *
  * @author:  msiebeneicher
  * @since:   2015-07-28
  *
- * @link:    http://
  */
-
 
 namespace Chapi\Commands;
 
 
 use Chapi\Service\Chronos\JobServiceInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends AbstractCommand
 {
@@ -35,34 +31,15 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * Executes the current command.
      *
-     * This method is not abstract because you can use this class
-     * as a concrete class. In this case, instead of defining the
-     * execute() method, you set the code to execute by passing
-     * a Closure to the setCode() method.
-     *
-     * @param InputInterface $input An InputInterface instance
-     * @param OutputInterface $output An OutputInterface instance
-     *
-     * @return null|int null or 0 if everything went fine, or an error code
-     *
-     * @throws \LogicException When this abstract method is not implemented
-     *
-     * @see setCode()
      */
-    protected function execute(InputInterface $oInput, OutputInterface $oOutput)
+    protected function process()
     {
-        if (!$this->isAppRunable($oOutput))
-        {
-            exit(1);
-        }
-
         /** @var JobServiceInterface  $_oJobService */
         $_oJobService = $this->getContainer()->get(JobServiceInterface::DIC_NAME);
 
-        $_sJobName = $oInput->getArgument('jobName');
-        $_bOnlyFailed = (bool) $oInput->getOption('onlyFailed');
+        $_sJobName = $this->oInput->getArgument('jobName');
+        $_bOnlyFailed = (bool) $this->oInput->getOption('onlyFailed');
 
         if (!empty($_sJobName) && $_sJobName != self::DEFAULT_VALUE_JOB_NAME)
         {
@@ -73,7 +50,7 @@ class ListCommand extends AbstractCommand
                 {
                     $_sValue = implode(' | ', $_sValue);
                 }
-                $oOutput->writeln(sprintf('<comment>%s:</comment> <info>%s</info>', $_sKey, $_sValue));
+                $this->oOutput->writeln(sprintf('<comment>%s:</comment> <info>%s</info>', $_sKey, $_sValue));
             }
 
         }
@@ -86,7 +63,7 @@ class ListCommand extends AbstractCommand
                     || $_bOnlyFailed == false
                 )
                 {
-                    $oOutput->writeln(sprintf('<comment>%s</comment>', $_aJobData['name']));
+                    $this->oOutput->writeln(sprintf('<comment>%s</comment>', $_aJobData['name']));
                 }
             }
 

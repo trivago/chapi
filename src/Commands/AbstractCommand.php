@@ -13,6 +13,7 @@ namespace Chapi\Commands;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -23,9 +24,53 @@ abstract class AbstractCommand extends Command
     const FOLDER_RESOURCES = '/../../app/Resources/config/';
 
     /**
+     * @var InputInterface
+     */
+    protected $oInput;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $oOutput;
+
+    /**
      * @var ContainerBuilder
      */
     private static $oContainer;
+
+    /**
+    * Executes the current command.
+    *
+    * This method is not abstract because you can use this class
+    * as a concrete class. In this case, instead of defining the
+    * execute() method, you set the code to execute by passing
+    * a Closure to the setCode() method.
+    *
+    * @param InputInterface $input An InputInterface instance
+    * @param OutputInterface $output An OutputInterface instance
+    *
+    * @return null|int null or 0 if everything went fine, or an error code
+    *
+    * @throws \LogicException When this abstract method is not implemented
+    *
+    * @see setCode()
+    */
+    protected final function execute(InputInterface $oInput, OutputInterface $oOutput)
+    {
+        $this->oInput = $oInput;
+        $this->oOutput = $oOutput;
+
+        if (!$this->isAppRunable()) {
+            exit(1);
+        }
+
+        return $this->process();
+    }
+
+    /**
+     * @return int
+     */
+    abstract protected function process();
 
     /**
      * @return ContainerBuilder
@@ -51,14 +96,13 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @param OutputInterface $oOutput
      * @return bool
      */
-    protected function isAppRunable(OutputInterface $oOutput)
+    protected function isAppRunable()
     {
         if (!file_exists(__DIR__ . self::FOLDER_APP_CONFIG . 'parameters.yml'))
         {
-            $oOutput->writeln(sprintf('<error>%s</error>', 'No parameter file found. Please run "configure" command for initial setup.'));
+            $this->oOutput->writeln(sprintf('<error>%s</error>', 'No parameter file found. Please run "configure" command for initial setup.'));
             return false;
         }
 
