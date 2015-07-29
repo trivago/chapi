@@ -71,16 +71,24 @@ class JobEntity
 
 
     /**
-     * @param array $aJobData
+     * @param array|object $mJobData
+     * @throws \InvalidArgumentException
      */
-    public function __construct(array $aJobData = [])
+    public function __construct($mJobData = [])
     {
-        foreach ($aJobData as $_sKey => $_mValue)
+        if (is_array($mJobData) || is_object($mJobData))
         {
-            if (property_exists($this, $_sKey))
+            foreach ($mJobData as $_sKey => $_mValue)
             {
-                $this->{$_sKey} = $_mValue;
+                if (property_exists($this, $_sKey))
+                {
+                    $this->{$_sKey} = $_mValue;
+                }
             }
+        }
+        else
+        {
+            throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an array or object', __METHOD__));
         }
     }
 }

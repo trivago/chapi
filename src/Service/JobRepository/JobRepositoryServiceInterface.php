@@ -15,6 +15,7 @@ namespace Chapi\Service\JobRepository;
 interface JobRepositoryServiceInterface
 {
     const DIC_NAME_CHRONOS = 'JobRepositoryChronos';
+    const DIC_NAME_FILESYSTEM = 'JobRepositoryFileSystem';
 
     /**
      * @param string $sJobName

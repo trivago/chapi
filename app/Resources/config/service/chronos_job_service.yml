@@ -5,3 +5,12 @@ services:
       - "@ApiClientInterface"
       - "@CacheInterface"
 
+  JobRepositoryFileSystem:
+    class: Chapi\Service\JobRepository\JobRepositoryFileSystem
+    arguments:
+      - "@ExternalFileSystemService"
+      - "@CacheInterface"
+      - "%repository_dir%"
+
+  ExternalFileSystemService:
+    class: \Symfony\Component\Filesystem\Filesystem
