@@ -15,12 +15,12 @@ interface JobServiceInterface
 
     /**
      * @param string $sJobName
-     * @return mixed
+     * @return \Chapi\Entity\Chronos\JobEntity
      */
     public function getJob($sJobName);
 
     /**
-     * @return array
+     * @return \Chapi\Entity\Chronos\JobCollection
      */
     public function getJobs();
 }

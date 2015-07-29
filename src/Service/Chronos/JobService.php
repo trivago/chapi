@@ -11,6 +11,8 @@ namespace Chapi\Service\Chronos;
 
 use Chapi\Component\Cache\CacheInterface;
 use Chapi\Component\Chronos\ApiClientInterface;
+use Chapi\Entity\Chronos\JobCollection;
+use Chapi\Entity\Chronos\JobEntity;
 
 class JobService implements JobServiceInterface
 {
@@ -47,7 +49,7 @@ class JobService implements JobServiceInterface
 
     /**
      * @param string $sJobName
-     * @return array
+     * @return JobEntity
      */
     public function getJob($sJobName)
     {
@@ -61,7 +63,7 @@ class JobService implements JobServiceInterface
     }
 
     /**
-     * @return array
+     * @return JobCollection
      */
     public function getJobs()
     {
@@ -78,19 +80,17 @@ class JobService implements JobServiceInterface
         $_aResult = $this->oApiClient->listingJobs();
         if (!empty($_aResult))
         {
-            //TODO: change to collection
             // prepare return value
-
             foreach ($_aResult as $_aJobData)
             {
                 $_sJobName = $_aJobData['name'];
-                $_aReturn[$_sJobName] = $_aJobData;
+                $_aReturn[$_sJobName] = new JobEntity($_aJobData);
             }
 
             // set result to cache
             $this->oCache->set($_sCacheKey, $_aReturn, self::CACHE_TIME_JOB_LIST);
         }
 
-        return $_aReturn;
+        return new JobCollection($_aReturn);
     }
 }

@@ -59,11 +59,11 @@ class ListCommand extends AbstractCommand
             foreach ($_oJobService->getJobs() as $_aJobData)
             {
                 if (
-                    ($_bOnlyFailed && $_aJobData['errorsSinceLastSuccess'] > 0)
+                    ($_bOnlyFailed && $_aJobData->errorsSinceLastSuccess > 0)
                     || $_bOnlyFailed == false
                 )
                 {
-                    $this->oOutput->writeln(sprintf('<comment>%s</comment>', $_aJobData['name']));
+                    $this->oOutput->writeln(sprintf('<comment>%s</comment>', $_aJobData->name));
                 }
             }
 
