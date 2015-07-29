@@ -67,6 +67,27 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
      */
     public function getJobs()
     {
+        $_aReturn = [];
+        $_aJobList = $this->getJobList();
+
+        if (!empty($_aJobList))
+        {
+            // prepare return value
+            foreach ($_aJobList as $_aJobData)
+            {
+                $_sJobName = $_aJobData['name'];
+                $_aReturn[$_sJobName] = new JobEntity($_aJobData);
+            }
+        }
+
+        return new JobCollection($_aReturn);
+    }
+
+    /**
+     * @return array
+     */
+    private function getJobList()
+    {
         $_sCacheKey = 'jobs.list';
         $_aResult = $this->oCache->get($_sCacheKey);
 
@@ -76,21 +97,13 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
             return $_aResult;
         }
 
-        $_aReturn = [];
         $_aResult = $this->oApiClient->listingJobs();
         if (!empty($_aResult))
         {
-            // prepare return value
-            foreach ($_aResult as $_aJobData)
-            {
-                $_sJobName = $_aJobData['name'];
-                $_aReturn[$_sJobName] = new JobEntity($_aJobData);
-            }
-
             // set result to cache
-            $this->oCache->set($_sCacheKey, $_aReturn, self::CACHE_TIME_JOB_LIST);
+            $this->oCache->set($_sCacheKey, $_aResult, self::CACHE_TIME_JOB_LIST);
         }
 
-        return new JobCollection($_aReturn);
+        return $_aResult;
     }
 }
