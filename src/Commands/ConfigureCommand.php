@@ -9,9 +9,12 @@
 
 namespace Chapi\Commands;
 
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Dumper;
+use Symfony\Component\Yaml\Parser;
 
 class ConfigureCommand extends AbstractCommand
 {
@@ -23,6 +26,31 @@ class ConfigureCommand extends AbstractCommand
         $this->setName('configure')
             ->setDescription('Configure application and add necessary configs')
         ;
+    }
+
+    /**
+     * Executes the current command.
+     *
+     * This method is not abstract because you can use this class
+     * as a concrete class. In this case, instead of defining the
+     * execute() method, you set the code to execute by passing
+     * a Closure to the setCode() method.
+     *
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
+     *
+     * @return null|int null or 0 if everything went fine, or an error code
+     *
+     * @throws \LogicException When this abstract method is not implemented
+     *
+     * @see setCode()
+     */
+    protected function execute(InputInterface $oInput, OutputInterface $oOutput)
+    {
+        $this->oInput = $oInput;
+        $this->oOutput = $oOutput;
+
+        return $this->process();
     }
 
     /**
@@ -60,8 +88,18 @@ class ConfigureCommand extends AbstractCommand
     {
         $_aResult = [];
 
-        $_aResult['chronos_url'] = $this->printQuestion('Please enter the chronos url (inclusive port)');
-        $_aResult['cache_dir'] = $this->printQuestion('Please enter a cache directory', realpath(__DIR__ . '/../../app/cache/'));
+        $_aResult['chronos_url'] = $this->printQuestion(
+            'Please enter the chronos url (inclusive port)',
+            $this->getParameterValue('chronos_url')
+        );
+        $_aResult['cache_dir'] = $this->printQuestion(
+            'Please enter a cache directory',
+            $this->getParameterValue('cache_dir', realpath(__DIR__ . '/../../app/cache/'))
+        );
+        $_aResult['repository_dir'] = $this->printQuestion(
+            'Please enter your root path to your job files',
+            $this->getParameterValue('repository_dir', realpath(__DIR__ . '/../../'))
+        );
 
         return $_aResult;
     }
@@ -82,6 +120,31 @@ class ConfigureCommand extends AbstractCommand
         }
 
         return true;
+    }
+
+    /**
+     * @param string $sKey
+     * @param mixed $mDefaultValue
+     * @return mixed
+     */
+    private function getParameterValue($sKey, $mDefaultValue = null)
+    {
+        $_oParser = new Parser();
+        $_sParameterFile = __DIR__ . self::FOLDER_APP_CONFIG . 'parameters.yml';
+
+        if (file_exists($_sParameterFile))
+        {
+            $_aParameters = $_oParser->parse(
+                file_get_contents($_sParameterFile)
+            );
+
+            if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey]))
+            {
+                return $_aParameters['parameters'][$sKey];
+            }
+        }
+
+        return $mDefaultValue;
     }
 
     /**
