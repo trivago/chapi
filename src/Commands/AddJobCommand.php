@@ -11,7 +11,7 @@
 namespace Chapi\Commands;
 
 
-use Chapi\Service\Chronos\JobServiceInterface;
+use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -44,15 +44,10 @@ class AddJobCommand extends AbstractCommand
      *
      * @see setCode()
      */
-    protected function execute(InputInterface $oInput, OutputInterface $oOutput)
+    protected function process()
     {
-        if (!$this->isAppRunable($oOutput))
-        {
-            exit(1);
-        }
-
-        /** @var JobServiceInterface  $_oJobService */
-        $_oJobService = $this->getContainer()->get(JobServiceInterface::DIC_NAME);
+        /** @var JobRepositoryServiceInterface  $_oJobService */
+        $_oJobService = $this->getContainer()->get(JobRepositoryServiceInterface::DIC_NAME_CHRONOS);
 //        $_oJobService->addJob();
         var_dump(
             $_oJobService->getJobs()

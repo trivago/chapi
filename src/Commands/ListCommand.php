@@ -9,8 +9,7 @@
 
 namespace Chapi\Commands;
 
-
-use Chapi\Service\Chronos\JobServiceInterface;
+use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -35,8 +34,8 @@ class ListCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var JobServiceInterface  $_oJobService */
-        $_oJobService = $this->getContainer()->get(JobServiceInterface::DIC_NAME);
+        /** @var JobRepositoryServiceInterface  $_oJobService */
+        $_oJobService = $this->getContainer()->get(JobRepositoryServiceInterface::DIC_NAME_CHRONOS);
 
         $_sJobName = $this->oInput->getArgument('jobName');
         $_bOnlyFailed = (bool) $this->oInput->getOption('onlyFailed');

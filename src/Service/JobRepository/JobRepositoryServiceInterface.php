@@ -1,17 +1,20 @@
 <?php
 /**
- * @package: chapi
+ * @package: orchestra-
  *
  * @author:  msiebeneicher
- * @since:   2015-07-28
+ * @since:   2015-07-29
  *
+ * @link:    http://
  */
 
-namespace Chapi\Service\Chronos;
 
-interface JobServiceInterface
+namespace Chapi\Service\JobRepository;
+
+
+interface JobRepositoryServiceInterface
 {
-    const DIC_NAME = 'JobServiceInterface';
+    const DIC_NAME_CHRONOS = 'JobRepositoryChronos';
 
     /**
      * @param string $sJobName

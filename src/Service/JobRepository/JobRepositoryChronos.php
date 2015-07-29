@@ -7,14 +7,14 @@
  *
  */
 
-namespace Chapi\Service\Chronos;
+namespace Chapi\Service\JobRepository;
 
 use Chapi\Component\Cache\CacheInterface;
 use Chapi\Component\Chronos\ApiClientInterface;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\JobEntity;
 
-class JobService implements JobServiceInterface
+class JobRepositoryChronos implements JobRepositoryServiceInterface
 {
     const CACHE_TIME_JOB_LIST = 60;
 
