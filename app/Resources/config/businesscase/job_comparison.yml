@@ -1,0 +1,6 @@
+services:
+  JobComparisonInterface:
+    class: Chapi\BusinessCase\Comparison\JobComparisonBusinessCase
+    arguments:
+      - "@JobRepositoryFileSystem"
+      - "@JobRepositoryChronos"

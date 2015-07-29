@@ -9,6 +9,7 @@
 
 namespace Chapi\Commands;
 
+use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 
 class StatusCommand extends AbstractCommand
@@ -28,20 +29,11 @@ class StatusCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var JobRepositoryServiceInterface  $_oJobRepositoryLocal */
-        $_oJobRepositoryLocal = $this->getContainer()->get(JobRepositoryServiceInterface::DIC_NAME_FILESYSTEM);
-        /** @var JobRepositoryServiceInterface  $_oJobRepositoryChronos */
-        $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryServiceInterface::DIC_NAME_CHRONOS);
-
-
-        $_aJobsA = $_oJobRepositoryLocal->getJobs()->getArrayCopy();
-        $_aJobsB = $_oJobRepositoryChronos->getJobs()->getArrayCopy();
+        /** @var JobComparisonInterface  $_oJobComparisonBusinessCase */
+        $_oJobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
 
         // new jobs
-        $_aNewJobs = array_diff(
-            array_keys($_aJobsA),
-            array_keys($_aJobsB)
-        );
+        $_aNewJobs = $_oJobComparisonBusinessCase->getChronosMissingJobs();
 
         if (!empty($_aNewJobs))
         {
@@ -56,10 +48,7 @@ class StatusCommand extends AbstractCommand
         }
 
         // missing jobs
-        $_aMissingJobs = array_diff(
-            array_keys($_aJobsB),
-            array_keys($_aJobsA)
-        );
+        $_aMissingJobs = $_oJobComparisonBusinessCase->getLocalMissingJobs();
 
         if (!empty($_aMissingJobs))
         {
