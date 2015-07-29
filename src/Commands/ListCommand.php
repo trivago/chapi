@@ -26,7 +26,7 @@ class ListCommand extends AbstractCommand
         $this->setName('list')
             ->setDescription('Display your job(s) and filter they by status')
             ->addArgument('jobName', InputArgument::OPTIONAL, 'display a specific job', self::DEFAULT_VALUE_JOB_NAME)
-            ->addOption('onlyFailed', 'f', InputOption::VALUE_OPTIONAL, 'Display only failed jobs', false)
+            ->addOption('onlyFailed', 'f', InputOption::VALUE_NONE, 'Display only failed jobs')
         ;
     }
 
