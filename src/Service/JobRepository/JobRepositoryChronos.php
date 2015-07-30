@@ -59,7 +59,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
             return $_aJobs[$sJobName];
         }
 
-        return [];
+        return new JobEntity();
     }
 
     /**

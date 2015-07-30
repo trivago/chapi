@@ -19,6 +19,10 @@ Display your job(s) and filter they by failed
 ### status
 Show the working tree status
 
+### diff
+(coming soon)
+Show changes between jobs and working tree, etc
+
 ### add
 (coming soon)
 Add file contents to the index 

@@ -10,7 +10,6 @@
 namespace Chapi\Commands;
 
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
-use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 
 class StatusCommand extends AbstractCommand
 {
@@ -57,6 +56,20 @@ class StatusCommand extends AbstractCommand
             foreach ($_aMissingJobs as $_sValue)
             {
                 $this->oOutput->writeln(sprintf("\t<comment>delete job:\t%s</comment>", $_sValue));
+            }
+
+            $this->oOutput->writeln("\n");
+        }
+
+        // updated jobs
+        $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
+        if (!empty($_aLocalJobUpdates))
+        {
+            $this->oOutput->writeln(sprintf('%s:', 'Changes for commit'));
+
+            foreach ($_aLocalJobUpdates as $_sJobName => $_aDiffProperties)
+            {
+                $this->oOutput->writeln(sprintf("\t<info>modified job:\t%s</info>", $_sJobName));
             }
 
             $this->oOutput->writeln("\n");

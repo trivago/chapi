@@ -25,6 +25,8 @@ class JobEntity
 
     public $scheduleTimeZone = 'Europe/Berlin'; // todo: add time zone to config
 
+    public $parents = []; // todo: move to separate entity
+
     public $epsilon = 'PT15M';
 
     public $executor = '';
@@ -90,5 +92,22 @@ class JobEntity
         {
             throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an array or object', __METHOD__));
         }
+    }
+
+    /**
+     * return entity as one-dimensional array
+     *
+     * @return array
+     */
+    public function getSimpleArrayCopy()
+    {
+        $_aReturn = [];
+
+        foreach ($this as $_sProperty => $mValue)
+        {
+            $_aReturn[$_sProperty] = (is_array($mValue)) ? implode(',', $mValue) : $mValue;
+        }
+
+        return $_aReturn;
     }
 }
