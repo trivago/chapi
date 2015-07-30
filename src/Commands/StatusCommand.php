@@ -55,7 +55,7 @@ class StatusCommand extends AbstractCommand
 
             foreach ($_aMissingJobs as $_sValue)
             {
-                $this->oOutput->writeln(sprintf("\t<comment>delete job:\t%s</comment>", $_sValue));
+                $this->oOutput->writeln(sprintf("\t<fg=red>delete job:\t%s</>", $_sValue));
             }
 
             $this->oOutput->writeln("\n");
