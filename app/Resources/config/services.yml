@@ -15,6 +15,7 @@ imports:
     - { resource: "businesscase/job_comparison.yml" }
     - { resource: "component/cache.yml" }
     - { resource: "component/chronos_api_client.yml" }
+    - { resource: "component/comparison.yml" }
     - { resource: "component/http_client.yml" }
     - { resource: "service/chronos_job_service.yml" }
 

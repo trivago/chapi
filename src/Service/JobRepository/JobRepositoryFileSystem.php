@@ -53,7 +53,13 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
      */
     public function getJob($sJobName)
     {
-        // TODO: Implement getJob() method.
+        $_aJobs = $this->getJobs();
+        if (isset($_aJobs[$sJobName]))
+        {
+            return $_aJobs[$sJobName];
+        }
+
+        return new JobEntity();
     }
 
     /**
@@ -77,10 +83,6 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
 
             $_oJobEntity = new JobEntity($_aTemp);
             $_aJobs[$_oJobEntity->name] = $_oJobEntity;
-
-//            var_dump($_sJobFilePath);
-//            var_dump();
-//            var_dump($_aTemp);
         }
 
         return new JobCollection($_aJobs);

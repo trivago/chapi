@@ -32,6 +32,7 @@ class ChapiApplication extends Application
             // GENERAL COMMANDS
 //            new Commands\AddJobCommand(),
             new Commands\ConfigureCommand(),
+            new Commands\DiffCommand(),
             new Commands\ListCommand(),
             new Commands\StatusCommand(),
         ];

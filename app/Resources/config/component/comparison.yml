@@ -1,0 +1,3 @@
+services:
+  DiffCompareInterface:
+    class: Chapi\Component\Comparison\DiffCompare

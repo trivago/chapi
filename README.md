@@ -20,7 +20,6 @@ Display your job(s) and filter they by failed
 Show the working tree status
 
 ### diff
-(coming soon)
 Show changes between jobs and working tree, etc
 
 ### add

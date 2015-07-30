@@ -4,3 +4,4 @@ services:
     arguments:
       - "@JobRepositoryFileSystem"
       - "@JobRepositoryChronos"
+      - "@DiffCompareInterface"

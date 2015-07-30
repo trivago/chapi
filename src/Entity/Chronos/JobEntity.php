@@ -27,7 +27,7 @@ class JobEntity
 
     public $parents = []; // todo: move to separate entity
 
-    public $epsilon = 'PT15M';
+    public $epsilon = '';
 
     public $executor = '';
 

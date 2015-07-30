@@ -9,6 +9,7 @@
 
 namespace Chapi\BusinessCase\Comparison;
 
+use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 
@@ -25,16 +26,24 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     private $oJobRepositoryChronos;
 
     /**
+     * @var DiffCompareInterface
+     */
+    private $oDiffCompare;
+
+    /**
      * @param JobRepositoryServiceInterface $oJobRepositoryLocal
      * @param JobRepositoryServiceInterface $oJobRepositoryChronos
+     * @param DiffCompareInterface $oDiffCompare
      */
     public function __construct(
         JobRepositoryServiceInterface $oJobRepositoryLocal,
-        JobRepositoryServiceInterface $oJobRepositoryChronos
+        JobRepositoryServiceInterface $oJobRepositoryChronos,
+        DiffCompareInterface $oDiffCompare
     )
     {
         $this->oJobRepositoryLocal = $oJobRepositoryLocal;
         $this->oJobRepositoryChronos = $oJobRepositoryChronos;
+        $this->oDiffCompare = $oDiffCompare;
     }
 
     /**
@@ -98,6 +107,33 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
+     * @param $sJobName
+     * @return array
+     */
+    public function getJobDiff($sJobName)
+    {
+        $_aReturn = [];
+
+        $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
+        $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($sJobName);
+
+        $_aNonidenticalProperties = $this->compareJobEntities(
+            $_oJobEntityLocal,
+            $_oJobEntityChronos
+        );
+
+        foreach ($_aNonidenticalProperties as $_sProperty)
+        {
+            $_aReturn[$_sProperty] = $this->oDiffCompare->compare(
+                $_oJobEntityChronos->{$_sProperty},
+                $_oJobEntityLocal->{$_sProperty}
+            );
+        }
+
+        return $_aReturn;
+    }
+
+    /**
      * @param JobEntity $oJobEntityA
      * @param JobEntity $oJobEntityB
      * @return array
@@ -157,6 +193,15 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                 }
 
                 return (end($_aDatesA) == end($_aDatesB));
+                break;
+
+            case 'parents':
+                return (
+                    is_array($mValueA)
+                    && is_array($mValueB)
+                    && count(array_diff($mValueA, $mValueB)) == 0
+                    && count(array_diff($mValueB, $mValueA)) == 0
+                );
                 break;
 
             default:
