@@ -141,9 +141,16 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     private function compareJobEntities(JobEntity $oJobEntityA, JobEntity $oJobEntityB)
     {
         $_aNonidenticalProperties = [];
-        $_aDiff = array_diff(
-            $oJobEntityA->getSimpleArrayCopy(),
-            $oJobEntityB->getSimpleArrayCopy()
+
+        $_aDiff = array_merge(
+            array_diff(
+                $oJobEntityA->getSimpleArrayCopy(),
+                $oJobEntityB->getSimpleArrayCopy()
+            ),
+            array_diff(
+                $oJobEntityB->getSimpleArrayCopy(),
+                $oJobEntityA->getSimpleArrayCopy()
+            )
         );
 
         if (count($_aDiff) > 0)
@@ -202,6 +209,14 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                     && count(array_diff($mValueA, $mValueB)) == 0
                     && count(array_diff($mValueB, $mValueA)) == 0
                 );
+                break;
+
+            case 'successCount':
+            case 'lastSuccess':
+            case 'errorCount':
+            case 'errorsSinceLastSuccess':
+            case 'lastError':
+                return true;
                 break;
 
             default:
