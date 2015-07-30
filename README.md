@@ -13,8 +13,11 @@ php app/console configure
 
 ## Usage
 
-### list
-Display your job(s) and filter they by failed
+### jobs
+Display your jobs and filter they by failed
+
+### info
+Display your job information from chronos
 
 ### status
 Show the working tree status
