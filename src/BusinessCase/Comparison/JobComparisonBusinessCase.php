@@ -183,21 +183,29 @@ class JobComparisonBusinessCase implements JobComparisonInterface
         {
             case 'schedule':
 
-                $_oPeriodA = $this->initDatePeriod($oJobEntityA);
                 $_aDatesA = [];
+                if (!empty($mValueA))
+                {
+                    $_oPeriodA = $this->initDatePeriod($oJobEntityA);
 
-                /** @var \DateTime $_oDateTime */
-                foreach($_oPeriodA as $_oDateTime){
-                    $_aDatesA[] = $_oDateTime->format("Y-m-dH:i");
+                    /** @var \DateTime $_oDateTime */
+                    foreach($_oPeriodA as $_oDateTime){
+                        $_aDatesA[] = $_oDateTime->format("Y-m-dH:i");
+                    }
                 }
 
-                $_oPeriodB = $this->initDatePeriod($oJobEntityB);
                 $_aDatesB = [];
 
-                /** @var \DateTime $_oDateTime */
-                foreach($_oPeriodB as $_oDateTime){
-                    $_aDatesB[] = $_oDateTime->format("Y-m-dH:i");
+                if (!empty($mValueB))
+                {
+                    $_oPeriodB = $this->initDatePeriod($oJobEntityB);
+
+                    /** @var \DateTime $_oDateTime */
+                    foreach($_oPeriodB as $_oDateTime){
+                        $_aDatesB[] = $_oDateTime->format("Y-m-dH:i");
+                    }
                 }
+
 
                 return (end($_aDatesA) == end($_aDatesB));
                 break;
