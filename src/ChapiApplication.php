@@ -30,11 +30,12 @@ class ChapiApplication extends Application
     {
         return [
             // GENERAL COMMANDS
-//            new Commands\AddJobCommand(),
+            new Commands\AddCommand(),
             new Commands\ConfigureCommand(),
             new Commands\DiffCommand(),
             new Commands\InfoCommand(),
             new Commands\JobsCommand(),
+            new Commands\ResetCommand(),
             new Commands\StatusCommand(),
         ];
     }

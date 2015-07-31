@@ -26,8 +26,10 @@ Show the working tree status
 Show changes between jobs and working tree, etc
 
 ### add
-(coming soon)
-Add file contents to the index 
+Add job contents to the index
+ 
+### reset 
+Remove jobs from the index
 
 ### dump
 (coming soon)

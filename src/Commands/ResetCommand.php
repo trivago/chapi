@@ -3,7 +3,7 @@
  * @package: chapi
  *
  * @author:  msiebeneicher
- * @since:   2015-07-28
+ * @since:   2015-07-31
  *
  */
 
@@ -11,19 +11,21 @@
 namespace Chapi\Commands;
 
 
-use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
+use Chapi\Service\JobIndex\JobIndexServiceInterface;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AddJobCommand extends AbstractCommand
+class ResetCommand extends AbstractCommand
 {
     /**
      * Configures the current command.
      */
     protected function configure()
     {
-        $this->setName('add')
-            ->setDescription('Add a job to chronos')
+        $this->setName('reset')
+            ->setDescription('Remove jobs from the index')
+            ->addArgument('jobnames', InputArgument::REQUIRED, 'Jobs to remove from the index')
         ;
     }
 
@@ -46,12 +48,19 @@ class AddJobCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var JobRepositoryServiceInterface  $_oJobService */
-        $_oJobService = $this->getContainer()->get(JobRepositoryServiceInterface::DIC_NAME_CHRONOS);
-//        $_oJobService->addJob();
-        var_dump(
-            $_oJobService->getJobs()
-        );
+        /** @var JobIndexServiceInterface  $_oJobIndexService */
+        $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
+        $_sJobNames = $this->oInput->getArgument('jobnames');
 
+        if (in_array($_sJobNames, array('.', '*')))
+        {
+            $_oJobIndexService->resetJobIndex();
+            return 0;
+        }
+
+        $_aJobNames = explode(' ', $_sJobNames);
+        $_oJobIndexService->removeJobs($_aJobNames);
+
+        return 0;
     }
 }
