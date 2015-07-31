@@ -1,0 +1,5 @@
+services:
+  JobIndexServiceInterface:
+    class: Chapi\Service\JobIndex\JobIndexService
+    arguments:
+      - "@CacheInterface"
