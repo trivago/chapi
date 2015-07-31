@@ -43,7 +43,7 @@ class DiffCommand extends AbstractCommand
             $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
             if (!empty($_aLocalJobUpdates))
             {
-                foreach ($_aLocalJobUpdates as $_sJobName => $_aDiffProperties)
+                foreach ($_aLocalJobUpdates as $_sJobName)
                 {
                     $this->printJobDiff($_sJobName);
                 }

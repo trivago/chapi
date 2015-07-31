@@ -98,7 +98,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                 $_aNonidenticalProperties = $this->compareJobEntities($_oJobEntityLocal, $_oJobEntityChronos);
                 if (!empty($_aNonidenticalProperties))
                 {
-                    $_aLocalJobUpdates[$_oJobEntityLocal->name] = $_aNonidenticalProperties;
+                    $_aLocalJobUpdates[] = $_oJobEntityLocal->name;
                 }
             }
         }

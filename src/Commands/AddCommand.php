@@ -78,6 +78,6 @@ class AddCommand extends AbstractCommand
         $_aMissingJobs = $_oJobComparisonBusinessCase->getLocalMissingJobs();
         $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
 
-        return array_merge($_aNewJobs, $_aMissingJobs, array_keys($_aLocalJobUpdates));
+        return array_merge($_aNewJobs, $_aMissingJobs, $_aLocalJobUpdates);
     }
 }

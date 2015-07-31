@@ -82,7 +82,7 @@ class StatusCommand extends AbstractCommand
         // updated jobs
         if (!empty($aLocalJobUpdates))
         {
-            $this->printJobListComparedWithIndex($bJobIsInIndex, 'Updated jobs in local repository', array_keys($aLocalJobUpdates), "\t<info>modified job:\t%s</info>");
+            $this->printJobListComparedWithIndex($bJobIsInIndex, 'Updated jobs in local repository', $aLocalJobUpdates, "\t<info>modified job:\t%s</info>");
         }
     }
 
