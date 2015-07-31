@@ -31,9 +31,9 @@ Add job contents to the index
 ### reset 
 Remove jobs from the index
 
-### dump
+### fetch
 (coming soon)
-Dump a job from chronos and store it to local repository
+Dump job from chronos and store it to local repository
 
 ### commit
 Submit changes to chronos
