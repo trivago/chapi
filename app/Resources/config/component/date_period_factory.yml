@@ -1,0 +1,3 @@
+services:
+  DatePeriodFactoryInterface:
+    class: Chapi\Component\DatePeriod\DatePeriodFactory
