@@ -38,4 +38,32 @@ class HttpGuzzlClient implements HttpClientInterface
         $_oResponse = $this->oGuzzelClient->get($sUrl);
         return new HttpGuzzlResponse($_oResponse);
     }
+
+    /**
+     * @param string $sUrl
+     * @param mixed $mPostData
+     * @return HttpGuzzlResponse
+     */
+    public function postJsonData($sUrl, $mPostData)
+    {
+        $_oRequest = $this->oGuzzelClient->createRequest(
+            'post',
+            $sUrl,
+            array('json' => $mPostData)
+        );
+
+        $_oResponse = $this->oGuzzelClient->send($_oRequest);
+
+        return new HttpGuzzlResponse($_oResponse);
+    }
+
+    /**
+     * @param string $sUrl
+     * @return HttpGuzzlResponse
+     */
+    public function delete($sUrl)
+    {
+        $_oResponse = $this->oGuzzelClient->delete($sUrl);
+        return new HttpGuzzlResponse($_oResponse);
+    }
 }

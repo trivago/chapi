@@ -89,6 +89,39 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
     }
 
     /**
+     * @param JobEntity $oJobEntity
+     * @return mixed
+     */
+    public function addJob(JobEntity $oJobEntity)
+    {
+        //todo: impelemt method
+        print_r($oJobEntity);
+        die(__METHOD__);
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return mixed
+     */
+    public function updateJob(JobEntity $oJobEntity)
+    {
+        //todo: impelemt method
+        print_r($oJobEntity);
+        die(__METHOD__);
+    }
+
+    /**
+     * @param string $sJobName
+     * @return mixed
+     */
+    public function removeJob($sJobName)
+    {
+        //todo: impelemt method
+        print_r($sJobName);
+        die(__METHOD__);
+    }
+
+    /**
      * @param string $sPath
      * @param array $aJobFiles
      * @return array

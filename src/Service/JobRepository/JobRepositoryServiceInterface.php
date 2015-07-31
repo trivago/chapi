@@ -1,16 +1,17 @@
 <?php
 /**
- * @package: orchestra-
+ * @package: chapi
  *
  * @author:  msiebeneicher
  * @since:   2015-07-29
  *
- * @link:    http://
  */
 
 
 namespace Chapi\Service\JobRepository;
 
+
+use Chapi\Entity\Chronos\JobEntity;
 
 interface JobRepositoryServiceInterface
 {
@@ -19,7 +20,7 @@ interface JobRepositoryServiceInterface
 
     /**
      * @param string $sJobName
-     * @return \Chapi\Entity\Chronos\JobEntity
+     * @return JobEntity
      */
     public function getJob($sJobName);
 
@@ -27,4 +28,22 @@ interface JobRepositoryServiceInterface
      * @return \Chapi\Entity\Chronos\JobCollection
      */
     public function getJobs();
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return mixed
+     */
+    public function addJob(JobEntity $oJobEntity);
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return mixed
+     */
+    public function updateJob(JobEntity $oJobEntity);
+
+    /**
+     * @param string $sJobName
+     * @return mixed
+     */
+    public function removeJob($sJobName);
 }

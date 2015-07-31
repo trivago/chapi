@@ -11,10 +11,13 @@ namespace Chapi\Commands;
 
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class StatusCommand extends AbstractCommand
 {
-    private $aJobIndex = [];
+    /** @var JobIndexServiceInterface  */
+    private $oJobIndexService;
 
     /**
      * Configures the current command.
@@ -27,14 +30,20 @@ class StatusCommand extends AbstractCommand
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function initialize(InputInterface $oInput, OutputInterface $oOutput)
+    {
+        parent::initialize($oInput, $oOutput);
+
+        $this->oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
+    }
+
+    /**
      *
      */
     protected function process()
     {
-        /** @var JobIndexServiceInterface  $_oJobIndexService */
-        $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
-        $this->aJobIndex = $_oJobIndexService->getJobIndex();
-
         // job data
         /** @var JobComparisonInterface  $_oJobComparisonBusinessCase */
         $_oJobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
@@ -100,14 +109,14 @@ class StatusCommand extends AbstractCommand
         {
             if (true == $bJobIsInIndex)
             {
-                if (isset($this->aJobIndex[$_sJobName]))
+                if ($this->oJobIndexService->isJobInIndex($_sJobName))
                 {
                     $_aFilteredJobList[] = $_sJobName;
                 }
             }
             else
             {
-                if (!isset($this->aJobIndex[$_sJobName]))
+                if (!$this->oJobIndexService->isJobInIndex($_sJobName))
                 {
                     $_aFilteredJobList[] = $_sJobName;
                 }

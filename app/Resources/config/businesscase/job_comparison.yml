@@ -5,3 +5,4 @@ services:
       - "@JobRepositoryFileSystem"
       - "@JobRepositoryChronos"
       - "@DiffCompareInterface"
+      - "@DatePeriodFactoryInterface"

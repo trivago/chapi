@@ -12,6 +12,7 @@ namespace Chapi\Component\Chronos;
 
 
 use Chapi\Component\Http\HttpClientInterface;
+use Chapi\Entity\Chronos\JobEntity;
 
 class ApiClient implements ApiClientInterface
 {
@@ -42,5 +43,39 @@ class ApiClient implements ApiClientInterface
         }
 
         return [];
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return bool
+     */
+    public function addingJob(JobEntity $oJobEntity)
+    {
+        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
+        {
+            $_oResponse = $this->oHttpClient->postJsonData('/scheduler/iso8601', $oJobEntity);
+            return ($_oResponse->getStatusCode() == 204);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return bool
+     */
+    public function updatingJob(JobEntity $oJobEntity)
+    {
+        return $this->addingJob($oJobEntity);
+    }
+
+    /**
+     * @param string $sJobName
+     * @return bool
+     */
+    public function removeJob($sJobName)
+    {
+        $_oResponse = $this->oHttpClient->delete('/scheduler/job/' . $sJobName);
+        return ($_oResponse->getStatusCode() == 204);
     }
 }

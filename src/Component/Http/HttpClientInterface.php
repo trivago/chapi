@@ -18,4 +18,17 @@ interface HttpClientInterface
      * @return HttpClientResponseInterface
      */
     public function get($sUrl);
+
+    /**
+     * @param string $sUrl
+     * @param mixed $mPostData
+     * @return HttpClientResponseInterface
+     */
+    public function postJsonData($sUrl, $mPostData);
+
+    /**
+     * @param string $sUrl
+     * @return HttpClientResponseInterface
+     */
+    public function delete($sUrl);
 }

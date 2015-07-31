@@ -36,5 +36,4 @@ Remove jobs from the index
 Dump a job from chronos and store it to local repository
 
 ### commit
-(coming soon)
-Record changes to chronos
+Submit changes to chronos

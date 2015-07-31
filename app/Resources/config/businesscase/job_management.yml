@@ -1,0 +1,8 @@
+services:
+  StoreJobBusinessCaseInterface:
+    class: Chapi\BusinessCase\JobManagement\StoreJobBusinessCase
+    arguments:
+      - "@JobIndexServiceInterface"
+      - "@JobRepositoryChronos"
+      - "@JobRepositoryFileSystem"
+      - "@JobComparisonInterface"

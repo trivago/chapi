@@ -10,6 +10,7 @@
 namespace Chapi\BusinessCase\Comparison;
 
 use Chapi\Component\Comparison\DiffCompareInterface;
+use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 
@@ -31,19 +32,28 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     private $oDiffCompare;
 
     /**
+     * @var DatePeriodFactoryInterface
+     */
+    private $oDatePeriodFactory;
+
+
+    /**
      * @param JobRepositoryServiceInterface $oJobRepositoryLocal
      * @param JobRepositoryServiceInterface $oJobRepositoryChronos
      * @param DiffCompareInterface $oDiffCompare
+     * @param DatePeriodFactoryInterface $oDatePeriodFactory
      */
     public function __construct(
         JobRepositoryServiceInterface $oJobRepositoryLocal,
         JobRepositoryServiceInterface $oJobRepositoryChronos,
-        DiffCompareInterface $oDiffCompare
+        DiffCompareInterface $oDiffCompare,
+        DatePeriodFactoryInterface $oDatePeriodFactory
     )
     {
         $this->oJobRepositoryLocal = $oJobRepositoryLocal;
         $this->oJobRepositoryChronos = $oJobRepositoryChronos;
         $this->oDiffCompare = $oDiffCompare;
+        $this->oDatePeriodFactory = $oDatePeriodFactory;
     }
 
     /**
@@ -186,7 +196,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                 $_aDatesA = [];
                 if (!empty($mValueA))
                 {
-                    $_oPeriodA = $this->initDatePeriod($oJobEntityA);
+                    $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
 
                     /** @var \DateTime $_oDateTime */
                     foreach($_oPeriodA as $_oDateTime){
@@ -198,7 +208,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
 
                 if (!empty($mValueB))
                 {
-                    $_oPeriodB = $this->initDatePeriod($oJobEntityB);
+                    $_oPeriodB = $this->oDatePeriodFactory->createDatePeriod($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
 
                     /** @var \DateTime $_oDateTime */
                     foreach($_oPeriodB as $_oDateTime){
@@ -232,43 +242,4 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                 break;
         }
     }
-
-    /**
-     * @param JobEntity $oJobEntity
-     * @return \DatePeriod
-     */
-    private function initDatePeriod(JobEntity $oJobEntity)
-    {
-        $aMatch = $this->parseIso8601String($oJobEntity->schedule);
-
-
-        if (!empty($oJobEntity->scheduleTimeZone))
-        {
-            $_oDateStart = new \DateTime(str_replace('Z', '', $aMatch[2]));
-            $_oDateStart->setTimezone(new \DateTimeZone($oJobEntity->scheduleTimeZone));
-        }
-        else
-        {
-            $_oDateStart = new \DateTime($aMatch[2]);
-        }
-
-        $_oDateInterval = new \DateInterval($aMatch[3]);
-        $_oDataEnd = new \DateTime();
-        $_oDataEnd->add($_oDateInterval);
-
-        return new \DatePeriod($_oDateStart, $_oDateInterval, $_oDataEnd);
-    }
-
-    /**
-     * @param string $sIso8601
-     * @return array
-     */
-    private function parseIso8601String($sIso8601)
-    {
-        $aMatch = [];
-        preg_match('#(R[0-9]*)/(.*)/(P.*)#', $sIso8601, $aMatch);
-
-        return $aMatch;
-    }
-
 }

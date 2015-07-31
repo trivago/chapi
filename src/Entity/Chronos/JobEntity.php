@@ -9,7 +9,7 @@
 
 namespace Chapi\Entity\Chronos;
 
-class JobEntity
+class JobEntity implements \JsonSerializable
 {
     public $name = '';
 
@@ -106,6 +106,25 @@ class JobEntity
         foreach ($this as $_sProperty => $mValue)
         {
             $_aReturn[$_sProperty] = (is_array($mValue)) ? implode(',', $mValue) : $mValue;
+        }
+
+        return $_aReturn;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $_aReturn = (array) $this;
+        if (!empty($this->schedule))
+        {
+            unset($_aReturn['parents']);
+        }
+        else
+        {
+            unset($_aReturn['schedule']);
+            unset($_aReturn['scheduleTimeZone']);
         }
 
         return $_aReturn;

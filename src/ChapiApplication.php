@@ -31,6 +31,7 @@ class ChapiApplication extends Application
         return [
             // GENERAL COMMANDS
             new Commands\AddCommand(),
+            new Commands\CommitCommand(),
             new Commands\ConfigureCommand(),
             new Commands\DiffCommand(),
             new Commands\InfoCommand(),

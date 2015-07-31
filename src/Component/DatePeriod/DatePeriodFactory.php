@@ -9,6 +9,8 @@
 
 namespace Chapi\Component\DatePeriod;
 
+use Chapi\Exception\DatePeriodException;
+
 class DatePeriodFactory implements DatePeriodFactoryInterface
 {
     const REG_EX_ISO_8601_STRING = '#(R[0-9]*)/(.*)/(P.*)#';
@@ -16,11 +18,17 @@ class DatePeriodFactory implements DatePeriodFactoryInterface
     /**
      * @param $sIso8601
      * @return mixed
+     * @throws DatePeriodException
      */
     public function parseIso8601String($sIso8601)
     {
         $aMatch = [];
         preg_match(self::REG_EX_ISO_8601_STRING, $sIso8601, $aMatch);
+
+        if (count($aMatch) != 4)
+        {
+            throw new DatePeriodException(sprintf("Can't parse '%s' as iso 8601 string.", $sIso8601));
+        }
 
         return $aMatch;
     }

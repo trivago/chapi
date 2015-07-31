@@ -29,23 +29,26 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
     private $oCache;
 
     /**
+     * @var JobEntityValidatorServiceInterface
+     */
+    private $oJobEntityValidatorService;
+
+    /**
      * @param ApiClientInterface $oApiClient
      * @param CacheInterface $oCache
+     * @param JobEntityValidatorServiceInterface $oJobEntityValidatorService
      */
     public function __construct(
         ApiClientInterface $oApiClient,
-        CacheInterface $oCache
+        CacheInterface $oCache,
+        JobEntityValidatorServiceInterface $oJobEntityValidatorService
     )
     {
         $this->oApiClient = $oApiClient;
         $this->oCache = $oCache;
+        $this->oJobEntityValidatorService = $oJobEntityValidatorService;
     }
 
-
-    public function addJob()
-    {
-        //TODO: implement method
-    }
 
     /**
      * @param string $sJobName
@@ -81,6 +84,50 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
         }
 
         return new JobCollection($_aReturn);
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return mixed
+     */
+    public function addJob(JobEntity $oJobEntity)
+    {
+        if ($this->oJobEntityValidatorService->isEntityValid($oJobEntity))
+        {
+            $_bAddingJob = $this->oApiClient->addingJob($oJobEntity);
+            return $_bAddingJob;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return mixed
+     */
+    public function updateJob(JobEntity $oJobEntity)
+    {
+        if ($this->oJobEntityValidatorService->isEntityValid($oJobEntity))
+        {
+            $_bUpdatingJob = $this->oApiClient->updatingJob($oJobEntity);
+            return $_bUpdatingJob;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $sJobName
+     * @return mixed
+     */
+    public function removeJob($sJobName)
+    {
+        if (!empty($sJobName))
+        {
+            return $this->oApiClient->removeJob($sJobName);
+        }
+
+        return false;
     }
 
     /**
