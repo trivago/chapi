@@ -9,10 +9,14 @@
 
 namespace Chapi\Component\Http;
 
+use Chapi\Exception\HttpConnectionException;
 use GuzzleHttp\ClientInterface;
 
 class HttpGuzzlClient implements HttpClientInterface
 {
+    const DEFAULT_CONNECTION_TIMEOUT  = 5;
+    const DEFAULT_TIMEOUT = 30;
+
     /**
      * @var ClientInterface
      */
@@ -32,11 +36,30 @@ class HttpGuzzlClient implements HttpClientInterface
     /**
      * @param string $sUrl
      * @return HttpClientResponseInterface
+     * @throws HttpConnectionException
      */
     public function get($sUrl)
     {
-        $_oResponse = $this->oGuzzelClient->get($sUrl);
-        return new HttpGuzzlResponse($_oResponse);
+        try
+        {
+            $_oResponse = $this->oGuzzelClient->get(
+                $sUrl,
+                [
+                    'connect_timeout' => self::DEFAULT_CONNECTION_TIMEOUT,
+                    'timeout' => self::DEFAULT_TIMEOUT
+                ]
+            );
+
+            return new HttpGuzzlResponse($_oResponse);
+        }
+        catch (\Exception $oException)
+        {
+            throw new HttpConnectionException(
+                sprintf('Can\'t get response from "%s"', $this->oGuzzelClient->getBaseUrl() . $sUrl),
+                0,
+                $oException
+            );
+        }
     }
 
     /**
@@ -49,7 +72,7 @@ class HttpGuzzlClient implements HttpClientInterface
         $_oRequest = $this->oGuzzelClient->createRequest(
             'post',
             $sUrl,
-            array('json' => $mPostData)
+            ['json' => $mPostData]
         );
 
         $_oResponse = $this->oGuzzelClient->send($_oRequest);
