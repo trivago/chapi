@@ -1,10 +1,11 @@
 {
   "name": "trivago/chapi",
   "description": "chronos api client based on symfony console",
+  "keywords": ["chronos", "api", "mesos"],
   "type": "project",
   "authors": [
     {
-      "name": "msiebeneicher",
+      "name": "Marc Siebeneicher",
       "email": "marc.siebeneicher@trivago.com",
       "role": "developer"
     }

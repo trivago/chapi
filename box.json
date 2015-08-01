@@ -1,0 +1,19 @@
+{
+  "alias": "chapi.phar",
+  "chmod": "0755",
+  "directories": ["app", "src"],
+  "files": [
+    "LICENSE"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": ["Tests"],
+      "in": "vendor"
+    }
+  ],
+  "git-version": "package_version",
+  "main": "app/console",
+  "output": "chapi.phar",
+  "stub": true
+}
