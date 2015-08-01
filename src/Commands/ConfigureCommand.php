@@ -78,7 +78,7 @@ class ConfigureCommand extends AbstractCommand
         $_sYaml = $_oDumper->dump(array('parameters' => $aUserInput));
 
         $_oFileSystem = new Filesystem();
-        $_oFileSystem->dumpFile(__DIR__ . self::FOLDER_APP_CONFIG . 'parameters.yml', $_sYaml);
+        $_oFileSystem->dumpFile($this->getHomeDir() . '/parameters.yml', $_sYaml);
     }
 
     /**
@@ -94,7 +94,7 @@ class ConfigureCommand extends AbstractCommand
         );
         $_aResult['cache_dir'] = $this->printQuestion(
             'Please enter a cache directory',
-            $this->getParameterValue('cache_dir', realpath(__DIR__ . '/../../app/cache/'))
+            $this->getParameterValue('cache_dir', realpath($this->getCacheDir()))
         );
         $_aResult['repository_dir'] = $this->printQuestion(
             'Please enter your root path to your job files',
@@ -130,7 +130,7 @@ class ConfigureCommand extends AbstractCommand
     private function getParameterValue($sKey, $mDefaultValue = null)
     {
         $_oParser = new Parser();
-        $_sParameterFile = __DIR__ . self::FOLDER_APP_CONFIG . 'parameters.yml';
+        $_sParameterFile = $this->getHomeDir() . '/parameters.yml';
 
         if (file_exists($_sParameterFile))
         {

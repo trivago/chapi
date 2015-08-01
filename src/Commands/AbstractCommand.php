@@ -20,7 +20,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 abstract class AbstractCommand extends Command
 {
-    const FOLDER_APP_CONFIG = '/../../app/config/';
     const FOLDER_RESOURCES = '/../../app/Resources/config/';
 
     /**
@@ -37,6 +36,11 @@ abstract class AbstractCommand extends Command
      * @var ContainerBuilder
      */
     private static $oContainer;
+
+    /**
+     * @var string
+     */
+    private static $sHomeDir = '';
 
     /**
     * Executes the current command.
@@ -82,7 +86,7 @@ abstract class AbstractCommand extends Command
             $_oContainer = new ContainerBuilder();
 
             // load local parameters
-            $_oLoader = new YamlFileLoader($_oContainer, new FileLocator(__DIR__ . self::FOLDER_APP_CONFIG));
+            $_oLoader = new YamlFileLoader($_oContainer, new FileLocator($this->getHomeDir()));
             $_oLoader->load('parameters.yml');
 
             // load services
@@ -100,12 +104,62 @@ abstract class AbstractCommand extends Command
      */
     protected function isAppRunable()
     {
-        if (!file_exists(__DIR__ . self::FOLDER_APP_CONFIG . 'parameters.yml'))
+        if (!file_exists($this->getHomeDir() . '/parameters.yml'))
         {
             $this->oOutput->writeln(sprintf('<error>%s</error>', 'No parameter file found. Please run "configure" command for initial setup.'));
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @link   https://github.com/composer/composer/blob/69210d5bc130f8cc9f96f99582a041254d7b9833/src/Composer/Factory.php
+     * @return string
+     * @throws \RuntimeException
+     */
+    protected function getHomeDir()
+    {
+        if (!empty(self::$sHomeDir))
+        {
+            return self::$sHomeDir;
+        }
+
+        $home = getenv('CHAPI_HOME');
+        if (!$home) {
+            if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
+                if (!getenv('APPDATA')) {
+                    throw new \RuntimeException('The APPDATA or CHAPI_HOME environment variable must be set for composer to run correctly');
+                }
+                $home = strtr(getenv('APPDATA'), '\\', '/') . '/chapi';
+            } else {
+                if (!getenv('HOME')) {
+                    throw new \RuntimeException('The HOME or CHAPI_HOME environment variable must be set for composer to run correctly');
+                }
+                $home = rtrim(getenv('HOME'), '/') . '/.chapi';
+            }
+        }
+
+        if (!file_exists($home . '/.htaccess')) {
+            if (!is_dir($home)) {
+                @mkdir($home, 0755, true);
+            }
+            @file_put_contents( $home . '/.htaccess', 'Deny from all');
+        }
+
+        return self::$sHomeDir = $home;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCacheDir()
+    {
+        $_sCacheDir = $this->getHomeDir() . '/cache';
+        if (!is_dir($_sCacheDir)) {
+            @mkdir($_sCacheDir, 0755, true);
+        }
+
+        return $_sCacheDir;
     }
 }
