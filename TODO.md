@@ -1,8 +1,11 @@
 # Roadmap
 
-## v0.1
+## v0.1.0
     * implement "pull" functionality
     * change config store location for phar support [DONE]
+
+## v0.1.1
+    * add unit tests
 
 ## v0.2
     * check dependencies for non scheduled jobs

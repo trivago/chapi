@@ -46,5 +46,8 @@ Dump job from chronos and store it to local repository
 Submit changes to chronos
 
 
+## Supported Chronos versions
+    * v2.3.3
+
 
 [link_chronos]: https://github.com/mesos/chronos
