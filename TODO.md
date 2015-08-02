@@ -1,12 +1,12 @@
 # Roadmap
 
-## Open
-* implement "pull" functionality
+## v0.1
+    * implement "pull" functionality
+    * change config store location for phar support [DONE]
 
-* check dependencies for non scheduled jobs
-* remember index adding order
-    
-* add db support for "local" storage
+## v0.2
+    * check dependencies for non scheduled jobs
+    * remember index adding order
 
-## Done
-* change config store location for phar support
+## v0.3
+    * add db support for "local" storage
