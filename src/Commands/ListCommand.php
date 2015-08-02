@@ -13,7 +13,7 @@ use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class JobsCommand extends AbstractCommand
+class ListCommand extends AbstractCommand
 {
     const DEFAULT_VALUE_JOB_NAME = 'all';
 
@@ -22,7 +22,7 @@ class JobsCommand extends AbstractCommand
      */
     protected function configure()
     {
-        $this->setName('jobs')
+        $this->setName('list')
             ->setDescription('Display your jobs and filter they by status')
             ->addOption('onlyFailed', 'f', InputOption::VALUE_NONE, 'Display only failed jobs')
         ;

@@ -20,7 +20,7 @@ php app/console configure
 
 ## Usage
 
-### jobs
+### list
 Display your jobs and filter they by failed
 
 ### info
