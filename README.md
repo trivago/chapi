@@ -15,7 +15,7 @@ composer install
 ``` 
 
 ```Shell
-php app/console configure 
+bin/chapi configure 
 ```
 
 ## Usage
@@ -23,31 +23,90 @@ php app/console configure
 ### list
 Display your jobs and filter they by failed
 
+```Shell
+bin/chapi list [options] 
+```
+
+    Options:
+      -f, --onlyFailed      Display only failed jobs
+
 ### info
 Display your job information from chronos
+
+```Shell
+bin/chapi info <jobName> 
+```
+
+    Arguments:
+      jobName               selected job
 
 ### status
 Show the working tree status
 
+```Shell
+bin/chapi status
+```
+
 ### diff
 Show changes between jobs and working tree, etc
 
+```Shell
+bin/chapi diff [<jobName>]
+```
+
+    Arguments:
+      jobName               Show changes for specific job
+
 ### add
 Add job contents to the index
+
+```Shell
+bin/chapi add [<jobnames>]...
+```
+
+    Arguments:
+      jobnames              Jobs to add to the index
  
 ### reset 
 Remove jobs from the index
 
+```Shell
+bin/chapi reset [<jobnames>]...
+```
+
+    Arguments:
+      jobnames              Jobs to add to the index
+
 ### pull
-(coming soon)
-Dump job from chronos and store it to local repository
+Pull jobs from chronos and add them to local repository
+
+```Shell
+bin/chapi pull [options] [--] [<jobnames>]...
+```
+
+    Arguments:
+      jobnames              Jobnames to pull
+    
+    Options:
+      -f, --force           Force to overwrite local jobs 
 
 ### commit
 Submit changes to chronos
 
+```Shell
+bin/chapi commit
+```   
+
+### configure
+Configure application and add necessary configs
+
+```Shell
+bin/chapi configure
+```  
+
 
 ## Supported Chronos versions
-    * v2.3.3
+    * v2.3
 
 
 [link_chronos]: https://github.com/mesos/chronos

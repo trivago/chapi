@@ -1,6 +1,6 @@
 {
-  "name": "trivago/chapi",
-  "description": "chronos api client based on symfony console",
+  "name": "chapi/chapi-client",
+  "description": "chronos console client - Manage your jobs like a git repository",
   "keywords": ["chronos", "api", "mesos"],
   "type": "project",
   "authors": [

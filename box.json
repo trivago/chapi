@@ -13,7 +13,7 @@
     }
   ],
   "git-version": "package_version",
-  "main": "app/console",
+  "main": "bin/chapi",
   "output": "chapi.phar",
   "stub": true
 }

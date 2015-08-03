@@ -1,7 +1,7 @@
 # Roadmap
 
 ## v0.1.0
-    * implement "pull" functionality
+    * implement "pull" functionality [DONE]
     * change config store location for phar support [DONE]
 
 ## v0.1.1
@@ -11,5 +11,6 @@
     * check dependencies for non scheduled jobs
     * remember index adding order
 
-## v0.3
+## v1.x
+    * extract api client to subpackage 
     * add db support for "local" storage
