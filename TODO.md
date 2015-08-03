@@ -8,6 +8,7 @@
     * add unit tests
 
 ## v0.2
+    * return failed validation output for commits
     * check dependencies for non scheduled jobs
     * remember index adding order
 
