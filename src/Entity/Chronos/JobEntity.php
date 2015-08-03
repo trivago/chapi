@@ -127,6 +127,12 @@ class JobEntity implements \JsonSerializable
             unset($_aReturn['scheduleTimeZone']);
         }
 
+        unset($_aReturn['successCount']);
+        unset($_aReturn['errorCount']);
+        unset($_aReturn['errorsSinceLastSuccess']);
+        unset($_aReturn['lastSuccess']);
+        unset($_aReturn['lastError']);
+
         return $_aReturn;
     }
 }

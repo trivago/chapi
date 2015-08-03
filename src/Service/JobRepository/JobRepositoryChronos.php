@@ -34,6 +34,11 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
     private $oJobEntityValidatorService;
 
     /**
+     * @var JobCollection
+     */
+    private $oJobCollection;
+
+    /**
      * @param ApiClientInterface $oApiClient
      * @param CacheInterface $oCache
      * @param JobEntityValidatorServiceInterface $oJobEntityValidatorService
@@ -70,6 +75,11 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
      */
     public function getJobs()
     {
+        if (!is_null($this->oJobCollection))
+        {
+            return $this->oJobCollection;
+        }
+
         $_aReturn = [];
         $_aJobList = $this->getJobList();
 
@@ -83,7 +93,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
             }
         }
 
-        return new JobCollection($_aReturn);
+        return $this->oJobCollection = new JobCollection($_aReturn);
     }
 
     /**
