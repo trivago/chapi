@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         cacheTokens="true"
+         bootstrap="./bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         forceCoversAnnotation="false"
+         mapTestClassNameToCoveredClassName="false"
+         printerClass="PHPUnit_TextUI_ResultPrinter"
+         processIsolation="false"
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
+         verbose="true"
+         coverage-clover="clover.xml">
+
+    <logging>
+        <log type="coverage-html" target="../build/clover-html" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70"/>
+        <log type="coverage-clover" target="../build/clover.xml"/>
+        <log type="junit" target="../build/junit.xml" logIncompleteSkipped="false"/>
+        <log type="testdox-html" target="../build/testdox.html"/>
+        <log type="testdox-text" target="../build/testdox.txt"/>
+        <!--<log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>-->
+    </logging>
+
+    <testsuites>
+        <testsuite name="Unit-Tests">
+            <directory>unit</directory>
+        </testsuite>
+        <!--<testsuite name="Integration-Tests">-->
+            <!--<directory>integration</directory>-->
+        <!--</testsuite>-->
+    </testsuites>
+
+    <filter>
+        <whitelist
+                addUncoveredFilesFromWhitelist="true"
+                processUncoveredFilesFromWhitelist="true">
+            <directory>../src</directory>
+            <exclude>
+                <directory>../src/*/Bundle/*Bundle/Resources</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
