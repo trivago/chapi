@@ -19,4 +19,10 @@ interface StoreJobBusinessCaseInterface
      *
      */
     public function storeIndexedJobs();
+
+    /**
+     * @param array $aJobNames
+     * @param bool|false $bForceOverwrite
+     */
+    public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false);
 }

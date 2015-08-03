@@ -10,6 +10,7 @@
 namespace Chapi\BusinessCase\JobManagement;
 
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
+use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 
@@ -101,6 +102,58 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
                     $this->oJobIndexService->removeJob($_sJobName);
                     //todo: log "updated $_sJobName successfully in chronos\n";
                 }
+            }
+        }
+    }
+
+    /**
+     * @param array $aJobNames
+     * @param bool|false $bForceOverwrite
+     */
+    public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false)
+    {
+        if (empty($aJobNames))
+        {
+            $_aChronosJobs = $this->oJobRepositoryChronos->getJobs();
+        }
+        else
+        {
+            $_aChronosJobs = [];
+            foreach ($aJobNames as $_sJobName)
+            {
+                $_aChronosJobs[] = $this->oJobRepositoryChronos->getJob($_sJobName);
+            }
+        }
+
+        /** @var JobEntity $_oJobEntity */
+        foreach ($_aChronosJobs as $_oJobEntity)
+        {
+            $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($_oJobEntity->name);
+            // new job
+            if (empty($_oJobEntityLocal->name))
+            {
+                $this->oJobRepositoryLocal->addJob($_oJobEntity);
+                continue;
+            }
+
+            // update job
+            $_aDiff = $this->oJobComparisonBusinessCase->getJobDiff($_oJobEntity->name);
+            if(!empty($_aDiff))
+            {
+                if (!$bForceOverwrite)
+                {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'The job "%s" already exist in your local repository. Use the "force" option to overwrite the job',
+                            $_oJobEntity->name
+                        )
+                    );
+                }
+
+                $this->oJobRepositoryLocal->updateJob($_oJobEntity);
+
+                // remove job from index in case off added in the past
+                $this->oJobIndexService->removeJob($_oJobEntity->name);
             }
         }
     }

@@ -38,6 +38,7 @@ class ChapiApplication extends Application
             new Commands\HelpCommand(),
             new Commands\InfoCommand(),
             new Commands\ListCommand(),
+            new Commands\PullCommand(),
             new Commands\ResetCommand(),
             new Commands\StatusCommand(),
         ];

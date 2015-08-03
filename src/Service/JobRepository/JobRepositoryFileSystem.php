@@ -32,6 +32,26 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
     private $sRepositoryDir = '';
 
     /**
+     * @var JobCollection
+     */
+    private $oJobCollection;
+
+    /**
+     * @var array
+     */
+    private $aJobFiles = [];
+
+    /**
+     * @var array
+     */
+    private $aDirectorySeparators = ['.', ':', '-', '\\'];
+
+    /**
+     * @var array
+     */
+    private $aJobFileMap = [];
+
+    /**
      * @param Filesystem $oFileSystemService
      * @param CacheInterface $oCache
      * @param string $sRepositoryDir
@@ -67,7 +87,12 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
      */
     public function getJobs()
     {
-        $_aJobFiles = $this->getJobFiles($this->sRepositoryDir);
+        if (!is_null($this->oJobCollection))
+        {
+            return $this->oJobCollection;
+        }
+
+        $_aJobFiles = $this->getJobFiles();
         $_aJobs = [];
 
         foreach ($_aJobFiles as $_sJobFilePath)
@@ -83,9 +108,12 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
 
             $_oJobEntity = new JobEntity($_aTemp);
             $_aJobs[$_oJobEntity->name] = $_oJobEntity;
+
+            // set path to job file map
+            $this->aJobFileMap[$_oJobEntity->name] = $_sJobFilePath;
         }
 
-        return new JobCollection($_aJobs);
+        return $this->oJobCollection = new JobCollection($_aJobs);
     }
 
     /**
@@ -94,9 +122,23 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
      */
     public function addJob(JobEntity $oJobEntity)
     {
-        //todo: impelemt method
-        print_r($oJobEntity);
-        die(__METHOD__);
+        // generate job file path by name
+        $_sJobFile = $this->generateJobFilePath($oJobEntity);
+
+        $this->oFileSystemService->dumpFile(
+            $_sJobFile,
+            json_encode($oJobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
+
+        if (file_exists($_sJobFile))
+        {
+            // set path to job file map
+            $this->aJobFileMap[$oJobEntity->name] = $_sJobFile;
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -105,20 +147,73 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
      */
     public function updateJob(JobEntity $oJobEntity)
     {
-        //todo: impelemt method
-        print_r($oJobEntity);
-        die(__METHOD__);
+        if (!isset($this->aJobFileMap[$oJobEntity->name]))
+        {
+            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $oJobEntity->name));
+        }
+
+        // overwrite job file
+        $_sJobFile = $this->aJobFileMap[$oJobEntity->name];
+
+        $this->oFileSystemService->dumpFile(
+            $_sJobFile,
+            json_encode($oJobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
+
+        return (file_exists($_sJobFile));
     }
 
     /**
      * @param string $sJobName
-     * @return mixed
+     * @return bool
      */
     public function removeJob($sJobName)
     {
-        //todo: impelemt method
-        print_r($sJobName);
-        die(__METHOD__);
+        if (!isset($this->aJobFileMap[$sJobName]))
+        {
+            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $sJobName));
+        }
+
+        // overwrite job file
+        $_sJobFile = $this->aJobFileMap[$sJobName];
+
+        $this->oFileSystemService->remove($_sJobFile);
+
+        if (!file_exists($_sJobFile))
+        {
+            // unset path from job file map
+            unset($this->aJobFileMap[$sJobName]);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    private function getJobFiles()
+    {
+        if (!empty($this->aJobFiles))
+        {
+            return $this->aJobFiles;
+        }
+
+        return $this->aJobFiles = $this->getJobFilesFromFileSystem($this->sRepositoryDir);
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return string
+     */
+    private function generateJobFilePath(JobEntity $oJobEntity)
+    {
+        $_sJobPath = str_replace(
+            $this->aDirectorySeparators,
+            DIRECTORY_SEPARATOR,
+            $oJobEntity->name
+        );
+        return $this->sRepositoryDir . DIRECTORY_SEPARATOR . $_sJobPath . '.json';
     }
 
     /**
@@ -126,7 +221,7 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
      * @param array $aJobFiles
      * @return array
      */
-    private function getJobFiles($sPath, array &$aJobFiles = [])
+    private function getJobFilesFromFileSystem($sPath, array &$aJobFiles = [])
     {
         if (!is_dir($sPath))
         {
@@ -143,7 +238,7 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
             }
             elseif (is_dir($_sPath))
             {
-                $this->getJobFiles($_sPath, $aJobFiles);
+                $this->getJobFilesFromFileSystem($_sPath, $aJobFiles);
             }
         }
 
