@@ -25,7 +25,7 @@ class ResetCommand extends AbstractCommand
     {
         $this->setName('reset')
             ->setDescription('Remove jobs from the index')
-            ->addArgument('jobnames', InputArgument::REQUIRED, 'Jobs to remove from the index')
+            ->addArgument('jobnames', InputArgument::IS_ARRAY, 'Jobs to remove from the index')
         ;
     }
 
@@ -50,15 +50,19 @@ class ResetCommand extends AbstractCommand
     {
         /** @var JobIndexServiceInterface  $_oJobIndexService */
         $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
-        $_sJobNames = $this->oInput->getArgument('jobnames');
+        $_aJobNames = $this->oInput->getArgument('jobnames');
 
-        if (in_array($_sJobNames, array('.', '*')))
+        if (empty($_aJobNames))
+        {
+            throw new \InvalidArgumentException('Nothing specified, nothing resetted. Maybe you wanted to say "reset ."?');
+        }
+
+        if (in_array($_aJobNames[0], array('.', '*')))
         {
             $_oJobIndexService->resetJobIndex();
             return 0;
         }
 
-        $_aJobNames = explode(' ', $_sJobNames);
         $_oJobIndexService->removeJobs($_aJobNames);
 
         return 0;

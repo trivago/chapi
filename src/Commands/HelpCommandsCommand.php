@@ -13,7 +13,7 @@ namespace Chapi\Commands;
 
 use Symfony\Component\Console\Command\ListCommand;
 
-class HelpCommand extends ListCommand
+class HelpCommandsCommand extends ListCommand
 {
     /**
      * Configures the current command.
@@ -21,6 +21,6 @@ class HelpCommand extends ListCommand
     protected function configure()
     {
         parent::configure();
-        $this->setName('help');
+        $this->setName('help.commands');
     }
 }

@@ -20,7 +20,7 @@ class ChapiApplication extends Application
 
         parent::__construct($sName, $sVersion);
 
-        $this->setDefaultCommand('help');
+        $this->setDefaultCommand('help.commands');
         $this->addCommands($this->getCommands());
     }
 
@@ -35,7 +35,7 @@ class ChapiApplication extends Application
             new Commands\CommitCommand(),
             new Commands\ConfigureCommand(),
             new Commands\DiffCommand(),
-            new Commands\HelpCommand(),
+            new Commands\HelpCommandsCommand(),
             new Commands\InfoCommand(),
             new Commands\ListCommand(),
             new Commands\PullCommand(),

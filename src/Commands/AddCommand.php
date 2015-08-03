@@ -26,7 +26,7 @@ class AddCommand extends AbstractCommand
     {
         $this->setName('add')
             ->setDescription('Add job contents to the index')
-            ->addArgument('jobnames', InputArgument::REQUIRED, 'Jobs to add to the index')
+            ->addArgument('jobnames', InputArgument::IS_ARRAY, 'Jobs to add to the index')
         ;
     }
 
@@ -51,15 +51,19 @@ class AddCommand extends AbstractCommand
     {
         /** @var JobIndexServiceInterface  $_oJobIndexService */
         $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
-        $_sJobNames = $this->oInput->getArgument('jobnames');
+        $_aJobNames = $this->oInput->getArgument('jobnames');
 
-        if (in_array($_sJobNames, array('.', '*')))
+        if (empty($_aJobNames))
+        {
+            throw new \InvalidArgumentException('Nothing specified, nothing added. Maybe you wanted to say "add ."?');
+        }
+
+        if (in_array($_aJobNames[0], array('.', '*')))
         {
             $_oJobIndexService->addJobs($this->getChangedJobs());
             return 0;
         }
 
-        $_aJobNames = explode(' ', $_sJobNames);
         $_oJobIndexService->addJobs($_aJobNames);
 
         return 0;
