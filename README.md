@@ -1,6 +1,8 @@
 # chapi
 Chronos api client for your console
 
+[![Build Status](https://travis-ci.org/msiebeneicher/chapi.svg?branch=master)](http://travis-ci.org/msiebeneicher/chapi)
+
 ## Description
 Manage your [Chronos][link_chronos] jobs like a git repository on your console:
 
