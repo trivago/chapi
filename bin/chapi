@@ -9,4 +9,4 @@ ini_set('memory_limit', '2048M');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-(new \Chapi\ChapiApplication('Chapi', 'v0.1.0'))->run();
+(new \Chapi\ChapiApplication())->run();

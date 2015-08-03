@@ -12,7 +12,7 @@ use Symfony\Component\Console\Application;
 
 class ChapiApplication extends Application
 {
-    public function __construct($sName = 'trivago chapi', $sVersion = '@package_version@')
+    public function __construct($sName = 'Chapi', $sVersion = '@package_version@')
     {
         if ('@package_version@' !== $sVersion) {
             $sVersion = ltrim($sVersion, 'v');
