@@ -1,14 +1,8 @@
 language: php
 
-sudo: false
-
 cache:
   directories:
     - $HOME/.chapi/cache
-
-addons:
-  apt_packages:
-    - parallel
 
 php:
   - 5.3.3
@@ -30,8 +24,3 @@ before_script:
   - git config --global user.email travis@example.com
   - composer install
 
-script:
-    - ls -d test/unit/* | parallel --gnu --keep-order 'echo "Running {} tests"; ./vendor/bin/phpunit -c test/phpunit.xml --colors=always {} || (echo -e "\e[41mFAILED\e[0m {}" && $(exit 1));'
-
-git:
-  depth: 5
