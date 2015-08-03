@@ -1,9 +1,5 @@
 # Roadmap
 
-## v0.1.0
-    * implement "pull" functionality [DONE]
-    * change config store location for phar support [DONE]
-
 ## v0.1.1
     * add unit tests
 
