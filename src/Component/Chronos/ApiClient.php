@@ -13,6 +13,7 @@ namespace Chapi\Component\Chronos;
 
 use Chapi\Component\Http\HttpClientInterface;
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Exception\ApiClientException;
 
 class ApiClient implements ApiClientInterface
 {
@@ -48,16 +49,27 @@ class ApiClient implements ApiClientInterface
     /**
      * @param JobEntity $oJobEntity
      * @return bool
+     * @throws ApiClientException
      */
     public function addingJob(JobEntity $oJobEntity)
     {
+        $_sTargetUrl = '';
+
         if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
         {
-            $_oResponse = $this->oHttpClient->postJsonData('/scheduler/iso8601', $oJobEntity);
-            return ($_oResponse->getStatusCode() == 204);
+            $_sTargetUrl = '/scheduler/iso8601';
+        } elseif (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
+        {
+            $_sTargetUrl = '/scheduler/dependency';
         }
 
-        return false;
+        if (empty($_sTargetUrl))
+        {
+            throw new ApiClientException('No scheduler or dependency found. Can\'t get right target url.');
+        }
+
+        $_oResponse = $this->oHttpClient->postJsonData($_sTargetUrl, $oJobEntity);
+        return ($_oResponse->getStatusCode() == 204);
     }
 
     /**
