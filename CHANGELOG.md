@@ -1,4 +1,6 @@
 # dev-master (v0.1.x)
+
+# v0.1.1
     2015-08-04 msiebeneicher <marc.siebeneicher@trivago.com>
         * updated ApiClient::addingJob() and integrated unit tests
 
