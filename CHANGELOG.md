@@ -1,8 +1,7 @@
 # dev-master (v0.1.x)
     2015-08-05 msiebeneicher <marc.siebeneicher@trivago.com>
-        * added JobEntity unit tests
-    2015-08-05 msiebeneicher <marc.siebeneicher@trivago.com>
         * Invalid cache after commit [issue#6]
+        * added JobEntity unit tests
 
 # v0.1.1
     2015-08-04 msiebeneicher <marc.siebeneicher@trivago.com>
