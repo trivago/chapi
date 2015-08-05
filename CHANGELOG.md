@@ -1,4 +1,9 @@
 # dev-master (v0.1.x)
+    2015-08-05 msiebeneicher <marc.siebeneicher@trivago.com>
+        * added JobEntity unit tests
+        * Invalid cache after commit [issue#6]
+
+# v0.1.1
     2015-08-04 msiebeneicher <marc.siebeneicher@trivago.com>
         * updated ApiClient::addingJob() and integrated unit tests
 
