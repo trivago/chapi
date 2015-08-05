@@ -18,6 +18,8 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
 {
     const CACHE_TIME_JOB_LIST = 60;
 
+    const CACHE_KEY_JOB_LIST = 'jobs.list';
+
     /**
      * @var ApiClientInterface
      */
@@ -39,6 +41,11 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
     private $oJobCollection;
 
     /**
+     * @var bool
+     */
+    private $bJobsRemoved = false;
+
+    /**
      * @param ApiClientInterface $oApiClient
      * @param CacheInterface $oCache
      * @param JobEntityValidatorServiceInterface $oJobEntityValidatorService
@@ -52,6 +59,17 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
         $this->oApiClient = $oApiClient;
         $this->oCache = $oCache;
         $this->oJobEntityValidatorService = $oJobEntityValidatorService;
+    }
+
+    /**
+     * delete cache job.list if a job was removed
+     */
+    public function __destruct()
+    {
+        if ($this->bJobsRemoved)
+        {
+            $this->oCache->delete(self::CACHE_KEY_JOB_LIST);
+        }
     }
 
 
@@ -134,7 +152,11 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
     {
         if (!empty($sJobName))
         {
-            return $this->oApiClient->removeJob($sJobName);
+            if ($this->oApiClient->removeJob($sJobName))
+            {
+                $this->bJobsRemoved = true;
+                return true;
+            }
         }
 
         return false;
@@ -145,8 +167,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
      */
     private function getJobList()
     {
-        $_sCacheKey = 'jobs.list';
-        $_aResult = $this->oCache->get($_sCacheKey);
+        $_aResult = $this->oCache->get(self::CACHE_KEY_JOB_LIST);
 
         if (is_array($_aResult))
         {
@@ -158,7 +179,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
         if (!empty($_aResult))
         {
             // set result to cache
-            $this->oCache->set($_sCacheKey, $_aResult, self::CACHE_TIME_JOB_LIST);
+            $this->oCache->set(self::CACHE_KEY_JOB_LIST, $_aResult, self::CACHE_TIME_JOB_LIST);
         }
 
         return $_aResult;
