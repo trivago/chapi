@@ -1,6 +1,6 @@
 # dev-master (v0.1.x)
     2015-08-05 msiebeneicher <marc.siebeneicher@trivago.com>
-        * Invalid cache after commit [issue#6]
+        * [issue#6] - Invalid cache after adding, updating or removing in JobRepositoryChronos
         * added JobEntity unit tests
 
 # v0.1.1

@@ -43,7 +43,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
     /**
      * @var bool
      */
-    private $bJobsRemoved = false;
+    private $bCacheHasToDelete = false;
 
     /**
      * @param ApiClientInterface $oApiClient
@@ -66,7 +66,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
      */
     public function __destruct()
     {
-        if ($this->bJobsRemoved)
+        if ($this->bCacheHasToDelete)
         {
             $this->oCache->delete(self::CACHE_KEY_JOB_LIST);
         }
@@ -122,8 +122,11 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
     {
         if ($this->oJobEntityValidatorService->isEntityValid($oJobEntity))
         {
-            $_bAddingJob = $this->oApiClient->addingJob($oJobEntity);
-            return $_bAddingJob;
+            if ($this->oApiClient->addingJob($oJobEntity))
+            {
+                $this->bCacheHasToDelete = true;
+                return true;
+            }
         }
 
         return false;
@@ -137,8 +140,11 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
     {
         if ($this->oJobEntityValidatorService->isEntityValid($oJobEntity))
         {
-            $_bUpdatingJob = $this->oApiClient->updatingJob($oJobEntity);
-            return $_bUpdatingJob;
+            if ($this->oApiClient->updatingJob($oJobEntity))
+            {
+                $this->bCacheHasToDelete = true;
+                return true;
+            }
         }
 
         return false;
@@ -154,7 +160,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
         {
             if ($this->oApiClient->removeJob($sJobName))
             {
-                $this->bJobsRemoved = true;
+                $this->bCacheHasToDelete = true;
                 return true;
             }
         }
