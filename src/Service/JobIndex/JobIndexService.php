@@ -103,7 +103,6 @@ class JobIndexService implements JobIndexServiceInterface
      */
     public function resetJobIndex()
     {
-        $this->oCache->delete(self::JOB_INDEX_CACHE_KEY);
         $this->aJobIndex = [];
         return $this;
     }
@@ -139,9 +138,6 @@ class JobIndexService implements JobIndexServiceInterface
      */
     private function setJobIndexToStorage()
     {
-        if (!empty($this->aJobIndex))
-        {
-            $this->oCache->set(self::JOB_INDEX_CACHE_KEY, $this->aJobIndex);
-        }
+        $this->oCache->set(self::JOB_INDEX_CACHE_KEY, $this->aJobIndex);
     }
 }

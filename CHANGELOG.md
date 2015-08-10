@@ -1,4 +1,9 @@
 # dev-master (v0.1.x)
+    2015-08-08 msiebeneicher <marc.siebeneicher@trivago.com>
+        * added HttpGuzzleResponseTest
+        * fix issue in JobIndexService to reset job index
+        * added JobIndexServiceTest
+            
     2015-08-07 msiebeneicher <marc.siebeneicher@trivago.com>
         * added HttpGuzzlClientTest
 
