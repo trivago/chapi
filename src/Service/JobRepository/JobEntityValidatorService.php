@@ -36,6 +36,15 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
      */
     public function isEntityValid(JobEntity $oJobEntity)
     {
+        return (!in_array(false, $this->validateJobEntity($oJobEntity)));
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return array
+     */
+    public function validateJobEntity(JobEntity $oJobEntity)
+    {
         $_aValidProperties = [];
 
         foreach ($oJobEntity as $_sProperty => $mValue)
@@ -92,6 +101,26 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
 
         }
 
-        return (!in_array(false, $_aValidProperties));
+        return $_aValidProperties;
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return array
+     */
+    public function getInvalidProperties(JobEntity $oJobEntity)
+    {
+        $_aValidationFields = $this->validateJobEntity($oJobEntity);
+
+        $_aInvalidFields = [];
+        foreach ($_aValidationFields as $_sProperty => $_bIsValid)
+        {
+            if (false == $_bIsValid)
+            {
+                $_aInvalidFields[] = $_sProperty;
+            }
+        }
+
+        return $_aInvalidFields;
     }
 }

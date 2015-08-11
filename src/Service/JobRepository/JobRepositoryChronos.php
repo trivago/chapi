@@ -13,6 +13,8 @@ use Chapi\Component\Cache\CacheInterface;
 use Chapi\Component\Chronos\ApiClientInterface;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Exception\ValidationException;
+use Psr\Log\LoggerInterface;
 
 class JobRepositoryChronos implements JobRepositoryServiceInterface
 {
@@ -46,19 +48,27 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
     private $bCacheHasToDelete = false;
 
     /**
+     * @var LoggerInterface
+     */
+    private $oLogger;
+
+    /**
      * @param ApiClientInterface $oApiClient
      * @param CacheInterface $oCache
      * @param JobEntityValidatorServiceInterface $oJobEntityValidatorService
+     * @param LoggerInterface $oLogger
      */
     public function __construct(
         ApiClientInterface $oApiClient,
         CacheInterface $oCache,
-        JobEntityValidatorServiceInterface $oJobEntityValidatorService
+        JobEntityValidatorServiceInterface $oJobEntityValidatorService,
+        LoggerInterface $oLogger
     )
     {
         $this->oApiClient = $oApiClient;
         $this->oCache = $oCache;
         $this->oJobEntityValidatorService = $oJobEntityValidatorService;
+        $this->oLogger = $oLogger;
     }
 
     /**
@@ -120,7 +130,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
      */
     public function addJob(JobEntity $oJobEntity)
     {
-        if ($this->oJobEntityValidatorService->isEntityValid($oJobEntity))
+        if ($this->validate($oJobEntity))
         {
             if ($this->oApiClient->addingJob($oJobEntity))
             {
@@ -138,7 +148,7 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
      */
     public function updateJob(JobEntity $oJobEntity)
     {
-        if ($this->oJobEntityValidatorService->isEntityValid($oJobEntity))
+        if ($this->validate($oJobEntity))
         {
             if ($this->oApiClient->updatingJob($oJobEntity))
             {
@@ -164,6 +174,34 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
                 return true;
             }
         }
+
+        return false;
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return bool
+     */
+    private function validate(JobEntity $oJobEntity)
+    {
+        $_aInvalidProperties = $this->oJobEntityValidatorService->getInvalidProperties($oJobEntity);
+        if (empty($_aInvalidProperties))
+        {
+            return true;
+        }
+
+        $this->oLogger->warning(
+            sprintf(
+                "Can't update job '%s'",
+                $oJobEntity->name
+            )
+        );
+        $this->oLogger->warning(
+            sprintf(
+                "The following job entity properties are not valid:\n%s",
+                implode(', ', $_aInvalidProperties)
+            )
+        );
 
         return false;
     }

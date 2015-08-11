@@ -22,4 +22,16 @@ interface JobEntityValidatorServiceInterface
      * @return bool
      */
     public function isEntityValid(JobEntity $oJobEntity);
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return array
+     */
+    public function validateJobEntity(JobEntity $oJobEntity);
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return array
+     */
+    public function getInvalidProperties(JobEntity $oJobEntity);
 }

@@ -1,6 +1,12 @@
 # dev-master (v0.1.x)
     2015-08-11 msiebeneicher <marc.siebeneicher@trivago.com>
         * added JobRepositoryChronosTest and JobEntityValidatorServiceTest
+        * [issue#3] - return failed validation output for commits
+            - added psr logger and dic configuration
+            - updated JobEntityValidatorService
+            - updated JobRepositoryChronos
+            - updated unit tests
+            - added psr/log and symfony/monolog-bridge dependencies 
 
     2015-08-08 msiebeneicher <marc.siebeneicher@trivago.com>
         * added HttpGuzzleResponseTest
