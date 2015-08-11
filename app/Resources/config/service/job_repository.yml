@@ -5,6 +5,7 @@ services:
       - "@ApiClientInterface"
       - "@CacheInterface"
       - "@JobEntityValidatorServiceInterface"
+      - "@LoggerInterface"
 
   JobRepositoryFileSystem:
     class: Chapi\Service\JobRepository\JobRepositoryFileSystem

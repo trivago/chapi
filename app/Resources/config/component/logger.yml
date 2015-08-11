@@ -1,0 +1,22 @@
+parameters:
+    consoleFormater.format: "\t%%start_tag%%%%message%% %%context%% %%extra%%%%end_tag%%\n"
+
+services:
+  LoggerInterface:
+    class: Monolog\Logger
+    arguments: ["default"]
+    calls:
+      - [pushHandler, ["@ConsoleHandler"]]
+
+  ConsoleHandler:
+    class: Symfony\Bridge\Monolog\Handler\ConsoleHandler
+    calls:
+      - [setFormatter, ["@ConsoleFormater"]]
+      - [setOutput, ["@ConsoleOutput"]]
+
+  ConsoleFormater:
+    class: Symfony\Bridge\Monolog\Formatter\ConsoleFormatter
+    arguments: ["%consoleFormater.format%"]
+
+  ConsoleOutput:
+    class: Symfony\Component\Console\Output\ConsoleOutput

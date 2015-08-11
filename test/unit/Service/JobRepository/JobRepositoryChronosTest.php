@@ -26,6 +26,9 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oJobEntityValidatorService;
 
+    /** @var \Prophecy\Prophecy\ObjectProphecy */
+    private $oLogger;
+
     private $sJsonListingJobs = '[{"name":"job-a","command":"echo job","shell":true,"epsilon":"PT1M","executor":"","executorFlags":"","retries":0,"owner":"mail@address.com","ownerName":"Foo","description":"Generates something","async":false,"successCount":10918,"errorCount":16,"lastSuccess":"2015-08-10T07:35:04.529Z","lastError":"2015-08-03T12:15:06.183Z","cpus":0.1,"disk":24.0,"mem":128.0,"disabled":false,"softError":false,"dataProcessingJobType":false,"errorsSinceLastSuccess":0,"uris":[],"environmentVariables":[],"arguments":[],"highPriority":false,"runAsUser":"root","schedule":"R/2015-08-10T09:40:00.000+02:00/PT5M","scheduleTimeZone":"Europe/Berlin"},{"name":"job-b","command":"echo jobb","shell":true,"epsilon":"PT60S","executor":"","executorFlags":"","retries":0,"owner":"mail@address.com","ownerName":"Bar","description":"Do another thing","async":false,"successCount":1145,"errorCount":3,"lastSuccess":"2015-08-10T07:15:11.275Z","lastError":"2015-08-03T12:15:06.146Z","cpus":0.1,"disk":24.0,"mem":64.0,"disabled":false,"softError":false,"dataProcessingJobType":false,"errorsSinceLastSuccess":0,"uris":[],"environmentVariables":[],"arguments":[],"highPriority":false,"runAsUser":"root","schedule":"R/2015-08-10T09:45:00.000+02:00/PT30M","scheduleTimeZone":"Europe/Berlin"}]';
 
     private $aListingJobs = [];
@@ -52,6 +55,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobRepository\JobEntityValidatorService');
+
+        $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
     }
 
     public function testGetJobSuccess()
@@ -74,7 +79,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $_oJobEntity = $_oJobRepositoryChronos->getJob('job-a');
@@ -123,7 +129,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $_oJobCollection = $_oJobRepositoryChronos->getJobs();
@@ -175,7 +182,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $_oJobCollection = $_oJobRepositoryChronos->getJobs();
@@ -201,9 +209,9 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
     public function testAddJobSuccess()
     {
         $this->oJobEntityValidatorService
-            ->isEntityValid(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))
             ->shouldBeCalledTimes(1)
-            ->willReturn(true)
+            ->willReturn([])
         ;
 
         $this->oApiClient
@@ -221,7 +229,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $this->assertTrue($_oJobRepositoryChronos->addJob(new JobEntity()));
@@ -230,9 +239,9 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
     public function testAddJobFailed()
     {
         $this->oJobEntityValidatorService
-            ->isEntityValid(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))
             ->shouldBeCalledTimes(1)
-            ->willReturn(false)
+            ->willReturn(['sProperty'])
         ;
 
         $this->oApiClient
@@ -248,7 +257,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $this->assertFalse($_oJobRepositoryChronos->addJob(new JobEntity()));
@@ -257,9 +267,9 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
     public function testUpdateJobSuccess()
     {
         $this->oJobEntityValidatorService
-            ->isEntityValid(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))
             ->shouldBeCalledTimes(1)
-            ->willReturn(true)
+            ->willReturn([])
         ;
 
         $this->oApiClient
@@ -277,7 +287,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $this->assertTrue($_oJobRepositoryChronos->updateJob(new JobEntity()));
@@ -286,9 +297,9 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
     public function testUpdateJobFailure()
     {
         $this->oJobEntityValidatorService
-            ->isEntityValid(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))
             ->shouldBeCalledTimes(1)
-            ->willReturn(false)
+            ->willReturn(['sProperty'])
         ;
 
         $this->oApiClient
@@ -304,7 +315,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $this->assertFalse($_oJobRepositoryChronos->updateJob(new JobEntity()));
@@ -327,7 +339,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $this->assertTrue($_oJobRepositoryChronos->removeJob('JobA'));
@@ -350,7 +363,8 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         $_oJobRepositoryChronos = new JobRepositoryChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal()
+            $this->oJobEntityValidatorService->reveal(),
+            $this->oLogger->reveal()
         );
 
         $this->assertFalse($_oJobRepositoryChronos->removeJob('JobA'));
