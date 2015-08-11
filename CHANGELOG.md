@@ -1,4 +1,7 @@
 # dev-master (v0.1.x)
+    2015-08-11 msiebeneicher <marc.siebeneicher@trivago.com>
+        * added JobRepositoryChronosTest and JobEntityValidatorServiceTest
+
     2015-08-08 msiebeneicher <marc.siebeneicher@trivago.com>
         * added HttpGuzzleResponseTest
         * fix issue in JobIndexService to reset job index
