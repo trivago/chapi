@@ -216,8 +216,22 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                     }
                 }
 
-
                 return (end($_aDatesA) == end($_aDatesB));
+                break;
+
+            case 'scheduleTimeZone':
+                if ($mValueA == $mValueB)
+                {
+                    return true;
+                }
+
+                if (!empty($oJobEntityA->schedule) && !empty($oJobEntityA->schedule))
+                {
+                    $_oDateA = $this->createDateTimeObj($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
+                    $_oDateB = $this->createDateTimeObj($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
+
+                    return ($_oDateA->getOffset() == $_oDateB->getOffset());
+                }
                 break;
 
             case 'parents':
@@ -241,5 +255,27 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                 return ($mValueA == $mValueB);
                 break;
         }
+    }
+
+    /**
+     * @param string $sIso8601String
+     * @param string $sTimeZone
+     * @return \DateTime
+     */
+    private function createDateTimeObj($sIso8601String, $sTimeZone = '')
+    {
+        $aMatch = $this->oDatePeriodFactory->parseIso8601String($sIso8601String);
+
+        if (!empty($sTimeZone))
+        {
+            $_oDateTime = new \DateTime(str_replace('Z', '', $aMatch[2]));
+            $_oDateTime->setTimezone(new \DateTimeZone($sTimeZone));
+        }
+        else
+        {
+            $_oDateTime = new \DateTime($aMatch[2]);
+        }
+
+        return $_oDateTime;
     }
 }
