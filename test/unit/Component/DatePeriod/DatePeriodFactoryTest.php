@@ -58,7 +58,7 @@ class DatePeriodFactoryTest extends \PHPUnit_Framework_TestCase
         $_sTestDate = date('Y-m-d');
 
         /** @var \DatePeriod $_oDatePeriod */
-        $_oDatePeriod = $_oDatePeriodFactory->createDatePeriod('R/' . $_sTestDate . 'T01:00:00Z/P1D', 'Europe/Berlin');
+        $_oDatePeriod = $_oDatePeriodFactory->createDatePeriod('R/' . $_sTestDate . 'T01:00:00Z/P1D');
 
         foreach($_oDatePeriod as $_oDateTime)
         {
