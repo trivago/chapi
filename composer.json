@@ -33,7 +33,8 @@
   "autoload":
   {
     "psr-4": {
-      "Chapi\\": ["src/"]
+      "Chapi\\": ["src/"],
+      "ChapiTest\\": ["test/"]
     },
     "classmap": [
       "src/vendor/class.Diff.php"

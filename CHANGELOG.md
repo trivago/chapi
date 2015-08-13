@@ -1,4 +1,10 @@
 # dev-master (v0.1.x)
+    2015-08-13 msiebeneicher <marc.siebeneicher@trivago.com>
+        * added scheduleTimeZone comparison to JobComparisonBusinessCase
+        * sub one interval for date period creation in DatePeriodFactory
+        * added JobComparisonBusinessCaseTest
+        * added DatePeriodFactoryTest
+    
     2015-08-11 msiebeneicher <marc.siebeneicher@trivago.com>
         * added JobRepositoryChronosTest and JobEntityValidatorServiceTest
         * [issue#3] - return failed validation output for commits
