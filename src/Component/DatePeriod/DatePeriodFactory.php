@@ -42,7 +42,6 @@ class DatePeriodFactory implements DatePeriodFactoryInterface
     {
         $aMatch = $this->parseIso8601String($sIso8601);
 
-
         if (!empty($sTimeZone))
         {
             $_oDateStart = new \DateTime(str_replace('Z', '', $aMatch[2]));
@@ -55,6 +54,8 @@ class DatePeriodFactory implements DatePeriodFactoryInterface
 
         $_oDateInterval = new \DateInterval($aMatch[3]);
         $_oDataEnd = new \DateTime();
+
+        $_oDateStart->sub($_oDateInterval);
         $_oDataEnd->add($_oDateInterval);
 
         return new \DatePeriod($_oDateStart, $_oDateInterval, $_oDataEnd);

@@ -68,6 +68,11 @@ abstract class AbstractCommand extends Command
             exit(1);
         }
 
+        // set output for verbosity handling
+        /** @var \Symfony\Bridge\Monolog\Handler\ConsoleHandler $_oConsoleHandler */
+        $_oConsoleHandler = $this->getContainer()->get('ConsoleHandler');
+        $_oConsoleHandler->setOutput($this->oOutput);
+
         return $this->process();
     }
 

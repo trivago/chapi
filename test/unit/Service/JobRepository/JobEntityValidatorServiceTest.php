@@ -7,16 +7,19 @@
  *
  */
 
-namespace unit\Service\JobRepository;
+namespace ChapiTest\unit\Service\JobRepository;
 
 
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Exception\DatePeriodException;
 use Chapi\Service\JobRepository\JobEntityValidatorService;
+use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
 class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
 {
+    use JobEntityTrait;
+
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oDatePeriodFactory;
 
@@ -216,34 +219,5 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(
             $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
         );
-    }
-
-    private function getValidScheduledJobEntity()
-    {
-        $_oJobEntity = new JobEntity();
-
-        $_oJobEntity->name = 'JobA';
-        $_oJobEntity->command = 'echo test';
-        $_oJobEntity->description = 'description';
-        $_oJobEntity->owner = 'mail@address.com';
-        $_oJobEntity->ownerName = 'ownerName';
-        $_oJobEntity->schedule = 'R/2015-09-01T02:00:00Z/P1M';
-        $_oJobEntity->scheduleTimeZone = 'Europe/Berlin';
-
-        return $_oJobEntity;
-    }
-
-    private function getValidDependencyJobEntity()
-    {
-        $_oJobEntity = new JobEntity();
-
-        $_oJobEntity->name = 'JobA';
-        $_oJobEntity->command = 'echo test';
-        $_oJobEntity->description = 'description';
-        $_oJobEntity->owner = 'mail@address.com';
-        $_oJobEntity->ownerName = 'ownerName';
-        $_oJobEntity->parents = ['JobB'];
-
-        return $_oJobEntity;
     }
 }

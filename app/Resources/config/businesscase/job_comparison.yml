@@ -6,3 +6,4 @@ services:
       - "@JobRepositoryChronos"
       - "@DiffCompareInterface"
       - "@DatePeriodFactoryInterface"
+      - "@LoggerInterface"

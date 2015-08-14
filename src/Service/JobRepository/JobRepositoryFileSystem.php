@@ -97,7 +97,7 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
 
         foreach ($_aJobFiles as $_sJobFilePath)
         {
-
+            // remove comment blocks
             $_aTemp = json_decode(
                 preg_replace(
                     '~\/\*(.*?)\*\/~mis',
