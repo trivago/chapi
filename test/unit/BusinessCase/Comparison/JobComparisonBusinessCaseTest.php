@@ -30,17 +30,21 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     /** @var DatePeriodFactory */
     private $oDatePeriodFactory;
 
+    /** @var \Prophecy\Prophecy\ObjectProphecy */
+    private $oLogger;
+
     public function setUp()
     {
         $this->oJobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryServiceInterface');
         $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryServiceInterface');
         $this->oDiffCompare = $this->prophesize('Chapi\Component\Comparison\DiffCompareInterface');
-
         $this->oDatePeriodFactory = new DatePeriodFactory();
-
-
+        $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
     }
 
+    /**
+     * @requires ! PHP
+     */
     public function testGetLocalJobUpdatesSuccess()
     {
         $_JobEntityA1 = $this->getValidScheduledJobEntity();
@@ -64,19 +68,31 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $_JobEntityE1 = $this->getValidScheduledJobEntity('JobE');
         $_JobEntityE2 = $this->getValidScheduledJobEntity('JobE');
-        $_sDate1 = date('Y-m-d', strtotime('-7 day'));
-        $_sDate2 = date('Y-m-d', strtotime('-3 day'));
-        $_JobEntityE1->schedule = 'R/' . $_sDate1 . 'T10:35:00Z/PT1M';
-        $_JobEntityE2->scheduleTimeZone = 'Europe/Berlin';
+        $_sDate1 = date('Y-m-d', strtotime('-2 day'));
+        $_sDate2 = date('Y-m-d', strtotime('-1 day'));
+        $_JobEntityE1->schedule = 'R/' . $_sDate1 . 'T10:30:00Z/PT1M';
         $_JobEntityE2->schedule = 'R/' . $_sDate2 . 'T13:14:00.000+02:00/PT1M';
         $_JobEntityE2->scheduleTimeZone = '';
+
+        $_JobEntityF1 = $this->getValidScheduledJobEntity('JobF');
+        $_JobEntityF2 = $this->getValidScheduledJobEntity('JobF');
+        $_JobEntityF1->schedule = 'R0/2015-09-01T02:00:00Z/P1M';
+        $_JobEntityF2->schedule = 'R0/2015-09-01T02:00:00Z/P1D';
+
+        $_JobEntityG1 = $this->getValidScheduledJobEntity('JobG');
+        $_JobEntityG2 = $this->getValidScheduledJobEntity('JobG');
+        $_JobEntityG1->schedule = 'R/' . $_sDate1 . 'T10:30:00Z/PT10M';
+        $_JobEntityG2->schedule = 'R/' . $_sDate2 . 'T13:14:00.000+02:00/PT10M';
+        $_JobEntityG2->scheduleTimeZone = '';
 
         $_aJobCollection = [
             $_JobEntityA1,
             $_JobEntityB1,
             $_JobEntityC1,
             $_JobEntityD1,
-            $_JobEntityE1
+            $_JobEntityE1,
+            $_JobEntityF1,
+            $_JobEntityG1
         ];
 
         $this->oJobRepositoryLocal
@@ -109,17 +125,28 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn($_JobEntityE2);
 
+        $this->oJobRepositoryChronos
+            ->getJob($_JobEntityF1->name)
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_JobEntityF2);
+
+        $this->oJobRepositoryChronos
+            ->getJob($_JobEntityG1->name)
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_JobEntityG2);
+
         $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oDiffCompare->reveal(),
-            $this->oDatePeriodFactory
+            $this->oDatePeriodFactory,
+            $this->oLogger->reveal()
         );
 
         $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
 
         $this->assertEquals(
-            ['JobA', 'JobB'],
+            ['JobA', 'JobB', 'JobF', 'JobG'],
             $_aLocalJobUpdates
         );
     }

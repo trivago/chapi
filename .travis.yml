@@ -18,6 +18,6 @@ before_script:
   - git config --global user.name travis-ci
   - git config --global user.email travis@example.com
   - composer self-update
-  - composer install
+  - composer install --prefer-source
   - cd test/
 

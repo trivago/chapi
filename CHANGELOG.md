@@ -1,4 +1,9 @@
 # dev-master (v0.1.x)
+    2015-08-14 msiebeneicher <marc.siebeneicher@trivago.com>
+        * improve schedule comparison in JobComparisonBusinessCase
+        * update and fix unit tests
+        * added logger (debug) to JobComparisonBusinessCase
+    
     2015-08-13 msiebeneicher <marc.siebeneicher@trivago.com>
         * added scheduleTimeZone comparison to JobComparisonBusinessCase
         * sub one interval for date period creation in DatePeriodFactory

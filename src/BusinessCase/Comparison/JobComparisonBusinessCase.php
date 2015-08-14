@@ -13,6 +13,7 @@ use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
+use Psr\Log\LoggerInterface;
 
 class JobComparisonBusinessCase implements JobComparisonInterface
 {
@@ -36,24 +37,32 @@ class JobComparisonBusinessCase implements JobComparisonInterface
      */
     private $oDatePeriodFactory;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $oLogger;
+
 
     /**
      * @param JobRepositoryServiceInterface $oJobRepositoryLocal
      * @param JobRepositoryServiceInterface $oJobRepositoryChronos
      * @param DiffCompareInterface $oDiffCompare
      * @param DatePeriodFactoryInterface $oDatePeriodFactory
+     * @param LoggerInterface $oLogger
      */
     public function __construct(
         JobRepositoryServiceInterface $oJobRepositoryLocal,
         JobRepositoryServiceInterface $oJobRepositoryChronos,
         DiffCompareInterface $oDiffCompare,
-        DatePeriodFactoryInterface $oDatePeriodFactory
+        DatePeriodFactoryInterface $oDatePeriodFactory,
+        LoggerInterface $oLogger
     )
     {
         $this->oJobRepositoryLocal = $oJobRepositoryLocal;
         $this->oJobRepositoryChronos = $oJobRepositoryChronos;
         $this->oDiffCompare = $oDiffCompare;
         $this->oDatePeriodFactory = $oDatePeriodFactory;
+        $this->oLogger = $oLogger;
     }
 
     /**
@@ -192,32 +201,63 @@ class JobComparisonBusinessCase implements JobComparisonInterface
         switch ($sProperty)
         {
             case 'schedule':
-
-                $_aDatesA = [];
-                if (!empty($mValueA))
+                // if values are exact the same
+                if ($mValueA === $mValueB)
                 {
+                    $this->oLogger->debug(sprintf('%s::EXCACT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+                    return true;
+                }
+
+                // if one value is empty and not both, compare the time periods
+                if (!empty($mValueA) && !empty($mValueB))
+                {
+                    // if the clean interval is different return directly false (P1D != P1M)
+                    if (!$this->isEqualInterval($mValueA, $mValueB))
+                    {
+                        $this->oLogger->debug(sprintf('%s::DIFFERENT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+                        return false;
+                    }
+
+                    // start to check by DatePeriods
+                    $_aDatesA = [];
+                    $_aDatesB = [];
+
+                    /** @var \DatePeriod $_oPeriodB */
                     $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
 
                     /** @var \DateTime $_oDateTime */
                     foreach($_oPeriodA as $_oDateTime){
-                        $_aDatesA[] = $_oDateTime->format("Y-m-dH:i");
+                        $_aDatesA[] = $_oDateTime;
                     }
-                }
 
-                $_aDatesB = [];
-
-                if (!empty($mValueB))
-                {
+                    /** @var \DatePeriod $_oPeriodB */
                     $_oPeriodB = $this->oDatePeriodFactory->createDatePeriod($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
 
                     /** @var \DateTime $_oDateTime */
                     foreach($_oPeriodB as $_oDateTime){
-                        $_aDatesB[] = $_oDateTime->format("Y-m-dH:i");
+                        $_aDatesB[] = $_oDateTime;
+                    }
+
+                    /** @var \DateTime $_oLastDateTimeA */
+                    $_oLastDateTimeA = end($_aDatesA);
+                    /** @var \DateTime $_oLastDateTimeB */
+                    $_oLastDateTimeB = end($_aDatesB);
+
+                    // $_oLastDateTimeA !== false happen if no dates are in the period
+                    if ($_oLastDateTimeA !== false && $_oLastDateTimeB !== false)
+                    {
+                        $_oDiffInterval = $_oLastDateTimeA->diff($_oLastDateTimeB);
+                        $_iDiffInterval = (int) $_oDiffInterval->format('%Y%M%D%H%I');
+
+                        $this->oLogger->debug(sprintf('%s::INTERVAL DIFF OF "%d" FOR "%s"', 'ScheduleComparison', $_iDiffInterval, $oJobEntityA->name));
+
+                        return ($_iDiffInterval == 0);
                     }
                 }
 
-                return (end($_aDatesA) == end($_aDatesB));
-                break;
+                     $this->oLogger->warning(sprintf('%s::CAN\'T COMPARE INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+                return false;
+            break;
 
             case 'scheduleTimeZone':
                 if ($mValueA == $mValueB)
@@ -277,5 +317,13 @@ class JobComparisonBusinessCase implements JobComparisonInterface
         }
 
         return $_oDateTime;
+    }
+
+    private function isEqualInterval($sIso8601StringA, $sIso8601StringB)
+    {
+        $aMatchA = $this->oDatePeriodFactory->parseIso8601String($sIso8601StringA);
+        $aMatchB = $this->oDatePeriodFactory->parseIso8601String($sIso8601StringB);
+
+        return ($aMatchA[3] == $aMatchB[3]);
     }
 }
