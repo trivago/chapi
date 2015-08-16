@@ -1,4 +1,6 @@
-# dev-master (v0.1.x)
+# dev-master (v0.3.x)
+
+# v0.2.0
     2015-08-14 msiebeneicher <marc.siebeneicher@trivago.com>
         * improve schedule comparison in JobComparisonBusinessCase
         * update and fix unit tests
