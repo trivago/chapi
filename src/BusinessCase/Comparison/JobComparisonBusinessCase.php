@@ -162,11 +162,11 @@ class JobComparisonBusinessCase implements JobComparisonInterface
         $_aNonidenticalProperties = [];
 
         $_aDiff = array_merge(
-            array_diff(
+            array_diff_assoc(
                 $oJobEntityA->getSimpleArrayCopy(),
                 $oJobEntityB->getSimpleArrayCopy()
             ),
-            array_diff(
+            array_diff_assoc(
                 $oJobEntityB->getSimpleArrayCopy(),
                 $oJobEntityA->getSimpleArrayCopy()
             )
@@ -257,7 +257,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
 
                      $this->oLogger->warning(sprintf('%s::CAN\'T COMPARE INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
                 return false;
-            break;
+                break;
 
             case 'scheduleTimeZone':
                 if ($mValueA == $mValueB)
