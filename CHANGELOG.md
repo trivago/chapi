@@ -1,5 +1,5 @@
 # dev-master (v0.3.x)
-    2015-08-14 msiebeneicher <marc.siebeneicher@trivago.com>
+    2015-08-19 msiebeneicher <marc.siebeneicher@trivago.com>
         * fix issue to compare boolean values
 
 # v0.2.0
