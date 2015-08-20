@@ -150,4 +150,40 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $_aLocalJobUpdates
         );
     }
+
+    public function testGetLocalUpdatesForBooleanDifference()
+    {
+        $_JobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $_JobEntityA2 = $this->getValidScheduledJobEntity('JobA');
+        $_JobEntityA2->disabled = true;
+
+        $_aJobCollection = [
+            $_JobEntityA1
+        ];
+
+        $this->oJobRepositoryLocal
+            ->getJobs()
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_aJobCollection);
+
+        $this->oJobRepositoryChronos
+            ->getJob($_JobEntityA1->name)
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_JobEntityA2);
+
+        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oDiffCompare->reveal(),
+            $this->oDatePeriodFactory,
+            $this->oLogger->reveal()
+        );
+
+        $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
+
+        $this->assertEquals(
+            ['JobA'],
+            $_aLocalJobUpdates
+        );
+    }
 }
