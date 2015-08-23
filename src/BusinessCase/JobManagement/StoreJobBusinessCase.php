@@ -13,6 +13,7 @@ use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
+use Psr\Log\LoggerInterface;
 
 class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
 {
@@ -37,6 +38,11 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
     private $oJobComparisonBusinessCase;
 
     /**
+     * @var LoggerInterface
+     */
+    private $oLogger;
+
+    /**
      * @param JobIndexServiceInterface $oJobIndexService
      * @param JobRepositoryServiceInterface $oJobRepositoryChronos
      * @param JobRepositoryServiceInterface $oJobRepositoryLocal
@@ -46,13 +52,15 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
         JobIndexServiceInterface $oJobIndexService,
         JobRepositoryServiceInterface $oJobRepositoryChronos,
         JobRepositoryServiceInterface $oJobRepositoryLocal,
-        JobComparisonInterface  $oJobComparisonBusinessCase
+        JobComparisonInterface  $oJobComparisonBusinessCase,
+        LoggerInterface $oLogger
     )
     {
         $this->oJobIndexService = $oJobIndexService;
         $this->oJobRepositoryChronos = $oJobRepositoryChronos;
         $this->oJobRepositoryLocal = $oJobRepositoryLocal;
         $this->oJobComparisonBusinessCase = $oJobComparisonBusinessCase;
+        $this->oLogger = $oLogger;
     }
 
     /**
@@ -71,7 +79,17 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
                 if ($this->oJobRepositoryChronos->addJob($_oJobEntity))
                 {
                     $this->oJobIndexService->removeJob($_sJobName);
-                    //todo: log "added $_sJobName successfully in chronos\n";
+                    $this->oLogger->notice(sprintf(
+                        'Job "%s" successfully added to chronos',
+                        $_sJobName
+                    ));
+                }
+                else
+                {
+                    $this->oLogger->error(sprintf(
+                        'Failed to add job "%s" to chronos',
+                        $_sJobName
+                    ));
                 }
             }
         }
@@ -85,7 +103,17 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
                 if ($this->oJobRepositoryChronos->removeJob($_sJobName))
                 {
                     $this->oJobIndexService->removeJob($_sJobName);
-                    //todo: log "removed $_sJobName successfully in chronos\n";
+                    $this->oLogger->notice(sprintf(
+                        'Job "%s" successfully removed from chronos',
+                        $_sJobName
+                    ));
+                }
+                else
+                {
+                    $this->oLogger->error(sprintf(
+                        'Failed to remove job "%s" from chronos',
+                        $_sJobName
+                    ));
                 }
             }
         }
@@ -100,7 +128,17 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
                 if ($this->oJobRepositoryChronos->updateJob($_oJobEntity))
                 {
                     $this->oJobIndexService->removeJob($_sJobName);
-                    //todo: log "updated $_sJobName successfully in chronos\n";
+                    $this->oLogger->notice(sprintf(
+                        'Job "%s" successfully updated in chronos',
+                        $_sJobName
+                    ));
+                }
+                else
+                {
+                    $this->oLogger->error(sprintf(
+                        'Failed to update job "%s" in chronos',
+                        $_sJobName
+                    ));
                 }
             }
         }
@@ -132,7 +170,21 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
             // new job
             if (empty($_oJobEntityLocal->name))
             {
-                $this->oJobRepositoryLocal->addJob($_oJobEntity);
+                if ($this->oJobRepositoryLocal->addJob($_oJobEntity))
+                {
+                    $this->oLogger->notice(sprintf(
+                        'Job "%s" successfully stored in local repository',
+                        $_oJobEntity->name
+                    ));
+                }
+                else
+                {
+                    $this->oLogger->error(sprintf(
+                        'Failed to store job "%s" in local repository',
+                        $_oJobEntity->name
+                    ));
+                }
+
                 continue;
             }
 
@@ -150,7 +202,20 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
                     );
                 }
 
-                $this->oJobRepositoryLocal->updateJob($_oJobEntity);
+                if ($this->oJobRepositoryLocal->updateJob($_oJobEntity))
+                {
+                    $this->oLogger->notice(sprintf(
+                        'Job "%s" successfully updated in local repository',
+                        $_oJobEntity->name
+                    ));
+                }
+                else
+                {
+                    $this->oLogger->error(sprintf(
+                        'Failed to update job "%s" in local repository',
+                        $_oJobEntity->name
+                    ));
+                }
 
                 // remove job from index in case off added in the past
                 $this->oJobIndexService->removeJob($_oJobEntity->name);
