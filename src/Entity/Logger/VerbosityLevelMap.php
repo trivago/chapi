@@ -15,6 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class VerbosityLevelMap
 {
+    /**
+     * @var array
+     */
     public static $verbosityLevelMap = array(
         OutputInterface::VERBOSITY_NORMAL => Logger::NOTICE,
         OutputInterface::VERBOSITY_VERBOSE => Logger::INFO,
@@ -22,6 +25,9 @@ class VerbosityLevelMap
         OutputInterface::VERBOSITY_DEBUG => Logger::DEBUG,
     );
 
+    /**
+     * @return array
+     */
     public static function getVerbosityLevelMap()
     {
         return self::$verbosityLevelMap;
