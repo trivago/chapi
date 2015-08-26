@@ -1,4 +1,11 @@
 # dev-master (v0.3.x)
+    2015-08-26 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#18] added unit tests for StoreJobBusinessCase
+        
+    2015-08-23 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#18] added logger to StoreJobBusinessCase
+        * [issue#18] update verbosity map
+    
     2015-08-19 msiebeneicher <marc.siebeneicher@trivago.com>
         * fix issue to compare boolean values
 

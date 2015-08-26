@@ -10,6 +10,7 @@ services:
 
   ConsoleHandler:
     class: Symfony\Bridge\Monolog\Handler\ConsoleHandler
+    arguments: [null, true, "@VerbosityLevelMap"]
     calls:
       - [setFormatter, ["@ConsoleFormater"]]
       - [setOutput, ["@ConsoleOutput"]]
@@ -20,3 +21,6 @@ services:
 
   ConsoleOutput:
     class: Symfony\Component\Console\Output\ConsoleOutput
+
+  VerbosityLevelMap:
+    factory: [Chapi\Entity\Logger\VerbosityLevelMap, getVerbosityLevelMap]
