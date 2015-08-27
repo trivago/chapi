@@ -1,4 +1,7 @@
 # dev-master (v0.3.x)
+    2015-08-27 msiebeneicher <marc.siebeneicher@trivago.com>
+        * added scrutinizer 
+   
     2015-08-26 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#18] added unit tests for StoreJobBusinessCase
         
