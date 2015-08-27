@@ -19,7 +19,6 @@ before_script:
   - git config --global user.email travis@example.com
   - composer self-update
   - composer install --prefer-source
-#  - cd test/
 
 script: ./bin/phpunit --coverage-clover=coverage.clover -c test/phpunit.xml test/
 
