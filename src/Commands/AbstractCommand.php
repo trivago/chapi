@@ -148,17 +148,12 @@ abstract class AbstractCommand extends Command
 
         if (!file_exists($home . '/.htaccess'))
         {
-            if (!is_dir($home))
+            if ($this->createDirectoryIfNotExists($home))
             {
-                if (!mkdir($home, 0755, true))
+                if (false === file_put_contents($home . '/.htaccess', 'Deny from all'))
                 {
-                    throw new \RuntimeException(sprintf('Unable to create home directory "%s"', $home));
+                    throw new \RuntimeException(sprintf('Unable to create htaccess file in home directory "%s"', $home));
                 }
-            }
-
-            if (false === file_put_contents( $home . '/.htaccess', 'Deny from all'))
-            {
-                throw new \RuntimeException(sprintf('Unable to create htaccess file in home directory "%s"', $home));
             }
         }
 
@@ -171,14 +166,25 @@ abstract class AbstractCommand extends Command
     protected function getCacheDir()
     {
         $_sCacheDir = $this->getHomeDir() . '/cache';
-        if (!is_dir($_sCacheDir))
+        $this->createDirectoryIfNotExists($_sCacheDir);
+
+        return $_sCacheDir;
+    }
+
+    /**
+     * @param string $sDir
+     * @return bool
+     */
+    private function createDirectoryIfNotExists($sDir)
+    {
+        if (!is_dir($sDir))
         {
-            if (!mkdir($_sCacheDir, 0755, true))
+            if (!mkdir($sDir, 0755, true))
             {
-                throw new \RuntimeException(sprintf('Unable to create cache directory "%s"', $_sCacheDir));
+                throw new \RuntimeException(sprintf('Unable to create cache directory "%s"', $sDir));
             }
         }
 
-        return $_sCacheDir;
+        return true;
     }
 }
