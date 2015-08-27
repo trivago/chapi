@@ -11,6 +11,7 @@ namespace Chapi\BusinessCase\Comparison;
 
 use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
+use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
 use Psr\Log\LoggerInterface;
@@ -70,16 +71,10 @@ class JobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getLocalMissingJobs()
     {
-        $_aJobsLocal = $this->oJobRepositoryLocal->getJobs()->getArrayCopy();
-        $_aJobsChronos = $this->oJobRepositoryChronos->getJobs()->getArrayCopy();
-
-        // missing jobs
-        $_aMissingJobs = array_diff(
-            array_keys($_aJobsChronos),
-            array_keys($_aJobsLocal)
+        return $this->getMissingJobsInCollectionA(
+            $this->oJobRepositoryLocal->getJobs(),
+            $this->oJobRepositoryChronos->getJobs()
         );
-
-        return $_aMissingJobs;
     }
 
     /**
@@ -87,15 +82,10 @@ class JobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getChronosMissingJobs()
     {
-        $_aJobsLocal = $this->oJobRepositoryLocal->getJobs()->getArrayCopy();
-        $_aJobsChronos = $this->oJobRepositoryChronos->getJobs()->getArrayCopy();
-
-        $_aJobs = array_diff(
-            array_keys($_aJobsLocal),
-            array_keys($_aJobsChronos)
+        return $this->getMissingJobsInCollectionA(
+            $this->oJobRepositoryChronos->getJobs(),
+            $this->oJobRepositoryLocal->getJobs()
         );
-
-        return $_aJobs;
     }
 
     /**
@@ -255,9 +245,8 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                     }
                 }
 
-                     $this->oLogger->warning(sprintf('%s::CAN\'T COMPARE INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+                $this->oLogger->warning(sprintf('%s::CAN\'T COMPARE INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
                 return false;
-                break;
 
             case 'scheduleTimeZone':
                 if ($mValueA == $mValueB)
@@ -281,7 +270,6 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                     && count(array_diff($mValueA, $mValueB)) == 0
                     && count(array_diff($mValueB, $mValueA)) == 0
                 );
-                break;
 
             case 'successCount':
             case 'lastSuccess':
@@ -289,11 +277,9 @@ class JobComparisonBusinessCase implements JobComparisonInterface
             case 'errorsSinceLastSuccess':
             case 'lastError':
                 return true;
-                break;
 
             default:
                 return ($mValueA == $mValueB);
-                break;
         }
     }
 
@@ -319,11 +305,29 @@ class JobComparisonBusinessCase implements JobComparisonInterface
         return $_oDateTime;
     }
 
+    /**
+     * @param string $sIso8601StringA
+     * @param string $sIso8601StringB
+     * @return bool
+     */
     private function isEqualInterval($sIso8601StringA, $sIso8601StringB)
     {
         $aMatchA = $this->oDatePeriodFactory->parseIso8601String($sIso8601StringA);
         $aMatchB = $this->oDatePeriodFactory->parseIso8601String($sIso8601StringB);
 
         return ($aMatchA[3] == $aMatchB[3]);
+    }
+
+    /**
+     * @param JobCollection $oJobCollectionA
+     * @param JobCollection $oJobCollectionB
+     * @return array
+     */
+    private function getMissingJobsInCollectionA(JobCollection $oJobCollectionA, JobCollection $oJobCollectionB)
+    {
+        return array_diff(
+            array_keys($oJobCollectionB->getArrayCopy()),
+            array_keys($oJobCollectionA->getArrayCopy())
+        );
     }
 }
