@@ -29,7 +29,7 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     *
+     * @return int
      */
     protected function process()
     {
@@ -61,5 +61,7 @@ class ListCommand extends AbstractCommand
                 }
             }
         }
+
+        return 0;
     }
 }

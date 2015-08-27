@@ -27,7 +27,7 @@ class InfoCommand extends AbstractCommand
     }
 
     /**
-     *
+     * @return int
      */
     protected function process()
     {
@@ -61,5 +61,7 @@ class InfoCommand extends AbstractCommand
         }
 
         $_oTable->render();
+
+        return 0;
     }
 }

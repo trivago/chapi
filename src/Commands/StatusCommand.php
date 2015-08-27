@@ -40,7 +40,7 @@ class StatusCommand extends AbstractCommand
     }
 
     /**
-     *
+     * @return int
      */
     protected function process()
     {
@@ -66,6 +66,8 @@ class StatusCommand extends AbstractCommand
         $this->oOutput->writeln("");
 
         $this->printStatusView(false, $_aNewJobs, $_aMissingJobs, $_aLocalJobUpdates);
+
+        return 0;
     }
 
     /**

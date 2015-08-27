@@ -14,8 +14,6 @@ namespace Chapi\Commands;
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class AddCommand extends AbstractCommand
 {
@@ -31,21 +29,7 @@ class AddCommand extends AbstractCommand
     }
 
     /**
-     * Executes the current command.
-     *
-     * This method is not abstract because you can use this class
-     * as a concrete class. In this case, instead of defining the
-     * execute() method, you set the code to execute by passing
-     * a Closure to the setCode() method.
-     *
-     * @param InputInterface $input An InputInterface instance
-     * @param OutputInterface $output An OutputInterface instance
-     *
-     * @return null|int null or 0 if everything went fine, or an error code
-     *
-     * @throws \LogicException When this abstract method is not implemented
-     *
-     * @see setCode()
+     * @return int
      */
     protected function process()
     {

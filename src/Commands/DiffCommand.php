@@ -26,7 +26,7 @@ class DiffCommand extends AbstractCommand
     }
 
     /**
-     *
+     * @return int
      */
     protected function process()
     {
@@ -49,6 +49,8 @@ class DiffCommand extends AbstractCommand
                 }
             }
         }
+
+        return 0;
     }
 
     /**
