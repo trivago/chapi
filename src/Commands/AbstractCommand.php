@@ -50,8 +50,8 @@ abstract class AbstractCommand extends Command
     * execute() method, you set the code to execute by passing
     * a Closure to the setCode() method.
     *
-    * @param InputInterface $input An InputInterface instance
-    * @param OutputInterface $output An OutputInterface instance
+    * @param InputInterface $oInput An InputInterface instance
+    * @param OutputInterface $oOutput An OutputInterface instance
     *
     * @return null|int null or 0 if everything went fine, or an error code
     *
@@ -64,8 +64,9 @@ abstract class AbstractCommand extends Command
         $this->oInput = $oInput;
         $this->oOutput = $oOutput;
 
-        if (!$this->isAppRunable()) {
-            exit(1);
+        if (!$this->isAppRunable())
+        {
+            return 1;
         }
 
         // set output for verbosity handling
@@ -145,11 +146,20 @@ abstract class AbstractCommand extends Command
             }
         }
 
-        if (!file_exists($home . '/.htaccess')) {
-            if (!is_dir($home)) {
-                @mkdir($home, 0755, true);
+        if (!file_exists($home . '/.htaccess'))
+        {
+            if (!is_dir($home))
+            {
+                if (!mkdir($home, 0755, true))
+                {
+                    throw new \RuntimeException(sprintf('Unable to create home directory "%s"', $home));
+                }
             }
-            @file_put_contents( $home . '/.htaccess', 'Deny from all');
+
+            if (false === file_put_contents( $home . '/.htaccess', 'Deny from all'))
+            {
+                throw new \RuntimeException(sprintf('Unable to create htaccess file in home directory "%s"', $home));
+            }
         }
 
         return self::$sHomeDir = $home;
@@ -161,8 +171,12 @@ abstract class AbstractCommand extends Command
     protected function getCacheDir()
     {
         $_sCacheDir = $this->getHomeDir() . '/cache';
-        if (!is_dir($_sCacheDir)) {
-            @mkdir($_sCacheDir, 0755, true);
+        if (!is_dir($_sCacheDir))
+        {
+            if (!mkdir($_sCacheDir, 0755, true))
+            {
+                throw new \RuntimeException(sprintf('Unable to create cache directory "%s"', $_sCacheDir));
+            }
         }
 
         return $_sCacheDir;
