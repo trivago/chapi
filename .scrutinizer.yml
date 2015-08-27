@@ -1,0 +1,22 @@
+filter:
+    excluded_paths:
+        - 'app/*'
+        - 'bin/*'
+        - 'test/*'
+checks:
+    php: true
+
+coding_style:
+    php: {  }
+
+tools:
+    php_cs_fixer: true
+    php_code_sniffer:
+        config:
+            standard: PSR2
+    php_mess_detector: true
+    php_analyzer: true
+    php_sim: true
+    sensiolabs_security_checker: true
+    external_code_coverage:
+        timeout: 600
