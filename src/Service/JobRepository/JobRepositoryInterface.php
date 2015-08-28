@@ -13,7 +13,7 @@ namespace Chapi\Service\JobRepository;
 
 use Chapi\Entity\Chronos\JobEntity;
 
-interface JobRepositoryServiceInterface
+interface JobRepositoryInterface
 {
     const DIC_NAME_CHRONOS = 'JobRepositoryChronos';
     const DIC_NAME_FILESYSTEM = 'JobRepositoryFileSystem';

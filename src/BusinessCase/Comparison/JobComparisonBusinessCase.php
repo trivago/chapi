@@ -13,18 +13,18 @@ use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
+use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 class JobComparisonBusinessCase implements JobComparisonInterface
 {
     /**
-     * @var JobRepositoryServiceInterface
+     * @var JobRepositoryInterface
      */
     private $oJobRepositoryLocal;
 
     /**
-     * @var JobRepositoryServiceInterface
+     * @var JobRepositoryInterface
      */
     private $oJobRepositoryChronos;
 
@@ -45,15 +45,15 @@ class JobComparisonBusinessCase implements JobComparisonInterface
 
 
     /**
-     * @param JobRepositoryServiceInterface $oJobRepositoryLocal
-     * @param JobRepositoryServiceInterface $oJobRepositoryChronos
+     * @param JobRepositoryInterface $oJobRepositoryLocal
+     * @param JobRepositoryInterface $oJobRepositoryChronos
      * @param DiffCompareInterface $oDiffCompare
      * @param DatePeriodFactoryInterface $oDatePeriodFactory
      * @param LoggerInterface $oLogger
      */
     public function __construct(
-        JobRepositoryServiceInterface $oJobRepositoryLocal,
-        JobRepositoryServiceInterface $oJobRepositoryChronos,
+        JobRepositoryInterface $oJobRepositoryLocal,
+        JobRepositoryInterface $oJobRepositoryChronos,
         DiffCompareInterface $oDiffCompare,
         DatePeriodFactoryInterface $oDatePeriodFactory,
         LoggerInterface $oLogger

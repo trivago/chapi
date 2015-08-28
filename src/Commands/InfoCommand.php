@@ -9,7 +9,7 @@
 
 namespace Chapi\Commands;
 
-use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
+use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -31,8 +31,8 @@ class InfoCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var JobRepositoryServiceInterface  $_oJobRepositoryChronos */
-        $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryServiceInterface::DIC_NAME_CHRONOS);
+        /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
+        $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
 
         $_sJobName = $this->oInput->getArgument('jobName');
         $_oJobEntity = $_oJobRepositoryChronos->getJob($_sJobName);

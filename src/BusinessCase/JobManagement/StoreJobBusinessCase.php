@@ -12,7 +12,7 @@ namespace Chapi\BusinessCase\JobManagement;
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
-use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
+use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
@@ -23,12 +23,12 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
     private $oJobIndexService;
 
     /**
-     * @var JobRepositoryServiceInterface
+     * @var JobRepositoryInterface
      */
     private $oJobRepositoryChronos;
 
     /**
-     * @var JobRepositoryServiceInterface
+     * @var JobRepositoryInterface
      */
     private $oJobRepositoryLocal;
 
@@ -44,14 +44,14 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
 
     /**
      * @param JobIndexServiceInterface $oJobIndexService
-     * @param JobRepositoryServiceInterface $oJobRepositoryChronos
-     * @param JobRepositoryServiceInterface $oJobRepositoryLocal
+     * @param JobRepositoryInterface $oJobRepositoryChronos
+     * @param JobRepositoryInterface $oJobRepositoryLocal
      * @param JobComparisonInterface $oJobComparisonBusinessCase
      */
     public function __construct(
         JobIndexServiceInterface $oJobIndexService,
-        JobRepositoryServiceInterface $oJobRepositoryChronos,
-        JobRepositoryServiceInterface $oJobRepositoryLocal,
+        JobRepositoryInterface $oJobRepositoryChronos,
+        JobRepositoryInterface $oJobRepositoryLocal,
         JobComparisonInterface  $oJobComparisonBusinessCase,
         LoggerInterface $oLogger
     )

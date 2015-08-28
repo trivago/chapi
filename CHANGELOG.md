@@ -1,4 +1,7 @@
 # dev-master (v0.3.x)
+    2015-08-28 msiebeneicher <marc.siebeneicher@trivago.com>
+        * renamed JobRepositoryServiceInterface to JobRepositoryInterface
+    
     2015-08-27 msiebeneicher <marc.siebeneicher@trivago.com>
         * added scrutinizer 
    

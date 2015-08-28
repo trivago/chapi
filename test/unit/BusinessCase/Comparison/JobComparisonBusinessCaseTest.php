@@ -35,8 +35,8 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->oJobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryServiceInterface');
-        $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryServiceInterface');
+        $this->oJobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oDiffCompare = $this->prophesize('Chapi\Component\Comparison\DiffCompareInterface');
         $this->oDatePeriodFactory = new DatePeriodFactory();
         $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
