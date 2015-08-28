@@ -12,11 +12,14 @@ namespace unit\Service\JobRepository;
 
 
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Service\JobRepository\JobRepositoryChronos;
+use Chapi\Service\JobRepository\BridgeChronos;
+use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
+class BridgeChronosTest extends \PHPUnit_Framework_TestCase
 {
+    use JobEntityTrait;
+
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oApiClient;
 
@@ -45,68 +48,18 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
 
         $this->oCache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
         $this->oCache
-            ->get(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->get(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->willReturn(null)
         ;
 
         $this->oCache
-            ->set(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), JobRepositoryChronos::CACHE_TIME_JOB_LIST)
+            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
             ->willReturn(true)
         ;
 
         $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobRepository\JobEntityValidatorService');
 
         $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
-    }
-
-    public function testGetJobSuccess()
-    {
-        $this->oApiClient
-            ->listingJobs()
-            ->shouldBeCalledTimes(1)
-        ;
-
-        $this->oCache
-            ->get(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
-            ->shouldBeCalledTimes(1)
-        ;
-
-        $this->oCache
-            ->set(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), JobRepositoryChronos::CACHE_TIME_JOB_LIST)
-            ->shouldBeCalledTimes(1)
-        ;
-
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
-        );
-
-        $_oJobEntity = $_oJobRepositoryChronos->getJob('job-a');
-
-        // known job
-        $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobEntity',
-            $_oJobEntity
-        );
-
-        $this->assertEquals(
-            $this->aListingJobs[0]['name'],
-            $_oJobEntity->name
-        );
-
-        // empty job
-        $_oJobEntity = $_oJobRepositoryChronos->getJob('job-z');
-
-        $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobEntity',
-            $_oJobEntity
-        );
-
-        $this->assertEmpty(
-            $_oJobEntity->name
-        );
     }
 
     public function testGetJobsSuccess()
@@ -117,31 +70,36 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oCache
-            ->get(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->get(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
         ;
 
         $this->oCache
-            ->set(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), JobRepositoryChronos::CACHE_TIME_JOB_LIST)
+            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
             ->shouldBeCalledTimes(1)
         ;
 
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
+        $_oJobRepositoryChronos = new BridgeChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
             $this->oJobEntityValidatorService->reveal(),
             $this->oLogger->reveal()
         );
 
-        $_oJobCollection = $_oJobRepositoryChronos->getJobs();
+        $_aJobs = $_oJobRepositoryChronos->getJobs();
+
+        $this->assertInternalType(
+            'array',
+            $_aJobs
+        );
 
         $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobCollection',
-            $_oJobCollection
+            'Chapi\Entity\Chronos\JobEntity',
+            $_aJobs[0]
         );
 
         $_i = 0;
-        foreach ($_oJobCollection as $_sJobName => $_oJobEntity)
+        foreach ($_aJobs as $_sJobName => $_oJobEntity)
         {
 
             $this->assertEquals(
@@ -151,14 +109,6 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
 
             ++$_i;
         }
-
-        // second call
-        $_oJobCollection = $_oJobRepositoryChronos->getJobs();
-
-        $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobCollection',
-            $_oJobCollection
-        );
     }
 
     public function testGetJobsWithCacheSuccess()
@@ -169,32 +119,37 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oCache
-            ->get(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->get(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
             ->willReturn($this->aListingJobs)
         ;
 
         $this->oCache
-            ->set(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), JobRepositoryChronos::CACHE_TIME_JOB_LIST)
+            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
             ->shouldNotBeCalled()
         ;
 
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
+        $_oJobRepositoryChronos = new BridgeChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
             $this->oJobEntityValidatorService->reveal(),
             $this->oLogger->reveal()
         );
 
-        $_oJobCollection = $_oJobRepositoryChronos->getJobs();
+        $_aJobs = $_oJobRepositoryChronos->getJobs();
+
+        $this->assertInternalType(
+            'array',
+            $_aJobs
+        );
 
         $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobCollection',
-            $_oJobCollection
+            'Chapi\Entity\Chronos\JobEntity',
+            $_aJobs[0]
         );
 
         $_i = 0;
-        foreach ($_oJobCollection as $_sJobName => $_oJobEntity)
+        foreach ($_aJobs as $_sJobName => $_oJobEntity)
         {
 
             $this->assertEquals(
@@ -221,12 +176,12 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oCache
-            ->delete(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
             ->willReturn(null)
         ;
 
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
+        $_oJobRepositoryChronos = new BridgeChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
             $this->oJobEntityValidatorService->reveal(),
@@ -250,11 +205,11 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oCache
-            ->delete(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldNotBeCalled()
         ;
 
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
+        $_oJobRepositoryChronos = new BridgeChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
             $this->oJobEntityValidatorService->reveal(),
@@ -279,12 +234,12 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oCache
-            ->delete(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
             ->willReturn(null)
         ;
 
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
+        $_oJobRepositoryChronos = new BridgeChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
             $this->oJobEntityValidatorService->reveal(),
@@ -308,11 +263,11 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oCache
-            ->delete(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldNotBeCalled()
         ;
 
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
+        $_oJobRepositoryChronos = new BridgeChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
             $this->oJobEntityValidatorService->reveal(),
@@ -330,21 +285,27 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
         ;
 
+        $this->oApiClient
+            ->removeJob(Argument::exact(''))
+            ->shouldBeCalledTimes(1)
+            ->willReturn(false)
+        ;
+
         $this->oCache
-            ->delete(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
             ->willReturn(null)
         ;
 
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
+        $_oJobRepositoryChronos = new BridgeChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
             $this->oJobEntityValidatorService->reveal(),
             $this->oLogger->reveal()
         );
 
-        $this->assertTrue($_oJobRepositoryChronos->removeJob('JobA'));
-        $this->assertFalse($_oJobRepositoryChronos->removeJob(null));
+        $this->assertTrue($_oJobRepositoryChronos->removeJob($this->getValidScheduledJobEntity('JobA')));
+        $this->assertFalse($_oJobRepositoryChronos->removeJob(new JobEntity()));
     }
 
     public function testRemoveJobFailure()
@@ -356,17 +317,17 @@ class JobRepositoryChronosTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oCache
-            ->delete(Argument::exact(JobRepositoryChronos::CACHE_KEY_JOB_LIST))
+            ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldNotBeCalled()
         ;
 
-        $_oJobRepositoryChronos = new JobRepositoryChronos(
+        $_oJobRepositoryChronos = new BridgeChronos(
             $this->oApiClient->reveal(),
             $this->oCache->reveal(),
             $this->oJobEntityValidatorService->reveal(),
             $this->oLogger->reveal()
         );
 
-        $this->assertFalse($_oJobRepositoryChronos->removeJob('JobA'));
+        $this->assertFalse($_oJobRepositoryChronos->removeJob($this->getValidScheduledJobEntity('JobA')));
     }
 }

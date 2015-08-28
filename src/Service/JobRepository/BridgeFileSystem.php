@@ -10,11 +10,10 @@
 namespace Chapi\Service\JobRepository;
 
 use Chapi\Component\Cache\CacheInterface;
-use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\JobEntity;
 use Symfony\Component\Filesystem\Filesystem;
 
-class JobRepositoryFileSystem implements JobRepositoryServiceInterface
+class BridgeFileSystem implements BridgeInterface
 {
     /**
      * @var Filesystem
@@ -30,11 +29,6 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
      * @var string
      */
     private $sRepositoryDir = '';
-
-    /**
-     * @var JobCollection
-     */
-    private $oJobCollection;
 
     /**
      * @var array
@@ -68,30 +62,10 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
     }
 
     /**
-     * @param string $sJobName
-     * @return \Chapi\Entity\Chronos\JobEntity
-     */
-    public function getJob($sJobName)
-    {
-        $_aJobs = $this->getJobs();
-        if (isset($_aJobs[$sJobName]))
-        {
-            return $_aJobs[$sJobName];
-        }
-
-        return new JobEntity();
-    }
-
-    /**
      * @return \Chapi\Entity\Chronos\JobCollection
      */
     public function getJobs()
     {
-        if (!is_null($this->oJobCollection))
-        {
-            return $this->oJobCollection;
-        }
-
         $_aJobFiles = $this->getJobFiles();
         $_aJobs = [];
 
@@ -107,13 +81,13 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
             );
 
             $_oJobEntity = new JobEntity($_aTemp);
-            $_aJobs[$_oJobEntity->name] = $_oJobEntity;
+            $_aJobs[] = $_oJobEntity;
 
             // set path to job file map
             $this->aJobFileMap[$_oJobEntity->name] = $_sJobFilePath;
         }
 
-        return $this->oJobCollection = new JobCollection($_aJobs);
+        return $_aJobs;
     }
 
     /**
@@ -164,25 +138,25 @@ class JobRepositoryFileSystem implements JobRepositoryServiceInterface
     }
 
     /**
-     * @param string $sJobName
+     * @param JobEntity $oJobEntity
      * @return bool
      */
-    public function removeJob($sJobName)
+    public function removeJob(JobEntity $oJobEntity)
     {
-        if (!isset($this->aJobFileMap[$sJobName]))
+        if (!isset($this->aJobFileMap[$oJobEntity->name]))
         {
-            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $sJobName));
+            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $oJobEntity->name));
         }
 
         // overwrite job file
-        $_sJobFile = $this->aJobFileMap[$sJobName];
+        $_sJobFile = $this->aJobFileMap[$oJobEntity->name];
 
         $this->oFileSystemService->remove($_sJobFile);
 
         if (!file_exists($_sJobFile))
         {
             // unset path from job file map
-            unset($this->aJobFileMap[$sJobName]);
+            unset($this->aJobFileMap[$oJobEntity->name]);
             return true;
         }
 

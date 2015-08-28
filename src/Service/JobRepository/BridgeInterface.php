@@ -3,29 +3,18 @@
  * @package: chapi
  *
  * @author:  msiebeneicher
- * @since:   2015-07-29
- *
+ * @since:   2015-08-28
  */
 
 
 namespace Chapi\Service\JobRepository;
 
-
 use Chapi\Entity\Chronos\JobEntity;
 
-interface JobRepositoryInterface
+interface BridgeInterface
 {
-    const DIC_NAME_CHRONOS = 'JobRepositoryChronos';
-    const DIC_NAME_FILESYSTEM = 'JobRepositoryFileSystem';
-
     /**
-     * @param string $sJobName
-     * @return JobEntity
-     */
-    public function getJob($sJobName);
-
-    /**
-     * @return \Chapi\Entity\Chronos\JobCollection
+     * @return JobEntity[]
      */
     public function getJobs();
 
@@ -42,8 +31,8 @@ interface JobRepositoryInterface
     public function updateJob(JobEntity $oJobEntity);
 
     /**
-     * @param string $sJobName
+     * @param JobEntity $oJobEntity
      * @return bool
      */
-    public function removeJob($sJobName);
+    public function removeJob(JobEntity $oJobEntity);
 }

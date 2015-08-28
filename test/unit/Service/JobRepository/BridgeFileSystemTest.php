@@ -10,9 +10,9 @@
 namespace unit\Service\JobRepository;
 
 
-use Chapi\Service\JobRepository\JobRepositoryFileSystem;
+use Chapi\Service\JobRepository\BridgeFileSystem;
 
-class JobRepositoryFileSystemTest extends \PHPUnit_Framework_TestCase
+class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oFileSystemService;
@@ -32,12 +32,12 @@ class JobRepositoryFileSystemTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $_oFileSystemRepository = new JobRepositoryFileSystem(
+        $_oFileSystemRepository = new BridgeFileSystem(
             $this->oFileSystemService->reveal(),
             $this->oCache->reveal(),
             $this->sRepositoryDir
         );
 
-        $this->assertInstanceOf('Chapi\Service\JobRepository\JobRepositoryServiceInterface', $_oFileSystemRepository);
+        $this->assertInstanceOf('Chapi\Service\JobRepository\BridgeFileSystem', $_oFileSystemRepository);
     }
 }
