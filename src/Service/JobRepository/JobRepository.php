@@ -29,7 +29,7 @@ class JobRepository implements JobRepositoryInterface
     /**
      * @param BridgeInterface $oRepositoryBridge
      */
-    function __construct(
+    public function __construct(
         BridgeInterface $oRepositoryBridge
     )
     {

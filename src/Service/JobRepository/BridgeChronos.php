@@ -20,6 +20,10 @@ class BridgeChronos implements BridgeInterface
 
     const CACHE_KEY_JOB_LIST = 'jobs.list';
 
+    const API_CALL_ADD = 'addingJob';
+
+    const API_CALL_UPDATE = 'updatingJob';
+
     /**
      * @var ApiClientInterface
      */
@@ -102,16 +106,7 @@ class BridgeChronos implements BridgeInterface
      */
     public function addJob(JobEntity $oJobEntity)
     {
-        if ($this->validate($oJobEntity))
-        {
-            if ($this->oApiClient->addingJob($oJobEntity))
-            {
-                $this->bCacheHasToDelete = true;
-                return true;
-            }
-        }
-
-        return false;
+        return $this->addUpdateJob(self::API_CALL_ADD, $oJobEntity);
     }
 
     /**
@@ -120,17 +115,9 @@ class BridgeChronos implements BridgeInterface
      */
     public function updateJob(JobEntity $oJobEntity)
     {
-        if ($this->validate($oJobEntity))
-        {
-            if ($this->oApiClient->updatingJob($oJobEntity))
-            {
-                $this->bCacheHasToDelete = true;
-                return true;
-            }
-        }
-
-        return false;
+        return $this->addUpdateJob(self::API_CALL_UPDATE, $oJobEntity);
     }
+
 
     /**
      * @param JobEntity $oJobEntity
@@ -196,5 +183,24 @@ class BridgeChronos implements BridgeInterface
         }
 
         return $_aResult;
+    }
+
+    /**
+     * @param string $sApiMethod
+     * @param JobEntity $oJobEntity
+     * @return bool
+     */
+    private function addUpdateJob($sApiMethod, JobEntity $oJobEntity)
+    {
+        if ($this->validate($oJobEntity))
+        {
+            if ($this->oApiClient->{$sApiMethod}($oJobEntity))
+            {
+                $this->bCacheHasToDelete = true;
+                return true;
+            }
+        }
+
+        return false;
     }
 }
