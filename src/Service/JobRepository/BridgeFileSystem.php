@@ -12,6 +12,7 @@ namespace Chapi\Service\JobRepository;
 use Chapi\Component\Cache\CacheInterface;
 use Chapi\Entity\Chronos\JobEntity;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\Glob\Glob;
 
 class BridgeFileSystem implements BridgeInterface
 {
@@ -202,7 +203,7 @@ class BridgeFileSystem implements BridgeInterface
             throw new \RuntimeException(sprintf('Path "%s" is not valid', $sPath));
         }
 
-        $_aTemp = glob(rtrim($sPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '*');
+        $_aTemp = Glob::glob(rtrim($sPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '*');
 
         foreach ($_aTemp as $_sPath)
         {
