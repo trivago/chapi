@@ -93,6 +93,13 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
 
         $_oEntity = $this->getValidScheduledJobEntity('JobX');
 
+        // first check and init
+        $_aJobs = $_oFileSystemRepository->getJobs();
+        $this->assertEquals(
+            0,
+            count($_aJobs)
+        );
+
         // add job
         $this->assertTrue($_oFileSystemRepository->addJob($_oEntity));
         $this->assertTrue(file_exists($_sTempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
@@ -124,10 +131,10 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($_oFileSystemRepository->removeJob($_oEntity));
         $this->assertFalse(file_exists($_sTempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
 
-//        $_aJobs = $_oFileSystemRepository->getJobs();
-//        $this->assertEquals(
-//            0,
-//            count($_aJobs)
-//        );
+        $_aJobs = $_oFileSystemRepository->getJobs();
+        $this->assertEquals(
+            0,
+            count($_aJobs)
+        );
     }
 }

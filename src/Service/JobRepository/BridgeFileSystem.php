@@ -1,11 +1,11 @@
 <?php
 /**
- * @package: chapi
- *
- * @author:  msiebeneicher
- * @since:   2015-07-29
- *
- */
+     * @package: chapi
+     *
+     * @author:  msiebeneicher
+     * @since:   2015-07-29
+     *
+     */
 
 namespace Chapi\Service\JobRepository;
 
@@ -32,12 +32,7 @@ class BridgeFileSystem implements BridgeInterface
     private $sRepositoryDir = '';
 
     /**
-     * @var array
-     */
-    private $aJobFiles = [];
-
-    /**
-     * @var array
+     * @var string[]
      */
     private $aDirectorySeparators = ['.', ':', '-', '\\'];
 
@@ -63,32 +58,17 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @return \Chapi\Entity\Chronos\JobCollection
+     * @return JobEntity[]
      */
     public function getJobs()
     {
-        $_aJobFiles = $this->getJobFiles();
-        $_aJobs = [];
-
-        foreach ($_aJobFiles as $_sJobFilePath)
+        if (empty($this->aJobFileMap))
         {
-            // remove comment blocks
-            $_aTemp = json_decode(
-                preg_replace(
-                    '~\/\*(.*?)\*\/~mis',
-                    '',
-                    file_get_contents($_sJobFilePath)
-                )
-            );
-
-            $_oJobEntity = new JobEntity($_aTemp);
-            $_aJobs[] = $_oJobEntity;
-
-            // set path to job file map
-            $this->aJobFileMap[$_oJobEntity->name] = $_sJobFilePath;
+            $_aJobFiles = $this->getJobFilesFromFileSystem($this->sRepositoryDir);
+            return $this->loadJobsFromFileContent($_aJobFiles, true);
         }
 
-        return $_aJobs;
+        return $this->loadJobsFromFileContent($this->aJobFileMap, false);
     }
 
     /**
@@ -105,15 +85,7 @@ class BridgeFileSystem implements BridgeInterface
             json_encode($oJobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
         );
 
-        if (file_exists($_sJobFile))
-        {
-            // set path to job file map
-            $this->aJobFileMap[$oJobEntity->name] = $_sJobFile;
-
-            return true;
-        }
-
-        return false;
+        return $this->setJobFileToMap($oJobEntity->name, $_sJobFile);
     }
 
     /**
@@ -122,13 +94,7 @@ class BridgeFileSystem implements BridgeInterface
      */
     public function updateJob(JobEntity $oJobEntity)
     {
-        if (!isset($this->aJobFileMap[$oJobEntity->name]))
-        {
-            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $oJobEntity->name));
-        }
-
-        // overwrite job file
-        $_sJobFile = $this->aJobFileMap[$oJobEntity->name];
+        $_sJobFile = $this->getJobFileFromMap($oJobEntity->name);
 
         $this->oFileSystemService->dumpFile(
             $_sJobFile,
@@ -144,37 +110,10 @@ class BridgeFileSystem implements BridgeInterface
      */
     public function removeJob(JobEntity $oJobEntity)
     {
-        if (!isset($this->aJobFileMap[$oJobEntity->name]))
-        {
-            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $oJobEntity->name));
-        }
-
-        // overwrite job file
-        $_sJobFile = $this->aJobFileMap[$oJobEntity->name];
-
+        $_sJobFile = $this->getJobFileFromMap($oJobEntity->name);
         $this->oFileSystemService->remove($_sJobFile);
 
-        if (!file_exists($_sJobFile))
-        {
-            // unset path from job file map
-            unset($this->aJobFileMap[$oJobEntity->name]);
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return array
-     */
-    private function getJobFiles()
-    {
-        if (!empty($this->aJobFiles))
-        {
-            return $this->aJobFiles;
-        }
-
-        return $this->aJobFiles = $this->getJobFilesFromFileSystem($this->sRepositoryDir);
+        return $this->unsetJobFileFromMap($oJobEntity->name, $_sJobFile);
     }
 
     /**
@@ -210,13 +149,98 @@ class BridgeFileSystem implements BridgeInterface
             if (is_file($_sPath) && preg_match('~\.json~i', $_sPath))
             {
                 $aJobFiles[] = $_sPath;
-            }
-            elseif (is_dir($_sPath))
+            } elseif (is_dir($_sPath))
             {
                 $this->getJobFilesFromFileSystem($_sPath, $aJobFiles);
             }
         }
 
         return $aJobFiles;
+    }
+
+    /**
+     * @param $sJobName
+     * @param $sJobFile
+     * @return bool
+     * @throws \RuntimeException
+     */
+    private function setJobFileToMap($sJobName, $sJobFile)
+    {
+        if (!file_exists($sJobFile))
+        {
+            throw new \RuntimeException(sprintf('Job file "%s" don\'t exists for job "%s"', $sJobFile, $sJobName));
+        }
+
+        // set path to job file map
+        $this->aJobFileMap[$sJobName] = $sJobFile;
+
+        return true;
+    }
+
+    /**
+     * @param $sJobName
+     * @return mixed
+     * @throws \RuntimeException
+     */
+    private function getJobFileFromMap($sJobName)
+    {
+        if (!isset($this->aJobFileMap[$sJobName]))
+        {
+            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $sJobName));
+        }
+
+        return $this->aJobFileMap[$sJobName];
+    }
+
+    /**
+     * @param string $sJobName
+     * @param string $sJobFile
+     * @return bool
+     * @throws \RuntimeException
+     */
+    private function unsetJobFileFromMap($sJobName, $sJobFile = '')
+    {
+        $_sJobFile = (!empty($sJobFile)) ? $sJobFile : $this->getJobFileFromMap($sJobName);
+        if (file_exists($_sJobFile))
+        {
+            throw new \RuntimeException(sprintf('Job file "%s" for job "%s" still exists.', $_sJobFile, $sJobName));
+        }
+
+        // unset path from job file map
+        unset($this->aJobFileMap[$sJobName]);
+        return true;
+    }
+
+    /**
+     * @param array $aJobFiles
+     * @param bool $bSetToFileMap
+     * @return JobEntity[]
+     */
+    private function loadJobsFromFileContent(array $aJobFiles, $bSetToFileMap)
+    {
+        $_aJobs = [];
+
+        foreach ($aJobFiles as $_sJobFilePath)
+        {
+            // remove comment blocks
+            $_aTemp = json_decode(
+                preg_replace(
+                    '~\/\*(.*?)\*\/~mis',
+                    '',
+                    file_get_contents($_sJobFilePath)
+                )
+            );
+
+            $_oJobEntity = new JobEntity($_aTemp);
+            $_aJobs[] = $_oJobEntity;
+
+            if ($bSetToFileMap)
+            {
+                // set path to job file map
+                $this->setJobFileToMap($_oJobEntity->name, $_sJobFilePath);
+            }
+        }
+
+        return $_aJobs;
     }
 }
