@@ -19,7 +19,7 @@ interface ApiClientInterface
 
     /**
      * @link: https://mesos.github.io/chronos/docs/api.html#listing-jobs
-     * @return []
+     * @return array
      */
     public function listingJobs();
 

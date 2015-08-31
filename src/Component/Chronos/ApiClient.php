@@ -33,6 +33,7 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
+     * @inheritdoc
      * @link: https://mesos.github.io/chronos/docs/api.html#listing-jobs
      */
     public function listingJobs()
