@@ -67,7 +67,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getLocalMissingJobs()
     {
@@ -78,7 +78,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getChronosMissingJobs()
     {
@@ -89,7 +89,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getLocalJobUpdates()
     {
@@ -117,7 +117,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
 
     /**
      * @param $sJobName
-     * @return array
+     * @return string[]
      */
     public function getJobDiff($sJobName)
     {
@@ -321,7 +321,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     /**
      * @param JobCollection $oJobCollectionA
      * @param JobCollection $oJobCollectionB
-     * @return array
+     * @return string[]
      */
     private function getMissingJobsInCollectionA(JobCollection $oJobCollectionA, JobCollection $oJobCollectionB)
     {
