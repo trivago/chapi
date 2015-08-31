@@ -11,16 +11,18 @@ namespace Chapi\Service\JobRepository;
 
 use Chapi\Component\Cache\CacheInterface;
 use Chapi\Component\Chronos\ApiClientInterface;
-use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Exception\ValidationException;
 use Psr\Log\LoggerInterface;
 
-class JobRepositoryChronos implements JobRepositoryServiceInterface
+class BridgeChronos implements BridgeInterface
 {
     const CACHE_TIME_JOB_LIST = 60;
 
     const CACHE_KEY_JOB_LIST = 'jobs.list';
+
+    const API_CALL_ADD = 'addingJob';
+
+    const API_CALL_UPDATE = 'updatingJob';
 
     /**
      * @var ApiClientInterface
@@ -36,11 +38,6 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
      * @var JobEntityValidatorServiceInterface
      */
     private $oJobEntityValidatorService;
-
-    /**
-     * @var JobCollection
-     */
-    private $oJobCollection;
 
     /**
      * @var bool
@@ -84,30 +81,10 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
 
 
     /**
-     * @param string $sJobName
-     * @return JobEntity
-     */
-    public function getJob($sJobName)
-    {
-        $_aJobs = $this->getJobs();
-        if (isset($_aJobs[$sJobName]))
-        {
-            return $_aJobs[$sJobName];
-        }
-
-        return new JobEntity();
-    }
-
-    /**
-     * @return JobCollection
+     * @return JobEntity[]
      */
     public function getJobs()
     {
-        if (!is_null($this->oJobCollection))
-        {
-            return $this->oJobCollection;
-        }
-
         $_aReturn = [];
         $_aJobList = $this->getJobList();
 
@@ -116,63 +93,42 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
             // prepare return value
             foreach ($_aJobList as $_aJobData)
             {
-                $_sJobName = $_aJobData['name'];
-                $_aReturn[$_sJobName] = new JobEntity($_aJobData);
+                $_aReturn[] = new JobEntity($_aJobData);
             }
         }
 
-        return $this->oJobCollection = new JobCollection($_aReturn);
+        return $_aReturn;
     }
 
     /**
      * @param JobEntity $oJobEntity
-     * @return mixed
+     * @return bool
      */
     public function addJob(JobEntity $oJobEntity)
     {
-        if ($this->validate($oJobEntity))
-        {
-            if ($this->oApiClient->addingJob($oJobEntity))
-            {
-                $this->bCacheHasToDelete = true;
-                return true;
-            }
-        }
-
-        return false;
+        return $this->addUpdateJob(self::API_CALL_ADD, $oJobEntity);
     }
 
     /**
      * @param JobEntity $oJobEntity
-     * @return mixed
+     * @return bool
      */
     public function updateJob(JobEntity $oJobEntity)
     {
-        if ($this->validate($oJobEntity))
-        {
-            if ($this->oApiClient->updatingJob($oJobEntity))
-            {
-                $this->bCacheHasToDelete = true;
-                return true;
-            }
-        }
-
-        return false;
+        return $this->addUpdateJob(self::API_CALL_UPDATE, $oJobEntity);
     }
 
+
     /**
-     * @param string $sJobName
-     * @return mixed
+     * @param JobEntity $oJobEntity
+     * @return bool
      */
-    public function removeJob($sJobName)
+    public function removeJob(JobEntity $oJobEntity)
     {
-        if (!empty($sJobName))
+        if ($this->oApiClient->removeJob($oJobEntity->name))
         {
-            if ($this->oApiClient->removeJob($sJobName))
-            {
-                $this->bCacheHasToDelete = true;
-                return true;
-            }
+            $this->bCacheHasToDelete = true;
+            return true;
         }
 
         return false;
@@ -227,5 +183,24 @@ class JobRepositoryChronos implements JobRepositoryServiceInterface
         }
 
         return $_aResult;
+    }
+
+    /**
+     * @param string $sApiMethod
+     * @param JobEntity $oJobEntity
+     * @return bool
+     */
+    private function addUpdateJob($sApiMethod, JobEntity $oJobEntity)
+    {
+        if ($this->validate($oJobEntity))
+        {
+            if ($this->oApiClient->{$sApiMethod}($oJobEntity))
+            {
+                $this->bCacheHasToDelete = true;
+                return true;
+            }
+        }
+
+        return false;
     }
 }

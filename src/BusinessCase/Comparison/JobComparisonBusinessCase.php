@@ -13,18 +13,18 @@ use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Service\JobRepository\JobRepositoryServiceInterface;
+use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 class JobComparisonBusinessCase implements JobComparisonInterface
 {
     /**
-     * @var JobRepositoryServiceInterface
+     * @var JobRepositoryInterface
      */
     private $oJobRepositoryLocal;
 
     /**
-     * @var JobRepositoryServiceInterface
+     * @var JobRepositoryInterface
      */
     private $oJobRepositoryChronos;
 
@@ -45,15 +45,15 @@ class JobComparisonBusinessCase implements JobComparisonInterface
 
 
     /**
-     * @param JobRepositoryServiceInterface $oJobRepositoryLocal
-     * @param JobRepositoryServiceInterface $oJobRepositoryChronos
+     * @param JobRepositoryInterface $oJobRepositoryLocal
+     * @param JobRepositoryInterface $oJobRepositoryChronos
      * @param DiffCompareInterface $oDiffCompare
      * @param DatePeriodFactoryInterface $oDatePeriodFactory
      * @param LoggerInterface $oLogger
      */
     public function __construct(
-        JobRepositoryServiceInterface $oJobRepositoryLocal,
-        JobRepositoryServiceInterface $oJobRepositoryChronos,
+        JobRepositoryInterface $oJobRepositoryLocal,
+        JobRepositoryInterface $oJobRepositoryChronos,
         DiffCompareInterface $oDiffCompare,
         DatePeriodFactoryInterface $oDatePeriodFactory,
         LoggerInterface $oLogger
@@ -67,7 +67,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getLocalMissingJobs()
     {
@@ -78,7 +78,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getChronosMissingJobs()
     {
@@ -89,7 +89,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getLocalJobUpdates()
     {
@@ -117,7 +117,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
 
     /**
      * @param $sJobName
-     * @return array
+     * @return string[]
      */
     public function getJobDiff($sJobName)
     {
@@ -321,7 +321,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     /**
      * @param JobCollection $oJobCollectionA
      * @param JobCollection $oJobCollectionB
-     * @return array
+     * @return string[]
      */
     private function getMissingJobsInCollectionA(JobCollection $oJobCollectionA, JobCollection $oJobCollectionB)
     {

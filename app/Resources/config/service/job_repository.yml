@@ -1,14 +1,24 @@
 services:
   JobRepositoryChronos:
-    class: Chapi\Service\JobRepository\JobRepositoryChronos
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeChronos"
+
+  JobRepositoryFileSystem:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeFileSystem"
+
+  JobRepositoryBridgeChronos:
+    class: Chapi\Service\JobRepository\BridgeChronos
     arguments:
       - "@ApiClientInterface"
       - "@CacheInterface"
       - "@JobEntityValidatorServiceInterface"
       - "@LoggerInterface"
 
-  JobRepositoryFileSystem:
-    class: Chapi\Service\JobRepository\JobRepositoryFileSystem
+  JobRepositoryBridgeFileSystem:
+    class: Chapi\Service\JobRepository\BridgeFileSystem
     arguments:
       - "@ExternalFileSystemService"
       - "@CacheInterface"

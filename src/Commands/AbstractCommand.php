@@ -148,7 +148,7 @@ abstract class AbstractCommand extends Command
 
         if (!file_exists($home . '/.htaccess'))
         {
-            if ($this->createDirectoryIfNotExists($home))
+            if ($this->hasCreateDirectoryIfNotExists($home))
             {
                 if (false === file_put_contents($home . '/.htaccess', 'Deny from all'))
                 {
@@ -166,7 +166,7 @@ abstract class AbstractCommand extends Command
     protected function getCacheDir()
     {
         $_sCacheDir = $this->getHomeDir() . '/cache';
-        $this->createDirectoryIfNotExists($_sCacheDir);
+        $this->hasCreateDirectoryIfNotExists($_sCacheDir);
 
         return $_sCacheDir;
     }
@@ -175,7 +175,7 @@ abstract class AbstractCommand extends Command
      * @param string $sDir
      * @return bool
      */
-    private function createDirectoryIfNotExists($sDir)
+    private function hasCreateDirectoryIfNotExists($sDir)
     {
         if (!is_dir($sDir))
         {

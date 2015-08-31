@@ -1,4 +1,8 @@
 # dev-master (v0.3.x)
+    2015-08-28 msiebeneicher <marc.siebeneicher@trivago.com>
+        * renamed JobRepositoryServiceInterface to JobRepositoryInterface
+        * refactored JobRepository (separation of concerns, add bridge interface, reduced complexity, updated unit tests)
+    
     2015-08-27 msiebeneicher <marc.siebeneicher@trivago.com>
         * added scrutinizer 
    

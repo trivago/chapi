@@ -55,7 +55,7 @@ class StatusCommand extends AbstractCommand
         // tracked jobs
         $this->oOutput->writeln("\nChanges to be committed");
         $this->oOutput->writeln("  (use 'chapi reset <job>...' to unstage)");
-        $this->oOutput->writeln("");
+        $this->oOutput->writeln('');
 
         $this->printStatusView(true, $_aNewJobs, $_aMissingJobs, $_aLocalJobUpdates);
 
@@ -63,7 +63,7 @@ class StatusCommand extends AbstractCommand
         $this->oOutput->writeln("\nChanges not staged for commit");
         $this->oOutput->writeln("  (use 'chapi add <job>...' to update what will be committed)");
         $this->oOutput->writeln("  (use 'chapi checkout <job>...' to discard changes in local repository)");
-        $this->oOutput->writeln("");
+        $this->oOutput->writeln('');
 
         $this->printStatusView(false, $_aNewJobs, $_aMissingJobs, $_aLocalJobUpdates);
 

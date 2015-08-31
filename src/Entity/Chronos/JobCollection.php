@@ -24,6 +24,8 @@ class JobCollection extends \ArrayObject
      */
     public function __construct(array $aJobEntities)
     {
+        $_aJobs = [];
+
         if (count($aJobEntities) > 0)
         {
             $_mCheck = current($aJobEntities);
@@ -31,7 +33,12 @@ class JobCollection extends \ArrayObject
             {
                 throw new \InvalidArgumentException('array have to contain JobEntity objects');
             }
+
+            foreach ($aJobEntities as $_oJobEntity)
+            {
+                $_aJobs[$_oJobEntity->name] = $_oJobEntity;
+            }
         }
-        parent::__construct($aJobEntities);
+        parent::__construct($_aJobs);
     }
 }

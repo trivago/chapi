@@ -13,7 +13,11 @@ http://creativecommons.org/publicdomain/zero/1.0/legalcode
 
 */
 
-// A class containing functions for computing diffs and formatting the output.
+/**
+ * Class Diff
+ * A class containing functions for computing diffs and formatting the output.
+ * @codeCoverageIgnore
+ */
 class Diff{
 
   // define the constants
