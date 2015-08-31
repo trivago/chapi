@@ -9,7 +9,7 @@
 
 namespace Chapi\Entity\Chronos;
 
-class JobEntity implements \JsonSerializable
+class JobEntity implements \JsonSerializable, \IteratorAggregate
 {
     public $name = '';
 
@@ -134,5 +134,13 @@ class JobEntity implements \JsonSerializable
         unset($_aReturn['lastError']);
 
         return $_aReturn;
+    }
+
+    /**
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this);
     }
 }
