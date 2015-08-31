@@ -73,35 +73,32 @@ class BridgeFileSystem implements BridgeInterface
 
     /**
      * @param JobEntity $oJobEntity
-     * @return mixed
+     * @return bool
      */
     public function addJob(JobEntity $oJobEntity)
     {
         // generate job file path by name
         $_sJobFile = $this->generateJobFilePath($oJobEntity);
 
-        $this->oFileSystemService->dumpFile(
-            $_sJobFile,
-            json_encode($oJobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-        );
+        if ($this->hasDumpFile($_sJobFile, $oJobEntity))
+        {
+            $this->setJobFileToMap($oJobEntity->name, $_sJobFile);
+            return true;
+        }
 
-        return $this->setJobFileToMap($oJobEntity->name, $_sJobFile);
+        return false;
     }
 
     /**
      * @param JobEntity $oJobEntity
-     * @return mixed
+     * @return bool
      */
     public function updateJob(JobEntity $oJobEntity)
     {
-        $_sJobFile = $this->getJobFileFromMap($oJobEntity->name);
-
-        $this->oFileSystemService->dumpFile(
-            $_sJobFile,
-            json_encode($oJobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        return $this->hasDumpFile(
+            $this->getJobFileFromMap($oJobEntity->name),
+            $oJobEntity
         );
-
-        return (file_exists($_sJobFile));
     }
 
     /**
@@ -159,27 +156,18 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @param $sJobName
-     * @param $sJobFile
-     * @return bool
-     * @throws \RuntimeException
+     * @param string $sJobName
+     * @param string $sJobFile
      */
     private function setJobFileToMap($sJobName, $sJobFile)
     {
-        if (!file_exists($sJobFile))
-        {
-            throw new \RuntimeException(sprintf('Job file "%s" don\'t exists for job "%s"', $sJobFile, $sJobName));
-        }
-
         // set path to job file map
         $this->aJobFileMap[$sJobName] = $sJobFile;
-
-        return true;
     }
 
     /**
-     * @param $sJobName
-     * @return mixed
+     * @param string $sJobName
+     * @return string
      * @throws \RuntimeException
      */
     private function getJobFileFromMap($sJobName)
@@ -242,5 +230,20 @@ class BridgeFileSystem implements BridgeInterface
         }
 
         return $_aJobs;
+    }
+
+    /**
+     * @param string $sJobFile
+     * @param JobEntity $oJobEntity
+     * @return true;
+     */
+    private function hasDumpFile($sJobFile, JobEntity $oJobEntity)
+    {
+        $this->oFileSystemService->dumpFile(
+            $sJobFile,
+            json_encode($oJobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
+
+        return (file_exists($sJobFile));
     }
 }
