@@ -64,7 +64,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
     }
 
     /**
-     *
+     * @inheritdoc
      */
     public function storeIndexedJobs()
     {
@@ -145,8 +145,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
     }
 
     /**
-     * @param array $aJobNames
-     * @param bool|false $bForceOverwrite
+     * @inheritdoc
      */
     public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false)
     {

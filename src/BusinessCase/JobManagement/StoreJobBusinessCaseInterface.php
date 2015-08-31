@@ -16,13 +16,14 @@ interface StoreJobBusinessCaseInterface
     const DIC_NAME = 'StoreJobBusinessCaseInterface';
 
     /**
-     *
+     * @return void
      */
     public function storeIndexedJobs();
 
     /**
      * @param array $aJobNames
      * @param bool|false $bForceOverwrite
+     * @return void
      */
     public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false);
 }
