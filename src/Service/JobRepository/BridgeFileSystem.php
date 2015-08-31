@@ -110,7 +110,7 @@ class BridgeFileSystem implements BridgeInterface
         $_sJobFile = $this->getJobFileFromMap($oJobEntity->name);
         $this->oFileSystemService->remove($_sJobFile);
 
-        return $this->unsetJobFileFromMap($oJobEntity->name, $_sJobFile);
+        return $this->hasUnsetJobFileFromMap($oJobEntity->name, $_sJobFile);
     }
 
     /**
@@ -186,7 +186,7 @@ class BridgeFileSystem implements BridgeInterface
      * @return bool
      * @throws \RuntimeException
      */
-    private function unsetJobFileFromMap($sJobName, $sJobFile = '')
+    private function hasUnsetJobFileFromMap($sJobName, $sJobFile = '')
     {
         $_sJobFile = (!empty($sJobFile)) ? $sJobFile : $this->getJobFileFromMap($sJobName);
         if (file_exists($_sJobFile))
@@ -235,7 +235,7 @@ class BridgeFileSystem implements BridgeInterface
     /**
      * @param string $sJobFile
      * @param JobEntity $oJobEntity
-     * @return true;
+     * @return bool
      */
     private function hasDumpFile($sJobFile, JobEntity $oJobEntity)
     {
