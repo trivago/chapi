@@ -33,18 +33,14 @@ class AddCommand extends AbstractCommand
     protected function process()
     {
         $_aJobNames = JobUtils::getJobNames($this->oInput, $this);
+        $_aJobsToAdd = (JobUtils::isWildcard($_aJobNames))
+            ? $this->getChangedJobs()
+            : $_aJobNames
+        ;
 
         /** @var JobIndexServiceInterface  $_oJobIndexService */
         $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
-
-        if (JobUtils::isWildcard($_aJobNames))
-        {
-            $_oJobIndexService->addJobs($this->getChangedJobs());
-        }
-        else
-        {
-            $_oJobIndexService->addJobs($_aJobNames);
-        }
+        $_oJobIndexService->addJobs($_aJobsToAdd);
 
         return 0;
     }
