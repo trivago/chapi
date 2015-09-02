@@ -32,6 +32,9 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
     /** @var  vfsStreamDirectory */
     private $oVfsRoot;
 
+    /** @var string  */
+    private $sTempTestDir = '';
+
     public function setUp()
     {
         $this->oFileSystemService = $this->prophesize('Symfony\Component\Filesystem\Filesystem');
@@ -50,6 +53,14 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->oVfsRoot = vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
+
+        // init and set up temp directory
+        $_sTempTestDir = sys_get_temp_dir();
+        $this->sTempTestDir = $_sTempTestDir . DIRECTORY_SEPARATOR . 'ChapiUnitTest';
+        if (!is_dir($this->sTempTestDir))
+        {
+            mkdir($this->sTempTestDir, 0755);
+        }
     }
 
     public function testCreateInstance()
@@ -83,12 +94,11 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
     public function testAddUpdateRemoveJobSuccess()
     {
         $_oFileSystemService = new \Symfony\Component\Filesystem\Filesystem();
-        $_sTempTestDir = sys_get_temp_dir();
 
         $_oFileSystemRepository = new BridgeFileSystem(
             $_oFileSystemService,
             $this->oCache->reveal(),
-            $_sTempTestDir
+            $this->sTempTestDir
         );
 
         $_oEntity = $this->getValidScheduledJobEntity('JobX');
@@ -97,17 +107,19 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         $_aJobs = $_oFileSystemRepository->getJobs();
         $this->assertEquals(
             0,
-            count($_aJobs)
+            count($_aJobs),
+            'Expected "0" jobs at first run'
         );
 
         // add job
         $this->assertTrue($_oFileSystemRepository->addJob($_oEntity));
-        $this->assertTrue(file_exists($_sTempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
+        $this->assertTrue(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
 
         $_aJobs = $_oFileSystemRepository->getJobs();
         $this->assertEquals(
             1,
-            count($_aJobs)
+            count($_aJobs),
+            'Expected "1" job after adding'
         );
 
         $this->assertInstanceOf('Chapi\Entity\Chronos\JobEntity', $_aJobs[0]);
@@ -121,7 +133,8 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         $_aJobs = $_oFileSystemRepository->getJobs();
         $this->assertEquals(
             1,
-            count($_aJobs)
+            count($_aJobs),
+            'Expected still "1" job after update'
         );
 
         $this->assertEquals(123, $_aJobs[0]->mem);
@@ -129,12 +142,13 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
 
         // remove job
         $this->assertTrue($_oFileSystemRepository->removeJob($_oEntity));
-        $this->assertFalse(file_exists($_sTempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
+        $this->assertFalse(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
 
         $_aJobs = $_oFileSystemRepository->getJobs();
         $this->assertEquals(
             0,
-            count($_aJobs)
+            count($_aJobs),
+            'Expected "0" jobs after deletion'
         );
     }
 }

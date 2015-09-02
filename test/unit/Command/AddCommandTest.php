@@ -96,7 +96,7 @@ class AddCommandDummy extends AddCommand
     {
         return self::$oContainerDummy;
     }
-    
+
     protected function isAppRunable()
     {
         return true;
