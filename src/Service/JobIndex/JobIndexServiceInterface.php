@@ -17,30 +17,30 @@ interface JobIndexServiceInterface
 
     /**
      * @param string $sJobName
-     * @return mixed
+     * @return JobIndexServiceInterface
      */
     public function addJob($sJobName);
 
     /**
      * @param array $aJobNames
-     * @return mixed
+     * @return JobIndexServiceInterface
      */
     public function addJobs(array $aJobNames);
 
     /**
      * @param string $sJobName
-     * @return mixed
+     * @return JobIndexServiceInterface
      */
     public function removeJob($sJobName);
 
     /**
      * @param array $aJobNames
-     * @return mixed
+     * @return JobIndexServiceInterface
      */
     public function removeJobs(array $aJobNames);
 
     /**
-     * @return mixed
+     * @return JobIndexServiceInterface
      */
     public function resetJobIndex();
 

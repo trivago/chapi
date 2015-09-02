@@ -7,13 +7,11 @@
  *
  */
 
-
 namespace Chapi\Commands;
 
-
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
+use Chapi\Component\Command\JobUtils;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
-use Symfony\Component\Console\Input\InputArgument;
 
 class AddCommand extends AbstractCommand
 {
@@ -24,8 +22,9 @@ class AddCommand extends AbstractCommand
     {
         $this->setName('add')
             ->setDescription('Add job contents to the index')
-            ->addArgument('jobnames', InputArgument::IS_ARRAY, 'Jobs to add to the index')
         ;
+
+        JobUtils::configureJobNamesArgument($this, 'Jobs to add to the index');
     }
 
     /**
@@ -33,22 +32,15 @@ class AddCommand extends AbstractCommand
      */
     protected function process()
     {
+        $_aJobNames = JobUtils::getJobNames($this->oInput, $this);
+        $_aJobsToAdd = (JobUtils::isWildcard($_aJobNames))
+            ? $this->getChangedJobs()
+            : $_aJobNames
+        ;
+
         /** @var JobIndexServiceInterface  $_oJobIndexService */
         $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
-        $_aJobNames = $this->oInput->getArgument('jobnames');
-
-        if (empty($_aJobNames))
-        {
-            throw new \InvalidArgumentException('Nothing specified, nothing added. Maybe you wanted to say "add ."?');
-        }
-
-        if (in_array($_aJobNames[0], array('.', '*')))
-        {
-            $_oJobIndexService->addJobs($this->getChangedJobs());
-            return 0;
-        }
-
-        $_oJobIndexService->addJobs($_aJobNames);
+        $_oJobIndexService->addJobs($_aJobsToAdd);
 
         return 0;
     }

@@ -7,12 +7,10 @@
  *
  */
 
-
 namespace Chapi\Commands;
 
-
+use Chapi\Component\Command\JobUtils;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
-use Symfony\Component\Console\Input\InputArgument;
 
 class ResetCommand extends AbstractCommand
 {
@@ -23,8 +21,9 @@ class ResetCommand extends AbstractCommand
     {
         $this->setName('reset')
             ->setDescription('Remove jobs from the index')
-            ->addArgument('jobnames', InputArgument::IS_ARRAY, 'Jobs to remove from the index')
         ;
+
+        JobUtils::configureJobNamesArgument($this, 'Jobs to remove from the index');
     }
 
     /**
@@ -32,22 +31,19 @@ class ResetCommand extends AbstractCommand
      */
     protected function process()
     {
+        $_aJobNames = JobUtils::getJobNames($this->oInput, $this);
+
         /** @var JobIndexServiceInterface  $_oJobIndexService */
         $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
-        $_aJobNames = $this->oInput->getArgument('jobnames');
 
-        if (empty($_aJobNames))
-        {
-            throw new \InvalidArgumentException('Nothing specified, nothing resetted. Maybe you wanted to say "reset ."?');
-        }
-
-        if (in_array($_aJobNames[0], array('.', '*')))
+        if (JobUtils::isWildcard($_aJobNames))
         {
             $_oJobIndexService->resetJobIndex();
-            return 0;
         }
-
-        $_oJobIndexService->removeJobs($_aJobNames);
+        else
+        {
+            $_oJobIndexService->removeJobs($_aJobNames);
+        }
 
         return 0;
     }
