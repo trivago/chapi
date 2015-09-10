@@ -388,30 +388,44 @@ class SchedulingViewCommand extends AbstractCommand
             )
             {
                 $_oJobDatePeriod = $this->createDatePeriodForJob($_oJobEntity, $iEndTime);
-                $_iLastTime = 0;
-
-                /** @var \DateTime $_oJobTime */
-                foreach ($_oJobDatePeriod as $_oJobTime)
+                if ($this->isPeriodInTimeFrame($_oJobDatePeriod, $iStartTime, $iEndTime))
                 {
-                    // jobs under 1 hours should always be displayed (break after the second loop)
-                    if ($_oJobTime->getTimestamp() - $_iLastTime <= 3600)
-                    {
-                        $_aJobs[] = $_oJobEntity;
-                        break;
-                    }
-
-                    // is one starting point in timeframe?
-                    if ($_oJobTime->getTimestamp() >= $iStartTime && $_oJobTime->getTimestamp() <= $iEndTime)
-                    {
-                        $_aJobs[] = $_oJobEntity;
-                        break;
-                    }
-
-                    $_iLastTime = $_oJobTime->getTimestamp();
+                    $_aJobs[] = $_oJobEntity;
                 }
             }
         }
 
         return $_aJobs;
+    }
+
+    /**
+     * @param \DatePeriod $_oJobDatePeriod
+     * @param int $iStartTime
+     * @param int $iEndTime
+     * @return bool
+     */
+    private function isPeriodInTimeFrame(\DatePeriod $_oJobDatePeriod, $iStartTime, $iEndTime)
+    {
+        $_iLastTime = 0;
+
+        /** @var \DateTime $_oJobTime */
+        foreach ($_oJobDatePeriod as $_oJobTime)
+        {
+            // jobs under 1 hours should always be displayed (break after the second loop)
+            if ($_oJobTime->getTimestamp() - $_iLastTime <= 3600)
+            {
+                return true;
+            }
+
+            // is one starting point in timeframe?
+            if ($_oJobTime->getTimestamp() >= $iStartTime && $_oJobTime->getTimestamp() <= $iEndTime)
+            {
+                return true;
+            }
+
+            $_iLastTime = $_oJobTime->getTimestamp();
+        }
+
+        return false;
     }
 }
