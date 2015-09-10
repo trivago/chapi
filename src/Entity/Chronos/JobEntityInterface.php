@@ -10,7 +10,7 @@
 namespace Chapi\Entity\Chronos;
 
 
-interface JobEntityInterface extends  \JsonSerializable, \IteratorAggregate
+interface JobEntityInterface extends \JsonSerializable, \IteratorAggregate
 {
     /**
      * return entity as one-dimensional array
