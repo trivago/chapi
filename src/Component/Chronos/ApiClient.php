@@ -91,4 +91,18 @@ class ApiClient implements ApiClientInterface
         $_oResponse = $this->oHttpClient->delete('/scheduler/job/' . $sJobName);
         return ($_oResponse->getStatusCode() == 204);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getJobStats($sJobName)
+    {
+        $_oResponse = $this->oHttpClient->get('/scheduler/job/stat/' . $sJobName);
+        if (200 == $_oResponse->getStatusCode())
+        {
+            return $_oResponse->json();
+        }
+
+        return [];
+    }
 }
