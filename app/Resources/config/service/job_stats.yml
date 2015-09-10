@@ -1,0 +1,6 @@
+services:
+  JobStatsServiceInterface:
+      class: Chapi\Service\Chronos\JobStatsService
+      arguments:
+        - "@ApiClientInterface"
+        - "@CacheInterface"
