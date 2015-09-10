@@ -9,7 +9,7 @@
 
 namespace Chapi\Entity\Chronos;
 
-class JobEntity implements \JsonSerializable, \IteratorAggregate
+class JobEntity implements JobEntityInterface
 {
     public $name = '';
 
@@ -97,7 +97,7 @@ class JobEntity implements \JsonSerializable, \IteratorAggregate
     /**
      * return entity as one-dimensional array
      *
-     * @return array
+     * @return mixed[]
      */
     public function getSimpleArrayCopy()
     {
@@ -109,6 +109,22 @@ class JobEntity implements \JsonSerializable, \IteratorAggregate
         }
 
         return $_aReturn;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSchedulingJob()
+    {
+        return (!empty($this->schedule) && empty($this->parents));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDependencyJob()
+    {
+        return (empty($this->schedule) && !empty($this->parents));
     }
 
     /**
