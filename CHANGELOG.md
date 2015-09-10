@@ -1,4 +1,11 @@
 # dev-master (v0.3.x)
+    2015-09-09 msiebeneicher <marc.siebeneicher@trivago.com>
+        * added getJobStats() to ApiClient
+        * added separate JobEntityInterface
+          * added isSchedulingJob() to JobEntity
+          * added isDependencyJob() to JobEntity
+        * added JobStatsService and JobDependencyService
+
     2015-08-28 msiebeneicher <marc.siebeneicher@trivago.com>
         * renamed JobRepositoryServiceInterface to JobRepositoryInterface
         * refactored JobRepository (separation of concerns, add bridge interface, reduced complexity, updated unit tests)
