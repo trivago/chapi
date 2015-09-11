@@ -318,7 +318,6 @@ class SchedulingViewCommand extends AbstractCommand
         {
             if ($iJobStartTimeDelay > 0)
             {
-
                 $_oJobTime->add(new \DateInterval('PT'.$iJobStartTimeDelay.'S'));
             }
 
