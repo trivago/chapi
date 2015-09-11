@@ -83,4 +83,26 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(property_exists($_oJobEntityTest, 'lastSuccess'));
         $this->assertFalse(property_exists($_oJobEntityTest, 'lastError'));
     }
+
+    public function testIsSchedulingJob()
+    {
+        $_oJobEntity = new JobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D']);
+
+        $this->assertTrue($_oJobEntity->isSchedulingJob());
+        $this->assertFalse($_oJobEntity->isDependencyJob());
+    }
+
+    public function testIsDependencyJob()
+    {
+        $_oJobEntity = new JobEntity(['name' => 'jobname', 'parents' => ['parentjob']]);
+        $this->assertTrue($_oJobEntity->isDependencyJob());
+        $this->assertFalse($_oJobEntity->isSchedulingJob());
+    }
+
+    public function testNeitherNorJob()
+    {
+        $_oJobEntity = new JobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D', 'parents' => ['parentjob']]);
+        $this->assertFalse($_oJobEntity->isDependencyJob());
+        $this->assertFalse($_oJobEntity->isSchedulingJob());
+    }
 }
