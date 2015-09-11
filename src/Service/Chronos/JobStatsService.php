@@ -57,7 +57,10 @@ class JobStatsService implements JobStatsServiceInterface
             $_aStats = $this->oApiClient->getJobStats($sJobName);
 
             // set result to cache
-            $this->oCache->set($_sCacheKey, $_aStats, self::CACHE_TIME_JOB_STATS);
+            if (!empty($_aStats))
+            {
+                $this->oCache->set($_sCacheKey, $_aStats, self::CACHE_TIME_JOB_STATS);
+            }
         }
 
         return new JobStatsEntity($_aStats);
