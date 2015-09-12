@@ -189,7 +189,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
 
             // update job
             $_aDiff = $this->oJobComparisonBusinessCase->getJobDiff($_oJobEntity->name);
-            if(!empty($_aDiff))
+            if (!empty($_aDiff))
             {
                 if (!$bForceOverwrite)
                 {

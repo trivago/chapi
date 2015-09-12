@@ -13,7 +13,6 @@ namespace Chapi\Commands;
 
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Entity\Chronos\JobStatsEntity;
 use Chapi\Service\Chronos\JobStatsServiceInterface;
 use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
@@ -194,7 +193,7 @@ class SchedulingViewCommand extends AbstractCommand
      * @param \DatePeriod $oDatePeriod
      * @param \DatePeriod $oJobDatePeriod
      * @param float $fRunSeconds
-     * @param bool|true $bPrintTime
+     * @param boolean $bPrintTime
      * @param int $iJobStartTimeDelay
      * @return string
      */
@@ -318,7 +317,7 @@ class SchedulingViewCommand extends AbstractCommand
         {
             if ($iJobStartTimeDelay > 0)
             {
-                $_oJobTime->add(new \DateInterval('PT'.$iJobStartTimeDelay.'S'));
+                $_oJobTime->add(new \DateInterval('PT' . $iJobStartTimeDelay . 'S'));
             }
 
             $_aStartTimes[$_oJobTime->format('YmdHi')] = $_oJobTime;

@@ -69,7 +69,7 @@ class JobEntity implements JobEntityInterface
 
     public $highPriority = false;
 
-    public $runAsUser =  'root';
+    public $runAsUser = 'root';
 
 
     /**
