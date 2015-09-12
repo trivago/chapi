@@ -53,7 +53,7 @@ abstract class AbstractCommand extends Command
     * @param InputInterface $oInput An InputInterface instance
     * @param OutputInterface $oOutput An OutputInterface instance
     *
-    * @return null|int null or 0 if everything went fine, or an error code
+    * @return integer null or 0 if everything went fine, or an error code
     *
     * @throws \LogicException When this abstract method is not implemented
     *

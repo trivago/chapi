@@ -119,7 +119,7 @@ class JobDependencyService implements JobDependencyServiceInterface
                         $aJobTree[$_sParentJobName] = [];
                     }
                     // set job as children to parent
-                    $aJobTree[$_sParentJobName][] =   $_oJobEntity->name;
+                    $aJobTree[$_sParentJobName][] = $_oJobEntity->name;
                 }
             }
         }
