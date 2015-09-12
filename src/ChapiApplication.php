@@ -40,6 +40,7 @@ class ChapiApplication extends Application
             new Commands\ListCommand(),
             new Commands\PullCommand(),
             new Commands\ResetCommand(),
+            new Commands\SchedulingViewCommand(),
             new Commands\StatusCommand(),
         ];
     }

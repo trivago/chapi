@@ -1,0 +1,6 @@
+services:
+  JobDependencyServiceInterface:
+      class: Chapi\Service\JobDependencies\JobDependencyService
+      arguments:
+        - "@JobRepositoryFileSystem"
+        - "@JobRepositoryChronos"

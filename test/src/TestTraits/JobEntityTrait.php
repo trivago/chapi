@@ -11,6 +11,7 @@
 namespace ChapiTest\src\TestTraits;
 
 
+use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\JobEntity;
 
 trait JobEntityTrait
@@ -24,13 +25,13 @@ trait JobEntityTrait
         $_oJobEntity->description = 'description';
         $_oJobEntity->owner = 'mail@address.com';
         $_oJobEntity->ownerName = 'ownerName';
-        $_oJobEntity->schedule = 'R/2015-' . date('m') . '-01T02:00:00Z/P1M';
+        $_oJobEntity->schedule = 'R/2015-' . date('m') . '-01T02:00:00Z/PT30M';
         $_oJobEntity->scheduleTimeZone = 'Europe/Berlin';
 
         return $_oJobEntity;
     }
 
-    private function getValidDependencyJobEntity($sJobName = 'JobA')
+    private function getValidDependencyJobEntity($sJobName = 'JobA', $sParent = 'JobB')
     {
         $_oJobEntity = new JobEntity();
 
@@ -39,8 +40,19 @@ trait JobEntityTrait
         $_oJobEntity->description = 'description';
         $_oJobEntity->owner = 'mail@address.com';
         $_oJobEntity->ownerName = 'ownerName';
-        $_oJobEntity->parents = ['JobB'];
+        $_oJobEntity->parents = [$sParent];
 
         return $_oJobEntity;
+    }
+
+    private function createJobCollection()
+    {
+        $_aJobEntities = [
+            $this->getValidScheduledJobEntity('JobA'),
+            $this->getValidDependencyJobEntity('JobB', 'JobA'),
+            $this->getValidScheduledJobEntity('JobC')
+        ];
+
+        return new JobCollection($_aJobEntities);
     }
 }

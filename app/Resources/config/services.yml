@@ -20,6 +20,8 @@ imports:
     - { resource: "component/date_period_factory.yml" }
     - { resource: "component/http_client.yml" }
     - { resource: "component/logger.yml" }
+    - { resource: "service/job_dependency.yml" }
     - { resource: "service/job_index.yml" }
     - { resource: "service/job_repository.yml" }
+    - { resource: "service/job_stats.yml" }
 

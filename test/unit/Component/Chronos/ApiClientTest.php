@@ -269,4 +269,47 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($_oApiClient->removeJob('jobName'));
     }
+
+    public function testGetJobStatsSuccess()
+    {
+        $_aTestResult = [
+            'histogram' => [
+                '75thPercentile' => 2.34,
+                '95thPercentile' => 1.23,
+                '98thPercentile' => 1.23,
+                '99thPercentile' => 1.23,
+                'median' => 11.11,
+                'mean' => 2.22,
+                'count' => 10
+            ],
+            'taskStatHistory' => []
+        ];
+
+        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(200);
+        $this->oHttpResponse->json()->shouldBeCalledTimes(1)->willReturn($_aTestResult);
+
+        $this->oHttpClient->get(Argument::exact('/scheduler/job/stat/JobA'))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($this->oHttpResponse->reveal())
+        ;
+
+        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+
+        $this->assertEquals($_aTestResult, $_oApiClient->getJobStats('JobA'));
+    }
+
+    public function testGetJobStatsFailure()
+    {
+        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
+        $this->oHttpResponse->json()->shouldNotBeCalled();
+
+        $this->oHttpClient->get(Argument::exact('/scheduler/job/stat/JobA'))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($this->oHttpResponse->reveal())
+        ;
+
+        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+
+        $this->assertEquals([], $_oApiClient->getJobStats('JobA'));
+    }
 }

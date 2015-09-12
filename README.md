@@ -95,7 +95,17 @@ Submit changes to chronos
 
 ```Shell
 bin/chapi commit
-```   
+```
+
+### scheduling
+Display upcoming jobs in a specified timeframe
+
+```Shell
+bin/chapi scheduling [options]
+```
+    Options:
+      -s, --starttime[=STARTTIME]  Start time to display the jobs
+      -e, --endtime[=ENDTIME]      End time to display the jobs
 
 ### configure
 Configure application and add necessary configs

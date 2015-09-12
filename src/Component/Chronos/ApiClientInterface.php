@@ -40,4 +40,10 @@ interface ApiClientInterface
      * @return bool
      */
     public function removeJob($sJobName);
+
+    /**
+     * @param string $sJobName
+     * @return array
+     */
+    public function getJobStats($sJobName);
 }

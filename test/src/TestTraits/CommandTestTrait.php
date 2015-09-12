@@ -11,6 +11,7 @@ namespace ChapiTest\src\TestTraits;
 
 use Chapi\Component\Command\JobUtilsInterface;
 use Prophecy\Argument;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Output\OutputInterface;
 
 trait CommandTestTrait
@@ -30,7 +31,9 @@ trait CommandTestTrait
 
         $this->oOutput = $this->prophesize('Symfony\Component\Console\Output\OutputInterface');
         $this->oOutput->writeln(Argument::type('string'))->willReturn(null);
+        $this->oOutput->write(Argument::type('string'))->willReturn(null);
         $this->oOutput->getVerbosity()->willReturn(OutputInterface::VERBOSITY_NORMAL);
+        $this->oOutput->getFormatter()->willReturn(new OutputFormatter());
 
         $_ConsoleHandler = $this->prophesize('\Symfony\Bridge\Monolog\Handler\ConsoleHandler');
 

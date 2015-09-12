@@ -38,13 +38,7 @@ class ApiClient implements ApiClientInterface
      */
     public function listingJobs()
     {
-        $_oResponse = $this->oHttpClient->get('/scheduler/jobs');
-        if (200 == $_oResponse->getStatusCode())
-        {
-            return $_oResponse->json();
-        }
-
-        return [];
+        return $this->sendGetJsonRequest('/scheduler/jobs');
     }
 
     /**
@@ -90,5 +84,28 @@ class ApiClient implements ApiClientInterface
     {
         $_oResponse = $this->oHttpClient->delete('/scheduler/job/' . $sJobName);
         return ($_oResponse->getStatusCode() == 204);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getJobStats($sJobName)
+    {
+        return $this->sendGetJsonRequest('/scheduler/job/stat/' . $sJobName);
+    }
+
+    /**
+     * @param string $sUrl
+     * @return array
+     */
+    private function sendGetJsonRequest($sUrl)
+    {
+        $_oResponse = $this->oHttpClient->get($sUrl);
+        if (200 == $_oResponse->getStatusCode())
+        {
+            return $_oResponse->json();
+        }
+
+        return [];
     }
 }
