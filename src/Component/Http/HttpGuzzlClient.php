@@ -14,7 +14,7 @@ use GuzzleHttp\ClientInterface;
 
 class HttpGuzzlClient implements HttpClientInterface
 {
-    const DEFAULT_CONNECTION_TIMEOUT  = 5;
+    const DEFAULT_CONNECTION_TIMEOUT = 5;
     const DEFAULT_TIMEOUT = 30;
 
     /**
