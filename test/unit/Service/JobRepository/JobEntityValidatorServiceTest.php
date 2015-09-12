@@ -220,4 +220,21 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
         );
     }
+
+    public function testIsEntityValidWithInvalidNameFailure()
+    {
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+
+        // -------------------------------------
+        // test invalid job name
+        // -------------------------------------
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->name = 'JobA:do_something';
+
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
 }

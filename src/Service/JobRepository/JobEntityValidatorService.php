@@ -15,6 +15,8 @@ use Chapi\Exception\DatePeriodException;
 
 class JobEntityValidatorService implements JobEntityValidatorServiceInterface
 {
+    const REG_EX_VALID_NAME = '/^[a-zA-Z0-9_-]*$/';
+
     /**
      * @var DatePeriodFactoryInterface
      */
@@ -52,6 +54,9 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
             switch ($_sProperty)
             {
                 case 'name':
+                    $_aValidProperties[$_sProperty] = $this->isNamePropertyValid($mValue);
+                    break;
+
                 case 'command':
                 case 'description':
                 case 'owner':
@@ -67,26 +72,7 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
                     break;
 
                 case 'schedule':
-                    $_aValidProperties[$_sProperty] = (
-                        (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
-                        || (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
-                    );
-
-                    if (!empty($oJobEntity->schedule))
-                    {
-                        try
-                        {
-                            $_oDataPeriod = $this->oDatePeriodFactory->createDatePeriod($oJobEntity->schedule, $oJobEntity->scheduleTimeZone);
-                            if (!$_oDataPeriod)
-                            {
-                                $_aValidProperties[$_sProperty] = false;
-                            }
-                        }
-                        catch(DatePeriodException $oException)
-                        {
-                            $_aValidProperties[$_sProperty] = false;
-                        }
-                    }
+                    $_aValidProperties[$_sProperty] = $this->isSchedulePropertyValid($oJobEntity);
                     break;
 
                 case 'parents':
@@ -97,8 +83,6 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
                     $_aValidProperties[$_sProperty] = ($oJobEntity->{$_sProperty} >= 0);
                     break;
             }
-
-
         }
 
         return $_aValidProperties;
@@ -122,5 +106,41 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
         }
 
         return $_aInvalidFields;
+    }
+
+    /**
+     * @param string $sName
+     * @return bool
+     */
+    private function isNamePropertyValid($sName)
+    {
+        return (!empty($sName) && preg_match(self::REG_EX_VALID_NAME, $sName));
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return bool
+     */
+    private function isSchedulePropertyValid(JobEntity $oJobEntity)
+    {
+        if (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
+        {
+            return true;
+        }
+
+        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
+        {
+            try
+            {
+                $_oDataPeriod = $this->oDatePeriodFactory->createDatePeriod($oJobEntity->schedule, $oJobEntity->scheduleTimeZone);
+                return (false !== $_oDataPeriod);
+            }
+            catch (DatePeriodException $oException)
+            {
+                // invalid: Iso8601 is not valid and/or DatePeriodFactory is able to create a valid DatePeriod
+            }
+        }
+
+        return false;
     }
 }

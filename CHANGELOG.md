@@ -1,4 +1,10 @@
 # dev-master (v0.3.x)
+    2015-09-12 msiebeneicher <marc.siebeneicher@trivago.com>
+        * added naming validation [issue#25]
+    
+    2015-09-10 msiebeneicher <marc.siebeneicher@trivago.com>
+        * created a scheduling overview [issue#24]
+    
     2015-09-09 msiebeneicher <marc.siebeneicher@trivago.com>
         * added getJobStats() to ApiClient
         * added separate JobEntityInterface
