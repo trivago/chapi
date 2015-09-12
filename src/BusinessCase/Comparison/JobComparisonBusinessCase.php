@@ -191,77 +191,10 @@ class JobComparisonBusinessCase implements JobComparisonInterface
         switch ($sProperty)
         {
             case 'schedule':
-                // if values are exact the same
-                if ($mValueA === $mValueB)
-                {
-                    $this->oLogger->debug(sprintf('%s::EXCACT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
-                    return true;
-                }
-
-                // if one value is empty and not both, compare the time periods
-                if (!empty($mValueA) && !empty($mValueB))
-                {
-                    // if the clean interval is different return directly false (P1D != P1M)
-                    if (!$this->isEqualInterval($mValueA, $mValueB))
-                    {
-                        $this->oLogger->debug(sprintf('%s::DIFFERENT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
-                        return false;
-                    }
-
-                    // start to check by DatePeriods
-                    $_aDatesA = [];
-                    $_aDatesB = [];
-
-                    /** @var \DatePeriod $_oPeriodB */
-                    $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
-
-                    /** @var \DateTime $_oDateTime */
-                    foreach($_oPeriodA as $_oDateTime){
-                        $_aDatesA[] = $_oDateTime;
-                    }
-
-                    /** @var \DatePeriod $_oPeriodB */
-                    $_oPeriodB = $this->oDatePeriodFactory->createDatePeriod($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
-
-                    /** @var \DateTime $_oDateTime */
-                    foreach($_oPeriodB as $_oDateTime){
-                        $_aDatesB[] = $_oDateTime;
-                    }
-
-                    /** @var \DateTime $_oLastDateTimeA */
-                    $_oLastDateTimeA = end($_aDatesA);
-                    /** @var \DateTime $_oLastDateTimeB */
-                    $_oLastDateTimeB = end($_aDatesB);
-
-                    // $_oLastDateTimeA !== false happen if no dates are in the period
-                    if ($_oLastDateTimeA !== false && $_oLastDateTimeB !== false)
-                    {
-                        $_oDiffInterval = $_oLastDateTimeA->diff($_oLastDateTimeB);
-                        $_iDiffInterval = (int) $_oDiffInterval->format('%Y%M%D%H%I');
-
-                        $this->oLogger->debug(sprintf('%s::INTERVAL DIFF OF "%d" FOR "%s"', 'ScheduleComparison', $_iDiffInterval, $oJobEntityA->name));
-
-                        return ($_iDiffInterval == 0);
-                    }
-                }
-
-                $this->oLogger->warning(sprintf('%s::CAN\'T COMPARE INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
-                return false;
+                return $this->isSchedulePropertyIdentical($oJobEntityA, $oJobEntityB);
 
             case 'scheduleTimeZone':
-                if ($mValueA == $mValueB)
-                {
-                    return true;
-                }
-
-                if (!empty($oJobEntityA->schedule) && !empty($oJobEntityA->schedule))
-                {
-                    $_oDateA = $this->createDateTimeObj($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
-                    $_oDateB = $this->createDateTimeObj($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
-
-                    return ($_oDateA->getOffset() == $_oDateB->getOffset());
-                }
-                break;
+                return $this->isScheduleTimeZonePropertyIdentical($oJobEntityA, $oJobEntityB);
 
             case 'parents':
                 return (
@@ -281,6 +214,94 @@ class JobComparisonBusinessCase implements JobComparisonInterface
             default:
                 return ($mValueA == $mValueB);
         }
+    }
+
+    /**
+     * @param JobEntity $oJobEntityA
+     * @param JobEntity $oJobEntityB
+     * @return bool
+     */
+    private function isScheduleTimeZonePropertyIdentical(JobEntity $oJobEntityA, JobEntity $oJobEntityB)
+    {
+        if ($oJobEntityA->scheduleTimeZone == $oJobEntityB->scheduleTimeZone)
+        {
+            return true;
+        }
+
+        if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule))
+        {
+            $_oDateA = $this->createDateTimeObj($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
+            $_oDateB = $this->createDateTimeObj($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
+
+            return ($_oDateA->getOffset() == $_oDateB->getOffset());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param JobEntity $oJobEntityA
+     * @param JobEntity $oJobEntityB
+     * @return bool
+     */
+    private function isSchedulePropertyIdentical(JobEntity $oJobEntityA, JobEntity $oJobEntityB)
+    {
+        // if values are exact the same
+        if ($oJobEntityA->schedule === $oJobEntityB->schedule)
+        {
+            $this->oLogger->debug(sprintf('%s::EXCACT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+            return true;
+        }
+
+        // if one value is empty and not both, compare the time periods
+        if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule))
+        {
+            // if the clean interval is different return directly false (P1D != P1M)
+            if (!$this->isEqualInterval($oJobEntityA->schedule, $oJobEntityB->schedule))
+            {
+                $this->oLogger->debug(sprintf('%s::DIFFERENT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+                return false;
+            }
+
+            // start to check by DatePeriods
+            $_aDatesA = [];
+            $_aDatesB = [];
+
+            /** @var \DatePeriod $_oPeriodB */
+            $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
+
+            /** @var \DateTime $_oDateTime */
+            foreach($_oPeriodA as $_oDateTime){
+                $_aDatesA[] = $_oDateTime;
+            }
+
+            /** @var \DatePeriod $_oPeriodB */
+            $_oPeriodB = $this->oDatePeriodFactory->createDatePeriod($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
+
+            /** @var \DateTime $_oDateTime */
+            foreach($_oPeriodB as $_oDateTime){
+                $_aDatesB[] = $_oDateTime;
+            }
+
+            /** @var \DateTime $_oLastDateTimeA */
+            $_oLastDateTimeA = end($_aDatesA);
+            /** @var \DateTime $_oLastDateTimeB */
+            $_oLastDateTimeB = end($_aDatesB);
+
+            // $_oLastDateTimeA !== false happen if no dates are in the period
+            if ($_oLastDateTimeA !== false && $_oLastDateTimeB !== false)
+            {
+                $_oDiffInterval = $_oLastDateTimeA->diff($_oLastDateTimeB);
+                $_iDiffInterval = (int) $_oDiffInterval->format('%Y%M%D%H%I');
+
+                $this->oLogger->debug(sprintf('%s::INTERVAL DIFF OF "%d" FOR "%s"', 'ScheduleComparison', $_iDiffInterval, $oJobEntityA->name));
+
+                return ($_iDiffInterval == 0);
+            }
+        }
+
+        $this->oLogger->warning(sprintf('%s::CAN\'T COMPARE INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+        return false;
     }
 
     /**
