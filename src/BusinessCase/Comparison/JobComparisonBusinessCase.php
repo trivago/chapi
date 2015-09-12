@@ -271,7 +271,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
             $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
 
             /** @var \DateTime $_oDateTime */
-            foreach($_oPeriodA as $_oDateTime){
+            foreach ($_oPeriodA as $_oDateTime) {
                 $_aDatesA[] = $_oDateTime;
             }
 
@@ -279,7 +279,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
             $_oPeriodB = $this->oDatePeriodFactory->createDatePeriod($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
 
             /** @var \DateTime $_oDateTime */
-            foreach($_oPeriodB as $_oDateTime){
+            foreach ($_oPeriodB as $_oDateTime) {
                 $_aDatesB[] = $_oDateTime;
             }
 
