@@ -135,8 +135,9 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
                 $_oDataPeriod = $this->oDatePeriodFactory->createDatePeriod($oJobEntity->schedule, $oJobEntity->scheduleTimeZone);
                 return (false !== $_oDataPeriod);
             }
-            catch(DatePeriodException $oException)
+            catch (DatePeriodException $oException)
             {
+                // invalid: Iso8601 is not valid and/or DatePeriodFactory is able to create a valid DatePeriod
             }
         }
 
