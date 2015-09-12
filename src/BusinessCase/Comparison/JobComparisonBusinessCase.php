@@ -116,7 +116,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @param $sJobName
+     * @param string $sJobName
      * @return string[]
      */
     public function getJobDiff($sJobName)
@@ -178,7 +178,7 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @param $sProperty
+     * @param string $sProperty
      * @param JobEntity $oJobEntityA
      * @param JobEntity $oJobEntityB
      * @return bool
