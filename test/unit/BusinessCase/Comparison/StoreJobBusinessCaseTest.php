@@ -13,6 +13,7 @@ namespace unit\BusinessCase\Comparison;
 
 
 use Chapi\BusinessCase\JobManagement\StoreJobBusinessCase;
+use Chapi\Entity\Chronos\JobEntity;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
@@ -253,5 +254,78 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertNull($_oStoreJobBusinessCase->storeIndexedJobs());
+    }
+
+    public function testStoreJobsToLocalRepositorySuccess()
+    {
+        $_oJobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $_oJobEntityA2 = clone $_oJobEntityA1;
+        $_oJobEntityA2->disabled = true;
+
+        $_oJobEntityB1 = $this->getValidDependencyJobEntity('JobB', 'JobC');
+
+        $this->oJobRepositoryChronos->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA1);
+        $this->oJobRepositoryChronos->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityB1);
+
+        $this->oJobRepositoryLocal->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA2);
+        $this->oJobRepositoryLocal->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn(new JobEntity());
+
+        $this->oJobRepositoryLocal->addJob(Argument::exact($_oJobEntityB1))->shouldBeCalledTimes(1)->willReturn(true);
+
+        $this->oJobComparisonBusinessCase->getJobDiff(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn(['disabled'=>'div string']);
+
+        $this->oJobRepositoryLocal->updateJob(Argument::exact($_oJobEntityA1))->shouldBeCalledTimes(1)->willReturn(true);
+
+        $this->oJobIndexService->removeJob(Argument::exact('JobA'))->shouldBeCalledTimes(1);
+
+        // test
+        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+            $this->oJobIndexService->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobComparisonBusinessCase->reveal(),
+            $this->oLogger->reveal()
+        );
+
+        $this->assertNull($_oStoreJobBusinessCase->storeJobsToLocalRepository(['JobA', 'JobB'], true));
+
+        // spy
+        $this->oLogger->error(Argument::type('string'))->shouldNotBeCalled();
+        $this->oLogger->notice(Argument::type('string'))->shouldBeCalled();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testStoreJobsToLocalRepositoryFailureBecauseJobExists()
+    {
+        $_oJobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $_oJobEntityA2 = clone $_oJobEntityA1;
+        $_oJobEntityA2->disabled = true;
+
+
+        $this->oJobRepositoryChronos->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA1);
+        $this->oJobRepositoryLocal->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA2);
+
+        $this->oJobComparisonBusinessCase->getJobDiff(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn(['disabled'=>'div string']);
+
+        $this->oJobRepositoryLocal->updateJob(Argument::exact($_oJobEntityA1))->shouldNotBeCalled();
+
+        $this->oJobIndexService->removeJob(Argument::exact('JobA'))->shouldNotBeCalled();
+
+        // test
+        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+            $this->oJobIndexService->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobComparisonBusinessCase->reveal(),
+            $this->oLogger->reveal()
+        );
+
+        $this->assertNull($_oStoreJobBusinessCase->storeJobsToLocalRepository(['JobA']));
+
+        // spy
+        $this->oLogger->error(Argument::type('string'))->shouldBeCalled();
+        $this->oLogger->notice(Argument::type('string'))->shouldNotBeCalled();
     }
 }
