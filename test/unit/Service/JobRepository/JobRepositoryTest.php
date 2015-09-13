@@ -114,6 +114,40 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testAddJobSuccessWithInitialisedJobCollection()
+    {
+        $_oEntityA = $this->getValidScheduledJobEntity('JobA');
+        $_oEntityB = $this->getValidScheduledJobEntity('JobB');
+
+        $this->oRepositoryBridge
+            ->getJobs()
+            ->willReturn([$_oEntityA])
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oRepositoryBridge
+            ->addJob(Argument::exact($_oEntityB))
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $_oJobRepository = new JobRepository(
+            $this->oRepositoryBridge->reveal()
+        );
+
+        $_oJobEntityResult = $_oJobRepository->getJob('JobA');
+
+        // known job
+        $this->assertEquals(
+            'JobA',
+            $_oEntityA->name
+        );
+
+        $this->assertTrue(
+            $_oJobRepository->addJob($_oEntityB)
+        );
+    }
+
     public function testUpdateJobSuccess()
     {
         $_oEntity = $this->getValidScheduledJobEntity('JobA');
