@@ -61,6 +61,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_aLocalMissingJobs = [$_sJobNameC];
         $_aLocalJobUpdates = [$_sJobNameD];
 
+        $_oJobEnetityA = $this->getValidScheduledJobEntity($_sJobNameA);
         $_oJobEnetityB = $this->getValidScheduledJobEntity($_sJobNameB);
         $_oJobEnetityD = $this->getValidScheduledJobEntity($_sJobNameD);
 
@@ -79,6 +80,12 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->oJobComparisonBusinessCase
             ->getChronosMissingJobs()
             ->willReturn($_aMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryLocal
+            ->getJob(Argument::exact($_sJobNameA))
+            ->willReturn($_oJobEnetityA)
             ->shouldBeCalledTimes(1)
         ;
 
@@ -187,6 +194,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_aLocalMissingJobs = [];
         $_aLocalJobUpdates = [];
 
+        $_oJobEnetityA = $this->getValidScheduledJobEntity($_sJobNameA);
         $_oJobEnetityB = $this->getValidScheduledJobEntity($_sJobNameB);
 
         // general mocking
@@ -204,6 +212,12 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->oJobComparisonBusinessCase
             ->getChronosMissingJobs()
             ->willReturn($_aMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryLocal
+            ->getJob(Argument::exact($_sJobNameA))
+            ->willReturn($_oJobEnetityA)
             ->shouldBeCalledTimes(1)
         ;
 
@@ -338,16 +352,13 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->oLogger->notice(Argument::type('string'))->shouldNotBeCalled();
     }
 
-    public function testStoreIndexedJobsFailForMissingParentJob()
+    public function testStoreIndexedJobsSuccessWithParentJob()
     {
-
-
         $_aMissingJobs = ['JobA'];
         $_aLocalMissingJobs = [];
         $_aLocalJobUpdates = [];
 
         $_oJobEntityA = $this->getValidDependencyJobEntity();
-        //$_oJobEntityB = $this->getValidScheduledJobEntity('JobB');
 
         // add new jobs to chronos
         $this->oJobComparisonBusinessCase
@@ -382,20 +393,216 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oJobDependencyService
-            ->getChildJobs('JobA', JobDependencyServiceInterface::REPOSITORY_LOCAL)
-            ->shouldBeCalledTimes(1)
-            ->willReturn(['JobB'])
-        ;
-
         $this->oJobRepositoryChronos
-            ->getJob(Argument::exact('JobB'))
-            ->willReturn(new JobEntity())
+            ->hasJob(Argument::exact('JobB'))
+            ->willReturn(true)
             ->shouldBeCalledTimes(1)
         ;
 
         $this->oJobRepositoryChronos
             ->addJob(Argument::exact($_oJobEntityA))
+            ->shouldBeCalledTimes(1)
+            ->willReturn(true)
+        ;
+
+        $this->oJobIndexService
+            ->removeJob(Argument::exact('JobA'))
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // test
+        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+            $this->oJobIndexService->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobComparisonBusinessCase->reveal(),
+            $this->oJobDependencyService->reveal(),
+            $this->oLogger->reveal()
+        );
+
+        $this->assertNull($_oStoreJobBusinessCase->storeIndexedJobs());
+    }
+
+    public function testStoreIndexedJobsFailForMissingParentJob()
+    {
+        $_aMissingJobs = ['JobA'];
+        $_aLocalMissingJobs = [];
+        $_aLocalJobUpdates = [];
+
+        $_oJobEntityA = $this->getValidDependencyJobEntity();
+
+        // add new jobs to chronos
+        $this->oJobComparisonBusinessCase
+            ->getChronosMissingJobs()
+            ->willReturn($_aMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // delete missing jobs from chronos
+        $this->oJobComparisonBusinessCase
+            ->getLocalMissingJobs()
+            ->willReturn($_aLocalMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // update jobs on chronos
+        $this->oJobComparisonBusinessCase
+            ->getLocalJobUpdates()
+            ->willReturn($_aLocalJobUpdates)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobIndexService
+            ->isJobInIndex(Argument::exact('JobA'))
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryLocal
+            ->getJob(Argument::exact('JobA'))
+            ->willReturn($_oJobEntityA)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryChronos
+            ->hasJob(Argument::exact('JobB'))
+            ->willReturn(false)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryChronos
+            ->addJob(Argument::exact($_oJobEntityA))
+            ->shouldNotBeCalled()
+        ;
+
+        $this->oJobIndexService
+            ->removeJob(Argument::exact('JobA'))
+            ->shouldNotBeCalled()
+        ;
+
+        // test
+        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+            $this->oJobIndexService->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobComparisonBusinessCase->reveal(),
+            $this->oJobDependencyService->reveal(),
+            $this->oLogger->reveal()
+        );
+
+        $this->assertNull($_oStoreJobBusinessCase->storeIndexedJobs());
+    }
+
+    public function testStoreIndexedJobsSuccessDeleteWithParentJob()
+    {
+        $_aMissingJobs = [];
+        $_aLocalMissingJobs = ['JobA'];
+        $_aLocalJobUpdates = [];
+
+        // add new jobs to chronos
+        $this->oJobComparisonBusinessCase
+            ->getChronosMissingJobs()
+            ->willReturn($_aMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // delete missing jobs from chronos
+        $this->oJobComparisonBusinessCase
+            ->getLocalMissingJobs()
+            ->willReturn($_aLocalMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // update jobs on chronos
+        $this->oJobComparisonBusinessCase
+            ->getLocalJobUpdates()
+            ->willReturn($_aLocalJobUpdates)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobIndexService
+            ->isJobInIndex(Argument::exact('JobA'))
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobDependencyService
+            ->getChildJobs(Argument::exact('JobA'), JobDependencyServiceInterface::REPOSITORY_CHRONOS)
+            ->willReturn([])
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryChronos
+            ->removeJob(Argument::exact('JobA'))
+            ->shouldBeCalledTimes(1)
+            ->willReturn(true)
+        ;
+
+        $this->oJobIndexService
+            ->removeJob(Argument::exact('JobA'))
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // test
+        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+            $this->oJobIndexService->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobComparisonBusinessCase->reveal(),
+            $this->oJobDependencyService->reveal(),
+            $this->oLogger->reveal()
+        );
+
+        $this->assertNull($_oStoreJobBusinessCase->storeIndexedJobs());
+    }
+
+    public function testStoreIndexedJobsFailureDeleteWithParentJob()
+    {
+        $_aMissingJobs = [];
+        $_aLocalMissingJobs = ['JobA'];
+        $_aLocalJobUpdates = [];
+
+        // add new jobs to chronos
+        $this->oJobComparisonBusinessCase
+            ->getChronosMissingJobs()
+            ->willReturn($_aMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // delete missing jobs from chronos
+        $this->oJobComparisonBusinessCase
+            ->getLocalMissingJobs()
+            ->willReturn($_aLocalMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // update jobs on chronos
+        $this->oJobComparisonBusinessCase
+            ->getLocalJobUpdates()
+            ->willReturn($_aLocalJobUpdates)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobIndexService
+            ->isJobInIndex(Argument::exact('JobA'))
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobIndexService
+            ->isJobInIndex(Argument::exact('JobB'))
+            ->willReturn(false)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobDependencyService
+            ->getChildJobs(Argument::exact('JobA'), JobDependencyServiceInterface::REPOSITORY_CHRONOS)
+            ->willReturn(['JobB'])
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryChronos
+            ->removeJob(Argument::exact('JobA'))
             ->shouldNotBeCalled()
         ;
 

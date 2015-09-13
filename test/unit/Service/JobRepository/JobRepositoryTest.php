@@ -217,4 +217,22 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
             $_oJobRepository->removeJob('JobA')
         );
     }
+
+    public function testHasJobSuccess()
+    {
+        $this->oRepositoryBridge
+            ->getJobs()
+            ->willReturn([
+                $this->getValidScheduledJobEntity('JobA')
+            ])
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $_oJobRepository = new JobRepository(
+            $this->oRepositoryBridge->reveal()
+        );
+
+        $this->assertTrue($_oJobRepository->hasJob('JobA'));
+        $this->assertFalse($_oJobRepository->hasJob('JobB'));
+    }
 }

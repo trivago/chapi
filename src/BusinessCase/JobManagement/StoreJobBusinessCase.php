@@ -75,10 +75,9 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
         $_aNewJobs = $this->oJobComparisonBusinessCase->getChronosMissingJobs();
         foreach ($_aNewJobs as $_sJobName)
         {
-            if ($this->oJobIndexService->isJobInIndex($_sJobName))
+            $_oJobEntity = $this->oJobRepositoryLocal->getJob($_sJobName);
+            if ($this->isAbleToStoreEntity($_oJobEntity))
             {
-                $_oJobEntity = $this->oJobRepositoryLocal->getJob($_sJobName);
-
                 if ($this->oJobRepositoryChronos->addJob($_oJobEntity))
                 {
                     $this->oJobIndexService->removeJob($_sJobName);
@@ -101,7 +100,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
         $_aMissingJobs = $this->oJobComparisonBusinessCase->getLocalMissingJobs();
         foreach ($_aMissingJobs as $_sJobName)
         {
-            if ($this->oJobIndexService->isJobInIndex($_sJobName))
+            if ($this->isAbleToDeleteJob($_sJobName))
             {
                 if ($this->oJobRepositoryChronos->removeJob($_sJobName))
                 {
@@ -125,9 +124,9 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
         $_aLocalJobUpdates = $this->oJobComparisonBusinessCase->getLocalJobUpdates();
         foreach ($_aLocalJobUpdates as $_sJobName)
         {
-            if ($this->oJobIndexService->isJobInIndex($_sJobName))
+            $_oJobEntity = $this->oJobRepositoryLocal->getJob($_sJobName);
+            if ($this->isAbleToStoreEntity($_oJobEntity))
             {
-                $_oJobEntity = $this->oJobRepositoryLocal->getJob($_sJobName);
                 if ($this->oJobRepositoryChronos->updateJob($_oJobEntity))
                 {
                     $this->oJobIndexService->removeJob($_sJobName);
@@ -223,5 +222,75 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
                 $this->oJobIndexService->removeJob($_oJobEntity->name);
             }
         }
+    }
+
+    /**
+     * @param JobEntity $oEntity
+     * @return bool
+     */
+    private function isAbleToStoreEntity(JobEntity $oEntity)
+    {
+        if ($this->oJobIndexService->isJobInIndex($oEntity->name))
+        {
+            if ($oEntity->isSchedulingJob())
+            {
+                return true;
+            }
+
+            //else :: are all parents available?
+            foreach ($oEntity->parents as $_sParentJobName)
+            {
+                if (false === $this->oJobRepositoryChronos->hasJob($_sParentJobName))
+                {
+                    $this->oLogger->warning(sprintf(
+                        'Parent job is not available for "%s" on chronos. Please add parent "%s" first.',
+                        $oEntity->name,
+                        $_sParentJobName
+                    ));
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $sJobName
+     * @return bool
+     */
+    private function isAbleToDeleteJob($sJobName)
+    {
+        if ($this->oJobIndexService->isJobInIndex($sJobName))
+        {
+            $_aChildJobs = $this->oJobDependencyService->getChildJobs($sJobName, JobDependencyServiceInterface::REPOSITORY_CHRONOS);
+            if (empty($_aChildJobs))
+            {
+                return true;
+            }
+
+            // else :: are child also in index to delete?
+            foreach ($_aChildJobs as $_sChildJobName)
+            {
+                if (false === $this->oJobIndexService->isJobInIndex($_sChildJobName))
+                {
+                    $this->oLogger->warning(sprintf(
+                        'Child job is still available for "%s" on chronos. Please remove child "%s" first.',
+                        $sJobName,
+                        $_sChildJobName
+                    ));
+
+                    return false;
+                }
+            }
+
+            // child job are also in index
+            return true;
+        }
+
+        return false;
     }
 }
