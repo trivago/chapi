@@ -140,7 +140,7 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         // known job
         $this->assertEquals(
             'JobA',
-            $_oEntityA->name
+            $_oJobEntityResult->name
         );
 
         $this->assertTrue(
