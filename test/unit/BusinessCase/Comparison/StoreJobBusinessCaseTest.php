@@ -34,6 +34,9 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
     private $oJobComparisonBusinessCase;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
+    private $oJobDependencyService;
+
+    /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oLogger;
 
     public function setUp()
@@ -42,6 +45,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oJobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oJobComparisonBusinessCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
+        $this->oJobDependencyService = $this->prophesize('Chapi\Service\JobDependencies\JobDependencyServiceInterface');
         $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
     }
 
@@ -166,6 +170,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
+            $this->oJobDependencyService->reveal(),
             $this->oLogger->reveal()
         );
 
@@ -250,6 +255,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
+            $this->oJobDependencyService->reveal(),
             $this->oLogger->reveal()
         );
 
@@ -284,6 +290,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
+            $this->oJobDependencyService->reveal(),
             $this->oLogger->reveal()
         );
 
@@ -319,6 +326,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
+            $this->oJobDependencyService->reveal(),
             $this->oLogger->reveal()
         );
 

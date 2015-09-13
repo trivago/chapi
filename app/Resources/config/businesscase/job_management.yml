@@ -6,4 +6,5 @@ services:
       - "@JobRepositoryChronos"
       - "@JobRepositoryFileSystem"
       - "@JobComparisonInterface"
+      - "@JobDependencyServiceInterface"
       - "@LoggerInterface"
