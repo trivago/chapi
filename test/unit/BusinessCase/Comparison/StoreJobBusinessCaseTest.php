@@ -14,6 +14,7 @@ namespace unit\BusinessCase\Comparison;
 
 use Chapi\BusinessCase\JobManagement\StoreJobBusinessCase;
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
@@ -335,5 +336,84 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // spy
         $this->oLogger->error(Argument::type('string'))->shouldBeCalled();
         $this->oLogger->notice(Argument::type('string'))->shouldNotBeCalled();
+    }
+
+    public function testStoreIndexedJobsFailForMissingParentJob()
+    {
+
+
+        $_aMissingJobs = ['JobA'];
+        $_aLocalMissingJobs = [];
+        $_aLocalJobUpdates = [];
+
+        $_oJobEntityA = $this->getValidDependencyJobEntity();
+        //$_oJobEntityB = $this->getValidScheduledJobEntity('JobB');
+
+        // add new jobs to chronos
+        $this->oJobComparisonBusinessCase
+            ->getChronosMissingJobs()
+            ->willReturn($_aMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // delete missing jobs from chronos
+        $this->oJobComparisonBusinessCase
+            ->getLocalMissingJobs()
+            ->willReturn($_aLocalMissingJobs)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        // update jobs on chronos
+        $this->oJobComparisonBusinessCase
+            ->getLocalJobUpdates()
+            ->willReturn($_aLocalJobUpdates)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobIndexService
+            ->isJobInIndex(Argument::exact('JobA'))
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryLocal
+            ->getJob(Argument::exact('JobA'))
+            ->willReturn($_oJobEntityA)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobDependencyService
+            ->getChildJobs('JobA', JobDependencyServiceInterface::REPOSITORY_LOCAL)
+            ->shouldBeCalledTimes(1)
+            ->willReturn(['JobB'])
+        ;
+
+        $this->oJobRepositoryChronos
+            ->getJob(Argument::exact('JobB'))
+            ->willReturn(new JobEntity())
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oJobRepositoryChronos
+            ->addJob(Argument::exact($_oJobEntityA))
+            ->shouldNotBeCalled()
+        ;
+
+        $this->oJobIndexService
+            ->removeJob(Argument::exact('JobA'))
+            ->shouldNotBeCalled()
+        ;
+
+        // test
+        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+            $this->oJobIndexService->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobComparisonBusinessCase->reveal(),
+            $this->oJobDependencyService->reveal(),
+            $this->oLogger->reveal()
+        );
+
+        $this->assertNull($_oStoreJobBusinessCase->storeIndexedJobs());
     }
 }
