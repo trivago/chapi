@@ -15,7 +15,7 @@ interface DatePeriodFactoryInterface
 
     /**
      * @param $sIso8601
-     * @return array
+     * @return mixed
      */
     public function parseIso8601String($sIso8601);
 
