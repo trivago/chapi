@@ -27,6 +27,7 @@ trait JobEntityTrait
         $_oJobEntity->ownerName = 'ownerName';
         $_oJobEntity->schedule = 'R/2015-' . date('m') . '-01T02:00:00Z/PT30M';
         $_oJobEntity->scheduleTimeZone = 'Europe/Berlin';
+        $_oJobEntity->epsilon = 'PT5M';
 
         return $_oJobEntity;
     }
@@ -41,6 +42,7 @@ trait JobEntityTrait
         $_oJobEntity->owner = 'mail@address.com';
         $_oJobEntity->ownerName = 'ownerName';
         $_oJobEntity->parents = [$sParent];
+        $_oJobEntity->epsilon = 'PT5M';
 
         return $_oJobEntity;
     }

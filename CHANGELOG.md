@@ -1,4 +1,7 @@
 # dev-master (v0.3.x)
+    2015-09-15 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Added "epsilon" validation for JobEntityValidatorService
+    
     2015-09-13 msiebeneicher <marc.siebeneicher@trivago.com>
         * Job storage now check dependencies for non scheduled jobs [issue#4]
         * added hasJob() method to JobRepositoryInterface

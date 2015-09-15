@@ -105,6 +105,12 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
         );
 
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->epsilon = '';
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+
         // -------------------------------------
         // test not boolean properties
         // -------------------------------------

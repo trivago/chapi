@@ -61,6 +61,7 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
                 case 'description':
                 case 'owner':
                 case 'ownerName':
+                case 'epsilon':
                     $_aValidProperties[$_sProperty] = (!empty($oJobEntity->{$_sProperty}));
                     break;
 
