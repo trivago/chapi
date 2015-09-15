@@ -52,7 +52,7 @@ class InfoCommand extends AbstractCommand
             }
             elseif (is_bool($_mValue))
             {
-                $_mValue = ($_mValue == true)
+                $_mValue = (true === $_mValue)
                     ? 'true'
                     : 'false';
             }

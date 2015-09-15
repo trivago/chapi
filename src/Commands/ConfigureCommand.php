@@ -48,7 +48,7 @@ class ConfigureCommand extends AbstractCommand
     {
         $_aParams = $this->getUserValuesFromQuestions();
 
-        if ($this->validateUserInput($_aParams))
+        if ($this->hasValidateUserInput($_aParams))
         {
             $this->saveParameters($_aParams);
             return 0;
@@ -96,7 +96,7 @@ class ConfigureCommand extends AbstractCommand
      * @param array $aUserInput
      * @return bool
      */
-    private function validateUserInput(array $aUserInput)
+    private function hasValidateUserInput(array $aUserInput)
     {
         foreach ($aUserInput as $_sKey => $_sValue)
         {

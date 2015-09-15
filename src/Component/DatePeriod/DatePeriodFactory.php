@@ -17,7 +17,7 @@ class DatePeriodFactory implements DatePeriodFactoryInterface
 
     /**
      * @param $sIso8601
-     * @return mixed
+     * @return null|string[]
      * @throws DatePeriodException
      */
     public function parseIso8601String($sIso8601)
