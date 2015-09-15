@@ -397,17 +397,17 @@ class SchedulingViewCommand extends AbstractCommand
     }
 
     /**
-     * @param \DatePeriod $_oJobDatePeriod
+     * @param \DatePeriod $oJobDatePeriod
      * @param int $iStartTime
      * @param int $iEndTime
      * @return bool
      */
-    private function isPeriodInTimeFrame(\DatePeriod $_oJobDatePeriod, $iStartTime, $iEndTime)
+    private function isPeriodInTimeFrame(\DatePeriod $oJobDatePeriod, $iStartTime, $iEndTime)
     {
         $_iLastTime = 0;
 
         /** @var \DateTime $_oJobTime */
-        foreach ($_oJobDatePeriod as $_oJobTime)
+        foreach ($oJobDatePeriod as $_oJobTime)
         {
             // jobs under 1 hours should always be displayed (break after the second loop)
             if ($_oJobTime->getTimestamp() - $_iLastTime <= 3600)
