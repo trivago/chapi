@@ -38,9 +38,7 @@ class AddCommand extends AbstractCommand
             : $_aJobNames
         ;
 
-        /** @var JobIndexServiceInterface  $_oJobIndexService */
-        $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
-        $_oJobIndexService->addJobs($_aJobsToAdd);
+        $this->addJobs($_aJobsToAdd);
 
         return 0;
     }
@@ -59,5 +57,15 @@ class AddCommand extends AbstractCommand
         $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
 
         return array_merge($_aNewJobs, $_aMissingJobs, $_aLocalJobUpdates);
+    }
+
+    /**
+     * @param string[] $aJobsToAdd
+     */
+    private function addJobs($aJobsToAdd)
+    {
+        /** @var JobIndexServiceInterface  $_oJobIndexService */
+        $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
+        $_oJobIndexService->addJobs($aJobsToAdd);
     }
 }
