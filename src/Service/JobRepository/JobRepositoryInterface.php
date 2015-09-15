@@ -30,6 +30,12 @@ interface JobRepositoryInterface
     public function getJobs();
 
     /**
+     * @param string $sJobName
+     * @return bool
+     */
+    public function hasJob($sJobName);
+
+    /**
      * @param JobEntity $oJobEntity
      * @return bool
      */

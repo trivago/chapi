@@ -114,6 +114,59 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testAddJobSuccessWithInitialisedJobCollection()
+    {
+        $_oEntityA = $this->getValidScheduledJobEntity('JobA');
+        $_oEntityB = $this->getValidScheduledJobEntity('JobB');
+
+        $this->oRepositoryBridge
+            ->getJobs()
+            ->willReturn([$_oEntityA])
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oRepositoryBridge
+            ->addJob(Argument::exact($_oEntityB))
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $_oJobRepository = new JobRepository(
+            $this->oRepositoryBridge->reveal()
+        );
+
+        $_oJobEntityResult = $_oJobRepository->getJob('JobA');
+
+        // known job
+        $this->assertEquals(
+            'JobA',
+            $_oJobEntityResult->name
+        );
+
+        $this->assertTrue(
+            $_oJobRepository->addJob($_oEntityB)
+        );
+    }
+
+    public function testAddJobFailure()
+    {
+        $_oEntity = $this->getValidScheduledJobEntity('JobA');
+
+        $this->oRepositoryBridge
+            ->addJob(Argument::exact($_oEntity))
+            ->willReturn(false)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $_oJobRepository = new JobRepository(
+            $this->oRepositoryBridge->reveal()
+        );
+
+        $this->assertFalse(
+            $_oJobRepository->addJob($_oEntity)
+        );
+    }
+
     public function testUpdateJobSuccess()
     {
         $_oEntity = $this->getValidScheduledJobEntity('JobA');
@@ -216,5 +269,23 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(
             $_oJobRepository->removeJob('JobA')
         );
+    }
+
+    public function testHasJobSuccess()
+    {
+        $this->oRepositoryBridge
+            ->getJobs()
+            ->willReturn([
+                $this->getValidScheduledJobEntity('JobA')
+            ])
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $_oJobRepository = new JobRepository(
+            $this->oRepositoryBridge->reveal()
+        );
+
+        $this->assertTrue($_oJobRepository->hasJob('JobA'));
+        $this->assertFalse($_oJobRepository->hasJob('JobB'));
     }
 }

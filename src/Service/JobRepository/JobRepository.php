@@ -52,6 +52,16 @@ class JobRepository implements JobRepositoryInterface
     }
 
     /**
+     * @param string $sJobName
+     * @return bool
+     */
+    public function hasJob($sJobName)
+    {
+        $_aJobs = $this->getJobs();
+        return (isset($_aJobs[$sJobName]));
+    }
+
+    /**
      * @return \Chapi\Entity\Chronos\JobCollection
      */
     public function getJobs()
@@ -72,7 +82,17 @@ class JobRepository implements JobRepositoryInterface
      */
     public function addJob(JobEntity $oJobEntity)
     {
-        return $this->oRepositoryBridge->addJob($oJobEntity);
+        if ($this->oRepositoryBridge->addJob($oJobEntity))
+        {
+            if (!is_null($this->oJobCollection)) // if no collection inited the new job will init by chronos request
+            {
+                $this->oJobCollection->offsetSet($oJobEntity->name, $oJobEntity);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
