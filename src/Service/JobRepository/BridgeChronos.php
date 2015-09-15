@@ -106,7 +106,7 @@ class BridgeChronos implements BridgeInterface
      */
     public function addJob(JobEntity $oJobEntity)
     {
-        return $this->addUpdateJob(self::API_CALL_ADD, $oJobEntity);
+        return $this->hasAddOrUpdateJob(self::API_CALL_ADD, $oJobEntity);
     }
 
     /**
@@ -115,7 +115,7 @@ class BridgeChronos implements BridgeInterface
      */
     public function updateJob(JobEntity $oJobEntity)
     {
-        return $this->addUpdateJob(self::API_CALL_UPDATE, $oJobEntity);
+        return $this->hasAddOrUpdateJob(self::API_CALL_UPDATE, $oJobEntity);
     }
 
 
@@ -138,7 +138,7 @@ class BridgeChronos implements BridgeInterface
      * @param JobEntity $oJobEntity
      * @return bool
      */
-    private function validate(JobEntity $oJobEntity)
+    private function hasValidate(JobEntity $oJobEntity)
     {
         $_aInvalidProperties = $this->oJobEntityValidatorService->getInvalidProperties($oJobEntity);
         if (empty($_aInvalidProperties))
@@ -190,9 +190,9 @@ class BridgeChronos implements BridgeInterface
      * @param JobEntity $oJobEntity
      * @return bool
      */
-    private function addUpdateJob($sApiMethod, JobEntity $oJobEntity)
+    private function hasAddOrUpdateJob($sApiMethod, JobEntity $oJobEntity)
     {
-        if ($this->validate($oJobEntity))
+        if ($this->hasValidate($oJobEntity))
         {
             if ($this->oApiClient->{$sApiMethod}($oJobEntity))
             {

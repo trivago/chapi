@@ -43,7 +43,7 @@ class ListCommand extends AbstractCommand
         {
             if (
                 ($_bOnlyFailed && $_oJobEntity->errorsSinceLastSuccess > 0)
-                || $_bOnlyFailed == false
+                || false === $_bOnlyFailed
             )
             {
                 if ($_oJobEntity->errorsSinceLastSuccess > 0)
