@@ -1,4 +1,6 @@
-# dev-master (v0.3.x)
+# dev-master (v0.4.x)
+
+# v0.3.0
     2015-09-15 msiebeneicher <marc.siebeneicher@trivago.com>
         * Added "epsilon" validation for JobEntityValidatorService
     
