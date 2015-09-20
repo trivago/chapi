@@ -10,6 +10,7 @@
 namespace Chapi\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
@@ -25,6 +26,9 @@ class ConfigureCommand extends AbstractCommand
     {
         $this->setName('configure')
             ->setDescription('Configure application and add necessary configs')
+            ->addOption('chronos_url', 'u', InputOption::VALUE_OPTIONAL, 'The chronos url (inclusive port)')
+            ->addOption('cache_dir', 'd', InputOption::VALUE_OPTIONAL, 'Path to cache directory')
+            ->addOption('repository_dir', 'r', InputOption::VALUE_OPTIONAL, 'Root path to your job files')
         ;
     }
 
@@ -46,7 +50,7 @@ class ConfigureCommand extends AbstractCommand
      */
     protected function process()
     {
-        $_aParams = $this->getUserValuesFromQuestions();
+        $_aParams = $this->getInputValues();
 
         if ($this->hasValidateUserInput($_aParams))
         {
@@ -55,6 +59,39 @@ class ConfigureCommand extends AbstractCommand
         }
 
         return 1;
+    }
+
+    /**
+     * @return array
+     */
+    private function getInputValues()
+    {
+        $_aResult = [];
+
+        $_aResult['chronos_url'] = $this->getInputValue('chronos_url', 'Please enter the chronos url (inclusive port)');
+        $_aResult['cache_dir'] = $this->getInputValue('cache_dir', 'Please enter a cache directory');
+        $_aResult['repository_dir'] = $this->getInputValue('repository_dir', 'Please enter your root path to your job files');
+
+        return $_aResult;
+    }
+
+    /**
+     * @param string $sValueKey
+     * @param string $sQuestion
+     * @return string
+     */
+    private function getInputValue($sValueKey, $sQuestion)
+    {
+        $_sValue =  $this->oInput->getOption($sValueKey);
+        if (empty($_sValue))
+        {
+            $_sValue =  $this->printQuestion(
+                $sQuestion,
+                $this->getParameterValue($sValueKey)
+            );
+        }
+
+        return $_sValue;
     }
 
     /**
@@ -67,29 +104,6 @@ class ConfigureCommand extends AbstractCommand
 
         $_oFileSystem = new Filesystem();
         $_oFileSystem->dumpFile($this->getHomeDir() . '/parameters.yml', $_sYaml);
-    }
-
-    /**
-     * @return array
-     */
-    private function getUserValuesFromQuestions()
-    {
-        $_aResult = [];
-
-        $_aResult['chronos_url'] = $this->printQuestion(
-            'Please enter the chronos url (inclusive port)',
-            $this->getParameterValue('chronos_url')
-        );
-        $_aResult['cache_dir'] = $this->printQuestion(
-            'Please enter a cache directory',
-            $this->getParameterValue('cache_dir', realpath($this->getCacheDir()))
-        );
-        $_aResult['repository_dir'] = $this->printQuestion(
-            'Please enter your root path to your job files',
-            $this->getParameterValue('repository_dir', realpath(__DIR__ . '/../../'))
-        );
-
-        return $_aResult;
     }
 
     /**

@@ -1,4 +1,6 @@
 # dev-master (v0.4.x)
+    2015-09-20 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#17] - Added optional parameters to configure command
 
 # v0.3.0
     2015-09-15 msiebeneicher <marc.siebeneicher@trivago.com>
