@@ -34,13 +34,7 @@ class CommandUtilsTest extends \PHPUnit_Framework_TestCase
 
     public function testHasCreateDirectoryIfNotExists()
     {
-        $_aStructure = array(
-            'directory' => array(
-                'subdirectory' => []
-            )
-        );
-
-        $_oVfsRoot = vfsStream::setup('root');
+        vfsStream::setup('root');
 
         $this->assertTrue(
             CommandUtils::hasCreateDirectoryIfNotExists(

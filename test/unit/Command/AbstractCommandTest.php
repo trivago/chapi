@@ -27,7 +27,6 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
         $this->setUpCommandDependencies();
 
         $this->oConsoleHandler = $this->prophesize('\Symfony\Bridge\Monolog\Handler\ConsoleHandler');
-
         $this->oContainer->get(Argument::exact('ConsoleHandler'))->willReturn($this->oConsoleHandler->reveal());
     }
 
@@ -45,9 +44,16 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->assertContains('.chapi',  $_oCommand->getHomeDir());
         $this->assertContains($_sHomeDir,  $_oCommand->getHomeDir());
+        $this->assertTrue(is_dir($_oCommand->getHomeDir()));
+    }
+
+    public function testGetCacheDir()
+    {
+        $_oCommand = new AbstractCommandDummy();
+        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
 
         $this->assertContains('cache',  $_oCommand->getCacheDir());
-        $this->assertContains($_sHomeDir,  $_oCommand->getCacheDir());
+        $this->assertTrue(is_dir($_oCommand->getCacheDir()));
     }
 }
 
@@ -71,9 +77,6 @@ class AbstractCommandDummy extends AbstractCommand
         return parent::getCacheDir();
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function process()
     {
         return 0;
