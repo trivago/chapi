@@ -11,6 +11,7 @@
 namespace Chapi\Commands;
 
 
+use Chapi\Component\Command\CommandUtils;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -110,7 +111,7 @@ abstract class AbstractCommand extends Command
      */
     protected function isAppRunable()
     {
-        if (!file_exists($this->getHomeDir() . '/parameters.yml'))
+        if (!file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . 'parameters.yml'))
         {
             $this->oOutput->writeln(sprintf('<error>%s</error>', 'No parameter file found. Please run "configure" command for initial setup.'));
             return false;
@@ -120,9 +121,7 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @link   https://github.com/composer/composer/blob/69210d5bc130f8cc9f96f99582a041254d7b9833/src/Composer/Factory.php
      * @return string
-     * @throws \RuntimeException
      */
     protected function getHomeDir()
     {
@@ -131,33 +130,15 @@ abstract class AbstractCommand extends Command
             return self::$sHomeDir;
         }
 
-        $home = getenv('CHAPI_HOME');
-        if (!$home) {
-            if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-                if (!getenv('APPDATA')) {
-                    throw new \RuntimeException('The APPDATA or CHAPI_HOME environment variable must be set for composer to run correctly');
-                }
-                $home = strtr(getenv('APPDATA'), '\\', '/') . '/chapi';
-            } else {
-                if (!getenv('HOME')) {
-                    throw new \RuntimeException('The HOME or CHAPI_HOME environment variable must be set for composer to run correctly');
-                }
-                $home = rtrim(getenv('HOME'), '/') . '/.chapi';
-            }
-        }
-
-        if (!file_exists($home . '/.htaccess'))
+        $_sHomeDir = getenv('CHAPI_HOME');
+        if (!$_sHomeDir)
         {
-            if ($this->hasCreateDirectoryIfNotExists($home))
-            {
-                if (false === file_put_contents($home . '/.htaccess', 'Deny from all'))
-                {
-                    throw new \RuntimeException(sprintf('Unable to create htaccess file in home directory "%s"', $home));
-                }
-            }
+            $_sHomeDir = CommandUtils::getOsHomeDir() . DIRECTORY_SEPARATOR . '.chapi';
         }
 
-        return self::$sHomeDir = $home;
+        CommandUtils::hasCreateDirectoryIfNotExists($_sHomeDir);
+
+        return self::$sHomeDir = $_sHomeDir;
     }
 
     /**
@@ -165,26 +146,9 @@ abstract class AbstractCommand extends Command
      */
     protected function getCacheDir()
     {
-        $_sCacheDir = $this->getHomeDir() . '/cache';
-        $this->hasCreateDirectoryIfNotExists($_sCacheDir);
+        $_sCacheDir = $this->getHomeDir() . DIRECTORY_SEPARATOR . 'cache';
+        CommandUtils::hasCreateDirectoryIfNotExists($_sCacheDir);
 
         return $_sCacheDir;
-    }
-
-    /**
-     * @param string $sDir
-     * @return bool
-     */
-    private function hasCreateDirectoryIfNotExists($sDir)
-    {
-        if (!is_dir($sDir))
-        {
-            if (!mkdir($sDir, 0755, true))
-            {
-                throw new \RuntimeException(sprintf('Unable to create cache directory "%s"', $sDir));
-            }
-        }
-
-        return true;
     }
 }
