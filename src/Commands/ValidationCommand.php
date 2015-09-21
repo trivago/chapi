@@ -60,7 +60,7 @@ class ValidationCommand extends AbstractCommand
         }
 
         //else
-        $this->oOutput->writeln("<info>All checked jobs looks valid</info>");
+        $this->oOutput->writeln('<info>All checked jobs looks valid</info>');
         return 0;
     }
 
