@@ -112,7 +112,11 @@ Configure application and add necessary configs
 
 ```Shell
 bin/chapi configure
-```  
+```
+    Options:
+      -u, --chronos_url[=CHRONOS_URL]        The chronos url (inclusive port)
+      -d, --cache_dir[=CACHE_DIR]            Path to cache directory
+      -r, --repository_dir[=REPOSITORY_DIR]  Root path to your job files
 
 
 ## Supported Chronos versions
