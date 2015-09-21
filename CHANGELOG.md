@@ -1,6 +1,8 @@
 # dev-master (v0.4.x)
     2015-09-20 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#17] - Added optional parameters to configure command
+        * [issue#13] - Added validation command
+        * Improved AbstractCommand by adding CommandUtils
 
 # v0.3.0
     2015-09-15 msiebeneicher <marc.siebeneicher@trivago.com>

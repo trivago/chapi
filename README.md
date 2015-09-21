@@ -103,6 +103,7 @@ Display upcoming jobs in a specified timeframe
 ```Shell
 bin/chapi scheduling [options]
 ```
+
     Options:
       -s, --starttime[=STARTTIME]  Start time to display the jobs
       -e, --endtime[=ENDTIME]      End time to display the jobs
@@ -113,11 +114,21 @@ Configure application and add necessary configs
 ```Shell
 bin/chapi configure
 ```
+
     Options:
       -u, --chronos_url[=CHRONOS_URL]        The chronos url (inclusive port)
       -d, --cache_dir[=CACHE_DIR]            Path to cache directory
       -r, --repository_dir[=REPOSITORY_DIR]  Root path to your job files
+      
+### validate
+Validate local jobs
 
+```Shell
+bin/chapi validate [<jobmames>]...
+```
+
+    Arguments:
+      jobmames              Jobs to validate
 
 ## Supported Chronos versions
     * v2.3
