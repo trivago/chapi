@@ -62,7 +62,7 @@ class ConfigureCommand extends AbstractCommand
     }
 
     /**
-     * @return array
+     * @return array<string,string>
      */
     private function getInputValues()
     {
