@@ -82,10 +82,10 @@ class ConfigureCommand extends AbstractCommand
      */
     private function getInputValue($sValueKey, $sQuestion)
     {
-        $_sValue =  $this->oInput->getOption($sValueKey);
+        $_sValue = $this->oInput->getOption($sValueKey);
         if (empty($_sValue))
         {
-            $_sValue =  $this->printQuestion(
+            $_sValue = $this->printQuestion(
                 $sQuestion,
                 $this->getParameterValue($sValueKey)
             );
