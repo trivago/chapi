@@ -61,8 +61,11 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
                 case 'description':
                 case 'owner':
                 case 'ownerName':
-                case 'epsilon':
                     $_aValidProperties[$_sProperty] = (!empty($oJobEntity->{$_sProperty}));
+                    break;
+
+                case 'epsilon':
+                    $_aValidProperties[$_sProperty] = $this->isEpsilonPropertyValid($oJobEntity);
                     break;
 
                 case 'async':
@@ -143,5 +146,42 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
         }
 
         return false;
+    }
+
+    /**
+     * @param JobEntity $oJobEntity
+     * @return bool
+     */
+    private function isEpsilonPropertyValid(JobEntity $oJobEntity)
+    {
+        if ($oJobEntity->isSchedulingJob() && !empty($oJobEntity->epsilon))
+        {
+            try
+            {
+                $_oDateIntervalEpsilon = new \DateInterval($oJobEntity->epsilon);
+                $_iIntervalEpsilon = (int) $_oDateIntervalEpsilon->format('%Y%M%D%H%I%S');
+
+                if ($_iIntervalEpsilon > 30) // if epsilon > "PT30S"
+                {
+                    $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($oJobEntity->schedule);
+
+                    $_oDateIntervalScheduling = new \DateInterval($_oIso8601Entity->sInterval);
+                    $_iIntervalScheduling = (int) $_oDateIntervalScheduling->format('%Y%M%D%H%I%S');
+
+                    return ($_iIntervalScheduling > $_iIntervalEpsilon);
+                }
+
+                // if epsilon is less or equal than 30sec the not empty check is enough
+                return true;
+            }
+            catch (\Exception $_oException)
+            {
+                // can't init \DateInterval instance
+                return false;
+            }
+        }
+
+        // else
+        return (!empty($oJobEntity->epsilon));
     }
 }
