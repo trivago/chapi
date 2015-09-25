@@ -17,27 +17,20 @@ class DatePeriodFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $_oDatePeriodFactory = new DatePeriodFactory();
 
-        $_aExpectedMatchValues = [
-            'R/2015-07-07T01:00:00Z/P1D',
-            'R',
-            '2015-07-07T01:00:00Z',
-            'P1D'
-        ];
-        $this->assertEquals(
-            $_aExpectedMatchValues,
-            $_oDatePeriodFactory->parseIso8601String($_aExpectedMatchValues[0])
-        );
+        $_oIso8601Entity = $_oDatePeriodFactory->createIso8601Entity('R/2015-07-07T01:00:00Z/P1D');
 
-        $_aExpectedMatchValues = [
-            'R0/2015-07-07T01:00:00Z/PT1M',
-            'R0',
-            '2015-07-07T01:00:00Z',
-            'PT1M'
-        ];
-        $this->assertEquals(
-            $_aExpectedMatchValues,
-            $_oDatePeriodFactory->parseIso8601String($_aExpectedMatchValues[0])
-        );
+        $this->assertEquals('R/2015-07-07T01:00:00Z/P1D', $_oIso8601Entity->sIso8601);
+        $this->assertEquals('R', $_oIso8601Entity->sRepeat);
+        $this->assertEquals('2015-07-07T01:00:00Z', $_oIso8601Entity->sStartTime);
+        $this->assertEquals('P1D', $_oIso8601Entity->sInterval);
+
+
+        $_oIso8601Entity = $_oDatePeriodFactory->createIso8601Entity('R0/2015-07-07T01:00:00Z/PT1M');
+
+        $this->assertEquals('R0/2015-07-07T01:00:00Z/PT1M', $_oIso8601Entity->sIso8601);
+        $this->assertEquals('R0', $_oIso8601Entity->sRepeat);
+        $this->assertEquals('2015-07-07T01:00:00Z', $_oIso8601Entity->sStartTime);
+        $this->assertEquals('PT1M', $_oIso8601Entity->sInterval);
     }
 
     /**
@@ -48,7 +41,7 @@ class DatePeriodFactoryTest extends \PHPUnit_Framework_TestCase
         $_oDatePeriodFactory = new DatePeriodFactory();
 
         $this->assertNull(
-            $_oDatePeriodFactory->parseIso8601String('2015-07-07T01:00:00Z/P1D')
+            $_oDatePeriodFactory->createIso8601Entity('2015-07-07T01:00:00Z/P1D')
         );
     }
 

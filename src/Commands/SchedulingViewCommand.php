@@ -333,9 +333,8 @@ class SchedulingViewCommand extends AbstractCommand
      */
     private function createDatePeriodForJob(JobEntity $oJobEntity, $iEndTime)
     {
-        $aMatch = $this->oDatePeriodFactory->parseIso8601String($oJobEntity->schedule);
-
-        return $this->createDatePeriod($aMatch[2], 0, null, $iEndTime, $aMatch[3]);
+        $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($oJobEntity->schedule);
+        return $this->createDatePeriod($_oIso8601Entity->sStartTime, 0, null, $iEndTime, $_oIso8601Entity->sInterval);
     }
 
     /**
