@@ -311,16 +311,16 @@ class JobComparisonBusinessCase implements JobComparisonInterface
      */
     private function createDateTimeObj($sIso8601String, $sTimeZone = '')
     {
-        $aMatch = $this->oDatePeriodFactory->parseIso8601String($sIso8601String);
+        $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($sIso8601String);
 
         if (!empty($sTimeZone))
         {
-            $_oDateTime = new \DateTime(str_replace('Z', '', $aMatch[2]));
+            $_oDateTime = new \DateTime(str_replace('Z', '', $_oIso8601Entity->sStartTime));
             $_oDateTime->setTimezone(new \DateTimeZone($sTimeZone));
         }
         else
         {
-            $_oDateTime = new \DateTime($aMatch[2]);
+            $_oDateTime = new \DateTime($_oIso8601Entity->sStartTime);
         }
 
         return $_oDateTime;
@@ -333,10 +333,10 @@ class JobComparisonBusinessCase implements JobComparisonInterface
      */
     private function isEqualInterval($sIso8601StringA, $sIso8601StringB)
     {
-        $aMatchA = $this->oDatePeriodFactory->parseIso8601String($sIso8601StringA);
-        $aMatchB = $this->oDatePeriodFactory->parseIso8601String($sIso8601StringB);
+        $_oIso8601EntityA = $this->oDatePeriodFactory->createIso8601Entity($sIso8601StringA);
+        $_oIso8601EntityB = $this->oDatePeriodFactory->createIso8601Entity($sIso8601StringB);
 
-        return ($aMatchA[3] == $aMatchB[3]);
+        return ($_oIso8601EntityA->sInterval == $_oIso8601EntityB->sInterval);
     }
 
     /**

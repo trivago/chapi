@@ -1,4 +1,9 @@
 # dev-master (v0.4.x)
+    2015-09-25 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Improved epsilon validation [issue#36]
+        * added own Iso8601Entity and refactor deprecated usage of parseIso8601String()
+        * removed deprecated method parseIso8601String() [BC]
+    
     2015-09-20 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#17] - Added optional parameters to configure command
         * [issue#13] - Added validation command

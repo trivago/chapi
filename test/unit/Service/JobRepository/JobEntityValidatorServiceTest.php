@@ -11,6 +11,7 @@ namespace ChapiTest\unit\Service\JobRepository;
 
 
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\DatePeriod\Iso8601Entity;
 use Chapi\Exception\DatePeriodException;
 use Chapi\Service\JobRepository\JobEntityValidatorService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -42,10 +43,17 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
     public function testIsEntityValidScheduledSuccess()
     {
         $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oIso8601Entity = new Iso8601Entity($_oJobEntity->schedule);
 
         $this->oDatePeriodFactory
             ->createDatePeriod(Argument::type('string'), Argument::type('string'))
             ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_oIso8601Entity)
         ;
 
         $_oJobEntityValidatorService = new JobEntityValidatorService(
@@ -59,6 +67,13 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsEntityValidScheduledFailure()
     {
+        $_oIso8601Entity = new Iso8601Entity('R/2015-09-01T02:00:00Z/P1M');
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::type('string'))
+            ->willReturn($_oIso8601Entity)
+        ;
+
         $_oJobEntityValidatorService = new JobEntityValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
@@ -229,6 +244,15 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsEntityValidWithInvalidNameFailure()
     {
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oIso8601Entity = new Iso8601Entity($_oJobEntity->schedule);
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_oIso8601Entity)
+        ;
+
         $_oJobEntityValidatorService = new JobEntityValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
@@ -236,9 +260,96 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
         // -------------------------------------
         // test invalid job name
         // -------------------------------------
-        $_oJobEntity = $this->getValidScheduledJobEntity();
         $_oJobEntity->name = 'JobA:do_something';
 
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
+
+    public function testIsEntityInvalidWithEqualsEpsilonAndScheduling()
+    {
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oIso8601Entity = new Iso8601Entity($_oJobEntity->schedule);
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_oIso8601Entity)
+        ;
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+
+        // test
+        $_oJobEntity->epsilon = $_oIso8601Entity->sInterval;
+
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
+
+    public function testIsEntityInvalidWithGraterEpsilonThanScheduling()
+    {
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oIso8601Entity = new Iso8601Entity($_oJobEntity->schedule);
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_oIso8601Entity)
+        ;
+
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+
+        //test
+        $_oJobEntity->epsilon = 'P1D';
+
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
+
+    public function testIsEntityValidWithEpsilon30S()
+    {
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->schedule = 'R/2015-10-01T02:00:00Z/PT30S';
+        $_oJobEntity->epsilon = 'PT30S';
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+            ->shouldNotBeCalled()
+        ;
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+
+        //test
+        $this->assertTrue(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
+
+    public function testIsEntityInvalidWithWrongEpsilon()
+    {
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->epsilon = '30';
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+            ->shouldNotBeCalled()
+        ;
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+
+        // test
         $this->assertFalse(
             $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
         );
