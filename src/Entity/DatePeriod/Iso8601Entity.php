@@ -47,7 +47,7 @@ class Iso8601Entity
     }
 
     /**
-     * @return string[]
+     * @return array
      */
     private function parseIsoString()
     {
