@@ -9,28 +9,57 @@
 
 namespace Chapi\Component\DatePeriod;
 
+use Chapi\Entity\DatePeriod\Iso8601Entity;
 use Chapi\Exception\DatePeriodException;
 
 class DatePeriodFactory implements DatePeriodFactoryInterface
 {
-    const REG_EX_ISO_8601_STRING = '#(R[0-9]*)/(.*)/(P.*)#';
+    /**
+     * @var Iso8601Entity[]
+     */
+    private static $aIso8601Entity = [];
 
     /**
-     * @param $sIso8601
-     * @return null|string[]
+     * @param string $sIso8601
+     * @return array
      * @throws DatePeriodException
+     * @deprecated
      */
     public function parseIso8601String($sIso8601)
     {
-        $aMatch = [];
-        preg_match(self::REG_EX_ISO_8601_STRING, $sIso8601, $aMatch);
+        $_oIso8601Entity = $this->createIso8601Entity($sIso8601);
+        return [
+            $_oIso8601Entity->sIso8601,
+            $_oIso8601Entity->sRepeat,
+            $_oIso8601Entity->sStartTime,
+            $_oIso8601Entity->sInterval
+        ];
+    }
 
-        if (count($aMatch) != 4)
+    /**
+     * @param string $sIso8601
+     * @return Iso8601Entity
+     * @throws DatePeriodException
+     */
+    public function createIso8601Entity($sIso8601)
+    {
+        $_sKey = md5($sIso8601); // class cache key
+
+        // return instance
+        if (isset(self::$aIso8601Entity[$_sKey]))
         {
-            throw new DatePeriodException(sprintf("Can't parse '%s' as iso 8601 string.", $sIso8601));
+            return self::$aIso8601Entity[$_sKey];
         }
 
-        return $aMatch;
+        // init instance
+        try
+        {
+            return self::$aIso8601Entity[$_sKey] = new Iso8601Entity($sIso8601);
+        }
+        catch (\InvalidArgumentException $_oException)
+        {
+            throw new DatePeriodException(sprintf("Can't init Iso8601Entity for '%s' iso 8601 string.", $sIso8601), 1, $_oException);
+        }
     }
 
     /**
@@ -40,19 +69,19 @@ class DatePeriodFactory implements DatePeriodFactoryInterface
      */
     public function createDatePeriod($sIso8601, $sTimeZone = '')
     {
-        $aMatch = $this->parseIso8601String($sIso8601);
+        $_oIso8601Entity = $this->createIso8601Entity($sIso8601);
 
         if (!empty($sTimeZone))
         {
-            $_oDateStart = new \DateTime(str_replace('Z', '', $aMatch[2]));
+            $_oDateStart = new \DateTime(str_replace('Z', '', $_oIso8601Entity->sStartTime));
             $_oDateStart->setTimezone(new \DateTimeZone($sTimeZone));
         }
         else
         {
-            $_oDateStart = new \DateTime($aMatch[2]);
+            $_oDateStart = new \DateTime($_oIso8601Entity->sStartTime);
         }
 
-        $_oDateInterval = new \DateInterval($aMatch[3]);
+        $_oDateInterval = new \DateInterval($_oIso8601Entity->sInterval);
         $_oDataEnd = new \DateTime();
 
         $_oDateStart->sub($_oDateInterval);
