@@ -334,4 +334,24 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
         );
     }
+
+    public function testIsEntityInvalidWithWrongEpsilon()
+    {
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->epsilon = '30';
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+            ->shouldNotBeCalled()
+        ;
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+
+        // test
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
 }
