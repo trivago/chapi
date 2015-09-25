@@ -21,23 +21,6 @@ class DatePeriodFactory implements DatePeriodFactoryInterface
 
     /**
      * @param string $sIso8601
-     * @return array
-     * @throws DatePeriodException
-     * @deprecated
-     */
-    public function parseIso8601String($sIso8601)
-    {
-        $_oIso8601Entity = $this->createIso8601Entity($sIso8601);
-        return [
-            $_oIso8601Entity->sIso8601,
-            $_oIso8601Entity->sRepeat,
-            $_oIso8601Entity->sStartTime,
-            $_oIso8601Entity->sInterval
-        ];
-    }
-
-    /**
-     * @param string $sIso8601
      * @return Iso8601Entity
      * @throws DatePeriodException
      */

@@ -17,13 +17,6 @@ interface DatePeriodFactoryInterface
     const DIC_NAME = 'DatePeriodFactoryInterface';
 
     /**
-     * @param $sIso8601
-     * @return mixed
-     * @deprecated
-     */
-    public function parseIso8601String($sIso8601);
-
-    /**
      * @param string $sIso8601
      * @return Iso8601Entity
      * @throws DatePeriodException
