@@ -1,4 +1,10 @@
-# dev-master (v0.4.x)
+# dev-master (v0.5.x)
+    2015-10-22 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Update dependencies
+          - Installing sebastian/global-state (1.1.1)
+          - Installing monolog/monolog (1.17.2)
+
+# v0.4.0
     2015-10-10 msiebeneicher <marc.siebeneicher@trivago.com>
         * Update dependencies
 
