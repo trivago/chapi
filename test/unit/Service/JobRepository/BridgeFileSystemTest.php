@@ -9,7 +9,6 @@
 
 namespace unit\Service\JobRepository;
 
-
 use Chapi\Service\JobRepository\BridgeFileSystem;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use org\bovigo\vfs\vfsStream;
@@ -150,5 +149,29 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
             count($_aJobs),
             'Expected "0" jobs after deletion'
         );
+    }
+
+    /**
+     * @expectedException \Chapi\Exception\JobLoadException
+     */
+    public function testJobLoadException()
+    {
+        $_aStructure = array(
+            'directory' => array(
+                'jobA.json' => 'no-json-string',
+            ),
+            'jobB.json' => '{invalid-json: true',
+        );
+
+        $this->oVfsRoot = vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
+
+        $_oFileSystemRepository = new BridgeFileSystem(
+            $this->oFileSystemService->reveal(),
+            $this->oCache->reveal(),
+            vfsStream::url($this->sRepositoryDir)
+        );
+
+        $_aJobs = $_oFileSystemRepository->getJobs();
+        $this->assertNull($_aJobs);
     }
 }

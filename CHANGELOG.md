@@ -1,4 +1,7 @@
 # dev-master (v0.5.x)
+    2015-10-26 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Added own exception if local jobs are unable to load in case of invalid json strings
+    
     2015-10-22 msiebeneicher <marc.siebeneicher@trivago.com>
         * Update dependencies
           - Installing sebastian/global-state (1.1.1)
