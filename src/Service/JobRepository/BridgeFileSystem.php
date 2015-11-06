@@ -11,6 +11,7 @@ namespace Chapi\Service\JobRepository;
 
 use Chapi\Component\Cache\CacheInterface;
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Exception\JobLoadException;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Glob;
 
@@ -219,13 +220,23 @@ class BridgeFileSystem implements BridgeInterface
                 )
             );
 
-            $_oJobEntity = new JobEntity($_aTemp);
-            $_aJobs[] = $_oJobEntity;
-
-            if ($bSetToFileMap)
+            if ($_aTemp)
             {
-                // set path to job file map
-                $this->setJobFileToMap($_oJobEntity->name, $_sJobFilePath);
+                $_oJobEntity = new JobEntity($_aTemp);
+                $_aJobs[] = $_oJobEntity;
+
+                if ($bSetToFileMap)
+                {
+                    // set path to job file map
+                    $this->setJobFileToMap($_oJobEntity->name, $_sJobFilePath);
+                }
+            }
+            else
+            {
+                throw new JobLoadException(
+                    sprintf('Unable to load json job data from "%s". Please check if the json is valid.', $_sJobFilePath),
+                    JobLoadException::ERROR_CODE_NO_VALID_JSON
+                );
             }
         }
 
