@@ -130,17 +130,18 @@ bin/chapi validate [<jobmames>]...
     Arguments:
       jobmames              Jobs to validate
 
-## Workflow
+
+## Example workflows
 
 A typical workflow to add a new cronjob to your Chronos server via chapi can be:
 
-1. A pull request for a new cronjob (json definition) comes in (created by a colleague of you
+1. A pull request for a new cronjob (json definition) comes in a git repository (created by a colleague of you)
 2. Accept the pull request and switch to your local clone via `cd ~/my/clone`
 3. Update your local repository via `git pull`
 4. Check the current status via `chapi status`
-5. Validate everything via `chapi validate`
+5. Validate everything via `chapi validate .`
 6. Add the new job via `chapi add jobXy`
-7. Apply the changes to the Chronos server via `chapi commit`
+7. Apply the changes and update the Chronos server via `chapi commit`
 
 ## Supported Chronos versions
     * v2.3
