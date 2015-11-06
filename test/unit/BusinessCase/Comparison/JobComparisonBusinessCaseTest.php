@@ -72,7 +72,6 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_sDate2 = date('Y-m-d', strtotime('-1 day'));
         $_JobEntityE1->schedule = 'R/' . $_sDate1 . 'T10:30:00Z/PT1M';
         $_JobEntityE2->schedule = 'R/' . $_sDate2 . 'T13:14:00.000+02:00/PT1M';
-        $_JobEntityE2->scheduleTimeZone = '';
 
         $_JobEntityF1 = $this->getValidScheduledJobEntity('JobF');
         $_JobEntityF2 = $this->getValidScheduledJobEntity('JobF');
