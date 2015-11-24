@@ -13,6 +13,8 @@ namespace unit\Command;
 
 use Chapi\Commands\AbstractCommand;
 use ChapiTest\src\TestTraits\CommandTestTrait;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use Prophecy\Argument;
 
 class AbstractCommandTest extends \PHPUnit_Framework_TestCase
@@ -28,6 +30,8 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->oConsoleHandler = $this->prophesize('\Symfony\Bridge\Monolog\Handler\ConsoleHandler');
         $this->oContainer->get(Argument::exact('ConsoleHandler'))->willReturn($this->oConsoleHandler->reveal());
+
+        vfsStream::setup('unitTestRoot', null, array('homeDir'=>[], 'workingDir'=>[]));
     }
 
     public function testGetHomeDirUnix()
@@ -42,9 +46,9 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
         $_oCommand = new AbstractCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();
 
-        $this->assertContains('.chapi',  $_oCommand->getHomeDir());
-        $this->assertContains($_sHomeDir,  $_oCommand->getHomeDir());
-        $this->assertTrue(is_dir($_oCommand->getHomeDir()));
+        $this->assertContains('.chapi',  $_oCommand->getHomeDirPub());
+        $this->assertContains($_sHomeDir,  $_oCommand->getHomeDirPub());
+        $this->assertTrue(is_dir($_oCommand->getHomeDirPub()));
     }
 
     public function testGetCacheDir()
@@ -54,6 +58,59 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->assertContains('cache',  $_oCommand->getCacheDir());
         $this->assertTrue(is_dir($_oCommand->getCacheDir()));
+    }
+
+    public function testIsAppRuanableWithLocalConfig()
+    {
+        $_aStructure = [
+            'homeDir' => [],
+            'workingDir'=> [
+                '.chapiconfig' => "{ parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } }"
+            ]
+        ];
+
+        vfsStream::create($_aStructure);
+
+        $_oCommand = new AbstractCommandDummy();
+        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+
+        $this->assertTrue($_oCommand->isAppRunablePub());
+    }
+
+    public function testIsAppRuanableWithGlobalConfig()
+    {
+        $_aStructure = [
+            'homeDir'=>[
+                'parameters.yml' => "{ parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } }"
+            ],
+            'workingDir'=>[]
+        ];
+
+        vfsStream::create($_aStructure);
+
+        $_oCommand = new AbstractCommandDummy();
+        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+
+        $this->assertTrue($_oCommand->isAppRunablePub());
+    }
+
+    public function testIsAppRuanableWithGlobalAndLocalConfig()
+    {
+        $_aStructure = [
+            'homeDir' => [
+                'parameters.yml' => "{ parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } }"
+            ],
+            'workingDir '=> [
+                '.chapiconfig' => "{ parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } }"
+            ]
+        ];
+
+        vfsStream::create($_aStructure);
+
+        $_oCommand = new AbstractCommandDummy();
+        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+
+        $this->assertTrue($_oCommand->isAppRunablePub());
     }
 }
 
@@ -82,8 +139,23 @@ class AbstractCommandDummy extends AbstractCommand
         return 0;
     }
 
-    public function getHomeDir()
+    public function getHomeDirPub()
     {
         return parent::getHomeDir();
+    }
+
+    protected function getHomeDir()
+    {
+        return vfsStream::url('unitTestRoot/homeDir');
+    }
+
+    public function isAppRunablePub()
+    {
+        return $this->isAppRunable();
+    }
+
+    protected function getWorkingDir()
+    {
+        return vfsStream::url('unitTestRoot/workingDir');
     }
 }
