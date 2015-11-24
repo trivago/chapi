@@ -23,10 +23,6 @@
 !bin/chapi
 /vendor/
 
-# Assets and user uploads
-/web/bundles/
-/web/uploads/
-
 # PHPUnit
 /app/phpunit.xml
 /phpunit.xml
@@ -36,3 +32,6 @@
 
 # Composer PHAR
 /composer.phar
+
+# Chapi config
+/.chapiconfig

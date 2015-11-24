@@ -1,5 +1,7 @@
 # dev-master (v0.5.x)
     2015-11-24 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#18] - Provided possibility to handle two different chronos job repositories
+        
         * Updating dependencies (including require-dev)
             - Updating symfony/console (v2.7.5 => v2.7.7)
             - Updating symfony/dependency-injection (v2.7.5 => v2.7.7)

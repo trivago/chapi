@@ -93,8 +93,19 @@ abstract class AbstractCommand extends Command
             $_oContainer = new ContainerBuilder();
 
             // load local parameters
-            $_oLoader = new YamlFileLoader($_oContainer, new FileLocator($this->getHomeDir()));
-            $_oLoader->load('parameters.yml');
+            if (file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . 'parameters.yml'))
+            {
+                $_oLoader = new YamlFileLoader($_oContainer, new FileLocator($this->getHomeDir()));
+                $_oLoader->load('parameters.yml');
+            }
+
+            // load optional parameter in the current working directory
+            $_sWorkingDir = getcwd();
+            if (file_exists($_sWorkingDir . DIRECTORY_SEPARATOR . '.chapiconfig'))
+            {
+                $_oLoader = new YamlFileLoader($_oContainer, new FileLocator($_sWorkingDir));
+                $_oLoader->load('.chapiconfig');
+            }
 
             // load services
             $_oLoader = new YamlFileLoader($_oContainer, new FileLocator(__DIR__ . self::FOLDER_RESOURCES));
@@ -111,9 +122,15 @@ abstract class AbstractCommand extends Command
      */
     protected function isAppRunable()
     {
-        if (!file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . 'parameters.yml'))
+        if (
+            !file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . 'parameters.yml')
+            AND !file_exists(getcwd() . DIRECTORY_SEPARATOR . '.chapiconfig')
+        ) // one file have to exist
         {
-            $this->oOutput->writeln(sprintf('<error>%s</error>', 'No parameter file found. Please run "configure" command for initial setup.'));
+            $this->oOutput->writeln(sprintf(
+                '<error>%s</error>',
+                'No parameter file found. Please run "configure" command for initial setup or add a local `.chapiconfig` to your working directory.'
+            ));
             return false;
         }
 
