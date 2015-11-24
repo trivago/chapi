@@ -1,7 +1,9 @@
 services:
   CacheInterface:
     class: Chapi\Component\Cache\DoctrineCache
-    arguments: ["@ExternalDoctrineCacheInterface"]
+    arguments:
+      - "@ExternalDoctrineCacheInterface"
+      - "%repository_dir%.%chronos_url%"
 
   ExternalDoctrineCacheInterface:
     class: Doctrine\Common\Cache\FilesystemCache

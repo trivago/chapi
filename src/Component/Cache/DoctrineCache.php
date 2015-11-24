@@ -19,13 +19,24 @@ class DoctrineCache implements CacheInterface
     private $oDoctrineCache;
 
     /**
+     * @var string
+     */
+    private $sCachePrefix = '';
+
+    /**
      * @param Cache $oDoctrineCache
      */
     public function __construct(
-        Cache $oDoctrineCache
+        Cache $oDoctrineCache,
+        $sCachePrefix
     )
     {
         $this->oDoctrineCache = $oDoctrineCache;
+        $this->sCachePrefix = substr(
+            md5($sCachePrefix),
+            0,
+            6
+        ) . '.';
     }
 
     /**
@@ -36,7 +47,7 @@ class DoctrineCache implements CacheInterface
      */
     public function set($sKey, $mValue, $iTTL = 0)
     {
-        return $this->oDoctrineCache->save($sKey, $mValue, $iTTL);
+        return $this->oDoctrineCache->save($this->sCachePrefix . $sKey, $mValue, $iTTL);
     }
 
     /**
@@ -45,8 +56,8 @@ class DoctrineCache implements CacheInterface
      */
     public function get($sKey)
     {
-        return ($this->oDoctrineCache->contains($sKey))
-            ? $this->oDoctrineCache->fetch($sKey)
+        return ($this->oDoctrineCache->contains($this->sCachePrefix . $sKey))
+            ? $this->oDoctrineCache->fetch($this->sCachePrefix . $sKey)
             : null
         ;
     }
@@ -57,6 +68,6 @@ class DoctrineCache implements CacheInterface
      */
     public function delete($sKey)
     {
-        return $this->oDoctrineCache->delete($sKey);
+        return $this->oDoctrineCache->delete($this->sCachePrefix . $sKey);
     }
 }
