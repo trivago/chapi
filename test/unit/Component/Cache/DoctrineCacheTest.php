@@ -36,12 +36,12 @@ class DoctrineCacheTest extends \PHPUnit_Framework_TestCase
         $_bTestReturn = true;
 
         $this->oCache->save(
-            Argument::exact($_sTestKey),
+            Argument::containingString($_sTestKey),
             Argument::exact($_mTestValue),
             Argument::exact($_iTestTtl)
         )->shouldBeCalledTimes(1)->willReturn($_bTestReturn);
 
-        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal());
+        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal(), 'cache_prefix');
 
         $this->assertTrue(
             $_oDoctrineCache->set($_sTestKey, $_mTestValue, $_iTestTtl)
@@ -57,12 +57,12 @@ class DoctrineCacheTest extends \PHPUnit_Framework_TestCase
         $_bTestReturn = false;
 
         $this->oCache->save(
-            Argument::exact($_sTestKey),
+            Argument::containingString($_sTestKey),
             Argument::exact($_mTestValue),
             Argument::exact($_iTestTtl)
         )->shouldBeCalledTimes(1)->willReturn($_bTestReturn);
 
-        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal());
+        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal(), 'cache_prefix');
 
         $this->assertFalse(
             $_oDoctrineCache->set($_sTestKey, $_mTestValue, $_iTestTtl)
@@ -75,14 +75,14 @@ class DoctrineCacheTest extends \PHPUnit_Framework_TestCase
         $_mTestValue = 'value';
 
         $this->oCache->contains(
-            Argument::exact($_sTestKey)
+            Argument::containingString($_sTestKey)
         )->shouldBeCalledTimes(1)->willReturn(true);
 
         $this->oCache->fetch(
-            Argument::exact($_sTestKey)
+            Argument::containingString($_sTestKey)
         )->shouldBeCalledTimes(1)->willReturn($_mTestValue);
 
-        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal());
+        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal(), 'cache_prefix');
 
         $this->assertEquals(
             $_mTestValue,
@@ -95,14 +95,14 @@ class DoctrineCacheTest extends \PHPUnit_Framework_TestCase
         $_sTestKey = 'key.test';
 
         $this->oCache->contains(
-            Argument::exact($_sTestKey)
+            Argument::containingString($_sTestKey)
         )->shouldBeCalledTimes(1)->willReturn(false);
 
         $this->oCache->fetch(
-            Argument::exact($_sTestKey)
+            Argument::containingString($_sTestKey)
         )->shouldNotBeCalled();
 
-        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal());
+        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal(), 'cache_prefix');
 
         $this->assertNull(
             $_oDoctrineCache->get($_sTestKey)
@@ -114,10 +114,10 @@ class DoctrineCacheTest extends \PHPUnit_Framework_TestCase
         $_sTestKey = 'key.test';
 
         $this->oCache->delete(
-            Argument::exact($_sTestKey)
+            Argument::containingString($_sTestKey)
         )->shouldBeCalledTimes(1)->willReturn(true);
 
-        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal());
+        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal(), 'cache_prefix');
 
         $this->assertTrue(
             $_oDoctrineCache->delete($_sTestKey)
@@ -129,10 +129,10 @@ class DoctrineCacheTest extends \PHPUnit_Framework_TestCase
         $_sTestKey = 'key.test';
 
         $this->oCache->delete(
-            Argument::exact($_sTestKey)
+            Argument::containingString($_sTestKey)
         )->shouldBeCalledTimes(1)->willReturn(false);
 
-        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal());
+        $_oDoctrineCache = new DoctrineCache($this->oCache->reveal(), 'cache_prefix');
 
         $this->assertFalse(
             $_oDoctrineCache->delete($_sTestKey)
