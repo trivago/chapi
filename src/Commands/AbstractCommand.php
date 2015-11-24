@@ -93,18 +93,10 @@ abstract class AbstractCommand extends Command
             $_oContainer = new ContainerBuilder();
 
             // load local parameters
-            if (file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . 'parameters.yml'))
-            {
-                $_oLoader = new YamlFileLoader($_oContainer, new FileLocator($this->getHomeDir()));
-                $_oLoader->load('parameters.yml');
-            }
+            $this->loadParameterConfig($this->getHomeDir(), 'parameters.yml', $_oContainer);
 
             // load optional parameter in the current working directory
-            if (file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . '.chapiconfig'))
-            {
-                $_oLoader = new YamlFileLoader($_oContainer, new FileLocator($this->getWorkingDir()));
-                $_oLoader->load('.chapiconfig');
-            }
+            $this->loadParameterConfig($this->getWorkingDir(), '.chapiconfig', $_oContainer);
 
             // load services
             $_oLoader = new YamlFileLoader($_oContainer, new FileLocator(__DIR__ . self::FOLDER_RESOURCES));
@@ -174,5 +166,20 @@ abstract class AbstractCommand extends Command
     protected function getWorkingDir()
     {
         return getcwd();
+    }
+
+    /**
+     * @param string $sPath
+     * @param string $sFile
+     * @param ContainerBuilder $oContainer
+     */
+    private function loadParameterConfig($sPath, $sFile, $oContainer)
+    {
+        // load local parameters
+        if (file_exists($sPath . DIRECTORY_SEPARATOR . $sFile))
+        {
+            $_oLoader = new YamlFileLoader($oContainer, new FileLocator($sPath));
+            $_oLoader->load($sFile);
+        }
     }
 }
