@@ -29,7 +29,7 @@ Both files are using the [yaml](http://yaml.org/) format. The settings of the lo
 
 ### Parameters
 
-The parameter settings will be found under the `parameters property:
+The parameter settings will be found under the `parameters` property:
 
 ```yml
 parameters:
