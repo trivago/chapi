@@ -28,6 +28,9 @@ trait CommandTestTrait
         $this->oInput->bind(Argument::any())->willReturn(null);
         $this->oInput->isInteractive()->willReturn(true);
         $this->oInput->validate()->willReturn(null);
+        // after symfony console v2.7.5
+        $this->oInput->hasArgument('command')->willReturn(true);
+        $this->oInput->getArgument('command')->willReturn('testCommand');
 
         $this->oOutput = $this->prophesize('Symfony\Component\Console\Output\OutputInterface');
         $this->oOutput->writeln(Argument::type('string'))->willReturn(null);
