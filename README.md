@@ -29,7 +29,7 @@ Both files are using the [yaml](http://yaml.org/) format. The settings of the lo
 
 ### Parameters
 
-The parameter settings will be found under the `parameter property:
+The parameter settings will be found under the `parameters property:
 
 ```yml
 parameters:
@@ -176,24 +176,29 @@ A typical workflow to add a new cronjob to your Chronos server via chapi can be:
 Chapi is able to support you if you need to move your jobs from a chronos cluster to another one.
 
 1. Setup your normal chapi config and local job repository
+
 2. Create a new empty folder which stands for your second chronos cluster repository:
 ```Shell
 mkdir clusterBjobs
 ```
-3. Add a local `.chapiconfig` file (see [configuration](#installation_configuration) to the new folder:
+
+3. Add a local `.chapiconfig` file (see [configuration](#installation_configuration)) to the new folder:
 ```Shell
 touch clusterBjobs/.chapiconfig
 ```
-4. Edit the file add the `chronos_url` and `repository_dir` parameters for your second chronos cluster:
+
+4. Edit the file and add the `chronos_url` and `repository_dir` parameters for your second chronos cluster:
 ```yml
 parameters:
     chronos_url: http://your.second.chronos.url:chronos_api_port/
     repository_dir: /path/to/clusterBjobs
 ```
+
 5. Open a second console and switch to the new folder where the `.chapiconfig` file is located:
 ```Shell
 cd clusterBjobs
 ```
+
 6. Now you are able to move job for job from your normal repository to the new repository:
 ```Shell
 mv clusterAjobs/jobXy.json clusterBjobs/jobXy.json
