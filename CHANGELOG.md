@@ -1,4 +1,17 @@
 # dev-master (v0.5.x)
+    2015-11-24 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies (including require-dev)
+            - Updating symfony/console (v2.7.5 => v2.7.7)
+            - Updating symfony/dependency-injection (v2.7.5 => v2.7.7)
+            - Updating symfony/filesystem (v2.7.5 => v2.7.7)
+            - Updating symfony/config (v2.7.5 => v2.7.7)
+            - Updating symfony/monolog-bridge (v2.7.5 => v2.7.7)
+            - Updating symfony/event-dispatcher (v2.7.5 => v2.7.7)
+            - Updating doctrine/cache (v1.4.2 => v1.4.4)
+            - Updating symfony/yaml (v2.7.5 => v2.7.7)
+            - Updating phpunit/phpunit (4.8.14 => 4.8.18)    
+        * Updated CommandTestTrait for symfony console change
+    
     2015-10-26 msiebeneicher <marc.siebeneicher@trivago.com>
         * Added own exception if local jobs are unable to load in case of invalid json strings
     
