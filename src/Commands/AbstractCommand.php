@@ -100,10 +100,9 @@ abstract class AbstractCommand extends Command
             }
 
             // load optional parameter in the current working directory
-            $_sWorkingDir = getcwd();
-            if (file_exists($_sWorkingDir . DIRECTORY_SEPARATOR . '.chapiconfig'))
+            if (file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . '.chapiconfig'))
             {
-                $_oLoader = new YamlFileLoader($_oContainer, new FileLocator($_sWorkingDir));
+                $_oLoader = new YamlFileLoader($_oContainer, new FileLocator($this->getWorkingDir()));
                 $_oLoader->load('.chapiconfig');
             }
 
@@ -124,7 +123,7 @@ abstract class AbstractCommand extends Command
     {
         if (
             !file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . 'parameters.yml')
-            AND !file_exists(getcwd() . DIRECTORY_SEPARATOR . '.chapiconfig')
+            && !file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . '.chapiconfig')
         ) // one file have to exist
         {
             $this->oOutput->writeln(sprintf(
@@ -167,5 +166,13 @@ abstract class AbstractCommand extends Command
         CommandUtils::hasCreateDirectoryIfNotExists($_sCacheDir);
 
         return $_sCacheDir;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWorkingDir()
+    {
+        return getcwd();
     }
 }
