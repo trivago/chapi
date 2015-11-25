@@ -153,7 +153,7 @@ class ListCommand extends AbstractCommand
             return '<fg=red>%s</>';
         }
 
-        if ($oJobEntity->errorCount > 0 || true == $oJobEntity->disabled)
+        if ($oJobEntity->errorCount > 0 || true === $oJobEntity->disabled)
         {
             return '<comment>%s</comment>';
         }
