@@ -58,6 +58,7 @@ bin/chapi list [options]
 
     Options:
       -f, --onlyFailed      Display only failed jobs
+      -d, --onlyDisabled    Display only disabled jobs
 
 ### info
 Display your job information from chronos

@@ -2,6 +2,9 @@
     2015-11-25 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
             - Updating doctrine/cache (v1.4.4 => v1.5.1)
+        * Improved list command output
+            - added "onlyDisabled" option
+            - added additional information "disabled", "error rate" and "errors since last success"
 
     2015-11-24 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#41] - Provided possibility to handle two different chronos job repositories
