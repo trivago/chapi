@@ -70,7 +70,7 @@ class ListCommand extends AbstractCommand
      */
     private function hasJobToPrint(JobEntity $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
     {
-        $_bPrintAllJobs = (false == $bOnlyFailed && false == $bOnlyDisabled);
+        $_bPrintAllJobs = (false === $bOnlyFailed && false === $bOnlyDisabled);
         if ($_bPrintAllJobs)
         {
             return true;
@@ -78,12 +78,12 @@ class ListCommand extends AbstractCommand
 
         $_bHasToPrint = false;
 
-        if (true == $bOnlyFailed && $oJobEntity->errorsSinceLastSuccess > 0)
+        if (true === $bOnlyFailed && $oJobEntity->errorsSinceLastSuccess > 0)
         {
             $_bHasToPrint = true;
         }
 
-        if (true == $bOnlyDisabled && true == $oJobEntity->disabled)
+        if (true === $bOnlyDisabled && true === $oJobEntity->disabled)
         {
             $_bHasToPrint = true;
         }
@@ -150,15 +150,15 @@ class ListCommand extends AbstractCommand
     {
         if ($oJobEntity->errorsSinceLastSuccess > 0)
         {
-            return "<fg=red>%s</>";
+            return '<fg=red>%s</>';
         }
 
         if ($oJobEntity->errorCount > 0 || true == $oJobEntity->disabled)
         {
-            return "<comment>%s</comment>";
+            return '<comment>%s</comment>';
         }
 
         // else
-        return "<info>%s</info>";
+        return '<info>%s</info>';
     }
 }
