@@ -1,4 +1,8 @@
 # dev-master (v0.5.x)
+    2015-11-25 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
+            - Updating doctrine/cache (v1.4.4 => v1.5.1)
+
     2015-11-24 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#41] - Provided possibility to handle two different chronos job repositories
         

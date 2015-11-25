@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7d058669ccb8f733da28fb21ba2db661",
+    "hash": "5d3d5fb8d8d5e3ddb1304468a2e3e291",
     "packages": [
         {
             "name": "doctrine/cache",
-            "version": "v1.4.4",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "6433826dd02c9e5be8a127320dc13e7e6625d020"
+                "reference": "2b9cec5a5e722010cbebc91713d4c11eaa064d5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/6433826dd02c9e5be8a127320dc13e7e6625d020",
-                "reference": "6433826dd02c9e5be8a127320dc13e7e6625d020",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/2b9cec5a5e722010cbebc91713d4c11eaa064d5e",
+                "reference": "2b9cec5a5e722010cbebc91713d4c11eaa064d5e",
                 "shasum": ""
             },
             "require": {
@@ -38,8 +38,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Doctrine\\Common\\Cache\\": "lib/"
+                "psr-4": {
+                    "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -74,7 +74,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2015-11-02 18:33:51"
+            "time": "2015-11-02 18:35:48"
         },
         {
             "name": "guzzlehttp/guzzle",

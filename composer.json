@@ -22,10 +22,10 @@
     "symfony/monolog-bridge": "~2.7.3",
     "symfony/event-dispatcher": "~2.7.3",
 
-    "doctrine/cache": "~1.4.1",
-    "guzzlehttp/guzzle": "~5.3.0",
+    "doctrine/cache": "~1.4",
+    "guzzlehttp/guzzle": "~5.3",
     "psr/log": "~1.0",
-    "webmozart/glob": "~3.1.1"
+    "webmozart/glob": "~3.1"
 
   },
   "require-dev": {
