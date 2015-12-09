@@ -210,4 +210,5 @@ mv clusterAjobs/jobXy.json clusterBjobs/jobXy.json
 
 
 ## Supported Chronos versions
-    * v2.3
+* v2.3
+* v2.4
