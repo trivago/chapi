@@ -1,4 +1,10 @@
 # dev-master (v0.5.x)
+    2015-12-25 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
+           - Removing doctrine/cache (v1.5.2 => v1.5.4)
+           - Removing webmozart/glob (3.1.1 => 3.3.1)
+
+    
     2015-12-17 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
           - Updating doctrine/cache (v1.5.1 => v1.5.2)

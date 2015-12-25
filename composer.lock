@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "doctrine/cache",
-            "version": "v1.5.2",
+            "version": "v1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "47c7128262da274f590ae6f86eb137a7a64e82af"
+                "reference": "47cdc76ceb95cc591d9c79a36dc3794975b5d136"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/47c7128262da274f590ae6f86eb137a7a64e82af",
-                "reference": "47c7128262da274f590ae6f86eb137a7a64e82af",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/47cdc76ceb95cc591d9c79a36dc3794975b5d136",
+                "reference": "47cdc76ceb95cc591d9c79a36dc3794975b5d136",
                 "shasum": ""
             },
             "require": {
@@ -74,7 +74,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2015-12-03 10:50:37"
+            "time": "2015-12-19 05:03:47"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -834,16 +834,16 @@
         },
         {
             "name": "webmozart/glob",
-            "version": "3.1.1",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/glob.git",
-                "reference": "44fd5671153c550a0b772d8f819bff7d913e646f"
+                "reference": "b898d0611df3e0443536e1d9e70726e192e63aa5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/glob/zipball/44fd5671153c550a0b772d8f819bff7d913e646f",
-                "reference": "44fd5671153c550a0b772d8f819bff7d913e646f",
+                "url": "https://api.github.com/repos/webmozart/glob/zipball/b898d0611df3e0443536e1d9e70726e192e63aa5",
+                "reference": "b898d0611df3e0443536e1d9e70726e192e63aa5",
                 "shasum": ""
             },
             "require": {
@@ -852,12 +852,13 @@
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.6",
+                "sebastian/version": "^1.0.1",
                 "symfony/filesystem": "^2.5"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.2-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
@@ -876,7 +877,7 @@
                 }
             ],
             "description": "A PHP implementation of Ant's glob.",
-            "time": "2015-08-24 13:32:28"
+            "time": "2015-12-23 14:41:52"
         },
         {
             "name": "webmozart/path-util",
