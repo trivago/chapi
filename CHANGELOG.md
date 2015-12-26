@@ -1,4 +1,7 @@
 # dev-master (v0.5.x)
+    2015-12-26 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#9] - delete job first for switching job types 
+    
     2015-12-25 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
            - Removing doctrine/cache (v1.5.2 => v1.5.4)

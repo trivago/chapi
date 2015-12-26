@@ -185,4 +185,44 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $_aLocalJobUpdates
         );
     }
+
+    public function testHasSameJobTypeTrue()
+    {
+        $_JobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $_JobEntityA2 = $this->getValidScheduledJobEntity('JobA');
+
+        $_JobEntityB1 = $this->getValidDependencyJobEntity('JobB');
+        $_JobEntityB2 = $this->getValidDependencyJobEntity('JobB');
+
+        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oDiffCompare->reveal(),
+            $this->oDatePeriodFactory,
+            $this->oLogger->reveal()
+        );
+
+        $this->assertTrue($_oJobComparisonBusinessCase->hasSameJobType($_JobEntityA1, $_JobEntityA2));
+        $this->assertTrue($_oJobComparisonBusinessCase->hasSameJobType($_JobEntityB1, $_JobEntityB2));
+    }
+
+    public function testHasSameJobTypeFalse()
+    {
+        $_JobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $_JobEntityA2 = $this->getValidDependencyJobEntity('JobA');
+
+        $_JobEntityB1 = $this->getValidDependencyJobEntity('JobB');
+        $_JobEntityB2 = $this->getValidScheduledJobEntity('JobB');
+
+        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oDiffCompare->reveal(),
+            $this->oDatePeriodFactory,
+            $this->oLogger->reveal()
+        );
+
+        $this->assertFalse($_oJobComparisonBusinessCase->hasSameJobType($_JobEntityA1, $_JobEntityA2));
+        $this->assertFalse($_oJobComparisonBusinessCase->hasSameJobType($_JobEntityB1, $_JobEntityB2));
+    }
 }

@@ -8,6 +8,7 @@
  */
 namespace Chapi\BusinessCase\Comparison;
 
+use Chapi\Entity\Chronos\JobEntity;
 
 interface JobComparisonInterface
 {
@@ -33,4 +34,11 @@ interface JobComparisonInterface
      * @return array
      */
     public function getJobDiff($sJobName);
+
+    /**
+     * @param JobEntity $oJobEntityA
+     * @param JobEntity $oJobEntityB
+     * @return bool
+     */
+    public function hasSameJobType(JobEntity $oJobEntityA, JobEntity $oJobEntityB);
 }
