@@ -145,6 +145,19 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     /**
      * @param JobEntity $oJobEntityA
      * @param JobEntity $oJobEntityB
+     * @return bool
+     */
+    public function hasSameJobType(JobEntity $oJobEntityA, JobEntity $oJobEntityB)
+    {
+        return (
+            ($oJobEntityA->isSchedulingJob() && $oJobEntityB->isSchedulingJob())
+            || ($oJobEntityA->isDependencyJob() && $oJobEntityB->isDependencyJob())
+        );
+    }
+
+    /**
+     * @param JobEntity $oJobEntityA
+     * @param JobEntity $oJobEntityB
      * @return array
      */
     private function compareJobEntities(JobEntity $oJobEntityA, JobEntity $oJobEntityB)
