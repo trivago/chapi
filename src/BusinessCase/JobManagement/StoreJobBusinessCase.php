@@ -75,21 +75,21 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
         $_aNewJobs = $this->oJobComparisonBusinessCase->getChronosMissingJobs();
         foreach ($_aNewJobs as $_sJobName)
         {
-            $this->addJob($_sJobName);
+            $this->hasAddedJob($_sJobName);
         }
 
         // delete missing jobs from chronos
         $_aMissingJobs = $this->oJobComparisonBusinessCase->getLocalMissingJobs();
         foreach ($_aMissingJobs as $_sJobName)
         {
-            $this->removeJob($_sJobName);
+            $this->hasRemovedJob($_sJobName);
         }
 
         // update jobs on chronos
         $_aLocalJobUpdates = $this->oJobComparisonBusinessCase->getLocalJobUpdates();
         foreach ($_aLocalJobUpdates as $_sJobName)
         {
-            $this->updateJob($_sJobName);
+            $this->hasUpdatedJob($_sJobName);
         }
     }
 
@@ -175,7 +175,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
      * @param string $sJobName
      * @return bool
      */
-    private function addJob($sJobName)
+    private function hasAddedJob($sJobName)
     {
         $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
 
@@ -205,7 +205,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
      * @param $sJobName
      * @return bool
      */
-    private function removeJob($sJobName)
+    private function hasRemovedJob($sJobName)
     {
         if ($this->isAbleToDeleteJob($sJobName))
         {
@@ -233,7 +233,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
      * @param string $sJobName
      * @return bool
      */
-    private function updateJob($sJobName)
+    private function hasUpdatedJob($sJobName)
     {
         $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
 
@@ -249,7 +249,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
             else
             {
                 $_bHasUpdatedJob = (
-                    $this->oJobRepositoryChronos->removeJob($_oJobEntityChronos)
+                    $this->oJobRepositoryChronos->removeJob($_oJobEntityChronos->name)
                     && $this->oJobRepositoryChronos->addJob($_oJobEntityLocal)
                 );
             }

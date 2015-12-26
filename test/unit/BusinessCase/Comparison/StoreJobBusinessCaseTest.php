@@ -193,7 +193,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
                 else
                 {
                     $this->oJobRepositoryChronos
-                        ->removeJob(Argument::exact($_oJobEntity))
+                        ->removeJob(Argument::exact($_oJobEntity->name))
                         ->willReturn(true)
                         ->shouldBeCalledTimes(1)
                     ;
