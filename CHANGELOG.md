@@ -14,7 +14,7 @@
           - Updating webmozart/path-util (2.2.3 => 2.3.0)
           - Installing doctrine/instantiator (1.0.5)
     
-    
+# v0.5.0  
     2015-11-25 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
             - Updating doctrine/cache (v1.4.4 => v1.5.1)
