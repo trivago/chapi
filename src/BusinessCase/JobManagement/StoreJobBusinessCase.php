@@ -75,74 +75,21 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
         $_aNewJobs = $this->oJobComparisonBusinessCase->getChronosMissingJobs();
         foreach ($_aNewJobs as $_sJobName)
         {
-            $_oJobEntity = $this->oJobRepositoryLocal->getJob($_sJobName);
-            if ($this->isAbleToStoreEntity($_oJobEntity))
-            {
-                if ($this->oJobRepositoryChronos->addJob($_oJobEntity))
-                {
-                    $this->oJobIndexService->removeJob($_sJobName);
-                    $this->oLogger->notice(sprintf(
-                        'Job "%s" successfully added to chronos',
-                        $_sJobName
-                    ));
-                }
-                else
-                {
-                    $this->oLogger->error(sprintf(
-                        'Failed to add job "%s" to chronos',
-                        $_sJobName
-                    ));
-                }
-            }
+            $this->addJob($_sJobName);
         }
 
         // delete missing jobs from chronos
         $_aMissingJobs = $this->oJobComparisonBusinessCase->getLocalMissingJobs();
         foreach ($_aMissingJobs as $_sJobName)
         {
-            if ($this->isAbleToDeleteJob($_sJobName))
-            {
-                if ($this->oJobRepositoryChronos->removeJob($_sJobName))
-                {
-                    $this->oJobIndexService->removeJob($_sJobName);
-                    $this->oLogger->notice(sprintf(
-                        'Job "%s" successfully removed from chronos',
-                        $_sJobName
-                    ));
-                }
-                else
-                {
-                    $this->oLogger->error(sprintf(
-                        'Failed to remove job "%s" from chronos',
-                        $_sJobName
-                    ));
-                }
-            }
+            $this->removeJob($_sJobName);
         }
 
         // update jobs on chronos
         $_aLocalJobUpdates = $this->oJobComparisonBusinessCase->getLocalJobUpdates();
         foreach ($_aLocalJobUpdates as $_sJobName)
         {
-            $_oJobEntity = $this->oJobRepositoryLocal->getJob($_sJobName);
-            if ($this->isAbleToStoreEntity($_oJobEntity))
-            {
-                if ($this->oJobRepositoryChronos->updateJob($_oJobEntity))
-                {
-                    $this->oJobIndexService->removeJob($_sJobName);
-                    $this->oLogger->notice(sprintf(
-                        'Job "%s" successfully updated in chronos',
-                        $_sJobName
-                    ));
-                }
-                else
-                {
-                    $this->oLogger->error(sprintf(
-                        'Failed to update job "%s" in chronos',
-                        $_sJobName
-                    ));
-                }
-            }
+            $this->updateJob($_sJobName);
         }
     }
 
@@ -222,6 +169,111 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
                 $this->oJobIndexService->removeJob($_oJobEntity->name);
             }
         }
+    }
+
+    /**
+     * @param string $sJobName
+     * @return bool
+     */
+    private function addJob($sJobName)
+    {
+        $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
+
+        if ($this->isAbleToStoreEntity($_oJobEntityLocal))
+        {
+            if ($this->oJobRepositoryChronos->addJob($_oJobEntityLocal))
+            {
+                $this->oJobIndexService->removeJob($_oJobEntityLocal->name);
+                $this->oLogger->notice(sprintf(
+                    'Job "%s" successfully added to chronos',
+                    $_oJobEntityLocal->name
+                ));
+
+                return true;
+            }
+
+            $this->oLogger->error(sprintf(
+                'Failed to add job "%s" to chronos',
+                $_oJobEntityLocal->name
+            ));
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $sJobName
+     * @return bool
+     */
+    private function removeJob($sJobName)
+    {
+        if ($this->isAbleToDeleteJob($sJobName))
+        {
+            if ($this->oJobRepositoryChronos->removeJob($sJobName))
+            {
+                $this->oJobIndexService->removeJob($sJobName);
+                $this->oLogger->notice(sprintf(
+                    'Job "%s" successfully removed from chronos',
+                    $sJobName
+                ));
+
+                return true;
+            }
+
+            $this->oLogger->error(sprintf(
+                'Failed to remove job "%s" from chronos',
+                $sJobName
+            ));
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $sJobName
+     * @return bool
+     */
+    private function updateJob($sJobName)
+    {
+        $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
+
+        if ($this->isAbleToStoreEntity($_oJobEntityLocal))
+        {
+            $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($sJobName);
+
+            // handle job update
+            if ($this->oJobComparisonBusinessCase->hasSameJobType($_oJobEntityLocal, $_oJobEntityChronos))
+            {
+                $_bHasUpdatedJob = $this->oJobRepositoryChronos->updateJob($_oJobEntityLocal);
+            }
+            else
+            {
+                $_bHasUpdatedJob = (
+                    $this->oJobRepositoryChronos->removeJob($_oJobEntityChronos)
+                    && $this->oJobRepositoryChronos->addJob($_oJobEntityLocal)
+                );
+            }
+
+            // handle update result
+            if ($_bHasUpdatedJob)
+            {
+                $this->oJobIndexService->removeJob($_oJobEntityLocal->name);
+                $this->oLogger->notice(sprintf(
+                    'Job "%s" successfully updated in chronos',
+                    $_oJobEntityLocal->name
+                ));
+
+                return true;
+            }
+
+            // in case of an error
+            $this->oLogger->error(sprintf(
+                'Failed to update job "%s" in chronos',
+                $_oJobEntityLocal->name
+            ));
+        }
+
+        return false;
     }
 
     /**
