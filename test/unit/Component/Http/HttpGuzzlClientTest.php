@@ -47,6 +47,30 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->get($_sUrl));
     }
 
+    public function testGetSuccessWithHttpBasicAuth()
+    {
+        $_sUrl = '/url/for/test';
+        $_aAuth = [
+            'username' => 'user',
+            'password' => 'pass'
+        ];
+        $_aGuzzleOptions = [
+            'connect_timeout' => HttpGuzzlClient::DEFAULT_CONNECTION_TIMEOUT,
+            'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT,
+            'auth' => [$_aAuth['username'], $_aAuth['password']]
+        ];
+
+        $this->oGuzzelClient->get(Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($this->oGuzzlResponse->reveal())
+        ;
+
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_aAuth);
+
+        $_oResponse = $_oHttpGuzzlClient->get($_sUrl);
+        $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oResponse);
+    }
+
     /**
      * @expectedException \Chapi\Exception\HttpConnectionException
      */
@@ -97,16 +121,65 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->postJsonData($_sUrl, $_aPostData));
     }
 
+    public function testPostJsonDataSuccessWithHttpBasicAuth()
+    {
+        $_sUrl = '/url/for/test';
+        $_aAuth = [
+            'username' => 'user',
+            'password' => 'pass'
+        ];
+        $_aPostData = ['data' => [1, 2, 3]];
+        $_aGuzzleOptions = [
+            'json' => $_aPostData,
+            'auth' => [$_aAuth['username'], $_aAuth['password']]
+        ];
+
+        $_oRequestInterface = $this->prophesize('GuzzleHttp\Message\RequestInterface');
+
+        $this->oGuzzelClient->createRequest(Argument::exact('post'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_oRequestInterface->reveal());
+
+        $this->oGuzzelClient->send(Argument::type('GuzzleHttp\Message\RequestInterface'))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($this->oGuzzlResponse->reveal());
+
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_aAuth);
+
+        $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->postJsonData($_sUrl, $_aPostData));
+    }
+
     public function testDeleteSuccess()
     {
         $_sUrl = '/url/for/test';
 
-        $this->oGuzzelClient->delete(Argument::exact($_sUrl))
+        $this->oGuzzelClient->delete(Argument::exact($_sUrl), [])
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
 
         $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal());
+
+        $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->delete($_sUrl));
+    }
+
+    public function testDeleteSuccessWithHttpBasicAuth()
+    {
+        $_sUrl = '/url/for/test';
+        $_aAuth = [
+            'username' => 'user',
+            'password' => 'pass'
+        ];
+        $_aGuzzleOptions = [
+            'auth' => [$_aAuth['username'], $_aAuth['password']]
+        ];
+
+        $this->oGuzzelClient->delete(Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
+            ->shouldBeCalledTimes(1)
+            ->willReturn($this->oGuzzlResponse->reveal())
+        ;
+
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_aAuth);
 
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->delete($_sUrl));
     }

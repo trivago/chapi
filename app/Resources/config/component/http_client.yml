@@ -1,7 +1,11 @@
 services:
   HttpClientGuzzle:
     class: Chapi\Component\Http\HttpGuzzlClient
-    arguments: ["@ExternalGuzzleClientInterface"]
+    arguments:
+      - "@ExternalGuzzleClientInterface"
+      -
+        username: "%chronos_http_username%"
+        password: "%chronos_http_password%"
 
   ExternalGuzzleClientInterface:
     class: GuzzleHttp\Client

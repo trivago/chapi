@@ -27,6 +27,9 @@ class ConfigureCommand extends AbstractCommand
         $this->setName('configure')
             ->setDescription('Configure application and add necessary configs')
             ->addOption('chronos_url', 'u', InputOption::VALUE_OPTIONAL, 'The chronos url (inclusive port)')
+            ->addOption('chronos_http_username', 'un', InputOption::VALUE_OPTIONAL, 'The chronos username (HTTP credentials)', '')
+            ->addOption('chronos_http_password', 'p', InputOption::VALUE_OPTIONAL, 'The chronos password (HTTP credentials)', '')
+            ->addOption('chronos_url', 'u', InputOption::VALUE_OPTIONAL, 'The chronos url (inclusive port)')
             ->addOption('cache_dir', 'd', InputOption::VALUE_OPTIONAL, 'Path to cache directory')
             ->addOption('repository_dir', 'r', InputOption::VALUE_OPTIONAL, 'Root path to your job files')
         ;
@@ -68,9 +71,26 @@ class ConfigureCommand extends AbstractCommand
     {
         $_aResult = [];
 
-        $_aResult['chronos_url'] = $this->getInputValue('chronos_url', 'Please enter the chronos url (inclusive port)');
-        $_aResult['cache_dir'] = $this->getInputValue('cache_dir', 'Please enter a cache directory');
-        $_aResult['repository_dir'] = $this->getInputValue('repository_dir', 'Please enter your root path to your job files');
+        $_aResult['chronos_url'] = [
+            'value' => $this->getInputValue('chronos_url', 'Please enter the chronos url (inclusive port)'),
+            'required' => true
+        ];
+        $_aResult['chronos_http_username'] = [
+            'value' => $this->getInputValue('chronos_http_username', 'Please enter the username to access your chronos instance'),
+            'required' => false
+        ];
+        $_aResult['chronos_http_password'] = [
+            'value' => $this->getInputValue('chronos_http_password', 'Please enter the password to access your chronos instance', true),
+            'required' => false
+        ];
+        $_aResult['cache_dir'] = [
+            'value' => $this->getInputValue('cache_dir', 'Please enter a cache directory'),
+            'required' => true
+        ];
+        $_aResult['repository_dir'] = [
+            'value' => $this->getInputValue('repository_dir', 'Please enter your root path to your job files'),
+            'required' => true
+        ];
 
         return $_aResult;
     }
@@ -78,16 +98,18 @@ class ConfigureCommand extends AbstractCommand
     /**
      * @param string $sValueKey
      * @param string $sQuestion
+     * @param boolean $bHiddenAnswer
      * @return string
      */
-    private function getInputValue($sValueKey, $sQuestion)
+    private function getInputValue($sValueKey, $sQuestion, $bHiddenAnswer = false)
     {
         $_sValue = $this->oInput->getOption($sValueKey);
         if (empty($_sValue))
         {
             $_sValue = $this->printQuestion(
                 $sQuestion,
-                $this->getParameterValue($sValueKey)
+                $this->getParameterValue($sValueKey),
+                $bHiddenAnswer
             );
         }
 
@@ -99,8 +121,19 @@ class ConfigureCommand extends AbstractCommand
      */
     private function saveParameters(array $aUserInput)
     {
+        // We implemented an additional level of information
+        // into the user input array: Is this field required or not?
+        // To be backwards compatible we only store the value of
+        // the question in the dump file.
+        // With this loop we get rid of the "required" information
+        // from getInputValues().
+        $aToStore = [];
+        foreach ($aUserInput as $key => $value) {
+            $aToStore[$key] = $value['value'];
+        }
+
         $_oDumper = new Dumper();
-        $_sYaml = $_oDumper->dump(array('parameters' => $aUserInput));
+        $_sYaml = $_oDumper->dump(array('parameters' => $aToStore));
 
         $_oFileSystem = new Filesystem();
         $_oFileSystem->dumpFile($this->getHomeDir() . '/parameters.yml', $_sYaml);
@@ -114,7 +147,7 @@ class ConfigureCommand extends AbstractCommand
     {
         foreach ($aUserInput as $_sKey => $_sValue)
         {
-            if (empty($_sValue))
+            if ($_sValue['required'] == true && empty($_sValue['value']))
             {
                 $this->oOutput->writeln(sprintf('<error>Please add a valid value for parameter "%s"</error>', $_sKey));
                 return false;
@@ -152,14 +185,32 @@ class ConfigureCommand extends AbstractCommand
     /**
      * @param string $sQuestion
      * @param null|mixed $mDefaultValue
+     * @param boolean $bHiddenAnswer
      * @return mixed
      */
-    private function printQuestion($sQuestion, $mDefaultValue = null)
+    private function printQuestion($sQuestion, $mDefaultValue = null, $bHiddenAnswer = false)
     {
         $_oHelper = $this->getHelper('question');
-        $_sFormat = (!empty($mDefaultValue)) ? '<comment>%s (default: %s):</comment>' : '<comment>%s:</comment>';
 
+        // If we have a hidden answer and the default value is not empty
+        // the we will set it as empty, because we don`t want to show
+        // the default value on the terminal.
+        // We know that the user has to enter the password again
+        // if he / she want to reconfigure something. But this
+        // is an acceptable tradeoff.
+        if ($bHiddenAnswer === true && !empty($mDefaultValue)) {
+            $mDefaultValue = null;
+        }
+
+        $_sFormat = (!empty($mDefaultValue)) ? '<comment>%s (default: %s):</comment>' : '<comment>%s:</comment>';
         $_oQuestion = new Question(sprintf($_sFormat, $sQuestion, $mDefaultValue), $mDefaultValue);
+
+        // Sensitive information (like passwords) should not be
+        // visible during the configuration wizard
+        if ($bHiddenAnswer === true) {
+            $_oQuestion->setHidden(true);
+            $_oQuestion->setHiddenFallback(false);
+        }
 
         return $_oHelper->ask($this->oInput, $this->oOutput, $_oQuestion);
     }
