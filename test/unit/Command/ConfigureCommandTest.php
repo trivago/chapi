@@ -64,7 +64,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(3)
+            ->shouldBeCalledTimes(5)
             ->willReturn('stringInput')
         ;
 
@@ -125,7 +125,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(2)
+            ->shouldBeCalledTimes(4)
             ->willReturn('inputValue')
         ;
 
@@ -156,7 +156,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(2)
+            ->shouldBeCalledTimes(4)
             ->willReturn('')
         ;
 
