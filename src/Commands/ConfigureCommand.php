@@ -65,7 +65,7 @@ class ConfigureCommand extends AbstractCommand
     }
 
     /**
-     * @return array<string,string>
+     * @return array<string,array<string,string|boolean>>
      */
     private function getInputValues()
     {
