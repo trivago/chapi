@@ -48,11 +48,7 @@ class HttpGuzzlClient implements HttpClientInterface
      */
     public function get($sUrl)
     {
-        $_aRequestOptions = [
-            'connect_timeout' => self::DEFAULT_CONNECTION_TIMEOUT,
-            'timeout' => self::DEFAULT_TIMEOUT
-        ];
-        $_aRequestOptions = $this->addAuthOption($_aRequestOptions);
+        $_aRequestOptions = $this->getDefaultRequestOptions();
 
         try
         {
@@ -76,8 +72,8 @@ class HttpGuzzlClient implements HttpClientInterface
      */
     public function postJsonData($sUrl, $mPostData)
     {
-        $_aRequestOptions = ['json' => $mPostData];
-        $_aRequestOptions = $this->addAuthOption($_aRequestOptions);
+        $_aRequestOptions = $this->getDefaultRequestOptions();
+        $_aRequestOptions['json'] = $mPostData;
 
         $_oRequest = $this->oGuzzelClient->createRequest('post', $sUrl, $_aRequestOptions);
         $_oResponse = $this->oGuzzelClient->send($_oRequest);
@@ -91,30 +87,34 @@ class HttpGuzzlClient implements HttpClientInterface
      */
     public function delete($sUrl)
     {
-        $_aRequestOptions = [];
-        $_aRequestOptions = $this->addAuthOption($_aRequestOptions);
-
+        $_aRequestOptions = $this->getDefaultRequestOptions();
         $_oResponse = $this->oGuzzelClient->delete($sUrl, $_aRequestOptions);
         return new HttpGuzzlResponse($_oResponse);
     }
 
     /**
-     * Adds authentication headers according the Guzzle http options.
+     * Returns default options for the HTTP request.
+     * If an username and password is provided, auth
+     * header will be applied as well.
      *
-     * @param array $aOptions
      * @return array
      */
-    private function addAuthOption(array $aOptions) {
+    private function getDefaultRequestOptions() {
+        $_aRequestOptions = [
+            'connect_timeout' => self::DEFAULT_CONNECTION_TIMEOUT,
+            'timeout' => self::DEFAULT_TIMEOUT
+        ];
+
         if (!empty($this->oAuthEntity->username)
             && !empty($this->oAuthEntity->password)
         )
         {
-            $aOptions['auth'] = [
+            $_aRequestOptions['auth'] = [
                 $this->oAuthEntity->username,
                 $this->oAuthEntity->password
             ];
         }
 
-        return $aOptions;
+        return $_aRequestOptions;
     }
 }

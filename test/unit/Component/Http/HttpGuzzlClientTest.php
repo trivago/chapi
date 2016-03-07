@@ -106,10 +106,15 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
     {
         $_sUrl = '/url/for/test';
         $_aPostData = ['data' => [1, 2, 3]];
+        $_aGuzzleOptions = [
+            'connect_timeout' => HttpGuzzlClient::DEFAULT_CONNECTION_TIMEOUT,
+            'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT,
+            'json' => $_aPostData
+        ];
         $_oAuthEntitiy = new AuthEntity("", "");
         $_oRequestInterface = $this->prophesize('GuzzleHttp\Message\RequestInterface');
 
-        $this->oGuzzelClient->createRequest(Argument::exact('post'), Argument::exact($_sUrl), Argument::exact(['json' => $_aPostData]))
+        $this->oGuzzelClient->createRequest(Argument::exact('post'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willReturn($_oRequestInterface->reveal())
         ;
@@ -134,6 +139,8 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
         $_oAuthEntitiy = new AuthEntity($_aAuth['username'], $_aAuth['password']);
         $_aPostData = ['data' => [1, 2, 3]];
         $_aGuzzleOptions = [
+            'connect_timeout' => HttpGuzzlClient::DEFAULT_CONNECTION_TIMEOUT,
+            'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT,
             'json' => $_aPostData,
             'auth' => [$_aAuth['username'], $_aAuth['password']]
         ];
@@ -156,9 +163,12 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
     public function testDeleteSuccess()
     {
         $_sUrl = '/url/for/test';
-
+        $_aGuzzleOptions = [
+            'connect_timeout' => HttpGuzzlClient::DEFAULT_CONNECTION_TIMEOUT,
+            'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT,
+        ];
         $_oAuthEntitiy = new AuthEntity("", "");
-        $this->oGuzzelClient->delete(Argument::exact($_sUrl), [])
+        $this->oGuzzelClient->delete(Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
@@ -177,6 +187,8 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
         ];
         $_oAuthEntitiy = new AuthEntity($_aAuth['username'], $_aAuth['password']);
         $_aGuzzleOptions = [
+            'connect_timeout' => HttpGuzzlClient::DEFAULT_CONNECTION_TIMEOUT,
+            'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT,
             'auth' => [$_aAuth['username'], $_aAuth['password']]
         ];
 
