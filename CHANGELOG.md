@@ -1,4 +1,7 @@
-# dev-master (v0.5.x)
+# dev-master (v0.6.x)
+    2016-03-07 andygrunwald  <https://github.com/andygrunwald>
+        * Added support for Chronos HTTP Basic Auth
+
     2016-03-07 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updated gitignore
         * Updating dependencies 
