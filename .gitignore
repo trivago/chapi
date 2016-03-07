@@ -33,5 +33,6 @@
 # Composer PHAR
 /composer.phar
 
-# Chapi config
-/.chapiconfig
+# Chapi
+/.chapiconfig*
+/*chapi.phar

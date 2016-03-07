@@ -1,4 +1,7 @@
 # dev-master (v0.5.x)
+    2016-03-07 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updated gitignore
+    
     2015-12-26 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#9] - delete job first for switching job types 
     
