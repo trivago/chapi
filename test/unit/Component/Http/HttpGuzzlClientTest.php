@@ -12,6 +12,7 @@ namespace unit\Component\Http;
 
 
 use Chapi\Component\Http\HttpGuzzlClient;
+use Chapi\Entity\Http\AuthEntity;
 use Prophecy\Argument;
 
 class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
@@ -32,6 +33,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
     {
         $_sUrl = '/url/for/test';
 
+        $_oAuthEntitiy = new AuthEntity("", "");
         $_aGuzzleOptions = [
             'connect_timeout' => HttpGuzzlClient::DEFAULT_CONNECTION_TIMEOUT,
             'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT
@@ -42,7 +44,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
 
-        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal());
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_oAuthEntitiy);
 
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->get($_sUrl));
     }
@@ -54,6 +56,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             'username' => 'user',
             'password' => 'pass'
         ];
+        $_oAuthEntitiy = new AuthEntity($_aAuth['username'], $_aAuth['password']);
         $_aGuzzleOptions = [
             'connect_timeout' => HttpGuzzlClient::DEFAULT_CONNECTION_TIMEOUT,
             'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT,
@@ -65,7 +68,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
 
-        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_aAuth);
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_oAuthEntitiy);
 
         $_oResponse = $_oHttpGuzzlClient->get($_sUrl);
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oResponse);
@@ -78,6 +81,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
     {
         $_sUrl = '/url/for/test';
 
+        $_oAuthEntitiy = new AuthEntity("", "");
         $_aGuzzleOptions = [
             'connect_timeout' => HttpGuzzlClient::DEFAULT_CONNECTION_TIMEOUT,
             'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT
@@ -93,7 +97,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn('http://www.abc.com')
         ;
 
-        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal());
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_oAuthEntitiy);
 
         $this->assertNull($_oHttpGuzzlClient->get($_sUrl));
     }
@@ -102,9 +106,8 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
     {
         $_sUrl = '/url/for/test';
         $_aPostData = ['data' => [1, 2, 3]];
-
+        $_oAuthEntitiy = new AuthEntity("", "");
         $_oRequestInterface = $this->prophesize('GuzzleHttp\Message\RequestInterface');
-
 
         $this->oGuzzelClient->createRequest(Argument::exact('post'), Argument::exact($_sUrl), Argument::exact(['json' => $_aPostData]))
             ->shouldBeCalledTimes(1)
@@ -116,7 +119,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
 
-        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal());
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_oAuthEntitiy);
 
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->postJsonData($_sUrl, $_aPostData));
     }
@@ -128,6 +131,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             'username' => 'user',
             'password' => 'pass'
         ];
+        $_oAuthEntitiy = new AuthEntity($_aAuth['username'], $_aAuth['password']);
         $_aPostData = ['data' => [1, 2, 3]];
         $_aGuzzleOptions = [
             'json' => $_aPostData,
@@ -144,7 +148,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal());
 
-        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_aAuth);
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_oAuthEntitiy);
 
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->postJsonData($_sUrl, $_aPostData));
     }
@@ -153,12 +157,13 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
     {
         $_sUrl = '/url/for/test';
 
+        $_oAuthEntitiy = new AuthEntity("", "");
         $this->oGuzzelClient->delete(Argument::exact($_sUrl), [])
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
 
-        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal());
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_oAuthEntitiy);
 
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->delete($_sUrl));
     }
@@ -170,6 +175,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             'username' => 'user',
             'password' => 'pass'
         ];
+        $_oAuthEntitiy = new AuthEntity($_aAuth['username'], $_aAuth['password']);
         $_aGuzzleOptions = [
             'auth' => [$_aAuth['username'], $_aAuth['password']]
         ];
@@ -179,7 +185,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
 
-        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_aAuth);
+        $_oHttpGuzzlClient = new HttpGuzzlClient($this->oGuzzelClient->reveal(), $_oAuthEntitiy);
 
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $_oHttpGuzzlClient->delete($_sUrl));
     }

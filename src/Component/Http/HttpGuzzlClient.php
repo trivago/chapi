@@ -10,6 +10,7 @@
 namespace Chapi\Component\Http;
 
 use Chapi\Exception\HttpConnectionException;
+use Chapi\Entity\Http\AuthEntity;
 use GuzzleHttp\ClientInterface;
 
 class HttpGuzzlClient implements HttpClientInterface
@@ -23,21 +24,21 @@ class HttpGuzzlClient implements HttpClientInterface
     private $oGuzzelClient;
 
     /**
-     * @var array
+     * @var AuthEntity
      */
-    private $aGuzzelClientConfig;
+    private $oAuthEntity;
 
     /**
      * @param ClientInterface $oGuzzelClient
-     * @param array $aGuzzelClientConfig
+     * @param AuthEntity $oAuthEntity
      */
     public function __construct(
         ClientInterface $oGuzzelClient,
-        array $aGuzzelClientConfig = []
+        AuthEntity $oAuthEntity
     )
     {
         $this->oGuzzelClient = $oGuzzelClient;
-        $this->aGuzzelClientConfig = $aGuzzelClientConfig;
+        $this->oAuthEntity = $oAuthEntity;
     }
 
     /**
@@ -104,15 +105,13 @@ class HttpGuzzlClient implements HttpClientInterface
      * @return array
      */
     private function addAuthOption(array $aOptions) {
-        if (array_key_exists('username', $this->aGuzzelClientConfig)
-            && $this->aGuzzelClientConfig['username']
-            && array_key_exists('password', $this->aGuzzelClientConfig)
-            && $this->aGuzzelClientConfig['password']
+        if (!empty($this->oAuthEntity->username)
+            && !empty($this->oAuthEntity->password)
         )
         {
             $aOptions['auth'] = [
-                $this->aGuzzelClientConfig['username'],
-                $this->aGuzzelClientConfig['password']
+                $this->oAuthEntity->username,
+                $this->oAuthEntity->password
             ];
         }
 
