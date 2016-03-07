@@ -54,6 +54,8 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
     public function testConfigureWithoutArgumentsSuccess()
     {
         $this->oInput->getOption(Argument::exact('chronos_url'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('chronos_http_username'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('chronos_http_password'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('cache_dir'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('repository_dir'))->shouldBeCalledTimes(1)->willReturn(null);
 
@@ -62,7 +64,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(3)
+            ->shouldBeCalledTimes(5)
             ->willReturn('stringInput')
         ;
 
@@ -83,6 +85,8 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
     public function testConfigureWithArgumentsSuccess()
     {
         $this->oInput->getOption(Argument::exact('chronos_url'))->shouldBeCalledTimes(1)->willReturn('http://url.com');
+        $this->oInput->getOption(Argument::exact('chronos_http_username'))->shouldBeCalledTimes(1)->willReturn('username');
+        $this->oInput->getOption(Argument::exact('chronos_http_password'))->shouldBeCalledTimes(1)->willReturn('password');
         $this->oInput->getOption(Argument::exact('cache_dir'))->shouldBeCalledTimes(1)->willReturn('/cacheDir');
         $this->oInput->getOption(Argument::exact('repository_dir'))->shouldBeCalledTimes(1)->willReturn('/path');
 
@@ -111,6 +115,8 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
     public function testConfigureWithAndWithoutArgumentsSuccess()
     {
         $this->oInput->getOption(Argument::exact('chronos_url'))->shouldBeCalledTimes(1)->willReturn('http://url.com');
+        $this->oInput->getOption(Argument::exact('chronos_http_username'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('chronos_http_password'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('cache_dir'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('repository_dir'))->shouldBeCalledTimes(1)->willReturn(null);
 
@@ -119,7 +125,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(2)
+            ->shouldBeCalledTimes(4)
             ->willReturn('inputValue')
         ;
 
@@ -140,6 +146,8 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
     public function testConfigureWithoutArgumentsFailure()
     {
         $this->oInput->getOption(Argument::exact('chronos_url'))->shouldBeCalledTimes(1)->willReturn('http://url.com');
+        $this->oInput->getOption(Argument::exact('chronos_http_username'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('chronos_http_password'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('cache_dir'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('repository_dir'))->shouldBeCalledTimes(1)->willReturn(null);
 
@@ -148,7 +156,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(2)
+            ->shouldBeCalledTimes(4)
             ->willReturn('')
         ;
 

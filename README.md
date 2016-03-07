@@ -34,12 +34,24 @@ The parameter settings will be found under the `parameters` property:
 ```yml
 parameters:
     chronos_url: http://your.chronos.url:chronos_api_port/
+    chronos_http_username: username
+    chronos_http_password: password
     repository_dir: /path/to/your/local/job/repository
     cache_dir: /path/to/chapi/cache/dir
 ```
 
 #### chronos_url
 The chronos api url (inclusive port). Look also under the [configure command](#configure) option `-u`.
+
+#### chronos_http_username
+The chronos http username. Look also under the [configure command](#configure) option `-un`.
+
+Necessary if the setting `--http_credentials` is activated in your Chronos instance.
+
+#### chronos_http_password
+The chronos http password. Look also under the [configure command](#configure) option `-un`.
+
+Necessary if the setting `--http_credentials` is activated in your Chronos instance.
 
 #### repository_dir
 Root path to your job files. Look also under the [configure command](#configure) option `-r`.
@@ -147,6 +159,8 @@ bin/chapi configure
 
     Options:
       -u, --chronos_url[=CHRONOS_URL]        The chronos url (inclusive port)
+      -un, --chronos_http_username[=CHRONOS_HTTP_USERNAME]  The chronos username (HTTP credentials) [default: ""]
+      -p, --chronos_http_password[=CHRONOS_HTTP_PASSWORD]   The chronos password (HTTP credentials) [default: ""]
       -d, --cache_dir[=CACHE_DIR]            Path to cache directory
       -r, --repository_dir[=REPOSITORY_DIR]  Root path to your job files
       

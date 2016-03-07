@@ -10,6 +10,7 @@
 namespace Chapi\Component\Http;
 
 use Chapi\Exception\HttpConnectionException;
+use Chapi\Entity\Http\AuthEntity;
 use GuzzleHttp\ClientInterface;
 
 class HttpGuzzlClient implements HttpClientInterface
@@ -23,14 +24,21 @@ class HttpGuzzlClient implements HttpClientInterface
     private $oGuzzelClient;
 
     /**
+     * @var AuthEntity
+     */
+    private $oAuthEntity;
+
+    /**
      * @param ClientInterface $oGuzzelClient
+     * @param AuthEntity $oAuthEntity
      */
     public function __construct(
-        ClientInterface $oGuzzelClient
+        ClientInterface $oGuzzelClient,
+        AuthEntity $oAuthEntity
     )
     {
         $this->oGuzzelClient = $oGuzzelClient;
-
+        $this->oAuthEntity = $oAuthEntity;
     }
 
     /**
@@ -40,16 +48,11 @@ class HttpGuzzlClient implements HttpClientInterface
      */
     public function get($sUrl)
     {
+        $_aRequestOptions = $this->getDefaultRequestOptions();
+
         try
         {
-            $_oResponse = $this->oGuzzelClient->get(
-                $sUrl,
-                [
-                    'connect_timeout' => self::DEFAULT_CONNECTION_TIMEOUT,
-                    'timeout' => self::DEFAULT_TIMEOUT
-                ]
-            );
-
+            $_oResponse = $this->oGuzzelClient->get($sUrl, $_aRequestOptions);
             return new HttpGuzzlResponse($_oResponse);
         }
         catch (\Exception $oException)
@@ -69,12 +72,10 @@ class HttpGuzzlClient implements HttpClientInterface
      */
     public function postJsonData($sUrl, $mPostData)
     {
-        $_oRequest = $this->oGuzzelClient->createRequest(
-            'post',
-            $sUrl,
-            ['json' => $mPostData]
-        );
+        $_aRequestOptions = $this->getDefaultRequestOptions();
+        $_aRequestOptions['json'] = $mPostData;
 
+        $_oRequest = $this->oGuzzelClient->createRequest('post', $sUrl, $_aRequestOptions);
         $_oResponse = $this->oGuzzelClient->send($_oRequest);
 
         return new HttpGuzzlResponse($_oResponse);
@@ -86,7 +87,34 @@ class HttpGuzzlClient implements HttpClientInterface
      */
     public function delete($sUrl)
     {
-        $_oResponse = $this->oGuzzelClient->delete($sUrl);
+        $_aRequestOptions = $this->getDefaultRequestOptions();
+        $_oResponse = $this->oGuzzelClient->delete($sUrl, $_aRequestOptions);
         return new HttpGuzzlResponse($_oResponse);
+    }
+
+    /**
+     * Returns default options for the HTTP request.
+     * If an username and password is provided, auth
+     * header will be applied as well.
+     *
+     * @return array
+     */
+    private function getDefaultRequestOptions() {
+        $_aRequestOptions = [
+            'connect_timeout' => self::DEFAULT_CONNECTION_TIMEOUT,
+            'timeout' => self::DEFAULT_TIMEOUT
+        ];
+
+        if (!empty($this->oAuthEntity->username)
+            && !empty($this->oAuthEntity->password)
+        )
+        {
+            $_aRequestOptions['auth'] = [
+                $this->oAuthEntity->username,
+                $this->oAuthEntity->password
+            ];
+        }
+
+        return $_aRequestOptions;
     }
 }
