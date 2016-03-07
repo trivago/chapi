@@ -1,6 +1,15 @@
 # dev-master (v0.5.x)
     2016-03-07 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updated gitignore
+        * Updating dependencies 
+            - Updating symfony/console (v2.7.7 => v2.7.10)
+            - Updating symfony/dependency-injection (v2.7.7 => v2.7.10)
+            - Updating symfony/filesystem (v2.7.7 => v2.7.10)
+            - Updating symfony/config (v2.7.7 => v2.7.10)
+            - Updating monolog/monolog (1.17.2 => 1.18.0)
+            - Updating symfony/monolog-bridge (v2.7.7 => v2.7.10)
+            - Updating symfony/event-dispatcher (v2.7.7 => v2.7.10)
+            - Updating symfony/yaml (v2.7.7 => v2.7.10)         
     
     2015-12-26 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#9] - delete job first for switching job types 
