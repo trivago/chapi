@@ -36,3 +36,6 @@
 # Chapi
 /.chapiconfig*
 /*chapi.phar
+
+# vim swp files
+*.swp
