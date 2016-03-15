@@ -41,7 +41,7 @@ class DiffCompare implements DiffCompareInterface
     {
         if (is_array($mValue) || is_object($mValue))
         {
-            return trim(implode(', ', $mValue));
+            return trim(urldecode(http_build_query($mValue)));
         }
 
         return trim((string) $mValue);
