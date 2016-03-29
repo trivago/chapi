@@ -105,12 +105,7 @@ class JobEntity implements JobEntityInterface
 
         foreach ($this as $_sProperty => $mValue)
         {
-            // We need to handle environmentVariables a bit different as they are nested.
-            if ($_sProperty == 'environmentVariables') {
-                $_aReturn[$_sProperty] = urldecode(http_build_query($mValue));
-            } else {
-                $_aReturn[$_sProperty] = (is_array($mValue)) ? implode(',', $mValue) : $mValue;
-            }
+            $_aReturn[$_sProperty] = (is_array($mValue) || is_object($mValue)) ? json_encode($mValue) : $mValue;
         }
 
         return $_aReturn;

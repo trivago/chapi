@@ -32,11 +32,33 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSimpleArrayCopy()
     {
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'parents' => ['jobA', 'jobB']]);
+        $_aParents = ['jobA', 'jobB'];
+        $_oJobEntity = new JobEntity(['name' => 'jobname', 'parents' => $_aParents]);
 
         $_aSimpleArrayCopy = $_oJobEntity->getSimpleArrayCopy();
 
-        $this->assertEquals('jobA,jobB', $_aSimpleArrayCopy['parents']);
+        $this->assertEquals(json_encode($_aParents), $_aSimpleArrayCopy['parents']);
+    }
+
+    public function testGetSimpleArrayCopyWithUris()
+    {
+        $_aUris = ['http://a.url.com', 'http://b.url.com'];
+        $_oJobEntity = new JobEntity(['name' => 'jobname', 'uris' => $_aUris]);
+
+        $_aSimpleArrayCopy = $_oJobEntity->getSimpleArrayCopy();
+
+        $this->assertEquals(json_encode($_aUris), $_aSimpleArrayCopy['uris']);
+    }
+
+    public function testGetSimpleArrayCopyWithEnvironmentVariables()
+    {
+        $_oEnvironmentVariables = new \stdClass();
+        $_oEnvironmentVariables->FOO = 'bar';
+
+        $_oJobEntity = new JobEntity(['name' => 'jobname', 'environmentVariables' => [$_oEnvironmentVariables]]);
+
+        $_aSimpleArrayCopy = $_oJobEntity->getSimpleArrayCopy();
+        $this->assertEquals(json_encode([$_oEnvironmentVariables]), $_aSimpleArrayCopy['environmentVariables']);
     }
 
     public function testScheduleJobJsonSerialize()
