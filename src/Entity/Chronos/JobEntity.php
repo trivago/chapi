@@ -105,7 +105,7 @@ class JobEntity implements JobEntityInterface
 
         foreach ($this as $_sProperty => $mValue)
         {
-            $_aReturn[$_sProperty] = (is_array($mValue)) ? implode(',', $mValue) : $mValue;
+            $_aReturn[$_sProperty] = (is_array($mValue) || is_object($mValue)) ? json_encode($mValue) : $mValue;
         }
 
         return $_aReturn;

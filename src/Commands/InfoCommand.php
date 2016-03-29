@@ -47,7 +47,7 @@ class InfoCommand extends AbstractCommand
             if (is_array($_mValue))
             {
                 $_mValue = (!empty($_mValue))
-                    ? '[ ' . implode(', ', $_mValue) . ' ]'
+                    ? json_encode($_mValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
                     : '[ ]';
             }
             elseif (is_bool($_mValue))

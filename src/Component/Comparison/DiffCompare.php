@@ -41,7 +41,7 @@ class DiffCompare implements DiffCompareInterface
     {
         if (is_array($mValue) || is_object($mValue))
         {
-            return trim(implode(', ', $mValue));
+            return trim(json_encode($mValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
 
         return trim((string) $mValue);
