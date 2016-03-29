@@ -1,4 +1,13 @@
 # dev-master (v0.6.x)
+    2016-03-29 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#48] - Fixed entity handling for multidimensional settings like "uris" and "environmentVariables"
+            - Switched compare and display handling to json
+            - added unit tests for cases
+
+    2016-03-15 siccrusher <https://github.com/siccrusher>
+        * Update gitignore
+        * [issue#48] - When using environmentVariables as intended chapi wasnt able to cast them to string
+
     2016-03-07 andygrunwald  <https://github.com/andygrunwald>
         * Added support for Chronos HTTP Basic Auth
 
