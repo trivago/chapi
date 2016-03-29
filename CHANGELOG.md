@@ -1,5 +1,17 @@
 # dev-master (v0.6.x)
     2016-03-29 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies (including require-dev)
+            - Updating symfony/console (v2.7.10 => v2.7.11)
+            - Updating symfony/dependency-injection (v2.7.10 => v2.7.11)
+            - Updating symfony/filesystem (v2.7.10 => v2.7.11)
+            - Updating symfony/config (v2.7.10 => v2.7.11)
+            - Updating monolog/monolog (1.18.0 => 1.18.1)
+            - Updating symfony/monolog-bridge (v2.7.10 => v2.7.11)
+            - Updating symfony/event-dispatcher (v2.7.10 => v2.7.11)
+            - Updating symfony/yaml (v2.7.10 => v2.7.11)
+            - Updating phpunit/phpunit (4.8.23 => 4.8.24)
+            - Updating react/promise (v2.2.2 => v2.3.0)
+    
         * [issue#48] - Fixed entity handling for multidimensional settings like "uris" and "environmentVariables"
             - Switched compare and display handling to json
             - added unit tests for cases
