@@ -1,4 +1,6 @@
-# dev-master (v0.6.x)
+# dev-master (v0.7.x)
+
+# v0.6.0
     2016-03-29 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies (including require-dev)
             - Updating symfony/console (v2.7.10 => v2.7.11)
