@@ -1,4 +1,8 @@
 # dev-master (v0.7.x)
+    2016-04-04 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies (including require-dev)
+            - Removing monolog/monolog (1.18.1 => 1.18.2)
+            - Removing react/promise (v2.3.0 => v2.4.0)
 
 # v0.6.0
     2016-03-29 msiebeneicher <marc.siebeneicher@trivago.com>
