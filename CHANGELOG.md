@@ -1,5 +1,8 @@
 # dev-master (v0.7.x)
     2016-04-21 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#50] - Added a unique job name validation
+    
+    2016-04-21 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies (including require-dev)
             - Updating mikey179/vfsstream (v1.6.2 => v1.6.3)
             - Updating monolog/monolog (1.18.2 => 1.19.0)
