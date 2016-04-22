@@ -159,10 +159,19 @@ class BridgeFileSystem implements BridgeInterface
     /**
      * @param string $sJobName
      * @param string $sJobFile
+     * @throws JobLoadException
      */
     private function setJobFileToMap($sJobName, $sJobFile)
     {
         // set path to job file map
+        if (isset($this->aJobFileMap[$sJobName]))
+        {
+            throw new JobLoadException(
+                sprintf('The jobname "%s" already exists. Jobnames have to be unique - Please check your local jobfiles for duplicate entries.', $sJobName),
+                JobLoadException::ERROR_CODE_DUPLICATE_JOB_ID
+            );
+        }
+
         $this->aJobFileMap[$sJobName] = $sJobFile;
     }
 
@@ -204,6 +213,7 @@ class BridgeFileSystem implements BridgeInterface
      * @param array $aJobFiles
      * @param bool $bSetToFileMap
      * @return JobEntity[]
+     * @throws JobLoadException
      */
     private function loadJobsFromFileContent(array $aJobFiles, $bSetToFileMap)
     {

@@ -174,4 +174,28 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         $_aJobs = $_oFileSystemRepository->getJobs();
         $this->assertNull($_aJobs);
     }
+
+    /**
+     * @expectedException \Chapi\Exception\JobLoadException
+     */
+    public function testJobLoadExceptionForDuplicateJobNames()
+    {
+        $_aStructure = array(
+            'directory' => array(
+                'jobA.json' => json_encode($this->getValidScheduledJobEntity('JobA')),
+            ),
+            'jobB.json' => json_encode($this->getValidScheduledJobEntity('JobA')),
+        );
+
+        $this->oVfsRoot = vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
+
+        $_oFileSystemRepository = new BridgeFileSystem(
+            $this->oFileSystemService->reveal(),
+            $this->oCache->reveal(),
+            vfsStream::url($this->sRepositoryDir)
+        );
+
+        $_aJobs = $_oFileSystemRepository->getJobs();
+        $this->assertNull($_aJobs);
+    }
 }
