@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4f988cb888e332990091d09cfdc5525c",
+    "hash": "f2180d7163accb3c966f07a522070128",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -855,20 +855,20 @@
         },
         {
             "name": "webmozart/glob",
-            "version": "3.3.1",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/glob.git",
-                "reference": "b898d0611df3e0443536e1d9e70726e192e63aa5"
+                "reference": "3cbf63d4973cf9d780b93d2da8eec7e4a9e63bbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/glob/zipball/b898d0611df3e0443536e1d9e70726e192e63aa5",
-                "reference": "b898d0611df3e0443536e1d9e70726e192e63aa5",
+                "url": "https://api.github.com/repos/webmozart/glob/zipball/3cbf63d4973cf9d780b93d2da8eec7e4a9e63bbe",
+                "reference": "3cbf63d4973cf9d780b93d2da8eec7e4a9e63bbe",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
+                "php": "^5.3.3|^7.0",
                 "webmozart/path-util": "^2.2"
             },
             "require-dev": {
@@ -879,7 +879,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -898,7 +898,7 @@
                 }
             ],
             "description": "A PHP implementation of Ant's glob.",
-            "time": "2015-12-23 14:41:52"
+            "time": "2015-12-29 11:14:33"
         },
         {
             "name": "webmozart/path-util",

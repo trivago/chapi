@@ -25,7 +25,7 @@
     "doctrine/cache": "~1.6",
     "guzzlehttp/guzzle": "~6.2",
     "psr/log": "~1.0",
-    "webmozart/glob": "~3.1"
+    "webmozart/glob": "~4.1"
 
   },
   "require-dev": {

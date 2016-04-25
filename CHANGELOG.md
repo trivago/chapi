@@ -5,6 +5,7 @@
             - Updating doctrine/cache (v1.5.4 => v1.6.0)
             - Updating guzzlehttp/guzzle (5.3.0 => 6.2.0)
             - Updating phpunit/phpunit (4.8.24 => 5.3.2)
+            - Updating webmozart/glob (3.3.1 => 4.1.0)
 
 
 # v0.7.0
