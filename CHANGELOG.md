@@ -1,4 +1,6 @@
-# dev-master (v0.7.x)
+# dev-master (v0.8.x)
+
+# v0.7.0
     2016-04-21 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#50] - Added a unique job name validation
     
