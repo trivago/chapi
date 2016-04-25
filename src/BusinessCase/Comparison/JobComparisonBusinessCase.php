@@ -260,9 +260,6 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     private function isSchedulePropertyIdentical(JobEntity $oJobEntityA, JobEntity $oJobEntityB)
     {
         // if values are exact the same
-//var_dump(sprintf('A :: %s :: %s', $oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone));
-//var_dump(sprintf('B :: %s :: %s', $oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone));
-//var_dump('---------------');
         if ($oJobEntityA->schedule === $oJobEntityB->schedule)
         {
             $this->oLogger->debug(sprintf('%s::EXCACT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
