@@ -3,7 +3,8 @@
         * [issue#51] - Drop php 5.4 support
         * Updating dependencies (including require-dev)
             - Updating doctrine/cache (v1.5.4 => v1.6.0)
-            - Updating guzzlehttp/guzzle (v5.3.0 => v6.2.0)
+            - Updating guzzlehttp/guzzle (5.3.0 => 6.2.0)
+            - Updating phpunit/phpunit (4.8.24 => 5.3.2)
 
 
 # v0.7.0
