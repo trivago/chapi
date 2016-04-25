@@ -52,13 +52,13 @@ class HttpGuzzlClient implements HttpClientInterface
 
         try
         {
-            $_oResponse = $this->oGuzzelClient->get($sUrl, $_aRequestOptions);
+            $_oResponse = $this->oGuzzelClient->request('GET', $sUrl, $_aRequestOptions);
             return new HttpGuzzlResponse($_oResponse);
         }
         catch (\Exception $oException)
         {
             throw new HttpConnectionException(
-                sprintf('Can\'t get response from "%s"', $this->oGuzzelClient->getBaseUrl() . $sUrl),
+                sprintf('Can\'t get response from "%s"', $this->oGuzzelClient->getConfig('base_uri') . $sUrl),
                 0,
                 $oException
             );
@@ -75,8 +75,7 @@ class HttpGuzzlClient implements HttpClientInterface
         $_aRequestOptions = $this->getDefaultRequestOptions();
         $_aRequestOptions['json'] = $mPostData;
 
-        $_oRequest = $this->oGuzzelClient->createRequest('post', $sUrl, $_aRequestOptions);
-        $_oResponse = $this->oGuzzelClient->send($_oRequest);
+        $_oResponse = $this->oGuzzelClient->request('POST', $sUrl, $_aRequestOptions);
 
         return new HttpGuzzlResponse($_oResponse);
     }
@@ -88,7 +87,7 @@ class HttpGuzzlClient implements HttpClientInterface
     public function delete($sUrl)
     {
         $_aRequestOptions = $this->getDefaultRequestOptions();
-        $_oResponse = $this->oGuzzelClient->delete($sUrl, $_aRequestOptions);
+        $_oResponse = $this->oGuzzelClient->request('DELETE', $sUrl, $_aRequestOptions);
         return new HttpGuzzlResponse($_oResponse);
     }
 

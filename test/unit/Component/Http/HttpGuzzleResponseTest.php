@@ -17,7 +17,7 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->oResponseInterface = $this->prophesize('GuzzleHttp\Message\ResponseInterface');
+        $this->oResponseInterface = $this->prophesize('Psr\Http\Message\ResponseInterface');
     }
 
     public function testGetStatusCodeSuccess()
@@ -47,9 +47,9 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
     public function testJsonSuccess()
     {
         $this->oResponseInterface
-            ->json()
+            ->getBody()
             ->shouldBeCalledTimes(1)
-            ->willReturn([1,2,3]);
+            ->willReturn(json_encode([1,2,3]));
 
         $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
 

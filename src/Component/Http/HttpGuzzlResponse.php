@@ -9,18 +9,18 @@
 
 namespace Chapi\Component\Http;
 
-use GuzzleHttp\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class HttpGuzzlResponse implements HttpClientResponseInterface
 {
 
     /**
-     * @var ResponseInterface
+     * @var
      */
     private $oGuzzlResponse;
 
     /**
-     * @param ResponseInterface $oGuzzlResponse
+     * @param  $oGuzzlResponse
      */
     public function __construct(
         ResponseInterface $oGuzzlResponse
@@ -50,6 +50,6 @@ class HttpGuzzlResponse implements HttpClientResponseInterface
      */
     public function json()
     {
-        return $this->oGuzzlResponse->json();
+        return json_decode($this->getBody());
     }
 }

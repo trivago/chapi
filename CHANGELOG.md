@@ -1,4 +1,10 @@
 # dev-master (v0.8.x)
+     2016-04-21 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#51] - Drop php 5.4 support
+        * Updating dependencies (including require-dev)
+            - Updating doctrine/cache (v1.5.4 => v1.6.0)
+            - Updating guzzlehttp/guzzle (v5.3.0 => v6.2.0)
+
 
 # v0.7.0
     2016-04-21 msiebeneicher <marc.siebeneicher@trivago.com>

@@ -26,7 +26,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->oGuzzelClient = $this->prophesize('GuzzleHttp\ClientInterface');
-        $this->oGuzzlResponse = $this->prophesize('GuzzleHttp\Message\ResponseInterface');
+        $this->oGuzzlResponse = $this->prophesize('Psr\Http\Message\ResponseInterface');
     }
 
     public function testGetSuccess()
@@ -39,7 +39,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT
         ];
 
-        $this->oGuzzelClient->get(Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
+        $this->oGuzzelClient->request(Argument::exact('GET'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
@@ -63,7 +63,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             'auth' => [$_aAuth['username'], $_aAuth['password']]
         ];
 
-        $this->oGuzzelClient->get(Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
+        $this->oGuzzelClient->request(Argument::exact('GET'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
@@ -87,12 +87,12 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT
         ];
 
-        $this->oGuzzelClient->get(Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
+        $this->oGuzzelClient->request(Argument::exact('GET'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willThrow(new \Exception('test exception'))
         ;
 
-        $this->oGuzzelClient->getBaseUrl()
+        $this->oGuzzelClient->getConfig(Argument::exact('base_uri'))
             ->shouldBeCalledTimes(1)
             ->willReturn('http://www.abc.com')
         ;
@@ -114,12 +114,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
         $_oAuthEntitiy = new AuthEntity("", "");
         $_oRequestInterface = $this->prophesize('GuzzleHttp\Message\RequestInterface');
 
-        $this->oGuzzelClient->createRequest(Argument::exact('post'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
-            ->shouldBeCalledTimes(1)
-            ->willReturn($_oRequestInterface->reveal())
-        ;
-
-        $this->oGuzzelClient->send(Argument::type('GuzzleHttp\Message\RequestInterface'))
+        $this->oGuzzelClient->request(Argument::exact('POST'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
@@ -147,11 +142,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
 
         $_oRequestInterface = $this->prophesize('GuzzleHttp\Message\RequestInterface');
 
-        $this->oGuzzelClient->createRequest(Argument::exact('post'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
-            ->shouldBeCalledTimes(1)
-            ->willReturn($_oRequestInterface->reveal());
-
-        $this->oGuzzelClient->send(Argument::type('GuzzleHttp\Message\RequestInterface'))
+        $this->oGuzzelClient->request(Argument::exact('POST'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal());
 
@@ -168,7 +159,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             'timeout' => HttpGuzzlClient::DEFAULT_TIMEOUT,
         ];
         $_oAuthEntitiy = new AuthEntity("", "");
-        $this->oGuzzelClient->delete(Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
+        $this->oGuzzelClient->request(Argument::exact('DELETE'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal())
         ;
@@ -192,7 +183,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
             'auth' => [$_aAuth['username'], $_aAuth['password']]
         ];
 
-        $this->oGuzzelClient->delete(Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
+        $this->oGuzzelClient->request(Argument::exact('DELETE'), Argument::exact($_sUrl), Argument::exact($_aGuzzleOptions))
             ->shouldBeCalledTimes(1)
             ->willReturn($this->oGuzzlResponse->reveal())
         ;

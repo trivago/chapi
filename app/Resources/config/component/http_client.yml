@@ -8,7 +8,7 @@ services:
   ExternalGuzzleClientInterface:
     class: GuzzleHttp\Client
     arguments:
-      - base_url: "%chronos_url%"
+      - base_uri: "%chronos_url%"
 
   HttpAuthEntity:
     class: Chapi\Entity\Http\AuthEntity
