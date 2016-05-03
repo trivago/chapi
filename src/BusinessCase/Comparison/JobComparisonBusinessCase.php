@@ -269,23 +269,33 @@ class JobComparisonBusinessCase implements JobComparisonInterface
         // if one value is empty and not both, compare the time periods
         if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule))
         {
+            $_oIso8601EntityA = $this->oDatePeriodFactory->createIso8601Entity($oJobEntityA->schedule);
+            $_oIso8601EntityB = $this->oDatePeriodFactory->createIso8601Entity($oJobEntityB->schedule);
+
             // if the clean interval is different return directly false (P1D != P1M)
-            if (!$this->isEqualInterval($oJobEntityA->schedule, $oJobEntityB->schedule))
+            if ($_oIso8601EntityA->sInterval != $_oIso8601EntityB->sInterval)
             {
                 $this->oLogger->debug(sprintf('%s::DIFFERENT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
                 return false;
             }
 
+            // else if the interval is <= 1Min return directly true (performance)
+            if ($_oIso8601EntityA->sInterval == 'PT1M' || $_oIso8601EntityA->sInterval == 'PT1S')
+            {
+                $this->oLogger->debug(sprintf('%s::PT1M|PT1S INTERVAL FOR "%s" - Job execution should be equal', 'ScheduleComparison', $oJobEntityA->name));
+                return true;
+            }
+
             // start to check by DatePeriods
-            $_aDatesA = [];
-            $_aDatesB = [];
+            $_oLastDateTimeA = null;
+            $_oLastDateTimeB = null;
 
             /** @var \DatePeriod $_oPeriodB */
             $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
 
             /** @var \DateTime $_oDateTime */
             foreach ($_oPeriodA as $_oDateTime) {
-                $_aDatesA[] = $_oDateTime;
+                $_oLastDateTimeA = $_oDateTime;
             }
 
             /** @var \DatePeriod $_oPeriodB */
@@ -293,16 +303,11 @@ class JobComparisonBusinessCase implements JobComparisonInterface
 
             /** @var \DateTime $_oDateTime */
             foreach ($_oPeriodB as $_oDateTime) {
-                $_aDatesB[] = $_oDateTime;
+                $_oLastDateTimeB = $_oDateTime;
             }
 
-            /** @var \DateTime $_oLastDateTimeA */
-            $_oLastDateTimeA = end($_aDatesA);
-            /** @var \DateTime $_oLastDateTimeB */
-            $_oLastDateTimeB = end($_aDatesB);
-
             // $_oLastDateTimeA !== false happen if no dates are in the period
-            if ($_oLastDateTimeA !== false && $_oLastDateTimeB !== false)
+            if ($_oLastDateTimeA !== null && $_oLastDateTimeB !== null)
             {
                 $_oDiffInterval = $_oLastDateTimeA->diff($_oLastDateTimeB);
                 $_iDiffInterval = (int) $_oDiffInterval->format('%Y%M%D%H%I');
@@ -337,19 +342,6 @@ class JobComparisonBusinessCase implements JobComparisonInterface
         }
 
         return $_oDateTime;
-    }
-
-    /**
-     * @param string $sIso8601StringA
-     * @param string $sIso8601StringB
-     * @return bool
-     */
-    private function isEqualInterval($sIso8601StringA, $sIso8601StringB)
-    {
-        $_oIso8601EntityA = $this->oDatePeriodFactory->createIso8601Entity($sIso8601StringA);
-        $_oIso8601EntityB = $this->oDatePeriodFactory->createIso8601Entity($sIso8601StringB);
-
-        return ($_oIso8601EntityA->sInterval == $_oIso8601EntityB->sInterval);
     }
 
     /**
