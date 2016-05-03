@@ -90,4 +90,36 @@ class DatePeriodFactoryTest extends \PHPUnit_Framework_TestCase
             $_oDatePeriodFactory->createDatePeriod('2015-07-07T01:00:00Z/P1D')
         );
     }
+
+    public function testCreateDatePeriodWithSummerWinterTimezoneTime()
+    {
+        $_sOrgTimeZone = ini_get('date.timezone');
+
+        $_oDatePeriodFactory = new DatePeriodFactory();
+        $_sTestYear = date('Y', strtotime('-1year'));
+
+        ini_set('date.timezone', 'Europe/Berlin');
+
+        /** @var \DatePeriod $_oDatePeriod */
+        $_oDatePeriod = $_oDatePeriodFactory->createDatePeriod('R/' . $_sTestYear . '-01-30T23:00:00Z/P1M', 'UTC'); // winter time berlin (GMT+1)
+        foreach($_oDatePeriod as $_oDateTime)
+        {
+            $_oDateA = $_oDateTime;
+        }
+
+        /** @var \DatePeriod $_oDatePeriod */
+        $_oDatePeriod = $_oDatePeriodFactory->createDatePeriod('R/' . $_sTestYear . '-04-30T23:00:00Z/P1M', 'UTC'); // summer time berlin (GMT+2)
+        foreach($_oDatePeriod as $_oDateTime)
+        {
+            $_oDateB = $_oDateTime;
+        }
+
+        $this->assertEquals(
+            $_oDateA->format('Hi'),
+            $_oDateB->format('Hi')
+        );
+
+        // restore default timezone
+        ini_set('date.timezone', $_sOrgTimeZone);
+    }
 }

@@ -1,4 +1,7 @@
 # dev-master (v0.8.x)
+     2016-05-03 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Fixed bug in DatePeriodFactory for timezone init
+     
      2016-05-02 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
             - Updating myclabs/deep-copy (1.5.0 => 1.5.1)
