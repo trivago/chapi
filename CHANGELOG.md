@@ -1,6 +1,7 @@
 # dev-master (v0.8.x)
      2016-05-03 msiebeneicher <marc.siebeneicher@trivago.com>
         * Fixed bug in DatePeriodFactory for timezone init
+        * Improve performance for scheduling comparison [issue#54]  
      
      2016-05-02 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
