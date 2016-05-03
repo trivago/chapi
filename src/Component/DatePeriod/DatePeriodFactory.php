@@ -56,11 +56,11 @@ class DatePeriodFactory implements DatePeriodFactoryInterface
 
         if (!empty($sTimeZone))
         {
-            $_oDateStart = new \DateTime(str_replace('Z', '', $_oIso8601Entity->sStartTime));
-            $_oDateStart->setTimezone(new \DateTimeZone($sTimeZone));
+            $_oDateStart = new \DateTime(str_replace('Z', '', $_oIso8601Entity->sStartTime), new \DateTimeZone($sTimeZone));
         }
         else
         {
+            // todo: use a defined chronos time zone here?
             $_oDateStart = new \DateTime($_oIso8601Entity->sStartTime);
         }
 
