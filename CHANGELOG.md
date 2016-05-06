@@ -1,4 +1,14 @@
 # dev-master (v0.8.x)
+     2016-05-06 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
+            - Removing symfony/console (v3.0.4 => v3.0.5)
+            - Removing symfony/dependency-injection (v3.0.4 => v3.0.5)
+            - Removing symfony/yaml (v3.0.4 => v3.0.5)
+            - Removing symfony/filesystem (v3.0.4 => v3.0.5)
+            - Removing symfony/config (v3.0.4 => v3.0.5)
+            - Removing symfony/monolog-bridge (v3.0.4 => v3.0.5)
+            - Removing symfony/event-dispatcher (v3.0.4 => v3.0.5)
+     
      2016-05-03 msiebeneicher <marc.siebeneicher@trivago.com>
         * Fixed bug in DatePeriodFactory for timezone init
         * Improve performance for scheduling comparison [issue#54]  
