@@ -1,13 +1,28 @@
 # dev-master (v0.8.x)
+    2016-05-20 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies (including require-dev)
+            - Updating symfony/polyfill-mbstring (v1.1.1 => v1.2.0)
+            - Updating symfony/console (v3.0.5 => v3.0.6)
+            - Updating symfony/dependency-injection (v3.0.5 => v3.0.6)
+            - Updating symfony/filesystem (v3.0.5 => v3.0.6)
+            - Updating symfony/config (v3.0.5 => v3.0.6)
+            - Updating symfony/monolog-bridge (v3.0.5 => v3.0.6)
+            - Updating symfony/event-dispatcher (v3.0.5 => v3.0.6)
+            - Updating sebastian/environment (1.3.6 => 1.3.7)
+            - Updating symfony/yaml (v3.0.5 => v3.0.6)
+            - Updating phpunit/php-timer (1.0.7 => 1.0.8)
+            - Updating phpunit/phpunit (5.3.2 => 5.3.4)
+            - Updating guzzlehttp/promises (1.1.0 => 1.2.0)     
+
      2016-05-06 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
-            - Removing symfony/console (v3.0.4 => v3.0.5)
-            - Removing symfony/dependency-injection (v3.0.4 => v3.0.5)
-            - Removing symfony/yaml (v3.0.4 => v3.0.5)
-            - Removing symfony/filesystem (v3.0.4 => v3.0.5)
-            - Removing symfony/config (v3.0.4 => v3.0.5)
-            - Removing symfony/monolog-bridge (v3.0.4 => v3.0.5)
-            - Removing symfony/event-dispatcher (v3.0.4 => v3.0.5)
+            - Updating symfony/console (v3.0.4 => v3.0.5)
+            - Updating symfony/dependency-injection (v3.0.4 => v3.0.5)
+            - Updating symfony/yaml (v3.0.4 => v3.0.5)
+            - Updating symfony/filesystem (v3.0.4 => v3.0.5)
+            - Updating symfony/config (v3.0.4 => v3.0.5)
+            - Updating symfony/monolog-bridge (v3.0.4 => v3.0.5)
+            - Updating symfony/event-dispatcher (v3.0.4 => v3.0.5)
      
      2016-05-03 msiebeneicher <marc.siebeneicher@trivago.com>
         * Fixed bug in DatePeriodFactory for timezone init
