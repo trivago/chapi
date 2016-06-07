@@ -1,4 +1,14 @@
 # dev-master (v0.8.x)
+    2016-06-07 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
+            - Updating symfony/console (v3.0.6 => v3.1.0)
+            - Updating symfony/dependency-injection (v3.0.6 => v3.1.0)
+            - Updating symfony/filesystem (v3.0.6 => v3.1.0)
+            - Updating symfony/config (v3.0.6 => v3.1.0)
+            - Updating symfony/monolog-bridge (v3.0.6 => v3.1.0)
+            - Updating symfony/event-dispatcher (v3.0.6 => v3.1.0)
+            - Updating symfony/yaml (v3.0.6 => v3.1.0)
+
     2016-05-20 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies (including require-dev)
             - Updating symfony/polyfill-mbstring (v1.1.1 => v1.2.0)
