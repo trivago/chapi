@@ -55,10 +55,10 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         );
 
         // Spies
-        $this->oOutput->write(Argument::containingString('JobA'))->shouldBeCalled();
-        $this->oOutput->write(Argument::containingString('JobB'))->shouldBeCalled();
-        $this->oOutput->write(Argument::containingString('JobC'))->shouldBeCalled();
-        $this->oOutput->write(Argument::containingString('ok'))->shouldBeCalledTimes(3); // three jobs are all ok
+        $this->oOutput->writeln(Argument::containingString('JobA'))->shouldHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('JobB'))->shouldHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('JobC'))->shouldHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('ok'))->shouldHaveBeenCalledTimes(3); // three jobs are all ok
 
     }
 
@@ -89,11 +89,11 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         );
 
         // Spies
-        $this->oOutput->write(Argument::containingString('JobA'))->shouldNotBeCalled();
-        $this->oOutput->write(Argument::containingString('JobB'))->shouldBeCalled();
-        $this->oOutput->write(Argument::containingString('JobC'))->shouldNotBeCalled();
-        $this->oOutput->write(Argument::containingString('errors rate: 10%'))->shouldBeCalledTimes(1);
-        $this->oOutput->write(Argument::containingString('errors since last success:5'))->shouldBeCalledTimes(1);
+        $this->oOutput->writeln(Argument::containingString('JobA'))->shouldNotHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('JobB'))->shouldHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('JobC'))->shouldNotHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('errors rate: 10%'))->shouldHaveBeenCalledTimes(1);
+        $this->oOutput->writeln(Argument::containingString('errors since last success:5'))->shouldHaveBeenCalledTimes(1);
     }
 
     public function testProcessWithDisabledOption()
@@ -120,10 +120,10 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         );
 
         // Spies
-        $this->oOutput->write(Argument::containingString('JobA'))->shouldNotBeCalled();
-        $this->oOutput->write(Argument::containingString('JobB'))->shouldNotBeCalled();
-        $this->oOutput->write(Argument::containingString('JobC'))->shouldBeCalled();
-        $this->oOutput->write(Argument::containingString('disabled'))->shouldBeCalledTimes(1);
+        $this->oOutput->writeln(Argument::containingString('JobA'))->shouldNotHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('JobB'))->shouldNotHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('JobC'))->shouldHaveBeenCalled();
+        $this->oOutput->writeln(Argument::containingString('disabled'))->shouldHaveBeenCalledTimes(1);
     }
 }
 
