@@ -1,4 +1,20 @@
 # dev-master (v0.8.x)
+    2016-10-04 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies (including require-dev)
+            - Updating symfony/debug (v3.1.4 => v3.1.5)
+            - Updating symfony/console (v3.1.4 => v3.1.5)
+            - Updating symfony/dependency-injection (v3.1.4 => v3.1.5)
+            - Updating symfony/filesystem (v3.1.4 => v3.1.5)
+            - Updating symfony/config (v3.1.4 => v3.1.5)
+            - Updating symfony/http-foundation (v3.1.4 => v3.1.5)
+            - Updating symfony/event-dispatcher (v3.1.4 => v3.1.5)
+            - Updating symfony/http-kernel (v3.1.4 => v3.1.5)
+            - Updating symfony/monolog-bridge (v3.1.4 => v3.1.5)
+            - Updating symfony/yaml (v3.1.4 => v3.1.5)
+            - Updating phpunit/phpunit-mock-objects (3.2.7 => 3.3.0)
+            - Updating phpdocumentor/reflection-docblock (3.1.0 => 3.1.1)
+            - Updating phpunit/phpunit (5.5.4 => 5.5.6)
+    
     2016-09-21 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies (including require-dev)
             - Updating symfony/console (v3.1.0 => v3.1.4)
