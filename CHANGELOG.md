@@ -1,6 +1,13 @@
 # dev-master (v0.8.x)
+    2016-10-11 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
+            - Removing guzzlehttp/guzzle (6.2.1 => 6.2.2)
+            - Removing psr/log (1.0.1 => 1.0.2)
+            - Removing phpunit/phpunit-mock-objects (3.3.0 => 3.4.0)
+            - Removing phpunit/phpunit (5.5.6 => 5.6.1)
+            
     2016-10-04 msiebeneicher <marc.siebeneicher@trivago.com>
-        * Updating dependencies (including require-dev)
+        * Updating dependencies
             - Updating symfony/debug (v3.1.4 => v3.1.5)
             - Updating symfony/console (v3.1.4 => v3.1.5)
             - Updating symfony/dependency-injection (v3.1.4 => v3.1.5)
@@ -16,7 +23,7 @@
             - Updating phpunit/phpunit (5.5.4 => 5.5.6)
     
     2016-09-21 msiebeneicher <marc.siebeneicher@trivago.com>
-        * Updating dependencies (including require-dev)
+        * Updating dependencies
             - Updating symfony/console (v3.1.0 => v3.1.4)
             - Updating symfony/dependency-injection (v3.1.0 => v3.1.4)
             - Updating symfony/filesystem (v3.1.0 => v3.1.4)
