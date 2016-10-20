@@ -31,7 +31,7 @@ class JobCollection extends \ArrayObject
             $_mCheck = current($aJobEntities);
             if (!$_mCheck instanceof JobEntity)
             {
-                throw new \InvalidArgumentException('array have to contain JobEntity objects');
+                throw new \InvalidArgumentException('array has to contain JobEntity objects');
             }
 
             foreach ($aJobEntities as $_oJobEntity)
