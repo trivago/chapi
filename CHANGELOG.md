@@ -1,4 +1,7 @@
 # dev-master (v0.8.x)
+    2016-10-21  Frank van Gemeren <frank.vangemeren@trivago.com>
+        * Fix some typos in user-facing output
+
     2016-10-11 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
             - Removing guzzlehttp/guzzle (6.2.1 => 6.2.2)
