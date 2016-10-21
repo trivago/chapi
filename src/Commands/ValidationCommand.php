@@ -49,7 +49,7 @@ class ValidationCommand extends AbstractCommand
 
         if ($this->hasInvalidJobs($_aJobsToValidate))
         {
-            $this->oOutput->writeln("<comment>Founded invalid jobs:</comment>\n");
+            $this->oOutput->writeln("<comment>Found invalid jobs:</comment>\n");
 
             foreach ($this->getInvalidJobsByJobNames($_aJobsToValidate) as $_sJobName => $_aInvalidProperties)
             {
@@ -60,7 +60,7 @@ class ValidationCommand extends AbstractCommand
         }
 
         //else
-        $this->oOutput->writeln('<info>All checked jobs looks valid</info>');
+        $this->oOutput->writeln('<info>All checked jobs look valid</info>');
         return 0;
     }
 
