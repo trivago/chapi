@@ -9,6 +9,8 @@
 
 namespace Chapi\Entity\Chronos;
 
+use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
+
 class JobEntity implements JobEntityInterface
 {
     public $name = '';
@@ -73,6 +75,7 @@ class JobEntity implements JobEntityInterface
 
     public $constraints = [];
 
+    /** @var ContainerEntity */
     public $container = null;
 
 
@@ -88,7 +91,14 @@ class JobEntity implements JobEntityInterface
             {
                 if (property_exists($this, $_sKey))
                 {
-                    $this->{$_sKey} = $_mValue;
+                    if ($_sKey == 'container')
+                    {
+                        $this->{$_sKey} = new ContainerEntity($_mValue);
+                    }
+                    else
+                    {
+                        $this->{$_sKey} = $_mValue;    
+                    }
                 }
             }
         }

@@ -214,7 +214,7 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
     }
 
     /**
-     * @param $oContainer
+     * @param JobEntity\ContainerEntity $oContainer
      * @return bool
      *
      * @see http://mesos.github.io/chronos/docs/api.html#adding-a-docker-job
@@ -229,16 +229,30 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
             return true;
         }
 
-        if (is_object($oContainer) && property_exists($oContainer, 'type') && property_exists($oContainer, 'image'))
+        if (is_object($oContainer))
         {
-            if (property_exists($oContainer, 'volumes') && !is_array($oContainer->volumes))
+            if (empty($oContainer->type) || empty($oContainer->image))
+            {
+                return false;
+            }
+            
+            if (!is_null($oContainer->volumes) && !is_array($oContainer->volumes))
             {
                 return false;
             }
 
+            foreach ($oContainer->volumes as $_oVolume)
+            {
+                /** @var JobEntity\ContainerVolumeEntity $_oVolume  */
+                if (!in_array($_oVolume->mode, ['RO', 'RW']))
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
-
+        
         return false;
     }
 }

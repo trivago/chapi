@@ -51,18 +51,17 @@ trait JobEntityTrait
     {
         $_oJobEntity = $this->getValidScheduledJobEntity($sJobName);
 
-        $_oContainer = new \stdClass();
+        $_oContainer = new JobEntity\ContainerEntity();
         $_oContainer->type = 'DOCKER';
         $_oContainer->image = 'libmesos/ubuntu';
         $_oContainer->network = 'BRIDGE';
 
-        $_oVolume = new \stdClass();
+        $_oVolume = new JobEntity\ContainerVolumeEntity();
         $_oVolume->containerPath = '/var/log/';
         $_oVolume->hostPath = '/logs/';
         $_oVolume->mode = 'RW';
+        
         $_oContainer->volumes = [$_oVolume];
-
-        $_oContainer->forcePullImage = true;
 
         $_oJobEntity->container = $_oContainer;
         return $_oJobEntity;
