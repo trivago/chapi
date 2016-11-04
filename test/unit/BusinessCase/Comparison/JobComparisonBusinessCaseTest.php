@@ -312,5 +312,62 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $_aLocalJobUpdates
         );
     }
+
+    public function testGetLocalUpdatesForContainerDifference()
+    {
+        $_aLocalJobUpdates = $this->setupContainerDifference('image', 'foo/bar');
+        $this->assertEquals(
+            ['JobA'],
+            $_aLocalJobUpdates
+        );
+
+        $_aLocalJobUpdates = $this->setupContainerDifference('type', 'foo');
+        $this->assertEquals(
+            ['JobA'],
+            $_aLocalJobUpdates
+        );
+
+        $_JobEntityDummy = $this->getValidContainerJobEntity('JobA');
+        $_oVolume = $_JobEntityDummy->container->volumes[0];
+        $_oVolume->containerPath = 'foo/bar';
+        $_aLocalJobUpdates = $this->setupContainerDifference('volumes', [$_oVolume]);
+        $this->assertEquals(
+            ['JobA'],
+            $_aLocalJobUpdates
+        );
+    }
     
+    private function setupContainerDifference($sProperty, $mValue)
+    {
+        $this->setUp();
+        
+        $_JobEntityA1 = $this->getValidContainerJobEntity('JobA');
+        $_JobEntityA2 = $this->getValidContainerJobEntity('JobA');
+
+        $_JobEntityA2->container->{$sProperty} = $mValue;
+
+        $_aJobCollection = [
+            $_JobEntityA1
+        ];
+
+        $this->oJobRepositoryLocal
+            ->getJobs()
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_aJobCollection);
+
+        $this->oJobRepositoryChronos
+            ->getJob($_JobEntityA1->name)
+            ->shouldBeCalledTimes(1)
+            ->willReturn($_JobEntityA2);
+
+        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
+            $this->oJobRepositoryLocal->reveal(),
+            $this->oJobRepositoryChronos->reveal(),
+            $this->oDiffCompare->reveal(),
+            $this->oDatePeriodFactory,
+            $this->oLogger->reveal()
+        );
+
+        return $_oJobComparisonBusinessCase->getLocalJobUpdates();
+    }
 }

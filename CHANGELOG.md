@@ -1,5 +1,6 @@
 # dev-master (v0.8.x)
     2016-11-04 msiebeneicher <marc.siebeneicher@trivago.com>
+        * added container support
         * added constraints support
         * removed default time zone in JobEntity
         * Updating dependencies

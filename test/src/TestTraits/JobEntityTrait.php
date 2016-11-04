@@ -25,7 +25,7 @@ trait JobEntityTrait
         $_oJobEntity->description = 'description';
         $_oJobEntity->owner = 'mail@address.com';
         $_oJobEntity->ownerName = 'ownerName';
-        $_oJobEntity->schedule = 'R/2015-' . date('m') . '-01T02:00:00Z/PT30M';
+        $_oJobEntity->schedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/PT30M';
         $_oJobEntity->scheduleTimeZone = 'Europe/Berlin';
         $_oJobEntity->epsilon = 'PT5M';
 
@@ -44,6 +44,27 @@ trait JobEntityTrait
         $_oJobEntity->parents = [$sParent];
         $_oJobEntity->epsilon = 'PT5M';
 
+        return $_oJobEntity;
+    }
+
+    private function getValidContainerJobEntity($sJobName = 'JobA')
+    {
+        $_oJobEntity = $this->getValidScheduledJobEntity($sJobName);
+
+        $_oContainer = new \stdClass();
+        $_oContainer->type = 'DOCKER';
+        $_oContainer->image = 'libmesos/ubuntu';
+        $_oContainer->network = 'BRIDGE';
+
+        $_oVolume = new \stdClass();
+        $_oVolume->containerPath = '/var/log/';
+        $_oVolume->hostPath = '/logs/';
+        $_oVolume->mode = 'RW';
+        $_oContainer->volumes = [$_oVolume];
+
+        $_oContainer->forcePullImage = true;
+
+        $_oJobEntity->container = $_oContainer;
         return $_oJobEntity;
     }
 

@@ -73,6 +73,8 @@ class JobEntity implements JobEntityInterface
 
     public $constraints = [];
 
+    public $container = null;
+
 
     /**
      * @param array|object $mJobData
@@ -143,6 +145,11 @@ class JobEntity implements JobEntityInterface
         {
             unset($_aReturn['schedule']);
             unset($_aReturn['scheduleTimeZone']);
+        }
+
+        if (empty($this->container))
+        {
+            unset($_aReturn['container']);
         }
 
         unset($_aReturn['successCount']);

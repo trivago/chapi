@@ -90,6 +90,10 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
                 case 'constraints':
                     $_aValidProperties[$_sProperty] = $this->isConstraintsPropertyValid($mValue);
                     break;
+
+                case 'container':
+                    $_aValidProperties[$_sProperty] = $this->isContainerPropertyValid($mValue);
+                    break;
             }
         }
 
@@ -207,5 +211,34 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
         }
 
         return true;
+    }
+
+    /**
+     * @param $oContainer
+     * @return bool
+     *
+     * @see http://mesos.github.io/chronos/docs/api.html#adding-a-docker-job
+     * This contains the subfields for the Docker container:
+     *  type (required), image (required), forcePullImage (optional), network (optional),
+     *  and volumes (optional)
+     */
+    private function isContainerPropertyValid($oContainer)
+    {
+        if (is_null($oContainer))
+        {
+            return true;
+        }
+
+        if (is_object($oContainer) && property_exists($oContainer, 'type') && property_exists($oContainer, 'image'))
+        {
+            if (property_exists($oContainer, 'volumes') && !is_array($oContainer->volumes))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
