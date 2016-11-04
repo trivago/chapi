@@ -23,7 +23,7 @@ class JobEntity implements JobEntityInterface
 
     public $schedule = ''; // todo: move to separate entity
 
-    public $scheduleTimeZone = 'Europe/Berlin'; // todo: add time zone to config
+    public $scheduleTimeZone = '';
 
     public $parents = []; // todo: move to separate entity
 
