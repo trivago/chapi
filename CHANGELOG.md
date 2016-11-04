@@ -1,4 +1,18 @@
 # dev-master (v0.8.x)
+    2016-11-04 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
+            - Updating symfony/debug (v3.1.5 => v3.1.6)
+            - Updating symfony/console (v3.1.5 => v3.1.6)
+            - Updating symfony/dependency-injection (v3.1.5 => v3.1.6)
+            - Updating symfony/filesystem (v3.1.5 => v3.1.6)
+            - Updating symfony/config (v3.1.5 => v3.1.6)
+            - Updating symfony/http-foundation (v3.1.5 => v3.1.6)
+            - Updating symfony/event-dispatcher (v3.1.5 => v3.1.6)
+            - Updating symfony/http-kernel (v3.1.5 => v3.1.6)
+            - Updating symfony/monolog-bridge (v3.1.5 => v3.1.6)
+            - Updating doctrine/cache (v1.6.0 => v1.6.1)
+            - Updating symfony/yaml (v3.1.5 => v3.1.6)         
+
     2016-10-21  Frank van Gemeren <frank.vangemeren@trivago.com>
         * Fix some typos in user-facing output
 
