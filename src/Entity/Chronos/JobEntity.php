@@ -71,6 +71,8 @@ class JobEntity implements JobEntityInterface
 
     public $runAsUser = 'root';
 
+    public $constraints = [];
+
 
     /**
      * @param array|object $mJobData

@@ -86,6 +86,10 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
                 case 'retries':
                     $_aValidProperties[$_sProperty] = ($oJobEntity->{$_sProperty} >= 0);
                     break;
+
+                case 'constraints':
+                    $_aValidProperties[$_sProperty] = $this->isConstraintsPropertyValid($mValue);
+                    break;
             }
         }
 
@@ -160,14 +164,14 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
             {
                 $_oDateIntervalEpsilon = new \DateInterval($oJobEntity->epsilon);
                 $_iIntervalEpsilon = (int) $_oDateIntervalEpsilon->format('%Y%M%D%H%I%S');
-
+                
                 if ($_iIntervalEpsilon > 30) // if epsilon > "PT30S"
                 {
                     $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($oJobEntity->schedule);
 
                     $_oDateIntervalScheduling = new \DateInterval($_oIso8601Entity->sInterval);
                     $_iIntervalScheduling = (int) $_oDateIntervalScheduling->format('%Y%M%D%H%I%S');
-
+                    
                     return ($_iIntervalScheduling > $_iIntervalEpsilon);
                 }
 
@@ -183,5 +187,25 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
 
         // else
         return (!empty($oJobEntity->epsilon));
+    }
+
+    /**
+     * @param array $aConstraints
+     * @return bool
+     */
+    private function isConstraintsPropertyValid(array $aConstraints)
+    {
+        if (!empty($aConstraints))
+        {
+            foreach ($aConstraints as $_aConstraint)
+            {
+                if (!is_array($_aConstraint) || count($_aConstraint) != 3)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
