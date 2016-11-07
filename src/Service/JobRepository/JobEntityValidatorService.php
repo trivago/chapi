@@ -228,30 +228,25 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
         {
             return true;
         }
-
-        if (is_object($oContainer))
+        
+        if (empty($oContainer->type) || empty($oContainer->image))
         {
-            if (empty($oContainer->type) || empty($oContainer->image))
-            {
-                return false;
-            }
-            
-            if (!is_null($oContainer->volumes) && !is_array($oContainer->volumes))
-            {
-                return false;
-            }
-
-            foreach ($oContainer->volumes as $_oVolume)
-            {
-                if (!in_array($_oVolume->mode, ['RO', 'RW']))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return false;
         }
         
-        return false;
+        if (!is_array($oContainer->volumes))
+        {
+            return false;
+        }
+
+        foreach ($oContainer->volumes as $_oVolume)
+        {
+            if (!in_array($_oVolume->mode, ['RO', 'RW']))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
