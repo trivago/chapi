@@ -30,6 +30,45 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
         $_oJobEntity = new JobEntity('string');
     }
 
+    public function testInitSuccessForContainer()
+    {
+        $_aData = [
+            'name' => 'jobname',
+            'container' => [
+                'type' => 'DOCKER',
+                'image' => 'foo/bar',
+                'network' => 'BRIDGE',
+                'unknownProperty' => 'value',
+                'volumes' => [
+                    [
+                        'containerPath' => '/var/foo',
+                        'hostPath' => '/tmp/bar',
+                        'mode' => 'RO'
+                    ]
+                ]
+            ]
+        ];
+        $_oJobEntity = new JobEntity($_aData);
+
+        $this->assertEquals('jobname', $_oJobEntity->name);
+        $this->assertEquals('docker', $_oJobEntity->container->type);
+        $this->assertEquals('foo/bar', $_oJobEntity->container->image);
+        $this->assertTrue(is_array($_oJobEntity->container->volumes));
+        $this->assertFalse(property_exists($_oJobEntity->container, 'unknownProperty'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInitFailureForContainer()
+    {
+        $_aData = [
+            'name' => 'jobname',
+            'container' => 'foo'
+        ];
+        $_oJobEntity = new JobEntity($_aData);
+    }
+    
     public function testGetSimpleArrayCopy()
     {
         $_aParents = ['jobA', 'jobB'];

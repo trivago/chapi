@@ -354,4 +354,164 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
         );
     }
+
+    public function testValidationForConstraints()
+    {
+        // setup
+        $_sSchedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/PT30M';
+        $_oIso8601Entity = new Iso8601Entity($_sSchedule);
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::type('string'))
+            ->willReturn($_oIso8601Entity)
+        ;
+        
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+        
+        // invalid
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->constraints[] = ['a', 'like'];
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+        
+        
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->constraints[] = ['a', 'like', 'b'];
+        $_oJobEntity->constraints[] = ['c', 'like'];
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+        
+        
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->constraints[] = 'foo';
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+        
+        
+        // valid
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->constraints[] = ['a', 'like', 'b'];
+        $this->assertTrue(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+
+        
+        $_oJobEntity = $this->getValidScheduledJobEntity();
+        $_oJobEntity->constraints[] = ['a', 'like', 'b'];
+        $_oJobEntity->constraints[] = ['c', 'like', 'd'];
+        $this->assertTrue(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
+
+    public function testValidationForContainer()
+    {
+        // setup
+        $_sSchedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/PT30M';
+        $_oIso8601Entity = new Iso8601Entity($_sSchedule);
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::type('string'))
+            ->willReturn($_oIso8601Entity)
+        ;
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+
+        // invalid
+        $_oJobEntity = $this->getValidContainerJobEntity();
+        $_oJobEntity->container = 'foo';
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+
+
+        $_oJobEntity = $this->getValidContainerJobEntity();
+        $_oJobEntity->container->type = '';
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+
+        $_oJobEntity = $this->getValidContainerJobEntity();
+        $_oJobEntity->container->image = '';
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+
+        // valid
+        $_oJobEntity = $this->getValidContainerJobEntity();
+        $this->assertTrue(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+        
+        $_oJobEntity = $this->getValidContainerJobEntity();
+        $_oJobEntity->container->network = null;
+        $this->assertTrue(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
+
+    public function testValidationForContainerVolumes()
+    {
+        // setup
+        $_sSchedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/PT30M';
+        $_oIso8601Entity = new Iso8601Entity($_sSchedule);
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::type('string'))
+            ->willReturn($_oIso8601Entity)
+        ;
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+
+        // invalid
+        $_oJobEntity = $this->getValidContainerJobEntity();
+        $_oJobEntity->container->volumes[0]->mode = 'R';
+        $this->assertFalse(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+
+
+        // valid
+        $_oJobEntity = $this->getValidContainerJobEntity();
+        $_oJobEntity->container->volumes[0]->mode = 'RO';
+        $this->assertTrue(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+
+        $_oJobEntity = $this->getValidContainerJobEntity();
+        $_oJobEntity->container->volumes[0]->mode = 'RW';
+        $this->assertTrue(
+            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+        );
+    }
+
+    public function testGetInvalidProperties()
+    {
+        // setup
+        $_sSchedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/PT30M';
+        $_oIso8601Entity = new Iso8601Entity($_sSchedule);
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::type('string'))
+            ->willReturn($_oIso8601Entity)
+        ;
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+        
+        $_oJobEntity = $this->getValidScheduledJobEntity('JobA');
+        $_oJobEntity->container = 'foo';
+        
+        $this->assertTrue(in_array('container', $_oJobEntityValidatorService->getInvalidProperties($_oJobEntity)));
+    }
 }
