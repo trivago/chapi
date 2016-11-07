@@ -243,7 +243,6 @@ class JobEntityValidatorService implements JobEntityValidatorServiceInterface
 
             foreach ($oContainer->volumes as $_oVolume)
             {
-                /** @var JobEntity\ContainerVolumeEntity $_oVolume  */
                 if (!in_array($_oVolume->mode, ['RO', 'RW']))
                 {
                     return false;

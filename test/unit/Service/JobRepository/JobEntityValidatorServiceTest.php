@@ -493,4 +493,25 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
         );
     }
+
+    public function testGetInvalidProperties()
+    {
+        // setup
+        $_sSchedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/PT30M';
+        $_oIso8601Entity = new Iso8601Entity($_sSchedule);
+
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::type('string'))
+            ->willReturn($_oIso8601Entity)
+        ;
+
+        $_oJobEntityValidatorService = new JobEntityValidatorService(
+            $this->oDatePeriodFactory->reveal()
+        );
+        
+        $_oJobEntity = $this->getValidScheduledJobEntity('JobA');
+        $_oJobEntity->container = 'foo';
+        
+        $this->assertTrue(in_array('container', $_oJobEntityValidatorService->getInvalidProperties($_oJobEntity)));
+    }
 }

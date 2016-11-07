@@ -33,11 +33,17 @@ class ContainerVolumeEntity
         }
     }
     
+    /** @var string  */
     public $containerPath = '';
 
+    /** @var string  */
     public $hostPath = '';
 
-    // read-write and read-only.
-    // val RW, RO = Value
+    /**
+     * @var string
+     * 
+     * read-write and read-only.
+     * val RW, RO = Value
+     */
     public $mode = '';
 }
