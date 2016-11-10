@@ -13,7 +13,7 @@ use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Exception\DatePeriodException;
 
-class JobEntityValidatorService implements JobEntityValidatorServiceInterface
+class JobValidatorService implements JobValidatorServiceInterface
 {
     const REG_EX_VALID_NAME = '/^[a-zA-Z0-9_-]*$/';
 

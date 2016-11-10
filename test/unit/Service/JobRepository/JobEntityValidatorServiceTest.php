@@ -13,7 +13,7 @@ namespace ChapiTest\unit\Service\JobRepository;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\DatePeriod\Iso8601Entity;
 use Chapi\Exception\DatePeriodException;
-use Chapi\Service\JobRepository\JobEntityValidatorService;
+use Chapi\Service\JobRepository\JobValidatorService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
@@ -56,7 +56,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_oIso8601Entity)
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -74,7 +74,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_oIso8601Entity)
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -178,7 +178,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             )
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -196,7 +196,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn(false)
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -216,7 +216,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->shouldNotBeCalled()
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -227,7 +227,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsEntityValidDependencyFailure()
     {
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -253,7 +253,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_oIso8601Entity)
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -278,7 +278,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_oIso8601Entity)
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -302,7 +302,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
         ;
 
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -325,7 +325,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->shouldNotBeCalled()
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -345,7 +345,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->shouldNotBeCalled()
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -366,7 +366,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_oIso8601Entity)
         ;
         
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
         
@@ -420,7 +420,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_oIso8601Entity)
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -468,7 +468,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_oIso8601Entity)
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
 
@@ -505,7 +505,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_oIso8601Entity)
         ;
 
-        $_oJobEntityValidatorService = new JobEntityValidatorService(
+        $_oJobEntityValidatorService = new JobValidatorService(
             $this->oDatePeriodFactory->reveal()
         );
         

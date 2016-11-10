@@ -35,7 +35,7 @@ class BridgeChronos implements BridgeInterface
     private $oCache;
 
     /**
-     * @var JobEntityValidatorServiceInterface
+     * @var JobValidatorServiceInterface
      */
     private $oJobEntityValidatorService;
 
@@ -52,13 +52,13 @@ class BridgeChronos implements BridgeInterface
     /**
      * @param ApiClientInterface $oApiClient
      * @param CacheInterface $oCache
-     * @param JobEntityValidatorServiceInterface $oJobEntityValidatorService
+     * @param JobValidatorServiceInterface $oJobEntityValidatorService
      * @param LoggerInterface $oLogger
      */
     public function __construct(
         ApiClientInterface $oApiClient,
         CacheInterface $oCache,
-        JobEntityValidatorServiceInterface $oJobEntityValidatorService,
+        JobValidatorServiceInterface $oJobEntityValidatorService,
         LoggerInterface $oLogger
     )
     {

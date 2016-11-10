@@ -13,9 +13,9 @@ namespace Chapi\Service\JobRepository;
 
 use Chapi\Entity\Chronos\JobEntity;
 
-interface JobEntityValidatorServiceInterface
+interface JobValidatorServiceInterface
 {
-    const DIC_NAME = 'JobEntityValidatorServiceInterface';
+    const DIC_NAME = 'JobValidatorServiceInterface';
 
     /**
      * @param JobEntity $oJobEntity

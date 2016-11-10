@@ -14,7 +14,7 @@ services:
     arguments:
       - "@ApiClientInterface"
       - "@CacheInterface"
-      - "@JobEntityValidatorServiceInterface"
+      - "@JobValidatorServiceInterface"
       - "@LoggerInterface"
 
   JobRepositoryBridgeFileSystem:
@@ -24,8 +24,8 @@ services:
       - "@CacheInterface"
       - "%repository_dir%"
 
-  JobEntityValidatorServiceInterface:
-    class: Chapi\Service\JobRepository\JobEntityValidatorService
+  JobValidatorServiceInterface:
+    class: Chapi\Service\JobRepository\JobValidatorService
     arguments:
       - "@DatePeriodFactoryInterface"
 
