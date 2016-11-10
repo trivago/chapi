@@ -114,8 +114,14 @@ class ValidationCommand extends AbstractCommand
      */
     private function printInvalidJobProperties($sJobName, array $aInvalidProperties)
     {
-        $_sFormat = "\t<fg=red>%s:\t%s</>";
-        $this->oOutput->writeln(sprintf($_sFormat, $sJobName, implode(', ', $aInvalidProperties)));
+        $_sFormatJobName = "\t<fg=red>%s:</>";
+        $_sFormatErrMsg = "\t\t<fg=red>%s</>";
+
+        $this->oOutput->writeln(sprintf($_sFormatJobName, $sJobName));
+        foreach ($aInvalidProperties as $_sErrorMessage)
+        {
+            $this->oOutput->writeln(sprintf($_sFormatErrMsg, $_sErrorMessage));
+        }
     }
 
     /**
