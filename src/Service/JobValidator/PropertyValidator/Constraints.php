@@ -1,0 +1,52 @@
+<?php
+/**
+ * @package: chapi
+ *
+ * @author:  msiebeneicher
+ * @since:   2016-11-10
+ *
+ */
+
+
+namespace Chapi\Service\JobValidator\PropertyValidator;
+
+use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Service\JobValidator\PropertyValidatorInterface;
+
+class Constraints extends AbstractPropertyValidator implements PropertyValidatorInterface
+{
+    const DIC_NAME = 'ConstraintsValidator';
+    const MESSAGE_TEMPLATE = '"%s" contained constraint is not valid. Should be an array with three values.';
+
+    /**
+     * @inheritDoc
+     */
+    public function isValid($sProperty, JobEntity $oJobEntity)
+    {
+        return $this->returnIsValidHelper(
+            $this->isConstraintsPropertyValid($oJobEntity->{$sProperty}),
+            $sProperty,
+            self::MESSAGE_TEMPLATE
+        );
+    }
+
+    /**
+     * @param array $aConstraints
+     * @return bool
+     */
+    private function isConstraintsPropertyValid(array $aConstraints)
+    {
+        if (!empty($aConstraints))
+        {
+            foreach ($aConstraints as $_aConstraint)
+            {
+                if (!is_array($_aConstraint) || count($_aConstraint) != 3)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+}

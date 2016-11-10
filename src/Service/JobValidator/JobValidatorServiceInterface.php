@@ -27,7 +27,7 @@ interface JobValidatorServiceInterface
      * @param JobEntity $oJobEntity
      * @return array
      */
-    public function validateJobEntity(JobEntity $oJobEntity);
+    #public function validateJobEntity(JobEntity $oJobEntity);
 
     /**
      * @param JobEntity $oJobEntity

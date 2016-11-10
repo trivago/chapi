@@ -1,5 +1,42 @@
 services:
   JobValidatorServiceInterface:
-      class: Chapi\Service\JobValidator\JobValidatorService
-      arguments:
-        - "@DatePeriodFactoryInterface"
+    class: Chapi\Service\JobValidator\JobValidatorService
+    arguments:
+      - "@ValidatorFactory"
+
+  ValidatorFactory:
+    class: Chapi\Service\JobValidator\ValidatorFactory
+    arguments:
+     - "@service_container"
+
+  # validators
+  NotEmptyValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\NotEmpty
+
+  JobNameValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\JobName
+
+  EpsilonValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\Epsilon
+    arguments:
+      - "@DatePeriodFactoryInterface"
+
+  BooleanValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\IsBoolean
+
+  ScheduleValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\Schedule
+    arguments:
+      - "@DatePeriodFactoryInterface"
+
+  IsArrayValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\IsArray
+
+  RetriesValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\Retries
+
+  ConstraintsValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\Constraints
+
+  ContainerValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\Container

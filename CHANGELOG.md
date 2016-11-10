@@ -1,4 +1,8 @@
-# dev-master (v0.8.x)
+# dev-master (v0.8.1)
+    2016-11-10 msiebeneicher <marc.siebeneicher@trivago.com>
+       * moved and refactored JobValidatorService
+
+# v0.8.0
     2016-11-04 msiebeneicher <marc.siebeneicher@trivago.com>
         * added container support
         * added constraints support

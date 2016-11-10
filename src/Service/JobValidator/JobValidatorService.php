@@ -11,25 +11,45 @@ namespace Chapi\Service\JobValidator;
 
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Exception\DatePeriodException;
+use Chapi\Entity\JobValidator\ValidationResult;
 
 class JobValidatorService implements JobValidatorServiceInterface
 {
-    const REG_EX_VALID_NAME = '/^[a-zA-Z0-9_-]*$/';
-
     /**
-     * @var DatePeriodFactoryInterface
+     * @var ValidatorFactoryInterface
      */
-    private $oDatePeriodFactory;
+    private $oValidatorFactory;
 
     /**
-     * @param DatePeriodFactoryInterface $oDatePeriodFactory
+     * @var array
+     */
+    private static $aValidationMap = [
+        'name' => ValidatorFactoryInterface::NAME_VALIDATOR,
+        'command' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,
+        'description' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,
+        'owner' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,
+        'ownerName' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,
+        'epsilon' => ValidatorFactoryInterface::EPSILON_VALIDATOR,
+        'async' => ValidatorFactoryInterface::BOOLEAN_VALIDATOR,
+        'disabled' => ValidatorFactoryInterface::BOOLEAN_VALIDATOR,
+        'softError' => ValidatorFactoryInterface::BOOLEAN_VALIDATOR,
+        'highPriority' => ValidatorFactoryInterface::BOOLEAN_VALIDATOR,
+        'schedule' => ValidatorFactoryInterface::SCHEDULE_VALIDATOR,
+        'parents' => ValidatorFactoryInterface::ARRAY_VALIDATOR,
+        'retries' => ValidatorFactoryInterface::RETRY_VALIDATOR,
+        'constraints' => ValidatorFactoryInterface::CONSTRAINTS_VALIDATOR,
+        'container' => ValidatorFactoryInterface::CONTAINER_VALIDATOR,
+    ];
+
+    /**
+     * JobValidatorService constructor.
+     * @param ValidatorFactoryInterface $oValidatorFactory
      */
     public function __construct(
-        DatePeriodFactoryInterface $oDatePeriodFactory
+        ValidatorFactoryInterface $oValidatorFactory
     )
     {
-        $this->oDatePeriodFactory = $oDatePeriodFactory;
+        $this->oValidatorFactory = $oValidatorFactory;
     }
 
     /**
@@ -38,68 +58,17 @@ class JobValidatorService implements JobValidatorServiceInterface
      */
     public function isEntityValid(JobEntity $oJobEntity)
     {
-        return (!in_array(false, $this->validateJobEntity($oJobEntity)));
-    }
-
-    /**
-     * @param JobEntity $oJobEntity
-     * @return array
-     */
-    public function validateJobEntity(JobEntity $oJobEntity)
-    {
-        $_aValidProperties = [];
-
-        foreach ($oJobEntity as $_sProperty => $mValue)
+        foreach ($this->validateJobEntity($oJobEntity) as $_oValidatorResult)
         {
-            switch ($_sProperty)
+            if (!$_oValidatorResult->bIsValid)
             {
-                case 'name':
-                    $_aValidProperties[$_sProperty] = $this->isNamePropertyValid($mValue);
-                    break;
-
-                case 'command':
-                case 'description':
-                case 'owner':
-                case 'ownerName':
-                    $_aValidProperties[$_sProperty] = (!empty($oJobEntity->{$_sProperty}));
-                    break;
-
-                case 'epsilon':
-                    $_aValidProperties[$_sProperty] = $this->isEpsilonPropertyValid($oJobEntity);
-                    break;
-
-                case 'async':
-                case 'disabled':
-                case 'softError':
-                case 'highPriority':
-                    $_aValidProperties[$_sProperty] = (is_bool($oJobEntity->{$_sProperty}));
-                    break;
-
-                case 'schedule':
-                    $_aValidProperties[$_sProperty] = $this->isSchedulePropertyValid($oJobEntity);
-                    break;
-
-                case 'parents':
-                    $_aValidProperties[$_sProperty] = (is_array($oJobEntity->{$_sProperty}));
-                    break;
-
-                case 'retries':
-                    $_aValidProperties[$_sProperty] = ($oJobEntity->{$_sProperty} >= 0);
-                    break;
-
-                case 'constraints':
-                    $_aValidProperties[$_sProperty] = $this->isConstraintsPropertyValid($mValue);
-                    break;
-
-                case 'container':
-                    $_aValidProperties[$_sProperty] = $this->isContainerPropertyValid($mValue);
-                    break;
+                return false;
             }
         }
 
-        return $_aValidProperties;
+        return true;
     }
-
+    
     /**
      * @param JobEntity $oJobEntity
      * @return array
@@ -109,11 +78,11 @@ class JobValidatorService implements JobValidatorServiceInterface
         $_aValidationFields = $this->validateJobEntity($oJobEntity);
 
         $_aInvalidFields = [];
-        foreach ($_aValidationFields as $_sProperty => $_bIsValid)
+        foreach ($_aValidationFields as $_sProperty => $_oValidationResult)
         {
-            if (false == $_bIsValid)
+            if (false == $_oValidationResult->bIsValid)
             {
-                $_aInvalidFields[] = $_sProperty;
+                $_aInvalidFields[$_sProperty] = $_oValidationResult->sErrorMessage;
             }
         }
 
@@ -121,132 +90,34 @@ class JobValidatorService implements JobValidatorServiceInterface
     }
 
     /**
-     * @param string $sName
-     * @return bool
-     */
-    private function isNamePropertyValid($sName)
-    {
-        return (!empty($sName) && preg_match(self::REG_EX_VALID_NAME, $sName));
-    }
-
-    /**
      * @param JobEntity $oJobEntity
-     * @return bool
+     * @return array
      */
-    private function isSchedulePropertyValid(JobEntity $oJobEntity)
+    private function validateJobEntity(JobEntity $oJobEntity)
     {
-        if (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
+        $_aValidProperties = [];
+
+        foreach (self::$aValidationMap as $_sProperty => $_iValidator)
         {
-            return true;
+            $_aValidProperties[$_sProperty] = $this->getValidationResult($_iValidator, $_sProperty, $oJobEntity);
         }
 
-        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
-        {
-            try
-            {
-                $_oDataPeriod = $this->oDatePeriodFactory->createDatePeriod($oJobEntity->schedule, $oJobEntity->scheduleTimeZone);
-                return (false !== $_oDataPeriod);
-            }
-            catch (DatePeriodException $oException)
-            {
-                // invalid: Iso8601 is not valid and/or DatePeriodFactory is able to create a valid DatePeriod
-            }
-        }
-
-        return false;
+        return $_aValidProperties;
     }
 
     /**
+     * @param int $iValidator
+     * @param string $sProperty
      * @param JobEntity $oJobEntity
-     * @return bool
+     * @return ValidationResult
      */
-    private function isEpsilonPropertyValid(JobEntity $oJobEntity)
+    private function getValidationResult($iValidator, $sProperty, JobEntity $oJobEntity)
     {
-        if ($oJobEntity->isSchedulingJob() && !empty($oJobEntity->epsilon))
-        {
-            try
-            {
-                $_oDateIntervalEpsilon = new \DateInterval($oJobEntity->epsilon);
-                $_iIntervalEpsilon = (int) $_oDateIntervalEpsilon->format('%Y%M%D%H%I%S');
-                
-                if ($_iIntervalEpsilon > 30) // if epsilon > "PT30S"
-                {
-                    $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($oJobEntity->schedule);
-
-                    $_oDateIntervalScheduling = new \DateInterval($_oIso8601Entity->sInterval);
-                    $_iIntervalScheduling = (int) $_oDateIntervalScheduling->format('%Y%M%D%H%I%S');
-                    
-                    return ($_iIntervalScheduling > $_iIntervalEpsilon);
-                }
-
-                // if epsilon is less or equal than 30sec the not empty check is enough
-                return true;
-            }
-            catch (\Exception $_oException)
-            {
-                // can't init \DateInterval instance
-                return false;
-            }
-        }
-
-        // else
-        return (!empty($oJobEntity->epsilon));
-    }
-
-    /**
-     * @param array $aConstraints
-     * @return bool
-     */
-    private function isConstraintsPropertyValid(array $aConstraints)
-    {
-        if (!empty($aConstraints))
-        {
-            foreach ($aConstraints as $_aConstraint)
-            {
-                if (!is_array($_aConstraint) || count($_aConstraint) != 3)
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param JobEntity\ContainerEntity $oContainer
-     * @return bool
-     *
-     * @see http://mesos.github.io/chronos/docs/api.html#adding-a-docker-job
-     * This contains the subfields for the Docker container:
-     *  type (required), image (required), forcePullImage (optional), network (optional),
-     *  and volumes (optional)
-     */
-    private function isContainerPropertyValid($oContainer)
-    {
-        if (is_null($oContainer))
-        {
-            return true;
-        }
-        
-        if (empty($oContainer->type) || empty($oContainer->image))
-        {
-            return false;
-        }
-        
-        if (!is_array($oContainer->volumes))
-        {
-            return false;
-        }
-
-        foreach ($oContainer->volumes as $_oVolume)
-        {
-            if (!in_array($_oVolume->mode, ['RO', 'RW']))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        $_oValidator = $this->oValidatorFactory->getValidator($iValidator);
+        return new ValidationResult(
+            $sProperty,
+            $_oValidator->isValid($sProperty, $oJobEntity),
+            $_oValidator->getLastErrorMessage()
+        );
     }
 }
