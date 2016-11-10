@@ -1,11 +1,10 @@
 <?php
 /**
- * @package: orchestra-
+ * @package: chapi
  *
  * @author:  msiebeneicher
  * @since:   2016-11-10
  *
- * @link:    http://
  */
 
 
