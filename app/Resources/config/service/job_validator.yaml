@@ -1,0 +1,5 @@
+services:
+  JobValidatorServiceInterface:
+      class: Chapi\Service\JobValidator\JobValidatorService
+      arguments:
+        - "@DatePeriodFactoryInterface"

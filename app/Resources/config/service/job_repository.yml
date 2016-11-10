@@ -24,10 +24,5 @@ services:
       - "@CacheInterface"
       - "%repository_dir%"
 
-  JobValidatorServiceInterface:
-    class: Chapi\Service\JobValidator\JobValidatorService
-    arguments:
-      - "@DatePeriodFactoryInterface"
-
   ExternalFileSystemService:
     class: \Symfony\Component\Filesystem\Filesystem
