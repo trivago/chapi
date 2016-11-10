@@ -7,7 +7,7 @@
  *
  */
 
-namespace Chapi\Service\JobRepository;
+namespace Chapi\Service\JobValidator;
 
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobEntity;

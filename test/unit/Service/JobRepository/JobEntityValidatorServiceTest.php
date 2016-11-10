@@ -13,7 +13,7 @@ namespace ChapiTest\unit\Service\JobRepository;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\DatePeriod\Iso8601Entity;
 use Chapi\Exception\DatePeriodException;
-use Chapi\Service\JobRepository\JobValidatorService;
+use Chapi\Service\JobValidator\JobValidatorService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 

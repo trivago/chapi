@@ -12,6 +12,7 @@ namespace Chapi\Service\JobRepository;
 use Chapi\Component\Cache\CacheInterface;
 use Chapi\Component\Chronos\ApiClientInterface;
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use Psr\Log\LoggerInterface;
 
 class BridgeChronos implements BridgeInterface

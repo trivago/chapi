@@ -8,7 +8,7 @@
  */
 
 
-namespace Chapi\Service\JobRepository;
+namespace Chapi\Service\JobValidator;
 
 
 use Chapi\Entity\Chronos\JobEntity;

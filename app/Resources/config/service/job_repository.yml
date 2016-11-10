@@ -25,7 +25,7 @@ services:
       - "%repository_dir%"
 
   JobValidatorServiceInterface:
-    class: Chapi\Service\JobRepository\JobValidatorService
+    class: Chapi\Service\JobValidator\JobValidatorService
     arguments:
       - "@DatePeriodFactoryInterface"
 

@@ -13,7 +13,7 @@ namespace Chapi\Commands;
 use Chapi\Commands\AbstractCommand;
 use Chapi\Component\Command\JobUtils;
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Service\JobRepository\JobValidatorServiceInterface;
+use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
 class ValidationCommand extends AbstractCommand
