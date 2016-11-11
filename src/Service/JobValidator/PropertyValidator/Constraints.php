@@ -34,8 +34,13 @@ class Constraints extends AbstractPropertyValidator implements PropertyValidator
      * @param array $aConstraints
      * @return bool
      */
-    private function isConstraintsPropertyValid(array $aConstraints)
+    private function isConstraintsPropertyValid($aConstraints)
     {
+        if (!is_array($aConstraints) && !is_null($aConstraints))
+        {
+            return false;
+        }
+        
         if (!empty($aConstraints))
         {
             foreach ($aConstraints as $_aConstraint)
