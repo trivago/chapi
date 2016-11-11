@@ -14,7 +14,7 @@ namespace unit\Service\JobValidator\PropertyValidator;
 use Chapi\Service\JobValidator\PropertyValidator\IsArray;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
-class IsArrayTest extends \PHPUnit_Framework_TestCase
+class IsArrayTest extends AbstractValidatorTest
 {
     use JobEntityTrait;
     
@@ -50,15 +50,7 @@ class IsArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLastErrorMessageMulti()
     {
-        $_oJobEntity = $this->getValidScheduledJobEntity();
         $_oIsArray = new IsArray();
-
-        $_oJobEntity->parents = 1;
-        $this->assertFalse($_oIsArray->isValid('parents', $_oJobEntity));
-        $this->assertContains('parents', $_oIsArray->getLastErrorMessage());
-
-        $_oJobEntity->parents = [1, 2, 3];
-        $this->assertTrue($_oIsArray->isValid('parents', $_oJobEntity));
-        $this->assertEmpty($_oIsArray->getLastErrorMessage());
+        $this->handleTestGetLastErrorMessageMulti($_oIsArray, 'parents', [1, 2, 3], 1);
     }
 }

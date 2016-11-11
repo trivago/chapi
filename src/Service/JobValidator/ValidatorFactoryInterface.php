@@ -22,6 +22,7 @@ interface ValidatorFactoryInterface
     const RETRY_VALIDATOR = 64;
     const CONSTRAINTS_VALIDATOR = 128;
     const CONTAINER_VALIDATOR = 256;
+    const COMMAND_VALIDATOR = 512;
 
     /**
      * @param $iValidator

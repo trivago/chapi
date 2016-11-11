@@ -1,7 +1,8 @@
 # dev-master (v0.8.1)
-    2016-11-10 msiebeneicher <marc.siebeneicher@trivago.com>
+    2016-11-11 msiebeneicher <marc.siebeneicher@trivago.com>
        * moved and refactored JobValidatorService
        * improved `chapi validate` output
+       * added own command validation instead of simple `is not empty`
 
 # v0.8.0
     2016-11-04 msiebeneicher <marc.siebeneicher@trivago.com>

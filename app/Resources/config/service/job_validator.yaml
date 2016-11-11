@@ -40,3 +40,6 @@ services:
 
   ContainerValidator:
     class: Chapi\Service\JobValidator\PropertyValidator\Container
+
+  CommandValidator:
+    class: Chapi\Service\JobValidator\PropertyValidator\Command

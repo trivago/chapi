@@ -25,7 +25,7 @@ class JobValidatorService implements JobValidatorServiceInterface
      */
     private static $aValidationMap = [
         'name' => ValidatorFactoryInterface::NAME_VALIDATOR,
-        'command' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,
+        'command' => ValidatorFactoryInterface::COMMAND_VALIDATOR,
         'description' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,
         'owner' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,
         'ownerName' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,

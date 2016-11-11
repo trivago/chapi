@@ -11,6 +11,7 @@ namespace Chapi\Service\JobValidator;
 
 
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Service\JobValidator\PropertyValidator\Command;
 use Chapi\Service\JobValidator\PropertyValidator\Constraints;
 use Chapi\Service\JobValidator\PropertyValidator\Container;
 use Chapi\Service\JobValidator\PropertyValidator\Epsilon;
@@ -37,6 +38,7 @@ class ValidatorFactory implements ValidatorFactoryInterface
         self::RETRY_VALIDATOR => Retries::DIC_NAME,
         self::CONSTRAINTS_VALIDATOR => Constraints::DIC_NAME,
         self::CONTAINER_VALIDATOR => Container::DIC_NAME,
+        self::COMMAND_VALIDATOR => Command::DIC_NAME,
     ];
 
     /**
