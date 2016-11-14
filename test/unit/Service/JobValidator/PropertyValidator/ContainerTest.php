@@ -25,6 +25,12 @@ class ContainerTest extends AbstractValidatorTest
         $this->handleValidTestCase($_oPropertyValidator, 'container', null);
         $this->handleValidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
 
+        $_oJobEntity->container->volumes[0]->mode = 'RO';
+        $this->handleValidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+
+        $_oJobEntity->container->volumes[0]->mode = 'RW';
+        $this->handleValidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+
         $_oJobEntity->container->volumes = [];
         $this->handleValidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
     }
@@ -37,6 +43,9 @@ class ContainerTest extends AbstractValidatorTest
         $this->handleInvalidTestCase($_oPropertyValidator, 'container', []);
         $this->handleInvalidTestCase($_oPropertyValidator, 'container', 1);
         $this->handleInvalidTestCase($_oPropertyValidator, 'container', 'foo');
+
+        $_oJobEntity->container->volumes[0]->mode = 'R';
+        $this->handleInvalidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
 
         $_oJobEntity->container->volumes = new \stdClass();
         $this->handleInvalidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
