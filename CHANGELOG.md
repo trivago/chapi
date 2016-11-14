@@ -1,8 +1,15 @@
-# dev-master (v0.8.1)
+# dev-master (v0.9.0)
+
+# v0.8.1
+    2016-11-14 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
+            - Updating phpunit/phpunit (5.6.2 => 5.6.3)
+            - Updating symfony/polyfill-mbstring (v1.2.0 => v1.3.0)
+
     2016-11-11 msiebeneicher <marc.siebeneicher@trivago.com>
-       * moved and refactored JobValidatorService
-       * improved `chapi validate` output
-       * added own command validation instead of simple `is not empty`
+        * moved and refactored JobValidatorService
+        * improved `chapi validate` output
+        * added own command validation instead of simple `is not empty`
 
 # v0.8.0
     2016-11-04 msiebeneicher <marc.siebeneicher@trivago.com>
