@@ -9,8 +9,8 @@
 
 namespace Chapi\Component\Http;
 
-use Chapi\Exception\HttpConnectionException;
 use Chapi\Entity\Http\AuthEntity;
+use Chapi\Exception\HttpConnectionException;
 use GuzzleHttp\ClientInterface;
 
 class HttpGuzzlClient implements HttpClientInterface

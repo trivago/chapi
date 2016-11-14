@@ -57,7 +57,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
         ;
 
-        $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobRepository\JobEntityValidatorService');
+        $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobValidator\JobValidatorService');
 
         $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
     }

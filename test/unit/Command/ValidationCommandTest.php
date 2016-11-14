@@ -13,7 +13,7 @@ namespace unit\Command;
 use Chapi\Commands\ValidationCommand;
 use Chapi\Component\Command\JobUtilsInterface;
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Service\JobRepository\JobEntityValidatorServiceInterface;
+use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -34,7 +34,7 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->setUpCommandDependencies();
 
-        $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobRepository\JobEntityValidatorServiceInterface');
+        $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobValidator\JobValidatorServiceInterface');
 
         $this->oJobRepositoryLocale = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
     }
@@ -58,7 +58,7 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oContainer
-            ->get(Argument::exact(JobEntityValidatorServiceInterface::DIC_NAME))
+            ->get(Argument::exact(JobValidatorServiceInterface::DIC_NAME))
             ->shouldBeCalled()
             ->willReturn($this->oJobEntityValidatorService->reveal())
         ;
@@ -96,7 +96,7 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oContainer
-            ->get(Argument::exact(JobEntityValidatorServiceInterface::DIC_NAME))
+            ->get(Argument::exact(JobValidatorServiceInterface::DIC_NAME))
             ->shouldBeCalled()
             ->willReturn($this->oJobEntityValidatorService->reveal())
         ;
@@ -129,7 +129,7 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->oContainer
-            ->get(Argument::exact(JobEntityValidatorServiceInterface::DIC_NAME))
+            ->get(Argument::exact(JobValidatorServiceInterface::DIC_NAME))
             ->shouldBeCalled()
             ->willReturn($this->oJobEntityValidatorService->reveal())
         ;

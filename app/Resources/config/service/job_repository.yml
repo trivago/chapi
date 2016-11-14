@@ -14,7 +14,7 @@ services:
     arguments:
       - "@ApiClientInterface"
       - "@CacheInterface"
-      - "@JobEntityValidatorServiceInterface"
+      - "@JobValidatorServiceInterface"
       - "@LoggerInterface"
 
   JobRepositoryBridgeFileSystem:
@@ -23,11 +23,6 @@ services:
       - "@ExternalFileSystemService"
       - "@CacheInterface"
       - "%repository_dir%"
-
-  JobEntityValidatorServiceInterface:
-    class: Chapi\Service\JobRepository\JobEntityValidatorService
-    arguments:
-      - "@DatePeriodFactoryInterface"
 
   ExternalFileSystemService:
     class: \Symfony\Component\Filesystem\Filesystem

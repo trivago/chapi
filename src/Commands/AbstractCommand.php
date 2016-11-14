@@ -44,22 +44,22 @@ abstract class AbstractCommand extends Command
     private static $sHomeDir = '';
 
     /**
-    * Executes the current command.
-    *
-    * This method is not abstract because you can use this class
-    * as a concrete class. In this case, instead of defining the
-    * execute() method, you set the code to execute by passing
-    * a Closure to the setCode() method.
-    *
-    * @param InputInterface $oInput An InputInterface instance
-    * @param OutputInterface $oOutput An OutputInterface instance
-    *
-    * @return integer null or 0 if everything went fine, or an error code
-    *
-    * @throws \LogicException When this abstract method is not implemented
-    *
-    * @see setCode()
-    */
+     * Executes the current command.
+     *
+     * This method is not abstract because you can use this class
+     * as a concrete class. In this case, instead of defining the
+     * execute() method, you set the code to execute by passing
+     * a Closure to the setCode() method.
+     *
+     * @param InputInterface $oInput An InputInterface instance
+     * @param OutputInterface $oOutput An OutputInterface instance
+     *
+     * @return integer null or 0 if everything went fine, or an error code
+     *
+     * @throws \LogicException When this abstract method is not implemented
+     *
+     * @see setCode()
+     */
     protected function execute(InputInterface $oInput, OutputInterface $oOutput)
     {
         $this->oInput = $oInput;
