@@ -23,22 +23,27 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
      * @param string $sProperty
      * @param mixed $mValidValue
      * @param mixed $mInvalidValue
+     * @param JobEntity|null $oJobEntity
      */
     protected function handleErrorMessageMultiTestCase(
         PropertyValidatorInterface $oValidator,
         $sProperty,
         $mValidValue,
-        $mInvalidValue
+        $mInvalidValue,
+        JobEntity $oJobEntity = null
     )
     {
-        $_oJobEntity = $this->getValidScheduledJobEntity();
-
-        $_oJobEntity->{$sProperty} = $mInvalidValue;
-        $this->assertFalse($oValidator->isValid($sProperty, $_oJobEntity));
+        if (is_null($oJobEntity))
+        {
+            $oJobEntity = $this->getValidScheduledJobEntity();
+        }
+        
+        $oJobEntity->{$sProperty} = $mInvalidValue;
+        $this->assertFalse($oValidator->isValid($sProperty, $oJobEntity));
         $this->assertContains($sProperty, $oValidator->getLastErrorMessage());
 
-        $_oJobEntity->{$sProperty} = $mValidValue;
-        $this->assertTrue($oValidator->isValid($sProperty, $_oJobEntity));
+        $oJobEntity->{$sProperty} = $mValidValue;
+        $this->assertTrue($oValidator->isValid($sProperty, $oJobEntity));
         $this->assertEmpty($oValidator->getLastErrorMessage());
     }
 
@@ -60,7 +65,6 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
             $oJobEntity = $this->getValidScheduledJobEntity();    
         }
         
-
         $oJobEntity->{$sProperty} = $mValidValue;
         $this->assertTrue($oValidator->isValid($sProperty, $oJobEntity));
         $this->assertEmpty($oValidator->getLastErrorMessage());
@@ -84,8 +88,6 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
             $oJobEntity = $this->getValidScheduledJobEntity();
         }
         
-        $oJobEntity = $this->getValidScheduledJobEntity();
-
         $oJobEntity->{$sProperty} = $mInvalidValue;
         $this->assertFalse($oValidator->isValid($sProperty, $oJobEntity));
         $this->assertContains($sProperty, $oValidator->getLastErrorMessage());
