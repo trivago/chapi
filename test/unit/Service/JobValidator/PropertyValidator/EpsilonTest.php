@@ -35,6 +35,18 @@ class EpsilonTest extends AbstractValidatorTest
         
         $this->handleValidTestCase($_oPropertyValidator, 'epsilon', 'PT5M', $_oJobEntity);
         $this->handleValidTestCase($_oPropertyValidator, 'epsilon', 'PT15M', $_oJobEntity);
+
+        // additional test case
+        $_oJobEntity= $this->setUpEntityByInterval('PT30S');
+        $_oPropertyValidator = new Epsilon($this->oDatePeriodFactory->reveal());
+
+        $this->handleValidTestCase($_oPropertyValidator, 'epsilon', 'PT30S', $_oJobEntity);
+
+        // spies
+        $this->oDatePeriodFactory
+            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+            ->shouldNotHaveBeenCalled()
+        ;
     }
 
     public function testIsValidFailure()
@@ -46,6 +58,7 @@ class EpsilonTest extends AbstractValidatorTest
         $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', 'PT60M', $_oJobEntity);
         $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', null, $_oJobEntity);
         $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', 'foo', $_oJobEntity);
+        $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', 30, $_oJobEntity);
     }
 
     public function testGetLastErrorMessageMulti()

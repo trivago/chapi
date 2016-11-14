@@ -11,6 +11,7 @@
 namespace unit\Service\JobValidator\PropertyValidator;
 
 
+use Chapi\Exception\DatePeriodException;
 use Chapi\Service\JobValidator\PropertyValidator\Schedule;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
@@ -72,7 +73,29 @@ class ScheduleTest extends AbstractValidatorTest
             ->createDatePeriod(Argument::type('string'), Argument::type('string'))
             ->shouldHaveBeenCalledTimes(1)
         ;
+    }
+
+    public function testIsValidFailureWithException()
+    {
+        $this->oDatePeriodFactory
+            ->createDatePeriod(Argument::type('string'), Argument::type('string'))
+            ->willThrow(
+                new DatePeriodException('test exception')
+            )
+        ;
+
+        $_oPropertyValidator = new Schedule($this->oDatePeriodFactory->reveal());
+        $this->handleInvalidTestCase($_oPropertyValidator, 'schedule', 'notSupportedString');
+    }
+
+    public function testIsValidFailureForDependencyJobWithScheduling()
+    {
+        $_oPropertyValidator = new Schedule($this->oDatePeriodFactory->reveal());
         
+        // test !empty schedule property
+        $_oJobEntity = $this->getValidDependencyJobEntity();
+        $_oJobEntity->schedule = 'R/2015-09-01T02:00:00Z/P1M';
+        $this->handleInvalidTestCase($_oPropertyValidator, 'jobname', 'foo', $_oJobEntity);
     }
 
     public function testGetLastErrorMessageMulti()

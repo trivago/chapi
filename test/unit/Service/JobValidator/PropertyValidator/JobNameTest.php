@@ -30,6 +30,8 @@ class JobNameTest extends AbstractValidatorTest
         $this->handleInvalidTestCase($_oPropertyValidator, 'jobname', 'job name');
         $this->handleInvalidTestCase($_oPropertyValidator, 'jobname', '');
         $this->handleInvalidTestCase($_oPropertyValidator, 'jobname', 'job^name');
+        $this->handleInvalidTestCase($_oPropertyValidator, 'jobname', 'job.name');
+        $this->handleInvalidTestCase($_oPropertyValidator, 'jobname', 'job:name');
         $this->handleInvalidTestCase($_oPropertyValidator, 'jobname', false);
     }
 
