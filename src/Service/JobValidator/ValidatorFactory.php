@@ -10,7 +10,6 @@
 namespace Chapi\Service\JobValidator;
 
 
-use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobValidator\PropertyValidator\Command;
 use Chapi\Service\JobValidator\PropertyValidator\Constraints;
 use Chapi\Service\JobValidator\PropertyValidator\Container;
