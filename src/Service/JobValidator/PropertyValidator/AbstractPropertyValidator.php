@@ -21,7 +21,7 @@ abstract class AbstractPropertyValidator implements PropertyValidatorInterface
     /**
      * @inheritDoc
      */
-    public abstract function isValid($sProperty, JobEntity $oJobEntity);
+    abstract public function isValid($sProperty, JobEntity $oJobEntity);
     
     /**
      * @inheritDoc
