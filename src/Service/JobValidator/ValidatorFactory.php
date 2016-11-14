@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ValidatorFactory implements ValidatorFactoryInterface
 {
     /**
-     * @var PropertyValidatorInterface[]
+     * @var string[]
      */
     private static $aValidatorMap = [
         self::NOT_EMPTY_VALIDATOR => NotEmpty::DIC_NAME,
