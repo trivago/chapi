@@ -1,4 +1,32 @@
 # dev-master (v0.9.0)
+    2016-11-29 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
+            - Updating symfony/debug (v3.1.6 => v3.1.7)
+            - Updating symfony/console (v3.1.6 => v3.1.7)
+            - Updating symfony/dependency-injection (v3.1.6 => v3.1.7)
+            - Updating symfony/filesystem (v3.1.6 => v3.1.7)
+            - Updating symfony/config (v3.1.6 => v3.1.7)
+            - Updating symfony/http-foundation (v3.1.6 => v3.1.7)
+            - Updating symfony/event-dispatcher (v3.1.6 => v3.1.7)
+            - Updating symfony/http-kernel (v3.1.6 => v3.1.7)
+            - Updating monolog/monolog (1.21.0 => 1.22.0)
+            - Updating symfony/monolog-bridge (v3.1.6 => v3.1.7)
+            - Updating symfony/yaml (v3.1.6 => v3.1.7)
+            - Updating sebastian/version (2.0.0 => 2.0.1)
+            - Updating sebastian/recursion-context (1.0.2 => 2.0.0)
+            - Updating sebastian/object-enumerator (1.0.0 => 2.0.0)
+            - Updating sebastian/exporter (1.2.2 => 2.0.0)
+            - Updating sebastian/environment (1.3.8 => 2.0.0)
+            - Updating sebastian/comparator (1.2.0 => 1.2.2)
+            - Updating phpunit/phpunit-mock-objects (3.4.0 => 3.4.2)
+            - Updating phpunit/php-file-iterator (1.4.1 => 1.4.2)
+            - Updating phpunit/php-token-stream (1.4.8 => 1.4.9)
+            - Updating phpunit/php-code-coverage (4.0.2 => 4.0.3)
+            - Updating webmozart/assert (1.1.0 => 1.2.0)
+            - Updating phpdocumentor/type-resolver (0.2 => 0.2.1)
+            - Updating phpspec/prophecy (v1.6.1 => v1.6.2)
+            - Updating phpunit/phpunit (5.6.3 => 5.6.7)
+            - Updating guzzlehttp/promises (1.2.0 => 1.3.0)
 
 # v0.8.1
     2016-11-14 msiebeneicher <marc.siebeneicher@trivago.com>
@@ -38,7 +66,7 @@
             - Removing psr/log (1.0.1 => 1.0.2)
             - Removing phpunit/phpunit-mock-objects (3.3.0 => 3.4.0)
             - Removing phpunit/phpunit (5.5.6 => 5.6.1)
-            
+
     2016-10-04 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
             - Updating symfony/debug (v3.1.4 => v3.1.5)
@@ -54,7 +82,7 @@
             - Updating phpunit/phpunit-mock-objects (3.2.7 => 3.3.0)
             - Updating phpdocumentor/reflection-docblock (3.1.0 => 3.1.1)
             - Updating phpunit/phpunit (5.5.4 => 5.5.6)
-    
+
     2016-09-21 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
             - Updating symfony/console (v3.1.0 => v3.1.4)
@@ -115,15 +143,15 @@
             - Updating symfony/config (v3.0.4 => v3.0.5)
             - Updating symfony/monolog-bridge (v3.0.4 => v3.0.5)
             - Updating symfony/event-dispatcher (v3.0.4 => v3.0.5)
-     
+
      2016-05-03 msiebeneicher <marc.siebeneicher@trivago.com>
         * Fixed bug in DatePeriodFactory for timezone init
         * Improve performance for scheduling comparison [issue#54]  
-     
+
      2016-05-02 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
             - Updating myclabs/deep-copy (1.5.0 => 1.5.1)
-     
+
      2016-04-21 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#51] - Drop php 5.4 support
         * Updating dependencies (including require-dev)
@@ -138,12 +166,12 @@
 # v0.7.0
     2016-04-21 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#50] - Added a unique job name validation
-    
+
     2016-04-21 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies (including require-dev)
             - Updating mikey179/vfsstream (v1.6.2 => v1.6.3)
             - Updating monolog/monolog (1.18.2 => 1.19.0)
-            
+
     2016-04-04 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies (including require-dev)
             - Updating monolog/monolog (1.18.1 => 1.18.2)
@@ -162,7 +190,7 @@
             - Updating symfony/yaml (v2.7.10 => v2.7.11)
             - Updating phpunit/phpunit (4.8.23 => 4.8.24)
             - Updating react/promise (v2.2.2 => v2.3.0)
-    
+
         * [issue#48] - Fixed entity handling for multidimensional settings like "uris" and "environmentVariables"
             - Switched compare and display handling to json
             - added unit tests for cases
@@ -176,7 +204,7 @@
 
     2016-03-07 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updated gitignore
-        * Updating dependencies 
+        * Updating dependencies
             - Updating symfony/console (v2.7.7 => v2.7.10)
             - Updating symfony/dependency-injection (v2.7.7 => v2.7.10)
             - Updating symfony/filesystem (v2.7.7 => v2.7.10)
@@ -185,22 +213,22 @@
             - Updating symfony/monolog-bridge (v2.7.7 => v2.7.10)
             - Updating symfony/event-dispatcher (v2.7.7 => v2.7.10)
             - Updating symfony/yaml (v2.7.7 => v2.7.10)         
-    
+
     2015-12-26 msiebeneicher <marc.siebeneicher@trivago.com>
-        * [issue#9] - delete job first for switching job types 
-    
+        * [issue#9] - delete job first for switching job types
+
     2015-12-25 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
            - Updating doctrine/cache (v1.5.2 => v1.5.4)
            - Updating webmozart/glob (3.1.1 => 3.3.1)
 
-    
+
     2015-12-17 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
           - Updating doctrine/cache (v1.5.1 => v1.5.2)
           - Updating webmozart/path-util (2.2.3 => 2.3.0)
           - Installing doctrine/instantiator (1.0.5)
-    
+
 # v0.5.0  
     2015-11-25 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
@@ -211,7 +239,7 @@
 
     2015-11-24 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#41] - Provided possibility to handle two different chronos job repositories
-        
+
         * Updating dependencies (including require-dev)
             - Updating symfony/console (v2.7.5 => v2.7.7)
             - Updating symfony/dependency-injection (v2.7.5 => v2.7.7)
@@ -223,10 +251,10 @@
             - Updating symfony/yaml (v2.7.5 => v2.7.7)
             - Updating phpunit/phpunit (4.8.14 => 4.8.18)    
         * Updated CommandTestTrait for symfony console change
-    
+
     2015-10-26 msiebeneicher <marc.siebeneicher@trivago.com>
         * Added own exception if local jobs are unable to load in case of invalid json strings
-    
+
     2015-10-22 msiebeneicher <marc.siebeneicher@trivago.com>
         * Update dependencies
           - Installing sebastian/global-state (1.1.1)
