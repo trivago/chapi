@@ -11,21 +11,28 @@
 namespace Chapi\Service\JobValidator;
 
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 
 interface JobValidatorServiceInterface
 {
     const DIC_NAME = 'JobValidatorServiceInterface';
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @return bool
      */
-    public function isEntityValid(JobEntity $oJobEntity);
+    public function isEntityValid(ChronosJobEntity $oJobEntity);
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @return array
      */
-    public function getInvalidProperties(JobEntity $oJobEntity);
+
+    public function validateJobEntity(ChronosJobEntity $oJobEntity);
+
+    /**
+     * @param ChronosJobEntity $oJobEntity
+     * @return array
+     */
+    public function getInvalidProperties(ChronosJobEntity $oJobEntity);
 }

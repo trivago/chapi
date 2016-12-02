@@ -12,13 +12,13 @@ namespace ChapiTest\src\TestTraits;
 
 
 use Chapi\Entity\Chronos\JobCollection;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 
 trait JobEntityTrait
 {
     private function getValidScheduledJobEntity($sJobName = 'JobA')
     {
-        $_oJobEntity = new JobEntity();
+        $_oJobEntity = new ChronosJobEntity();
 
         $_oJobEntity->name = $sJobName;
         $_oJobEntity->command = 'echo test';
@@ -34,7 +34,7 @@ trait JobEntityTrait
 
     private function getValidDependencyJobEntity($sJobName = 'JobA', $sParent = 'JobB')
     {
-        $_oJobEntity = new JobEntity();
+        $_oJobEntity = new ChronosJobEntity();
 
         $_oJobEntity->name = $sJobName;
         $_oJobEntity->command = 'echo test';

@@ -9,9 +9,11 @@
 
 namespace Chapi\Entity\Chronos;
 
-use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
 
-class JobEntity implements JobEntityInterface
+use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
+use Chapi\Entity\JobEntityInterface;
+
+class ChronosJobEntity implements JobEntityInterface
 {
     public $name = '';
 

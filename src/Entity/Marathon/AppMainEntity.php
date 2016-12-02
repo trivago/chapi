@@ -8,7 +8,9 @@
 
 namespace Chapi\Entity\Marathon;
 
-class JobMainEntity
+use Chapi\Entity\JobEntityInterface;
+
+class AppMainEntity implements JobEntityInterface
 {
     public $id = "";
 
@@ -76,5 +78,53 @@ class JobMainEntity
      * @var IpAddress
      */
     public $ipAddress = null;
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+
+        //TODO: test data for now
+        return ["hello" => "world"];
+    }
+
+    /**
+     * @inheritdoc
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        // what does this do? Return an array? But how do nested objects come into play?
+        return new \ArrayIterator($this);
+    }
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function getSimpleArrayCopy()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     * @return bool
+     */
+    public function isSchedulingJob()
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     * @return bool
+     */
+    public function isDependencyJob()
+    {
+        return false;
+    }
 
 }

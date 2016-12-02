@@ -11,7 +11,8 @@ namespace Chapi\Service\JobRepository;
 
 
 use Chapi\Entity\Chronos\JobCollection;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
 
 class JobRepository implements JobRepositoryInterface
 {
@@ -38,7 +39,7 @@ class JobRepository implements JobRepositoryInterface
 
     /**
      * @param string $sJobName
-     * @return \Chapi\Entity\Chronos\JobEntity
+     * @return \Chapi\Entity\Chronos\ChronosJobEntity
      */
     public function getJob($sJobName)
     {
@@ -48,7 +49,8 @@ class JobRepository implements JobRepositoryInterface
             return $_aJobs[$sJobName];
         }
 
-        return new JobEntity();
+        // return new ChronosJobEntity();
+        return null;
     }
 
     /**
@@ -77,10 +79,10 @@ class JobRepository implements JobRepositoryInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function addJob(JobEntity $oJobEntity)
+    public function addJob(JobEntityInterface $oJobEntity)
     {
         if ($this->oRepositoryBridge->addJob($oJobEntity))
         {
@@ -96,10 +98,10 @@ class JobRepository implements JobRepositoryInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function updateJob(JobEntity $oJobEntity)
+    public function updateJob(JobEntityInterface $oJobEntity)
     {
         return $this->oRepositoryBridge->updateJob($oJobEntity);
     }

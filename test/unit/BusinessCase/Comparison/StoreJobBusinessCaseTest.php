@@ -13,7 +13,7 @@ namespace unit\BusinessCase\Comparison;
 
 
 use Chapi\BusinessCase\JobManagement\StoreJobBusinessCase;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
@@ -486,7 +486,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->oJobRepositoryChronos->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityB1);
 
         $this->oJobRepositoryLocal->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA2);
-        $this->oJobRepositoryLocal->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn(new JobEntity());
+        $this->oJobRepositoryLocal->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn(new ChronosJobEntity());
 
         $this->oJobRepositoryLocal->addJob(Argument::exact($_oJobEntityB1))->shouldBeCalledTimes(1)->willReturn(true);
 

@@ -11,7 +11,7 @@
 namespace Chapi\Component\Chronos;
 
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 
 interface ApiClientInterface
 {
@@ -24,16 +24,16 @@ interface ApiClientInterface
     public function listingJobs();
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @return bool
      */
-    public function addingJob(JobEntity $oJobEntity);
+    public function addingJob(ChronosJobEntity $oJobEntity);
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @return bool
      */
-    public function updatingJob(JobEntity $oJobEntity);
+    public function updatingJob(ChronosJobEntity $oJobEntity);
 
     /**
      * @param string $sJobName
