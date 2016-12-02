@@ -10,7 +10,7 @@
 
 namespace Chapi\Service\JobDependencies;
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
 class JobDependencyService implements JobDependencyServiceInterface
@@ -106,7 +106,7 @@ class JobDependencyService implements JobDependencyServiceInterface
         // reset job tree in case of reloading
         $aJobTree = [];
 
-        /** @var JobEntity $_oJobEntity */
+        /** @var ChronosJobEntity $_oJobEntity */
         foreach ($oJobRepository->getJobs() as $_oJobEntity)
         {
             if ($_oJobEntity->isDependencyJob())

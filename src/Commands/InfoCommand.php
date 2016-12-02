@@ -37,6 +37,11 @@ class InfoCommand extends AbstractCommand
         $_sJobName = $this->oInput->getArgument('jobName');
         $_oJobEntity = $_oJobRepositoryChronos->getJob($_sJobName);
 
+        if (!$_oJobEntity) {
+            $this->oOutput->writeln(sprintf("<fg=red>%s</>", "Could not find the job."));
+            return 1;
+        }
+
         $this->oOutput->writeln(sprintf("\n<comment>info '%s'</comment>\n", $_oJobEntity->name));
 
         $_oTable = new Table($this->oOutput);

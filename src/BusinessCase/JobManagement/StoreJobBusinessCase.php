@@ -10,7 +10,7 @@
 namespace Chapi\BusinessCase\JobManagement;
 
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
@@ -111,7 +111,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
             }
         }
 
-        /** @var JobEntity $_oJobEntity */
+        /** @var ChronosJobEntity $_oJobEntity */
         foreach ($_aChronosJobs as $_oJobEntity)
         {
             $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($_oJobEntity->name);
@@ -277,10 +277,10 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
     }
 
     /**
-     * @param JobEntity $oEntity
+     * @param ChronosJobEntity $oEntity
      * @return bool
      */
-    private function isAbleToStoreEntity(JobEntity $oEntity)
+    private function isAbleToStoreEntity(ChronosJobEntity $oEntity)
     {
         if ($this->oJobIndexService->isJobInIndex($oEntity->name))
         {

@@ -9,30 +9,30 @@
 
 namespace Chapi\Service\JobRepository;
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\JobEntityInterface;
 
 interface BridgeInterface
 {
     /**
-     * @return JobEntity[]
+     * @return JobEntityInterface[]
      */
     public function getJobs();
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function addJob(JobEntity $oJobEntity);
+    public function addJob(JobEntityInterface $oJobEntity);
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function updateJob(JobEntity $oJobEntity);
+    public function updateJob(JobEntityInterface $oJobEntity);
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function removeJob(JobEntity $oJobEntity);
+    public function removeJob(JobEntityInterface $oJobEntity);
 }

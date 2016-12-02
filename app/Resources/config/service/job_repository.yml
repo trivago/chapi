@@ -9,6 +9,11 @@ services:
     arguments:
       - "@JobRepositoryBridgeFileSystem"
 
+  JobRepositoryMarathon:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeMarathon"
+
   JobRepositoryBridgeChronos:
     class: Chapi\Service\JobRepository\BridgeChronos
     arguments:
@@ -23,6 +28,15 @@ services:
       - "@ExternalFileSystemService"
       - "@CacheInterface"
       - "%repository_dir%"
+
+  JobRepositoryBridgeMarathon:
+    class: Chapi\Service\JobRepository\BridgeMarathon
+
+
+  JobEntityValidatorServiceInterface:
+    class: Chapi\Service\JobRepository\JobEntityValidatorService
+    arguments:
+      - "@DatePeriodFactoryInterface"
 
   ExternalFileSystemService:
     class: \Symfony\Component\Filesystem\Filesystem

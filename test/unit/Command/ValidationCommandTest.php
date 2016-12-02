@@ -12,8 +12,9 @@ namespace unit\Command;
 
 use Chapi\Commands\ValidationCommand;
 use Chapi\Component\Command\JobUtilsInterface;
-use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Service\JobValidator\JobValidatorServiceInterface;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Service\JobRepository\JobEntityValidatorServiceInterface;
+
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -49,7 +50,7 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
         $this->oJobRepositoryLocale->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobB'));
         $this->oJobRepositoryLocale->getJob(Argument::exact('JobC'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobC'));
 
-        $this->oJobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\Chronos\JobEntity'))->shouldBeCalledTimes(3)->willReturn(true);
+        $this->oJobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(true);
 
         $this->oContainer
             ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_FILESYSTEM))
@@ -86,8 +87,8 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
         $this->oJobRepositoryLocale->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobB'));
         $this->oJobRepositoryLocale->getJob(Argument::exact('JobC'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobC'));
 
-        $this->oJobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\Chronos\JobEntity'))->shouldBeCalledTimes(3)->willReturn(false);
-        $this->oJobEntityValidatorService->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))->shouldBeCalledTimes(3)->willReturn(['epsilon', 'command']);
+        $this->oJobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(false);
+        $this->oJobEntityValidatorService->getInvalidProperties(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(['epsilon', 'command']);
 
         $this->oContainer
             ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_FILESYSTEM))

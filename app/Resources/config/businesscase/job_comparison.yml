@@ -4,6 +4,7 @@ services:
     arguments:
       - "@JobRepositoryFileSystem"
       - "@JobRepositoryChronos"
+      - "@JobRepositoryMarathon"
       - "@DiffCompareInterface"
       - "@DatePeriodFactoryInterface"
       - "@LoggerInterface"

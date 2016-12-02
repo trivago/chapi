@@ -10,7 +10,8 @@
 namespace Chapi\Service\JobRepository;
 
 use Chapi\Component\Cache\CacheInterface;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Exception\JobLoadException;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Glob;
@@ -59,7 +60,7 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @return JobEntity[]
+     * @return JobEntityInterface[]
      */
     public function getJobs()
     {
@@ -73,10 +74,11 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
      * @return bool
+     * @throws JobLoadException
      */
-    public function addJob(JobEntity $oJobEntity)
+    public function addJob(JobEntityInterface $oJobEntity)
     {
         // generate job file path by name
         $_sJobFile = $this->generateJobFilePath($oJobEntity);
@@ -91,10 +93,10 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function updateJob(JobEntity $oJobEntity)
+    public function updateJob(JobEntityInterface $oJobEntity)
     {
         return $this->hasDumpFile(
             $this->getJobFileFromMap($oJobEntity->name),
@@ -103,10 +105,10 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function removeJob(JobEntity $oJobEntity)
+    public function removeJob(JobEntityInterface $oJobEntity)
     {
         $_sJobFile = $this->getJobFileFromMap($oJobEntity->name);
         $this->oFileSystemService->remove($_sJobFile);
@@ -115,10 +117,10 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @return string
      */
-    private function generateJobFilePath(JobEntity $oJobEntity)
+    private function generateJobFilePath(ChronosJobEntity $oJobEntity)
     {
         $_sJobPath = str_replace(
             $this->aDirectorySeparators,
@@ -212,7 +214,7 @@ class BridgeFileSystem implements BridgeInterface
     /**
      * @param array $aJobFiles
      * @param bool $bSetToFileMap
-     * @return JobEntity[]
+     * @return ChronosJobEntity[]
      * @throws JobLoadException
      */
     private function loadJobsFromFileContent(array $aJobFiles, $bSetToFileMap)
@@ -232,7 +234,7 @@ class BridgeFileSystem implements BridgeInterface
 
             if ($_aTemp)
             {
-                $_oJobEntity = new JobEntity($_aTemp);
+                $_oJobEntity = new ChronosJobEntity($_aTemp);
                 $_aJobs[] = $_oJobEntity;
 
                 if ($bSetToFileMap)
@@ -255,10 +257,10 @@ class BridgeFileSystem implements BridgeInterface
 
     /**
      * @param string $sJobFile
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @return bool
      */
-    private function hasDumpFile($sJobFile, JobEntity $oJobEntity)
+    private function hasDumpFile($sJobFile, ChronosJobEntity $oJobEntity)
     {
         $this->oFileSystemService->dumpFile(
             $sJobFile,

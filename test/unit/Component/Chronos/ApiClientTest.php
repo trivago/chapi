@@ -10,7 +10,7 @@
 namespace unit\Component\Chronos;
 
 use Chapi\Component\Chronos\ApiClient;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Prophecy\Argument;
 
 class ApiClientTest extends \PHPUnit_Framework_TestCase
@@ -70,7 +70,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
     // --------------------
     public function testAddingScheduleJobSuccess()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
@@ -87,7 +87,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
 
     public function testAddingDependencyJobSuccess()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->parents = ['jobA', 'jobB'];
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
@@ -104,7 +104,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
 
     public function testAddingScheduleJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
@@ -121,7 +121,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
 
     public function testAddingDependencyJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->parents = ['jobA', 'jobB'];
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
@@ -141,7 +141,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddingJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
 
         $this->oHttpClient->postJsonData()
             ->shouldNotBeCalled()
@@ -157,7 +157,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
     // --------------------
     public function testUpdatingScheduleJobSuccess()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
@@ -174,7 +174,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdatingDependencyJobSuccess()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->parents = ['jobA', 'jobB'];
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
@@ -191,7 +191,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdatingScheduleJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
@@ -208,7 +208,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdatingDependencyJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->parents = ['jobA', 'jobB'];
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
@@ -228,7 +228,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdatingJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
 
         $this->oHttpClient->postJsonData()
             ->shouldNotBeCalled()

@@ -87,7 +87,7 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
             count($_aJobs)
         );
 
-        $this->assertInstanceOf('Chapi\Entity\Chronos\JobEntity', $_aJobs[0]);
+        $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $_aJobs[0]);
     }
 
     public function testAddUpdateRemoveJobSuccess()
@@ -121,7 +121,7 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
             'Expected "1" job after adding'
         );
 
-        $this->assertInstanceOf('Chapi\Entity\Chronos\JobEntity', $_aJobs[0]);
+        $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $_aJobs[0]);
 
         // update job
         $_oEntity->disabled = true;

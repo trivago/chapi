@@ -9,7 +9,7 @@
 
 namespace Chapi\Commands;
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,7 +48,7 @@ class ListCommand extends AbstractCommand
             'Info'
         ));
 
-        /** @var JobEntity $_oJobEntity */
+        /** @var ChronosJobEntity $_oJobEntity */
         foreach ($_oJobRepositoryChronos->getJobs() as $_oJobEntity)
         {
             if ($this->hasJobToPrint($_oJobEntity, $_bOnlyFailed, $_bOnlyDisabled))
@@ -63,12 +63,12 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @param bool $bOnlyFailed
      * @param bool $bOnlyDisabled
      * @return bool
      */
-    private function hasJobToPrint(JobEntity $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
+    private function hasJobToPrint(ChronosJobEntity $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
     {
         $_bPrintAllJobs = (false === $bOnlyFailed && false === $bOnlyDisabled);
         if ($_bPrintAllJobs)
@@ -93,9 +93,9 @@ class ListCommand extends AbstractCommand
 
     /**
      * @param Table $oTable
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      */
-    private function printJobTableRow(Table $oTable, JobEntity $oJobEntity)
+    private function printJobTableRow(Table $oTable, ChronosJobEntity $oJobEntity)
     {
         $oTable->addRow([
             sprintf(
@@ -111,10 +111,10 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @return string
      */
-    private function getOutputLabel(JobEntity $oJobEntity)
+    private function getOutputLabel(ChronosJobEntity $oJobEntity)
     {
         $_aJobInfoText = [];
 
@@ -143,10 +143,10 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @return string
      */
-    private function getOutputFormat(JobEntity $oJobEntity)
+    private function getOutputFormat(ChronosJobEntity $oJobEntity)
     {
         if ($oJobEntity->errorsSinceLastSuccess > 0)
         {

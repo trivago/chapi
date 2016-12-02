@@ -25,6 +25,9 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     private $oJobRepositoryChronos;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
+    private $oJobRepositoryMarathon;
+
+    /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oDiffCompare;
 
     /** @var DatePeriodFactory */
@@ -37,6 +40,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     {
         $this->oJobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->oJobRepositoryMarathon = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oDiffCompare = $this->prophesize('Chapi\Component\Comparison\DiffCompareInterface');
         $this->oDatePeriodFactory = new DatePeriodFactory();
         $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
@@ -137,6 +141,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryMarathon->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
             $this->oLogger->reveal()
@@ -173,6 +178,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryMarathon->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
             $this->oLogger->reveal()
@@ -197,6 +203,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryMarathon->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
             $this->oLogger->reveal()
@@ -217,6 +224,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryMarathon->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
             $this->oLogger->reveal()
@@ -259,6 +267,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryMarathon->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
             $this->oLogger->reveal()

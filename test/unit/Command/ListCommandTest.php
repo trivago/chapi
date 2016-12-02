@@ -11,7 +11,7 @@ namespace unit\Command;
 
 
 use Chapi\Commands\ListCommand;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -68,7 +68,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         $this->oInput->getOption(Argument::exact('onlyDisabled'))->willReturn(false)->shouldBeCalledTimes(1);
 
         $_oCollection = $this->createJobCollection();
-        /** @var JobEntity $_oEntityB */
+        /** @var ChronosJobEntity $_oEntityB */
         $_oEntityB = $_oCollection->offsetGet('JobB');
 
         $_oEntityB->errorCount = 10;
@@ -102,7 +102,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         $this->oInput->getOption(Argument::exact('onlyDisabled'))->willReturn(true)->shouldBeCalledTimes(1);
 
         $_oCollection = $this->createJobCollection();
-        /** @var JobEntity $_oEntityB */
+        /** @var ChronosJobEntity $_oEntityB */
         $_oEntityB = $_oCollection->offsetGet('JobC');
         $_oEntityB->disabled = true;
 

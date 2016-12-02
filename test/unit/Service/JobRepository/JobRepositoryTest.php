@@ -11,7 +11,7 @@
 namespace unit\Service\JobRepository;
 
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepository;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
@@ -46,7 +46,7 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
 
         // known job
         $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobEntity',
+            'Chapi\Entity\JobEntityInterface',
             $_oJobEntity
         );
 
@@ -58,14 +58,7 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         // empty job
         $_oJobEntity = $_oJobRepository->getJob('JobZ');
 
-        $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobEntity',
-            $_oJobEntity
-        );
-
-        $this->assertEmpty(
-            $_oJobEntity->name
-        );
+        $this->assertNull($_oJobEntity, "Expected null for non existing job");
     }
 
     public function testGetJobsSuccess()
@@ -90,7 +83,7 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobEntity',
+            'Chapi\Entity\JobEntityInterface',
             $_oJobCollection['JobA']
         );
     }
@@ -210,8 +203,7 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
             $_oJobRepository->removeJob($_oEntity->name)
         );
 
-        $this->assertEquals(
-            new JobEntity(),
+        $this->assertNull(
             $_oJobRepository->getJob('JobA')
         );
     }
