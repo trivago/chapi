@@ -13,10 +13,15 @@ use Chapi\Component\Cache\CacheInterface;
 use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Entity\Marathon\MarathonAppEntity;
 use Psr\Log\LoggerInterface;
 
 class BridgeMarathon implements BridgeInterface
 {
+    const CACHE_TIME_JOB_LIST = 60;
+
+    const CACHE_KEY_APP_LIST = "marathon.app.list";
+
     /**
      * @var \Chapi\Component\RemoteClients\ApiClientInterface
      */
@@ -54,6 +59,14 @@ class BridgeMarathon implements BridgeInterface
     public function getJobs()
     {
         $_aApps = [];
+        $_aJobsList = $this->getJobList();
+        if (!empty($_aJobsList))
+        {
+            foreach ($_aJobsList as $_aJobData)
+            {
+                $_aApps[] = new MarathonAppEntity($_aJobData);
+            }
+        }
         return $_aApps;
     }
 
@@ -84,5 +97,23 @@ class BridgeMarathon implements BridgeInterface
         // TODO: Implement removeJob() method.
     }
 
+    private function getJobList()
+    {
+        $_aResult = $this->oCache->get(self::CACHE_KEY_APP_LIST);
+
+        if (is_array($_aResult))
+        {
+            return $_aResult;
+        }
+
+        $_aResult = $this->oApiClient->listingJobs();
+        if (!empty($_aResult->apps))
+        {
+            $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult, self::CACHE_TIME_JOB_LIST);
+        }
+
+        return $_aResult;
+
+    }
 
 }
