@@ -4,10 +4,15 @@ services:
     arguments:
       - "@JobRepositoryBridgeChronos"
 
-  JobRepositoryFileSystem:
+  JobRepositoryFileSystemChronos:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
-      - "@JobRepositoryBridgeFileSystem"
+      - "@JobRepositoryBridgeFileSystemChronos"
+
+  JobRepositoryFileSystemMarathon:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeFileSystemMarathon"
 
   JobRepositoryMarathon:
     class: Chapi\Service\JobRepository\JobRepository
@@ -22,12 +27,19 @@ services:
       - "@JobValidatorServiceInterface"
       - "@LoggerInterface"
 
-  JobRepositoryBridgeFileSystem:
+  JobRepositoryBridgeFileSystemChronos:
     class: Chapi\Service\JobRepository\BridgeFileSystem
     arguments:
       - "@ExternalFileSystemService"
       - "@CacheInterface"
       - "%repository_dir%"
+
+  JobRepositoryBridgeFileSystemMarathon:
+    class: Chapi\Service\JobRepository\BridgeFileSystem
+    arguments:
+      - "@ExternalFileSystemService"
+      - "@CacheInterface"
+      - "%repository_dir_marathon%"
 
   JobRepositoryBridgeMarathon:
     class: Chapi\Service\JobRepository\BridgeMarathon

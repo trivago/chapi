@@ -180,4 +180,20 @@ class ChronosJobEntity implements JobEntityInterface
     {
         return new \ArrayIterator($this);
     }
+
+    /**
+     * @return string
+     */
+    public function getEntityType()
+    {
+        return JobEntityInterface::CHRONOS_TYPE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->name;
+    }
 }

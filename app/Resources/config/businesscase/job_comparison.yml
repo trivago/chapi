@@ -2,7 +2,8 @@ services:
   JobComparisonInterface:
     class: Chapi\BusinessCase\Comparison\JobComparisonBusinessCase
     arguments:
-      - "@JobRepositoryFileSystem"
+      - "@JobRepositoryFileSystemChronos"
+      - "@JobRepositoryFileSystemMarathon"
       - "@JobRepositoryChronos"
       - "@JobRepositoryMarathon"
       - "@DiffCompareInterface"

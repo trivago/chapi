@@ -12,6 +12,7 @@ namespace Chapi\Service\JobRepository;
 use Chapi\Component\Cache\CacheInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Exception\JobLoadException;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Glob\Glob;
@@ -85,7 +86,7 @@ class BridgeFileSystem implements BridgeInterface
 
         if ($this->hasDumpFile($_sJobFile, $oJobEntity))
         {
-            $this->setJobFileToMap($oJobEntity->name, $_sJobFile);
+            $this->setJobFileToMap($oJobEntity->getKey(), $_sJobFile);
             return true;
         }
 
@@ -99,7 +100,7 @@ class BridgeFileSystem implements BridgeInterface
     public function updateJob(JobEntityInterface $oJobEntity)
     {
         return $this->hasDumpFile(
-            $this->getJobFileFromMap($oJobEntity->name),
+            $this->getJobFileFromMap($oJobEntity->getKey()),
             $oJobEntity
         );
     }
@@ -110,7 +111,7 @@ class BridgeFileSystem implements BridgeInterface
      */
     public function removeJob(JobEntityInterface $oJobEntity)
     {
-        $_sJobFile = $this->getJobFileFromMap($oJobEntity->name);
+        $_sJobFile = $this->getJobFileFromMap($oJobEntity->getKey());
         $this->oFileSystemService->remove($_sJobFile);
 
         return $this->hasUnsetJobFileFromMap($oJobEntity->name, $_sJobFile);
@@ -214,7 +215,7 @@ class BridgeFileSystem implements BridgeInterface
     /**
      * @param array $aJobFiles
      * @param bool $bSetToFileMap
-     * @return ChronosJobEntity[]
+     * @return JobEntityInterface[]
      * @throws JobLoadException
      */
     private function loadJobsFromFileContent(array $aJobFiles, $bSetToFileMap)
@@ -234,14 +235,29 @@ class BridgeFileSystem implements BridgeInterface
 
             if ($_aTemp)
             {
-                $_oJobEntity = new ChronosJobEntity($_aTemp);
-                $_aJobs[] = $_oJobEntity;
+                if (property_exists($_aTemp, "name")) // chronos
+                {
+                    $_oJobEntity = new ChronosJobEntity($_aTemp);
+
+                } else if (property_exists($_aTemp, "id")) //marathon
+                {
+                    $_oJobEntity = new MarathonAppEntity($_aTemp);
+
+                } else {
+                    throw new JobLoadException(
+                        "Could not distinguish job as either chronos or marathon",
+                        JobLoadException::ERROR_CODE_UNKNOWN_ENTITY_TYPE
+                    );
+                }
 
                 if ($bSetToFileMap)
                 {
                     // set path to job file map
-                    $this->setJobFileToMap($_oJobEntity->name, $_sJobFilePath);
+                    $this->setJobFileToMap($_oJobEntity->getKey(), $_sJobFilePath);
                 }
+
+                $_aJobs[] = $_oJobEntity;
+
             }
             else
             {

@@ -39,7 +39,7 @@ class JobRepository implements JobRepositoryInterface
 
     /**
      * @param string $sJobName
-     * @return \Chapi\Entity\Chronos\ChronosJobEntity
+     * @return ChronosJobEntity
      */
     public function getJob($sJobName)
     {
