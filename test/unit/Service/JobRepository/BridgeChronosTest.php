@@ -40,7 +40,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
     {
         $this->aListingJobs = json_decode($this->sJsonListingJobs, true);
 
-        $this->oApiClient = $this->prophesize('Chapi\Component\Chronos\ApiClientInterface');
+        $this->oApiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
         $this->oApiClient
             ->listingJobs()
             ->willReturn($this->aListingJobs)

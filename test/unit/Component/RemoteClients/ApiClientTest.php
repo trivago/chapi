@@ -7,9 +7,9 @@
  *
  */
 
-namespace unit\Component\Chronos;
+namespace unit\Component\RemoteClients;
 
-use Chapi\Component\Chronos\ApiClient;
+use Chapi\Component\RemoteClients\ChronosApiClient;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Prophecy\Argument;
 
@@ -45,7 +45,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals($_aTestResult, $_oApiClient->listingJobs());
     }
@@ -60,7 +60,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals([], $_oApiClient->listingJobs());
     }
@@ -80,7 +80,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->addingJob($_oTestJobEntity));
     }
@@ -97,7 +97,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->addingJob($_oTestJobEntity));
     }
@@ -114,7 +114,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->addingJob($_oTestJobEntity));
     }
@@ -131,7 +131,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->addingJob($_oTestJobEntity));
     }
@@ -147,7 +147,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->shouldNotBeCalled()
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertNull($_oApiClient->addingJob($_oTestJobEntity));
     }
@@ -167,7 +167,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->updatingJob($_oTestJobEntity));
     }
@@ -184,7 +184,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->updatingJob($_oTestJobEntity));
     }
@@ -201,7 +201,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->updatingJob($_oTestJobEntity));
     }
@@ -218,7 +218,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->updatingJob($_oTestJobEntity));
     }
@@ -234,7 +234,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->shouldNotBeCalled()
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertNull($_oApiClient->updatingJob($_oTestJobEntity));
     }
@@ -251,7 +251,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->removeJob('jobName'));
     }
@@ -265,7 +265,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->removeJob('jobName'));
     }
@@ -293,7 +293,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals($_aTestResult, $_oApiClient->getJobStats('JobA'));
     }
@@ -308,7 +308,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals([], $_oApiClient->getJobStats('JobA'));
     }

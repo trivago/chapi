@@ -11,7 +11,7 @@
 namespace unit\Service\Chronos;
 
 use Chapi\Component\Cache\CacheInterface;
-use Chapi\Component\Chronos\ApiClientInterface;
+use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Service\Chronos\JobStatsService;
 use Prophecy\Argument;
 
@@ -25,7 +25,7 @@ class JobStatsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->oApiClient = $this->prophesize('Chapi\Component\Chronos\ApiClientInterface');
+        $this->oApiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
         $this->oCache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
     }
 

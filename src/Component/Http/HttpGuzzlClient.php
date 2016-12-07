@@ -91,6 +91,16 @@ class HttpGuzzlClient implements HttpClientInterface
         return new HttpGuzzlResponse($_oResponse);
     }
 
+
+    public function putJsonData($sUrl, $mPutData)
+    {
+        $_aRequestOptions = $this->getDefaultRequestOptions();
+        $_aRequestOptions['json'] = $mPutData;
+
+        $_oResponse = $this->oGuzzelClient->request("PUT", $sUrl, $_aRequestOptions);
+        return new HttpGuzzlResponse($_oResponse);
+    }
+
     /**
      * Returns default options for the HTTP request.
      * If an username and password is provided, auth
