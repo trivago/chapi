@@ -26,7 +26,7 @@ services:
   JobRepositoryBridgeChronos:
     class: Chapi\Service\JobRepository\BridgeChronos
     arguments:
-      - "@ApiClientInterface"
+      - "@ChronosApiClientInterface"
       - "@CacheInterface"
       - "@JobValidatorServiceInterface"
       - "@LoggerInterface"
@@ -47,6 +47,11 @@ services:
 
   JobRepositoryBridgeMarathon:
     class: Chapi\Service\JobRepository\BridgeMarathon
+    arguments:
+      - "@MarathonApiClientInterface"
+      - "@CacheInterface"
+      - "@JobEntityValidatorServiceInterface"
+      - "@LoggerInterface"
 
 
   JobEntityValidatorServiceInterface:

@@ -10,7 +10,7 @@
 namespace Chapi\Service\JobRepository;
 
 use Chapi\Component\Cache\CacheInterface;
-use Chapi\Component\Chronos\ApiClientInterface;
+use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Psr\Log\LoggerInterface;
@@ -51,7 +51,7 @@ class BridgeChronos implements BridgeInterface
     private $oLogger;
 
     /**
-     * @param ApiClientInterface $oApiClient
+     * @param \Chapi\Component\RemoteClients\ApiClientInterface $oApiClient
      * @param CacheInterface $oCache
      * @param JobValidatorServiceInterface $oJobEntityValidatorService
      * @param LoggerInterface $oLogger

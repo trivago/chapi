@@ -8,14 +8,16 @@
  */
 
 
-namespace Chapi\Component\Chronos;
+namespace Chapi\Component\RemoteClients;
 
 
+use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Component\Http\HttpClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Exception\ApiClientException;
 
-class ApiClient implements ApiClientInterface
+class ChronosApiClient implements ApiClientInterface
 {
     /**
      * @var HttpClientInterface
@@ -42,11 +44,11 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
      * @return bool
      * @throws ApiClientException
      */
-    public function addingJob(ChronosJobEntity $oJobEntity)
+    public function addingJob(JobEntityInterface $oJobEntity)
     {
         $_sTargetUrl = '';
 
@@ -68,10 +70,11 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
      * @return bool
+     * @throws ApiClientException
      */
-    public function updatingJob(ChronosJobEntity $oJobEntity)
+    public function updatingJob(JobEntityInterface $oJobEntity)
     {
         return $this->addingJob($oJobEntity);
     }

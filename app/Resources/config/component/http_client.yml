@@ -1,17 +1,35 @@
 services:
-  HttpClientGuzzle:
+  ChronosHttpClientGuzzle:
     class: Chapi\Component\Http\HttpGuzzlClient
     arguments:
-      - "@ExternalGuzzleClientInterface"
-      - "@HttpAuthEntity"
+      - "@ExternalChronosGuzzleClient"
+      - "@ChronosHttpAuthEntity"
 
-  ExternalGuzzleClientInterface:
+  ExternalChronosGuzzleClient:
     class: GuzzleHttp\Client
     arguments:
       - base_uri: "%chronos_url%"
 
-  HttpAuthEntity:
+  ChronosHttpAuthEntity:
     class: Chapi\Entity\Http\AuthEntity
     arguments:
       - "%chronos_http_username%"
       - "%chronos_http_password%"
+
+  MarathonHttpClientGuzzle:
+    class: Chapi\Component\Http\HttpGuzzlClient
+    arguments:
+      - "@ExternalMarathonGuzzleClient"
+      - "@MarathonHttpAuthEntity"
+
+  ExternalMarathonGuzzleClient:
+    class: GuzzleHttp\Client
+    arguments:
+      - base_uri: "%marathon_url%"
+
+
+  MarathonHttpAuthEntity:
+    class: Chapi\Entity\Http\AuthEntity
+    arguments:
+      - "%marathon_http_username%"
+      - "%marathon_http_password%"
