@@ -3,21 +3,25 @@ services:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeChronos"
+      - "@FilterChronosEntity"
 
   JobRepositoryFileSystemChronos:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeFileSystemChronos"
+      - "@FilterChronosEntity"
 
   JobRepositoryFileSystemMarathon:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeFileSystemMarathon"
+      - "@FilterMarathonEntity"
 
   JobRepositoryMarathon:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeMarathon"
+      - "@FilterMarathonEntity"
 
   JobRepositoryBridgeChronos:
     class: Chapi\Service\JobRepository\BridgeChronos
@@ -52,3 +56,9 @@ services:
 
   ExternalFileSystemService:
     class: \Symfony\Component\Filesystem\Filesystem
+
+  FilterChronosEntity:
+    class: Chapi\Service\JobRepository\FilterChronosEntity
+
+  FilterMarathonEntity:
+    class: Chapi\Service\JobRepository\FilterMarathonEntity
