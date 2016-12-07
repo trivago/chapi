@@ -10,8 +10,7 @@
 
 namespace Chapi\Service\JobRepository;
 
-
-use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\JobEntityInterface;
 
 interface JobRepositoryInterface
@@ -22,12 +21,12 @@ interface JobRepositoryInterface
 
     /**
      * @param string $sJobName
-     * @return ChronosJobEntity
+     * @return JobEntityInterface
      */
     public function getJob($sJobName);
 
     /**
-     * @return \Chapi\Entity\Chronos\JobCollection
+     * @return JobCollection
      */
     public function getJobs();
 

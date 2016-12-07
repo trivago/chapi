@@ -10,7 +10,7 @@ namespace Chapi\Entity\Marathon;
 
 use Chapi\Entity\JobEntityInterface;
 
-class AppMainEntity implements JobEntityInterface
+class MarathonAppEntity implements JobEntityInterface
 {
     public $id = "";
 
@@ -127,4 +127,19 @@ class AppMainEntity implements JobEntityInterface
         return false;
     }
 
+    /**
+     * @return string
+     */
+    public function getEntityType()
+    {
+        return JobEntityInterface::MARATHON_TYPE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->id;
+    }
 }
