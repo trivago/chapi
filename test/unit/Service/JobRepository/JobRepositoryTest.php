@@ -23,23 +23,33 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oRepositoryBridge;
 
+    /** @var  \Prophecy\Prophecy\ObjectProphecy */
+    private $oEntityFilter;
+
     public function setUp()
     {
         $this->oRepositoryBridge = $this->prophesize('Chapi\Service\JobRepository\BridgeInterface');
+        $this->oEntityFilter = $this->prophesize('Chapi\Service\JobRepository\JobFilterInterface');
     }
 
     public function testGetJobSuccess()
     {
+        $_oEntity = $this->getValidScheduledJobEntity('JobA');
         $this->oRepositoryBridge
             ->getJobs()
             ->willReturn([
-                $this->getValidScheduledJobEntity('JobA')
+                $_oEntity
             ])
             ->shouldBeCalledTimes(1)
         ;
 
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntity))
+            ->willReturn(true);
+
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $_oJobEntity = $_oJobRepository->getJob('JobA');
@@ -63,16 +73,22 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetJobsSuccess()
     {
+        $_oEntity = $this->getValidScheduledJobEntity('JobA');
         $this->oRepositoryBridge
             ->getJobs()
             ->willReturn([
-                $this->getValidScheduledJobEntity('JobA')
+                $_oEntity
             ])
             ->shouldBeCalledTimes(1)
         ;
 
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntity))
+            ->willReturn(true);
+
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $_oJobCollection = $_oJobRepository->getJobs();
@@ -98,8 +114,13 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntity))
+            ->willReturn(true);
+
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $this->assertTrue(
@@ -124,8 +145,14 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntityA))
+            ->willReturn(true);
+
+
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $_oJobEntityResult = $_oJobRepository->getJob('JobA');
@@ -152,7 +179,8 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         ;
 
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $this->assertFalse(
@@ -171,7 +199,8 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         ;
 
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $this->assertTrue(
@@ -195,8 +224,13 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntity))
+            ->willReturn(true);
+
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $this->assertTrue(
@@ -224,8 +258,14 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
+
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntity))
+            ->willReturn(true);
+
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $this->assertFalse(
@@ -254,8 +294,15 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
+
+        $this->oEntityFilter
+            ->isInteresting(Argument::any())
+            ->willReturn(true)
+            ->shouldBeCalledTimes(0);
+
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $this->assertFalse(
@@ -265,16 +312,23 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testHasJobSuccess()
     {
+        $_oEntity = $this->getValidScheduledJobEntity('JobA');
         $this->oRepositoryBridge
             ->getJobs()
             ->willReturn([
-                $this->getValidScheduledJobEntity('JobA')
+                $_oEntity
             ])
             ->shouldBeCalledTimes(1)
         ;
 
+
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntity))
+            ->willReturn(true);
+
         $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal()
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
         );
 
         $this->assertTrue($_oJobRepository->hasJob('JobA'));

@@ -89,8 +89,8 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     public function getLocalMissingJobs()
     {
         return array_merge(
-            $this->getLocalMissingJobsForChronos()// ,
-            // $this->getLocalMissingJobForMarathon()
+            $this->getLocalMissingJobsForChronos(),
+            $this->getLocalMissingJobForMarathon()
         );
     }
 
@@ -116,8 +116,8 @@ class JobComparisonBusinessCase implements JobComparisonInterface
     public function getChronosMissingJobs()
     {
         return array_merge(
-            $this->getRemoteMissingJobsForChronos() // ,
-            // $this->getRemoteMissingJobsForMarathon()
+            $this->getRemoteMissingJobsForChronos(),
+            $this->getRemoteMissingJobsForMarathon()
         );
     }
 

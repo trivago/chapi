@@ -28,13 +28,20 @@ class JobRepository implements JobRepositoryInterface
     private $oRepositoryBridge;
 
     /**
+     * @var JobFilterInterface
+     */
+    private $oJobFilter;
+
+    /**
      * @param BridgeInterface $oRepositoryBridge
      */
     public function __construct(
-        BridgeInterface $oRepositoryBridge
+        BridgeInterface $oRepositoryBridge,
+        JobFilterInterface $oJobFilter
     )
     {
         $this->oRepositoryBridge = $oRepositoryBridge;
+        $this->oJobFilter = $oJobFilter;
     }
 
     /**
@@ -73,8 +80,14 @@ class JobRepository implements JobRepositoryInterface
             return $this->oJobCollection;
         }
 
+        // apply filter
+        $aJobs = array_filter(
+            $this->oRepositoryBridge->getJobs(),
+            array($this->oJobFilter, "isInteresting")
+        );
+
         return $this->oJobCollection = new JobCollection(
-            $this->oRepositoryBridge->getJobs()
+            $aJobs
         );
     }
 
