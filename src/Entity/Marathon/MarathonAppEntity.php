@@ -9,6 +9,11 @@
 namespace Chapi\Entity\Marathon;
 
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Entity\Marathon\AppEntity\Container;
+use Chapi\Entity\Marathon\AppEntity\FetchUrl;
+use Chapi\Entity\Marathon\AppEntity\HealthCheck;
+use Chapi\Entity\Marathon\AppEntity\PortDefinition;
+use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
 
 class MarathonAppEntity implements JobEntityInterface
 {
@@ -79,15 +84,19 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $ipAddress = null;
 
+    public function __construct($mData = [])
+    {
+
+
+    }
+
     /**
      * @inheritdoc
      * @return array
      */
     public function jsonSerialize()
     {
-
-        //TODO: test data for now
-        return ["hello" => "world"];
+        return (array) $this;
     }
 
     /**
