@@ -11,6 +11,7 @@ namespace Chapi\Service\JobValidator;
 
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\JobValidator\ValidationResult;
 
 class JobValidatorService implements JobValidatorServiceInterface
@@ -53,10 +54,10 @@ class JobValidatorService implements JobValidatorServiceInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function isEntityValid(JobEntity $oJobEntity)
+    public function isEntityValid(JobEntityInterface $oJobEntity)
     {
         foreach ($this->validateJobEntity($oJobEntity) as $_oValidatorResult)
         {
@@ -68,12 +69,12 @@ class JobValidatorService implements JobValidatorServiceInterface
 
         return true;
     }
-    
+
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return array
      */
-    public function getInvalidProperties(JobEntity $oJobEntity)
+    public function getInvalidProperties(JobEntityInterface $oJobEntity)
     {
         $_aValidationFields = $this->validateJobEntity($oJobEntity);
 
@@ -90,10 +91,10 @@ class JobValidatorService implements JobValidatorServiceInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return array
      */
-    private function validateJobEntity(JobEntity $oJobEntity)
+    private function validateJobEntity(JobEntityInterface $oJobEntity)
     {
         $_aValidProperties = [];
 
@@ -108,10 +109,10 @@ class JobValidatorService implements JobValidatorServiceInterface
     /**
      * @param int $iValidator
      * @param string $sProperty
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return ValidationResult
      */
-    private function getValidationResult($iValidator, $sProperty, JobEntity $oJobEntity)
+    private function getValidationResult($iValidator, $sProperty, JobEntityInterface $oJobEntity)
     {
         $_oValidator = $this->oValidatorFactory->getValidator($iValidator);
         return new ValidationResult(

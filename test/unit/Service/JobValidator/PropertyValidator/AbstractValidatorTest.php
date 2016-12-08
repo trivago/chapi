@@ -11,6 +11,7 @@ namespace unit\Service\JobValidator\PropertyValidator;
 
 
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
@@ -23,14 +24,14 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
      * @param string $sProperty
      * @param mixed $mValidValue
      * @param mixed $mInvalidValue
-     * @param JobEntity|null $oJobEntity
+     * @param JobEntityInterface|null $oJobEntity
      */
     protected function handleErrorMessageMultiTestCase(
         PropertyValidatorInterface $oValidator,
         $sProperty,
         $mValidValue,
         $mInvalidValue,
-        JobEntity $oJobEntity = null
+        JobEntityInterface $oJobEntity = null
     )
     {
         if (is_null($oJobEntity))
@@ -51,13 +52,13 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
      * @param PropertyValidatorInterface $oValidator
      * @param string $sProperty
      * @param mixed $mValidValue
-     * @param JobEntity|null $oJobEntity
+     * @param JobEntityInterface|null $oJobEntity
      */
     protected function handleValidTestCase(
         PropertyValidatorInterface $oValidator,
         $sProperty,
         $mValidValue,
-        JobEntity $oJobEntity = null
+        JobEntityInterface $oJobEntity = null
     )
     {
         if (is_null($oJobEntity))
@@ -74,13 +75,13 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
      * @param PropertyValidatorInterface $oValidator
      * @param $sProperty
      * @param $mInvalidValue
-     * @param JobEntity|null $oJobEntity
+     * @param JobEntityInterface|null $oJobEntity
      */
     protected function handleInvalidTestCase(
         PropertyValidatorInterface $oValidator,
         $sProperty,
         $mInvalidValue,
-        JobEntity $oJobEntity = null
+        JobEntityInterface $oJobEntity = null
     )
     {
         if (is_null($oJobEntity))

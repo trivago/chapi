@@ -12,6 +12,7 @@ namespace Chapi\Service\JobValidator\PropertyValidator;
 
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
 
 class Schedule extends AbstractPropertyValidator implements PropertyValidatorInterface
@@ -36,7 +37,7 @@ class Schedule extends AbstractPropertyValidator implements PropertyValidatorInt
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntity $oJobEntity)
+    public function isValid($sProperty, JobEntityInterface $oJobEntity)
     {
         return $this->returnIsValidHelper(
             $this->isSchedulePropertyValid($oJobEntity),
@@ -49,7 +50,7 @@ class Schedule extends AbstractPropertyValidator implements PropertyValidatorInt
      * @param JobEntity $oJobEntity
      * @return bool
      */
-    private function isSchedulePropertyValid(JobEntity $oJobEntity)
+    private function isSchedulePropertyValid(JobEntityInterface $oJobEntity)
     {
         if (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
         {

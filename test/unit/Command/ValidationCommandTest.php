@@ -16,6 +16,7 @@ use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobEntityValidatorServiceInterface;
 
 use Chapi\Service\JobRepository\JobRepositoryInterface;
+use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;

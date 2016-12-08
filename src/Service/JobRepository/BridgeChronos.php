@@ -13,6 +13,7 @@ use Chapi\Component\Cache\CacheInterface;
 use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use Psr\Log\LoggerInterface;
 
 class BridgeChronos implements BridgeInterface
