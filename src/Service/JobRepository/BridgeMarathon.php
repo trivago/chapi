@@ -14,6 +14,7 @@ use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\Marathon\MarathonAppEntity;
+use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use Psr\Log\LoggerInterface;
 
 class BridgeMarathon implements BridgeInterface
@@ -42,7 +43,7 @@ class BridgeMarathon implements BridgeInterface
     public function __construct(
         ApiClientInterface $oApiClient,
         CacheInterface $oCache,
-        JobEntityValidatorServiceInterface $oJobEntityValidatorService,
+        JobValidatorServiceInterface $oJobEntityValidatorService,
         LoggerInterface $oLogger
     )
     {

@@ -32,7 +32,7 @@ class Command extends AbstractPropertyValidator implements PropertyValidatorInte
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
     private function isCommandPropertyValid(JobEntityInterface $oJobEntity)

@@ -13,8 +13,6 @@ namespace unit\Command;
 use Chapi\Commands\ValidationCommand;
 use Chapi\Component\Command\JobUtilsInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
-use Chapi\Service\JobRepository\JobEntityValidatorServiceInterface;
-
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
