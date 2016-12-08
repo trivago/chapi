@@ -11,6 +11,7 @@
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
 
 class Command extends AbstractPropertyValidator implements PropertyValidatorInterface
@@ -21,7 +22,7 @@ class Command extends AbstractPropertyValidator implements PropertyValidatorInte
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntity $oJobEntity)
+    public function isValid($sProperty, JobEntityInterface $oJobEntity)
     {
         return $this->returnIsValidHelper(
             $this->isCommandPropertyValid($oJobEntity),
@@ -34,7 +35,7 @@ class Command extends AbstractPropertyValidator implements PropertyValidatorInte
      * @param JobEntity $oJobEntity
      * @return bool
      */
-    private function isCommandPropertyValid(JobEntity $oJobEntity)
+    private function isCommandPropertyValid(JobEntityInterface $oJobEntity)
     {
         if (is_null($oJobEntity->container))
         {

@@ -34,7 +34,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
     public function testIsEntityValidSuccess()
     {
         // mock
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\JobEntity'))->willReturn(true);
+        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(true);
         $this->oPropertyValidator->getLastErrorMessage()->willReturn('error message');
 
         $this->oValidatorFactory->getValidator(Argument::type('int'))->willReturn($this->oPropertyValidator->reveal());
@@ -52,13 +52,13 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
 
         // Spies
         $this->oValidatorFactory->getValidator(Argument::type('int'))->shouldHaveBeenCalled();
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\JobEntity'))->shouldHaveBeenCalled();
+        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->shouldHaveBeenCalled();
     }
 
     public function testIsEntityValidFailure()
     {
         // mock
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\JobEntity'))->willReturn(false);
+        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(false);
         $this->oPropertyValidator->getLastErrorMessage()->willReturn('error message');
 
         $this->oValidatorFactory->getValidator(Argument::type('int'))->willReturn($this->oPropertyValidator->reveal());
@@ -76,14 +76,14 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
 
         // Spies
         $this->oValidatorFactory->getValidator(Argument::type('int'))->shouldHaveBeenCalled();
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\JobEntity'))->shouldHaveBeenCalled();
+        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->shouldHaveBeenCalled();
         $this->oPropertyValidator->getLastErrorMessage()->shouldHaveBeenCalled();
     }
     
     public function testGetInvalidPropertiesSuccess()
     {
         // mock
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\JobEntity'))->willReturn(true);
+        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(true);
         $this->oPropertyValidator->getLastErrorMessage()->willReturn('error message');
 
         $this->oValidatorFactory->getValidator(Argument::type('int'))->willReturn($this->oPropertyValidator->reveal());
@@ -104,7 +104,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
     public function testGetInvalidPropertiesFailure()
     {
         // mock
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\JobEntity'))->willReturn(false);
+        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(false);
         $this->oPropertyValidator->getLastErrorMessage()->willReturn('error message');
 
         $this->oValidatorFactory->getValidator(Argument::type('int'))->willReturn($this->oPropertyValidator->reveal());

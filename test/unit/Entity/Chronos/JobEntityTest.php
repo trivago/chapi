@@ -48,7 +48,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $_oJobEntity = new JobEntity($_aData);
+        $_oJobEntity = new ChronosJobEntity($_aData);
 
         $this->assertEquals('jobname', $_oJobEntity->name);
         $this->assertEquals('docker', $_oJobEntity->container->type);
@@ -66,7 +66,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
             'name' => 'jobname',
             'container' => 'foo'
         ];
-        $_oJobEntity = new JobEntity($_aData);
+        $_oJobEntity = new ChronosJobEntity($_aData);
     }
     
     public function testGetSimpleArrayCopy()

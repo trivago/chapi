@@ -10,7 +10,7 @@
 
 namespace ChapiTest\src\TestTraits;
 
-
+use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 
