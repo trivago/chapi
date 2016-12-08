@@ -50,14 +50,8 @@ services:
     arguments:
       - "@MarathonApiClientInterface"
       - "@CacheInterface"
-      - "@JobEntityValidatorServiceInterface"
+      - "@JobValidatorServiceInterface"
       - "@LoggerInterface"
-
-
-  JobEntityValidatorServiceInterface:
-    class: Chapi\Service\JobRepository\JobEntityValidatorService
-    arguments:
-      - "@DatePeriodFactoryInterface"
 
   ExternalFileSystemService:
     class: \Symfony\Component\Filesystem\Filesystem

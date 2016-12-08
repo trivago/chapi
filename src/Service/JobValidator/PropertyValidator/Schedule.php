@@ -47,7 +47,7 @@ class Schedule extends AbstractPropertyValidator implements PropertyValidatorInt
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
     private function isSchedulePropertyValid(JobEntityInterface $oJobEntity)
