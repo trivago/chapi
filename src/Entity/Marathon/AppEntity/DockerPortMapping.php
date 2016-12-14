@@ -7,7 +7,9 @@
  */
 namespace Chapi\Entity\Marathon\AppEntity;
 
-class DockerPortMapping extends BaseSubEntity
+use Chapi\Entity\Marathon\MarathonEntityUtils;
+
+class DockerPortMapping
 {
     const DIC = self::class;
 
@@ -21,7 +23,7 @@ class DockerPortMapping extends BaseSubEntity
 
     public function __construct($oData)
     {
-        $this->setAllPossibleProperties($oData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
     }
 
 }

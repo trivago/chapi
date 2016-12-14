@@ -5,11 +5,12 @@
  * Date: 10/10/16
  * Time: 19:14
  */
-namespace Chapi\Entity\Marathon;
+namespace Chapi\Entity\Marathon\AppEntity;
 
-use Chapi\Entity\Marathon\AppEntity\BaseSubEntity;
 
-class IpAddress extends BaseSubEntity
+use Chapi\Entity\Marathon\MarathonEntityUtils;
+
+class IpAddress
 {
     const DIC = self::class;
 
@@ -21,7 +22,8 @@ class IpAddress extends BaseSubEntity
 
     public function __construct($oData)
     {
-        $this->setAllPossibleProperties($oData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+
         if(property_exists($oData, "groups"))
         {
             $this->groups = $oData->groups;

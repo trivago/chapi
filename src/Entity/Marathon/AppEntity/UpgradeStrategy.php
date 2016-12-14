@@ -7,7 +7,9 @@
  */
 namespace Chapi\Entity\Marathon\AppEntity;
 
-class UpgradeStrategy extends BaseSubEntity
+use Chapi\Entity\Marathon\MarathonEntityUtils;
+
+class UpgradeStrategy
 {
     const DIC = self::class;
 
@@ -17,6 +19,6 @@ class UpgradeStrategy extends BaseSubEntity
 
     public function __construct($oData)
     {
-        $this->setAllPossibleProperties($oData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
     }
 }

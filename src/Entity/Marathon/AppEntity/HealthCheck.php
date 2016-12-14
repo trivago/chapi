@@ -8,9 +8,10 @@
 namespace Chapi\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\HealthCheckCommand;
+use Chapi\Entity\Marathon\MarathonEntityUtils;
 use Symfony\Component\Console\Command\Command;
 
-class HealthCheck extends BaseSubEntity
+class HealthCheck
 {
 
     const DIC = self::class;
@@ -38,7 +39,7 @@ class HealthCheck extends BaseSubEntity
 
     public function __construct($oData)
     {
-        $this->setAllPossibleProperties($oData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
         if(property_exists($oData, "command"))
         {

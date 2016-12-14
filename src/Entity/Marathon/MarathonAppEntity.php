@@ -10,8 +10,10 @@ namespace Chapi\Entity\Marathon;
 
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\Marathon\AppEntity\Container;
+use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 use Chapi\Entity\Marathon\AppEntity\FetchUrl;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
+use Chapi\Entity\Marathon\AppEntity\IpAddress;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
 
@@ -84,10 +86,54 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $ipAddress = null;
 
-    public function __construct($mData = [])
+    public function __construct($oData)
     {
+        // TODO: throw exception
+        if ($oData == null) {
+            return;
+        }
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
+        if (property_exists($oData, "portDefinitions")) {
+            foreach ($oData->portDefinitions as $portDefinition) {
+                $this->portDefinitions[] = new DockerPortMapping($portDefinition);
+            }
+        }
 
+        if (property_exists($oData, "container")) {
+            $this->container = new Container($oData->container);
+        }
+
+        if (property_exists($oData, "fetch"))
+        {
+            foreach($oData->fetch as $fetch) {
+                $this->fetch[] = new FetchUrl($fetch);
+            }
+        }
+
+        if (property_exists($oData, "healthChecks"))
+        {
+            foreach($oData->healthChecks as $healthCheck)
+            {
+                $this->healthChecks[] = new HealthCheck($healthCheck);
+            }
+        }
+
+        if (property_exists($oData, "upgradeStrategy"))
+        {
+            $this->upgradeStrategy = new UpgradeStrategy($oData->upgradeStrategy);
+        }
+
+        if (property_exists($oData, "ipAddress"))
+        {
+            $this->ipAddress = new IpAddress($oData->ipAddress);
+        }
+
+        MarathonEntityUtils::setPropertyIfExist($oData, $this, "env");
+        MarathonEntityUtils::setPropertyIfExist($oData, $this, "constraints");
+        MarathonEntityUtils::setPropertyIfExist($oData, $this, "acceptedResourceRoles");
+        MarathonEntityUtils::setPropertyIfExist($oData, $this, "labels");
+        MarathonEntityUtils::setPropertyIfExist($oData, $this, "dependencies");
     }
 
     /**
