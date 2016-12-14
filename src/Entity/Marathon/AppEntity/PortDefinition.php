@@ -7,7 +7,9 @@
  */
 namespace Chapi\Entity\Marathon\AppEntity;
 
-class PortDefinition extends BaseSubEntity
+use Chapi\Entity\Marathon\MarathonEntityUtils;
+
+class PortDefinition
 {
     const DIC = self::class;
     public $port = 0;
@@ -20,7 +22,7 @@ class PortDefinition extends BaseSubEntity
 
     public function __construct($oData)
     {
-        $this->setAllPossibleProperties($oData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
         if(property_exists($oData, "labels"))
         {
             $this->labels = $oData->labels;

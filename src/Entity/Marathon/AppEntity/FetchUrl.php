@@ -7,7 +7,9 @@
  */
 namespace Chapi\Entity\Marathon\AppEntity;
 
-class FetchUrl extends BaseSubEntity
+use Chapi\Entity\Marathon\MarathonEntityUtils;
+
+class FetchUrl
 {
     const DIC = self::class;
 
@@ -21,6 +23,6 @@ class FetchUrl extends BaseSubEntity
 
     public function __construct($oData)
     {
-        $this->setAllPossibleProperties($oData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
     }
 }

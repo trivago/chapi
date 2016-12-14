@@ -7,7 +7,9 @@
  */
 namespace Chapi\Entity\Marathon\AppEntity;
 
-class ContainerVolume extends BaseSubEntity
+use Chapi\Entity\Marathon\MarathonEntityUtils;
+
+class ContainerVolume
 {
     const DIC = self::class;
 
@@ -17,9 +19,9 @@ class ContainerVolume extends BaseSubEntity
 
     public $mode = "";
 
-    public function __construct($mData)
+    public function __construct($oData)
     {
-        $this->setAllPossibleProperties($mData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
     }
 
 }

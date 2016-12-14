@@ -1,21 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bthapaliya
- * Date: 08/12/16
- * Time: 18:31
- */
 
-namespace Chapi\Entity\Marathon\AppEntity;
+namespace Chapi\Entity\Marathon;
 
 
-class BaseSubEntity
+class MarathonEntityUtils
 {
-    public function setPropertyIfExist($oSource, $sProperty)
+    public static function setPropertyIfExist($oSource, $oTarget, $sProperty)
     {
-        if (property_exists($oSource, $sProperty))
+        if (property_exists($oSource, $sProperty) &&
+            property_exists($oTarget, $sProperty))
         {
-            $this->{$sProperty} = $oSource->{$sPropety};
+            $oTarget->{$sProperty} = $oSource->{$sProperty};
         }
     }
 
@@ -24,7 +19,7 @@ class BaseSubEntity
      * If the type is array or object, then it is ignored.
      * @param $oData
      */
-    public function setAllPossibleProperties($oData)
+    public static function setAllPossibleProperties($oData, $oTarget)
     {
         foreach($oData as $attrName => $attrValue)
         {
@@ -34,7 +29,7 @@ class BaseSubEntity
                 continue;
             }
 
-            $this->setPropertyIfExist($oData, $attrName);
+            MarathonEntityUtils::setPropertyIfExist($oData, $oTarget, $attrName);
         }
     }
 }

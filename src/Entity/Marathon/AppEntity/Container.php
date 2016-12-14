@@ -7,10 +7,11 @@
  */
 namespace Chapi\Entity\Marathon\AppEntity;
 
+use Chapi\Entity\Marathon\MarathonEntityUtils;
 use Chapi\Entity\Marathon\AppEntity\ContainerVolume;
 use Chapi\Entity\Marathon\AppEntity\Docker;
 
-class Container extends BaseSubEntity
+class Container
 {
     const DIC = self::class;
 
@@ -29,7 +30,7 @@ class Container extends BaseSubEntity
 
     public function __construct($oData)
     {
-        $this->setAllPossibleProperties($oData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
         $this->docker = new Docker($oData->docker);
 

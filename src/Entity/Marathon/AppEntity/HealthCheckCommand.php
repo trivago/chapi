@@ -7,7 +7,9 @@
  */
 namespace Chapi\Entity\Marathon\AppEntity;
 
-class HealthCheckCommand extends BaseSubEntity
+use Chapi\Entity\Marathon\MarathonEntityUtils;
+
+class HealthCheckCommand
 {
     const DIC = self::class;
 
@@ -15,6 +17,6 @@ class HealthCheckCommand extends BaseSubEntity
 
     public function __construct($oData)
     {
-        $this->setAllPossibleProperties($oData);
+        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
     }
 }
