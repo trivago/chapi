@@ -55,4 +55,29 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals([1,2,3], $_oHttpGuzzleResponse->json());
     }
+
+    public function testJsonReturnAssocArray()
+    {
+        $dummyBody = [
+            'histogram' => [
+                '75thPercentile' => 539159,
+                '95thPercentile' => 539159,
+                '98thPercentile' => 539159,
+                '99thPercentile' => 539159,
+                'median' => 539159,
+                'count' => 15
+            ],
+            'taskStatHistory' => []
+        ];
+        $this->oResponseInterface
+            ->getBody()
+            ->shouldBeCalledTimes(1)
+            ->willReturn(json_encode($dummyBody));
+
+        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+
+        $result = $_oHttpGuzzleResponse->json();
+        $this->assertInternalType('array', $result);
+        $this->assertEquals($dummyBody, $result);
+    }
 }

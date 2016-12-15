@@ -50,6 +50,6 @@ class HttpGuzzlResponse implements HttpClientResponseInterface
      */
     public function json()
     {
-        return json_decode($this->getBody());
+        return json_decode($this->getBody(), true);
     }
 }
