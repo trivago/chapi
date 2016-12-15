@@ -1,6 +1,22 @@
 # dev-master (v0.9.0)
     2016-11-29 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
+            - Updating symfony/debug (v3.1.7 => v3.2.1)
+            - Updating symfony/console (v3.1.7 => v3.2.1)
+            - Updating symfony/dependency-injection (v3.1.7 => v3.2.1)
+            - Updating symfony/filesystem (v3.1.7 => v3.2.1)
+            - Updating symfony/config (v3.1.7 => v3.2.1)
+            - Updating symfony/http-foundation (v3.1.7 => v3.2.1)
+            - Updating symfony/event-dispatcher (v3.1.7 => v3.2.1)
+            - Updating symfony/http-kernel (v3.1.7 => v3.2.1)
+            - Updating symfony/monolog-bridge (v3.1.7 => v3.2.1)
+            - Updating symfony/yaml (v3.1.7 => v3.2.1)
+
+    2016-12-15 andygrunwald <andygrunwald@gmail.com>
+        * Ensure that json_decode always return an assoc array (Fix #63) 
+
+    2016-11-29 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies
             - Updating symfony/debug (v3.1.6 => v3.1.7)
             - Updating symfony/console (v3.1.6 => v3.1.7)
             - Updating symfony/dependency-injection (v3.1.6 => v3.1.7)
