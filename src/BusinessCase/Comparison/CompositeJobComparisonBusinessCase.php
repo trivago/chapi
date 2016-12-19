@@ -25,7 +25,7 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
 
     public function AddComparisionCases(JobComparisonInterface $comparer)
     {
-        $aComposites[] = $comparer;
+        $this->aComposites[] = $comparer;
     }
 
     /**
@@ -43,12 +43,12 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
     /**
      * @return array
      */
-    public function getChronosMissingJobs()
+    public function getRemoteMissingJobs()
     {
         $_aChronosMissingJobs = array();
         foreach($this->aComposites as $jobComparers)
         {
-            $_aChronosMissingJobs = array_merge($_aChronosMissingJobs, $jobComparers->getChronosMissingJobs());
+            $_aChronosMissingJobs = array_merge($_aChronosMissingJobs, $jobComparers->getRemoteMissingJobs());
         }
         return $_aChronosMissingJobs;
     }

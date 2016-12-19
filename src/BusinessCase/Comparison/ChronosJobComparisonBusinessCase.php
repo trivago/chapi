@@ -97,7 +97,7 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
     /**
      * @return string[]
      */
-    public function getChronosMissingJobs()
+    public function getRemoteMissingJobs()
     {
         $_ret =  $this->getMissingJobsInCollectionA(
             $this->oJobRepositoryChronos->getJobs(),

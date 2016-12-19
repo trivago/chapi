@@ -61,7 +61,7 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
     /**
      * @return array
      */
-    public function getChronosMissingJobs()
+    public function getRemoteMissingJobs()
     {
         return $this->getMissingJobsInCollectionA(
             $this->oRemoteRepository->getJobs(),

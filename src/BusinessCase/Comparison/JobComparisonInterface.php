@@ -23,7 +23,7 @@ interface JobComparisonInterface
     /**
      * @return array
      */
-    public function getChronosMissingJobs();
+    public function getRemoteMissingJobs();
 
     /**
      * @return array
