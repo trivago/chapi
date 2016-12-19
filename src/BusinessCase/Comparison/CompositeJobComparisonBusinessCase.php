@@ -36,8 +36,10 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
         $_aMissingJobs = array();
         foreach($this->aComposites as $jobComparers)
         {
-            $_aMissingJobs = array_merge($_aMissingJobs, $jobComparers->getLocalMissingJobs());
+            $missing = $jobComparers->getLocalMissingJobs();
+            $_aMissingJobs = array_merge($_aMissingJobs,  $missing);
         }
+        return $_aMissingJobs;
     }
 
     /**
@@ -63,6 +65,7 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
         {
             $_aLocalJobUpdates = array_merge($_aLocalJobUpdates, $jobComparers->getLocalJobUpdates());
         }
+        return $_aLocalJobUpdates;
     }
 
     /**
