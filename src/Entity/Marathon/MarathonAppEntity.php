@@ -86,12 +86,8 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $ipAddress = null;
 
-    public function __construct($oData)
+    public function __construct($oData = null)
     {
-        // TODO: throw exception
-        if ($oData == null) {
-            return;
-        }
         MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
         if (property_exists($oData, "portDefinitions")) {

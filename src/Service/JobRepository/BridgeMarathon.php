@@ -61,6 +61,7 @@ class BridgeMarathon implements BridgeInterface
     {
         $_aApps = [];
         $_aJobsList = $this->getJobList();
+
         if (!empty($_aJobsList))
         {
             foreach ($_aJobsList as $_aJobData)
@@ -108,12 +109,13 @@ class BridgeMarathon implements BridgeInterface
         }
 
         $_aResult = $this->oApiClient->listingJobs();
+
         if (!empty($_aResult->apps))
         {
-            $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult, self::CACHE_TIME_JOB_LIST);
+            $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult->apps, self::CACHE_TIME_JOB_LIST);
         }
 
-        return $_aResult;
+        return $_aResult->apps;
 
     }
 

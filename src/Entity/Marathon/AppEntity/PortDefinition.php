@@ -22,6 +22,10 @@ class PortDefinition
 
     public function __construct($oData)
     {
+        if ($oData == null)
+        {
+            return;
+        }
         MarathonEntityUtils::setAllPossibleProperties($oData, $this);
         if(property_exists($oData, "labels"))
         {

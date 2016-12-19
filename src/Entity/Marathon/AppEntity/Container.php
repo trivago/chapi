@@ -30,6 +30,11 @@ class Container
 
     public function __construct($oData)
     {
+        if ($oData == null)
+        {
+            return;
+        }
+
         MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
         $this->docker = new Docker($oData->docker);

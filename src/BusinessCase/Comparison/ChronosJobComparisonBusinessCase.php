@@ -17,7 +17,7 @@ use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
-class JobComparisonBusinessCase implements JobComparisonInterface
+class ChronosJobComparisonBusinessCase implements JobComparisonInterface
 {
     /**
      * @var JobRepositoryInterface
@@ -88,25 +88,9 @@ class JobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getLocalMissingJobs()
     {
-        return array_merge(
-            $this->getLocalMissingJobsForChronos(),
-            $this->getLocalMissingJobForMarathon()
-        );
-    }
-
-    private function getLocalMissingJobsForChronos()
-    {
         return $this->getMissingJobsInCollectionA(
             $this->oJobRepositoryLocalChronos->getJobs(),
             $this->oJobRepositoryChronos->getJobs()
-        );
-    }
-
-    private function getLocalMissingJobForMarathon()
-    {
-        return $this->getMissingJobsInCollectionA(
-            $this->oJobRepositoryLocalMarathon->getJobs(),
-            $this->oJobRepositoryMarathon->getJobs()
         );
     }
 
@@ -115,26 +99,11 @@ class JobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getChronosMissingJobs()
     {
-        return array_merge(
-            $this->getRemoteMissingJobsForChronos(),
-            $this->getRemoteMissingJobsForMarathon()
-        );
-    }
-
-    private function getRemoteMissingJobsForChronos()
-    {
-        return $this->getMissingJobsInCollectionA(
+        $_ret =  $this->getMissingJobsInCollectionA(
             $this->oJobRepositoryChronos->getJobs(),
             $this->oJobRepositoryLocalChronos->getJobs()
         );
-    }
-
-    private function getRemoteMissingJobsForMarathon()
-    {
-        return $this->getMissingJobsInCollectionA(
-            $this->oJobRepositoryMarathon->getJobs(),
-            $this->oJobRepositoryLocalMarathon->getJobs()
-        );
+        return $_ret;
     }
 
     /**
@@ -142,15 +111,10 @@ class JobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getLocalJobUpdates()
     {
-        return $this->getLocalJobUpdatesForChronos();
-    }
-
-    private function getLocalJobUpdatesForChronos()
-    {
         $_aJobsLocal = $this->oJobRepositoryLocalChronos->getJobs();
         $_aLocalJobUpdates = [];
 
-        /** @var JobEntityInterface $_oJobEntityLocal */
+        /** @var ChronosJobEntity|JobEntityInterface $_oJobEntityLocal */
         foreach ($_aJobsLocal as $_oJobEntityLocal)
         {
 
@@ -166,22 +130,16 @@ class JobComparisonBusinessCase implements JobComparisonInterface
                 }
             }
         }
-
+        var_dump($_aLocalJobUpdates);
+        die;
         return $_aLocalJobUpdates;
     }
-
 
     /**
      * @param string $sJobName
      * @return string[]
      */
     public function getJobDiff($sJobName)
-    {
-        return $this->getJobDiffForChronos($sJobName);
-    }
-
-
-    public function getJobDiffForChronos($sJobName)
     {
         $_aReturn = [];
 
@@ -439,5 +397,17 @@ class JobComparisonBusinessCase implements JobComparisonInterface
             array_keys($oJobCollectionB->getArrayCopy()),
             array_keys($oJobCollectionA->getArrayCopy())
         );
+    }
+
+    /**
+     * @param $sJobName
+     * @return bool
+     */
+    public function isJobAvailable($sJobName)
+    {
+        $_bLocallyAvailable = $this->oJobRepositoryLocalChronos->getJob($sJobName) ? true : false;
+        $_bRemotelyAvailable = $this->oJobRepositoryChronos->getJob($sJobName) ? true : false;
+
+        return $_bLocallyAvailable || $_bRemotelyAvailable;
     }
 }
