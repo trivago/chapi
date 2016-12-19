@@ -66,7 +66,7 @@ class AddCommandTest extends \PHPUnit_Framework_TestCase
         ;
 
         $_oJobComparisonInterface = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
-        $_oJobComparisonInterface->getChronosMissingJobs()->willReturn(['JobA'])->shouldBeCalledTimes(1);
+        $_oJobComparisonInterface->getRemoteMissingJobs()->willReturn(['JobA'])->shouldBeCalledTimes(1);
         $_oJobComparisonInterface->getLocalMissingJobs()->willReturn(['JobB'])->shouldBeCalledTimes(1);
         $_oJobComparisonInterface->getLocalJobUpdates()->willReturn(['JobC'])->shouldBeCalledTimes(1);
 
