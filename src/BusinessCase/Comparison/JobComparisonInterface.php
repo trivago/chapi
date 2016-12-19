@@ -42,4 +42,10 @@ interface JobComparisonInterface
      * @return bool
      */
     public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
+
+    /**
+     * @param $sJobName
+     * @return bool
+     */
+    public function isJobAvailable($sJobName);
 }

@@ -1,6 +1,12 @@
 services:
   JobComparisonInterface:
-    class: Chapi\BusinessCase\Comparison\JobComparisonBusinessCase
+    class: Chapi\BusinessCase\Comparison\CompositeJobComparisonBusinessCase
+    calls:
+      - [AddComparisionCases, ["@ChronosJobComparisionBusinessCase"]]
+      - [AddComparisionCases, ["@MarathonJobComparisionBusinessCase"]]
+
+  ChronosJobComparisionBusinessCase:
+    class: Chapi\BusinessCase\Comparison\ChronosJobComparisonBusinessCase
     arguments:
       - "@JobRepositoryFileSystemChronos"
       - "@JobRepositoryFileSystemMarathon"
@@ -9,3 +15,10 @@ services:
       - "@DiffCompareInterface"
       - "@DatePeriodFactoryInterface"
       - "@LoggerInterface"
+
+  MarathonJobComparisionBusinessCase:
+    class: Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase
+    arguments:
+      - "@JobRepositoryFileSystemMarathon"
+      - "@JobRepositoryMarathon"
+      - "@DiffCompareInterface"
