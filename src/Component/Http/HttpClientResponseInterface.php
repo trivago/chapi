@@ -22,7 +22,8 @@ interface HttpClientResponseInterface
     public function getBody();
 
     /**
+     * @param $bAsAssoc Return as assocaitive array or stdclass
      * @return array
      */
-    public function json();
+    public function json($bAsAssoc);
 }

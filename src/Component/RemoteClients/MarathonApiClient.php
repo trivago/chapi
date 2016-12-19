@@ -29,7 +29,7 @@ class MarathonApiClient implements ApiClientInterface
         $oResponse = $this->oHttpClient->get("/v2/apps");
         if (200 == $oResponse->getStatusCode())
         {
-            return $oResponse->json();
+            return $oResponse->json(false);
         }
 
         return [];

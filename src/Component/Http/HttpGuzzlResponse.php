@@ -48,8 +48,8 @@ class HttpGuzzlResponse implements HttpClientResponseInterface
     /**
      * @return array
      */
-    public function json()
+    public function json($assoc = true)
     {
-        return json_decode($this->getBody(), true);
+        return json_decode($this->getBody(), $assoc);
     }
 }
