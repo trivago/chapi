@@ -130,8 +130,6 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
                 }
             }
         }
-        var_dump($_aLocalJobUpdates);
-        die;
         return $_aLocalJobUpdates;
     }
 

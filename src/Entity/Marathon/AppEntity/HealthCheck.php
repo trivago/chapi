@@ -9,7 +9,6 @@ namespace Chapi\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\HealthCheckCommand;
 use Chapi\Entity\Marathon\MarathonEntityUtils;
-use Symfony\Component\Console\Command\Command;
 
 class HealthCheck
 {
@@ -47,7 +46,7 @@ class HealthCheck
 
         if(property_exists($oData, "command"))
         {
-            $this->command = new Command($oData->command);
+            $this->command = new HealthCheckCommand($oData->command);
         }
     }
 
