@@ -48,7 +48,8 @@ class StatusCommand extends AbstractCommand
         /** @var JobComparisonInterface  $_oJobComparisonBusinessCase */
         $_oJobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
 
-        $_aNewJobs = $_oJobComparisonBusinessCase->getChronosMissingJobs();
+
+        $_aNewJobs = $_oJobComparisonBusinessCase->getRemoteMissingJobs();
         $_aMissingJobs = $_oJobComparisonBusinessCase->getLocalMissingJobs();
         $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
 

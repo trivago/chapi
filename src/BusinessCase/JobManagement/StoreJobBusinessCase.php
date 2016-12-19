@@ -72,7 +72,7 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
     public function storeIndexedJobs()
     {
         // add new jobs to chronos
-        $_aNewJobs = $this->oJobComparisonBusinessCase->getChronosMissingJobs();
+        $_aNewJobs = $this->oJobComparisonBusinessCase->getRemoteMissingJobs();
         foreach ($_aNewJobs as $_sJobName)
         {
             $this->hasAddedJob($_sJobName);
