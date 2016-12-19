@@ -88,6 +88,12 @@ class MarathonAppEntity implements JobEntityInterface
 
     public function __construct($oData = null)
     {
+        if (!$oData)
+        {
+            // initialized with default values
+            return;
+        }
+
         MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
         if (property_exists($oData, "portDefinitions")) {
