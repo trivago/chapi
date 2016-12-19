@@ -60,7 +60,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         // add new jobs to chronos
         $this->oJobComparisonBusinessCase
-            ->getChronosMissingJobs()
+            ->getRemoteMissingJobs()
             ->willReturn($_aMissingJobs)
             ->shouldBeCalledTimes(1)
         ;
@@ -407,7 +407,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         // add new jobs to chronos
         $this->oJobComparisonBusinessCase
-            ->getChronosMissingJobs()
+            ->getRemoteMissingJobs()
             ->willReturn($_aMissingJobs)
             ->shouldBeCalledTimes(1)
         ;
@@ -559,7 +559,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         // add new jobs to chronos
         $this->oJobComparisonBusinessCase
-            ->getChronosMissingJobs()
+            ->getRemoteMissingJobs()
             ->willReturn($_aMissingJobs)
             ->shouldBeCalledTimes(1)
         ;
@@ -630,7 +630,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         // add new jobs to chronos
         $this->oJobComparisonBusinessCase
-            ->getChronosMissingJobs()
+            ->getRemoteMissingJobs()
             ->willReturn($_aMissingJobs)
             ->shouldBeCalledTimes(1)
         ;
@@ -698,7 +698,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         // add new jobs to chronos
         $this->oJobComparisonBusinessCase
-            ->getChronosMissingJobs()
+            ->getRemoteMissingJobs()
             ->willReturn($_aMissingJobs)
             ->shouldBeCalledTimes(1)
         ;
@@ -761,7 +761,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         // add new jobs to chronos
         $this->oJobComparisonBusinessCase
-            ->getChronosMissingJobs()
+            ->getRemoteMissingJobs()
             ->willReturn($_aMissingJobs)
             ->shouldBeCalledTimes(1)
         ;
