@@ -25,5 +25,5 @@ interface HttpClientResponseInterface
      * @param $bAsAssoc Return as assocaitive array or stdclass
      * @return array
      */
-    public function json($bAsAssoc);
+    public function json();
 }
