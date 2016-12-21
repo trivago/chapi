@@ -10,6 +10,8 @@
 namespace Chapi\Commands;
 
 use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
+use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputOption;
@@ -38,6 +40,7 @@ class ListCommand extends AbstractCommand
     {
         /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
         $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
+        $_oJobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
 
         $_bOnlyFailed = (bool) $this->oInput->getOption('onlyFailed');
         $_bOnlyDisabled = (bool) $this->oInput->getOption('onlyDisabled');
@@ -45,11 +48,17 @@ class ListCommand extends AbstractCommand
         $_oTable = new Table($this->oOutput);
         $_oTable->setHeaders(array(
             'Job',
-            'Info'
+            'Info',
+            'Type'
         ));
 
+        $_aAllEntities = array_merge(
+            $_oJobRepositoryChronos->getJobs()->getArrayCopy(),
+            $_oJobRepositoryMarathon->getJobs()->getArrayCopy()
+        );
+
         /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($_oJobRepositoryChronos->getJobs() as $_oJobEntity)
+        foreach ($_aAllEntities as $_oJobEntity)
         {
             if ($this->hasJobToPrint($_oJobEntity, $_bOnlyFailed, $_bOnlyDisabled))
             {
@@ -63,13 +72,18 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @param bool $bOnlyFailed
      * @param bool $bOnlyDisabled
      * @return bool
      */
-    private function hasJobToPrint(ChronosJobEntity $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
+    private function hasJobToPrint(JobEntityInterface $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
     {
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
+        {
+            return true;
+        }
+
         $_bPrintAllJobs = (false === $bOnlyFailed && false === $bOnlyDisabled);
         if ($_bPrintAllJobs)
         {
@@ -93,20 +107,24 @@ class ListCommand extends AbstractCommand
 
     /**
      * @param Table $oTable
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      */
-    private function printJobTableRow(Table $oTable, ChronosJobEntity $oJobEntity)
+    private function printJobTableRow(Table $oTable, JobEntityInterface $oJobEntity)
     {
         $oTable->addRow([
             sprintf(
                 $this->getOutputFormat($oJobEntity),
-                $oJobEntity->name
+                $oJobEntity->getKey()
             ),
 
             sprintf(
                 $this->getOutputFormat($oJobEntity),
                 $this->getOutputLabel($oJobEntity)
             ),
+            sprintf(
+                $this->getOutputFormat($oJobEntity),
+                $oJobEntity->getEntityType()
+            )
         ]);
     }
 
@@ -114,8 +132,14 @@ class ListCommand extends AbstractCommand
      * @param ChronosJobEntity $oJobEntity
      * @return string
      */
-    private function getOutputLabel(ChronosJobEntity $oJobEntity)
+    private function getOutputLabel(JobEntityInterface $oJobEntity)
     {
+
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
+        {
+            return "ok";
+        }
+
         $_aJobInfoText = [];
 
         if ($oJobEntity->disabled)
@@ -146,8 +170,13 @@ class ListCommand extends AbstractCommand
      * @param ChronosJobEntity $oJobEntity
      * @return string
      */
-    private function getOutputFormat(ChronosJobEntity $oJobEntity)
+    private function getOutputFormat(JobEntityInterface $oJobEntity)
     {
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
+        {
+            return '<info>%s</info>';
+        }
+
         if ($oJobEntity->errorsSinceLastSuccess > 0)
         {
             return '<fg=red>%s</>';
