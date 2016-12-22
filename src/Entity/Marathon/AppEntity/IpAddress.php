@@ -28,13 +28,13 @@ class IpAddress
         }
         MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
-        if(property_exists($oData, "groups"))
+        if(isset($oData["groups"]))
         {
-            $this->groups = $oData->groups;
+            $this->groups = $oData["groups"];
         }
-        if (property_exists($oData, "labels"))
+        if (isset($oData["labels"]))
         {
-            $this->labels = $oData->labels;
+            $this->labels = $oData["labels"];
         }
     }
 }

@@ -28,7 +28,7 @@ class BridgeMarathon implements BridgeInterface
      */
     private $oApiClient;
     /**
-     * @var JobEntityValidatorServiceInterface
+     * @var JobValidatorServiceInterface
      */
     private $oJobEntityValidatorService;
     /**
@@ -110,12 +110,12 @@ class BridgeMarathon implements BridgeInterface
 
         $_aResult = $this->oApiClient->listingJobs();
 
-        if (!empty($_aResult->apps))
+        if (!empty($_aResult["apps"]))
         {
-            $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult->apps, self::CACHE_TIME_JOB_LIST);
+            $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult["apps"], self::CACHE_TIME_JOB_LIST);
         }
 
-        return $_aResult->apps;
+        return $_aResult["apps"];
 
     }
 

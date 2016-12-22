@@ -51,7 +51,7 @@ class MarathonAppEntity implements JobEntityInterface
     public $constraints  = [];
 
 
-    public $acceptedResourceRoles = [];
+    public $acceptedResourceRoles = null;
 
     public $labels = [];
 
@@ -67,11 +67,11 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $healthChecks = [];
 
-    public $backoffSeconds = 0;
+    public $backoffSeconds = 1;
 
-    public $backoffFactor = 1;
+    public $backoffFactor = 1.15;
 
-    public $maxLaunchDelaySeconds = 0;
+    public $maxLaunchDelaySeconds = 3600;
 
     public $taskKillGracePeriodSeconds = 0;
 
@@ -86,56 +86,66 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $ipAddress = null;
 
-    public function __construct($oData = null)
+    public function __construct($mData = null)
     {
-        if (!$oData)
+
+        if (!$mData)
         {
             // initialized with default values
             return;
         }
 
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+        // make sure data is array
+        $aData = (array) $mData;
 
-        if (property_exists($oData, "portDefinitions")) {
-            foreach ($oData->portDefinitions as $portDefinition) {
-                $this->portDefinitions[] = new DockerPortMapping($portDefinition);
+        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
+
+        if (isset($aData["portDefinitions"])) {
+            foreach ($aData["portDefinitions"] as $portDefinition) {
+                $this->portDefinitions[] = new DockerPortMapping((array)$portDefinition);
             }
         }
 
-        if (property_exists($oData, "container")) {
-            $this->container = new Container($oData->container);
+        if (isset($aData["container"])) {
+            $this->container = new Container((array)$aData["container"]);
         }
 
-        if (property_exists($oData, "fetch"))
+        if (isset($aData["fetch"]))
         {
-            foreach($oData->fetch as $fetch) {
-                $this->fetch[] = new FetchUrl($fetch);
+            foreach($aData["fetch"] as $fetch) {
+                $this->fetch[] = new FetchUrl((array)$fetch);
             }
         }
 
-        if (property_exists($oData, "healthChecks"))
+        if (isset($aData["healthChecks"]))
         {
-            foreach($oData->healthChecks as $healthCheck)
+            foreach($aData["healthChecks"] as $healthCheck)
             {
-                $this->healthChecks[] = new HealthCheck($healthCheck);
+                $this->healthChecks[] = new HealthCheck((array)$healthCheck);
             }
         }
 
-        if (property_exists($oData, "upgradeStrategy"))
+        if (isset($aData["upgradeStrategy"]))
         {
-            $this->upgradeStrategy = new UpgradeStrategy($oData->upgradeStrategy);
+            $this->upgradeStrategy = new UpgradeStrategy((array)$aData["upgradeStrategy"]);
+        } else {
+            $this->upgradeStrategy = new UpgradeStrategy();
         }
 
-        if (property_exists($oData, "ipAddress"))
+        if (isset($aData["ipAddress"]))
         {
-            $this->ipAddress = new IpAddress($oData->ipAddress);
+            $this->ipAddress = new IpAddress((array)$aData["ipAddress"]);
         }
 
-        MarathonEntityUtils::setPropertyIfExist($oData, $this, "env");
-        MarathonEntityUtils::setPropertyIfExist($oData, $this, "constraints");
-        MarathonEntityUtils::setPropertyIfExist($oData, $this, "acceptedResourceRoles");
-        MarathonEntityUtils::setPropertyIfExist($oData, $this, "labels");
-        MarathonEntityUtils::setPropertyIfExist($oData, $this, "dependencies");
+        if (isset($aData["env"]))
+        {
+            $this->env = (array) $aData["env"];
+        }
+
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, "constraints");
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, "acceptedResourceRoles");
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, "labels");
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, "dependencies");
     }
 
     /**
@@ -144,7 +154,9 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public function jsonSerialize()
     {
-        return (array) $this;
+        $_aRet = (array) $this;
+        return $_aRet;
+
     }
 
     /**
@@ -163,7 +175,14 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public function getSimpleArrayCopy()
     {
-        return [];
+        $_aReturn = [];
+
+        foreach ($this as $_sProperty => $mValue)
+        {
+            $_aReturn[$_sProperty] = (is_array($mValue) || is_object($mValue)) ? json_encode($mValue) : $mValue;
+        }
+
+        return $_aReturn;
     }
 
     /**

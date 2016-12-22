@@ -13,11 +13,11 @@ class UpgradeStrategy
 {
     const DIC = self::class;
 
-    public $minimumHealthCapacity = 0;
+    public $minimumHealthCapacity = 1;
 
-    public $maximumOverCapacity = 0;
+    public $maximumOverCapacity = 1;
 
-    public function __construct($oData)
+    public function __construct($oData = null)
     {
         if ($oData == null)
         {

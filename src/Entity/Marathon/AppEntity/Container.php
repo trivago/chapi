@@ -28,20 +28,27 @@ class Container
      */
     public $volumes = [];
 
-    public function __construct($oData)
+    public function __construct($mData)
     {
-        if ($oData == null)
+        if ($mData == null)
         {
             return;
         }
 
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($mData, $this);
 
-        $this->docker = new Docker($oData->docker);
-
-        foreach ($oData->volumes as $volume)
+        if (isset($mData["docker"]))
         {
-            $this->volumes[] = new ContainerVolume($volume);
+            $this->docker = new Docker((array)$mData["docker"]);
         }
+
+        if (isset($mData["volumes"]))
+        {
+            foreach ($mData["volumes"] as $volume)
+            {
+                $this->volumes[] = new ContainerVolume((array)$volume);
+            }
+        }
+
     }
 }

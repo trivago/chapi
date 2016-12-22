@@ -40,19 +40,19 @@ class Docker
         }
         MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
-        if (property_exists($oData, "portMappings"))
+        if (isset($oData["portMappings"]))
         {
-            foreach($oData->portMappings as $portMapping)
+            foreach($oData["portMappings"] as $portMapping)
             {
-                $this->portMappings[] = new DockerPortMapping($portMapping);
+                $this->portMappings[] = new DockerPortMapping((array)$portMapping);
             }
         }
 
-        if (property_exists($oData, "parameters"))
+        if (isset($oData["parameters"]))
         {
-            foreach($oData->parameters as $parameter)
+            foreach($oData["parameters"] as $parameter)
             {
-                $this->parameters[] = new DockerParameters($parameter);
+                $this->parameters[] = new DockerParameters((array)$parameter);
             }
         }
 

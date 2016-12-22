@@ -27,7 +27,7 @@ class HealthCheck
 
     public $port = 0;
 
-    public $timeoutSeconds = 0;
+    public $timeoutSeconds = 20;
 
     public $maxConsecutiveFailures = 0;
 
@@ -44,9 +44,9 @@ class HealthCheck
         }
         MarathonEntityUtils::setAllPossibleProperties($oData, $this);
 
-        if(property_exists($oData, "command"))
+        if(isset($oData["command"]))
         {
-            $this->command = new HealthCheckCommand($oData->command);
+            $this->command = new HealthCheckCommand((array)$oData["command"]);
         }
     }
 

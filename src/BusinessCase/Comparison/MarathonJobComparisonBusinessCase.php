@@ -13,6 +13,8 @@ use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Entity\Marathon\AppEntity\FetchUrl;
+use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
@@ -87,6 +89,7 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
             }
 
             $_aNonIdenticalProps = $this->compareJobEntities($_oLocalJob, $_oRemoteJob);
+
             if (!empty($_aNonIdenticalProps))
             {
                 $_aLocallyUpdatedJobs[] = $_oLocalJob->getKey();
@@ -105,7 +108,6 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
         $_aDifferences = [];
         $_oLocalJob = $this->oLocalRepository->getJob($sJobName);
         $_oRemoteJob = $this->oRemoteRepository->getJob($sJobName);
-
         if (!$_oLocalJob && !$_oRemoteJob)
         {
             // return as jobs doesnt exist
@@ -130,8 +132,8 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
         foreach ($_aNonIdenticalProps as $_sProperty)
         {
             $_aDifferences[$_sProperty] = $this->oDiffCompare->compare(
-                $_oRemoteJob,
-                $_oLocalJob
+                $_oRemoteJob->{$_sProperty},
+                $_oLocalJob->{$_sProperty}
             ) ;
         }
 
@@ -211,13 +213,120 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
         if (count($_aDiff) > 0)
         {
             $_aDiffKeys = array_keys($_aDiff);
+
             foreach ($_aDiffKeys as $_sDiffKey)
             {
-                $_aNonidenticalProperties[] = $_sDiffKey;
-
+                if (!$this->isEntityEqual($_sDiffKey, $oJobEntityA, $oJobEntityB))
+                {
+                    $_aNonidenticalProperties[] = $_sDiffKey;
+                }
             }
         }
 
         return $_aNonidenticalProperties;
+    }
+
+    /**
+     * @param $sProperty
+     * @param MarathonAppEntity $oJobEntityA
+     * @param MarathonAppEntity $oJobEntityB
+     * @return bool
+     */
+    private function isEntityEqual($sProperty, MarathonAppEntity $oJobEntityA, MarathonAppEntity $oJobEntityB)
+    {
+        if (is_array($oJobEntityA->{$sProperty}))
+        {
+            if ($sProperty == "env")
+            {
+                return $this->assocArrayEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty}) &&
+                        $this->assocArrayEqual($oJobEntityB->{$sProperty}, $oJobEntityA->{$sProperty});
+            }
+            return $this->arrayOfObjectsEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty});
+        }
+
+        if (is_object($oJobEntityA->{$sProperty})) {
+            return $this->strictEqualsObjectProperties($oJobEntityA, $oJobEntityB);
+        }
+
+        return $oJobEntityA->{$sProperty} === $oJobEntityB->{$sProperty};
+
+    }
+
+    private function assocArrayEqual($aArrayFromA, $aArrayFromB)
+    {
+
+        foreach($aArrayFromA as $_sKey => $_mValueA)
+        {
+            $_bEqual = false;
+            if (!array_key_exists($_sKey, $aArrayFromB))
+            {
+                return false;
+            }
+            $_mValueB = $aArrayFromB[$_sKey];
+
+            if (is_object($_mValueA) && is_object($_mValueB))
+            {
+                $_bEqual = $this->strictEqualsObjectProperties($_mValueA, $_mValueB);
+            }
+            else if (!is_object($_mValueA) && !is_object($_mValueB)) {
+                $_bEqual = ($_mValueA === $_mValueB);
+            }
+
+            if (!$_bEqual)
+            {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    private function arrayOfObjectsEqual($aEntitiesFromA, $aEntitiesFromB)
+    {
+        // this is costly, but since these definitions are objects without any
+        // indexable information, there is no better way.
+        // we can randomize the array and do this with O((n * m) / 2) average case
+        // but how much does that actually help?
+        foreach ($aEntitiesFromA as $_oEntityA)
+        {
+            $_bFound = false;
+            foreach($aEntitiesFromB as $_oEntityB)
+            {
+                if ($this->strictEqualsObjectProperties($_oEntityA, $_oEntityB))
+                {
+                    $_bFound = true;
+                    break;
+                }
+            }
+            if (!$_bFound)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function strictEqualsObjectProperties($oEntityA, $oEntityB)
+    {
+        return $this->compareFirstToSecond($oEntityA, $oEntityB) &&
+            $this->compareFirstToSecond($oEntityB, $oEntityA);
+    }
+
+    private function compareFirstToSecond($oEntityA, $oEntityB)
+    {
+        foreach($oEntityA as $_sProperty => $_mValue)
+        {
+            if (!property_exists($oEntityB, $_sProperty))
+            {
+                return false;
+            }
+
+            if ($oEntityA->{$_sProperty} !== $oEntityB->{$_sProperty})
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

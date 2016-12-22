@@ -353,7 +353,6 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
                 $_iDiffInterval = (int) $_oDiffInterval->format('%Y%M%D%H%I');
 
                 $this->oLogger->debug(sprintf('%s::INTERVAL DIFF OF "%d" FOR "%s"', 'ScheduleComparison', $_iDiffInterval, $oJobEntityA->name));
-
                 return ($_iDiffInterval == 0);
             }
         }

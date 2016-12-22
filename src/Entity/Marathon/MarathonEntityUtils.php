@@ -7,10 +7,10 @@ class MarathonEntityUtils
 {
     public static function setPropertyIfExist($oSource, $oTarget, $sProperty)
     {
-        if (property_exists($oSource, $sProperty) &&
+        if (isset($oSource[$sProperty]) &&
             property_exists($oTarget, $sProperty))
         {
-            $oTarget->{$sProperty} = $oSource->{$sProperty};
+            $oTarget->{$sProperty} = $oSource[$sProperty];
         }
     }
 
