@@ -40,6 +40,7 @@ class ListCommand extends AbstractCommand
     {
         /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
         $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
+        /** @var  JobRepositoryInterface $_oJobRepositoryMarathon */
         $_oJobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
 
         $_bOnlyFailed = (bool) $this->oInput->getOption('onlyFailed');

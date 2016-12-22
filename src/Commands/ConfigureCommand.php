@@ -32,6 +32,11 @@ class ConfigureCommand extends AbstractCommand
             ->addOption('chronos_url', 'u', InputOption::VALUE_OPTIONAL, 'The chronos url (inclusive port)')
             ->addOption('cache_dir', 'd', InputOption::VALUE_OPTIONAL, 'Path to cache directory')
             ->addOption('repository_dir', 'r', InputOption::VALUE_OPTIONAL, 'Root path to your job files')
+
+            ->addOption('marathon_url', 'mu', InputOption::VALUE_OPTIONAL, 'The marathon url (inclusive port)')
+            ->addOption('marathon_http_username', 'mun', InputOption::VALUE_OPTIONAL, 'The marathon username (HTTP credentials)', '')
+            ->addOption('marathon_http_password', 'mp', InputOption::VALUE_OPTIONAL, 'The marathon password (HTTP credentials)', '')
+            ->addOption('repository_dir_marathon', 'mr', InputOption::VALUE_OPTIONAL, 'Root path to the app files')
         ;
     }
 
@@ -90,6 +95,26 @@ class ConfigureCommand extends AbstractCommand
         $_aResult['repository_dir'] = [
             'value' => $this->getInputValue('repository_dir', 'Please enter your root path to your job files'),
             'required' => true
+        ];
+
+        $_aResult['marathon_url'] = [
+            'value' => $this->getInputValue('marathon_url', 'Please enter the marathon url (inclusive port)'),
+            'required' => false
+        ];
+
+        $_aResult['marathon_http_username'] = [
+            'value' => $this->getInputValue('marathon_http_username', 'Please enter the username to access marathon instance'),
+            'required' => false
+        ];
+
+        $_aResult['marathon_http_password'] = [
+            'value' => $this->getInputValue('marathon_http_password', 'Please enter the password to access marathon instance'),
+            'required' => false
+        ];
+
+        $_aResult['repository_dir_marathon'] = [
+            'value' => $this->getInputValue('repository_dir_marathon', 'Please enter the root path to your app fiels'),
+            'required' => false
         ];
 
         return $_aResult;

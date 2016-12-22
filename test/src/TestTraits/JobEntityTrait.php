@@ -13,6 +13,7 @@ namespace ChapiTest\src\TestTraits;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\Marathon\MarathonAppEntity;
 
 trait JobEntityTrait
 {
@@ -76,5 +77,22 @@ trait JobEntityTrait
         ];
 
         return new JobCollection($_aJobEntities);
+    }
+
+    private function createAppCollection()
+    {
+        $_aAppEntities = [
+            $this->getValidMarathonAppEntity('/main/id1')
+        ];
+
+        return new JobCollection($_aAppEntities);
+    }
+
+    private function getValidMarathonAppEntity($sId)
+    {
+        /** @var MarathonAppEntity $_oEntity */
+        $_oEntity = new MarathonAppEntity();
+        $_oEntity->id = $sId;
+        return $_oEntity;
     }
 }
