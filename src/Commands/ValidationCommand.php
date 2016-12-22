@@ -13,7 +13,7 @@ namespace Chapi\Commands;
 use Chapi\Commands\AbstractCommand;
 use Chapi\Component\Command\JobUtils;
 use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Service\JobRepository\JobEntityValidatorServiceInterface;
+use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
 class ValidationCommand extends AbstractCommand
@@ -49,7 +49,7 @@ class ValidationCommand extends AbstractCommand
 
         if ($this->hasInvalidJobs($_aJobsToValidate))
         {
-            $this->oOutput->writeln("<comment>Founded invalid jobs:</comment>\n");
+            $this->oOutput->writeln("<comment>Found invalid jobs:</comment>\n");
 
             foreach ($this->getInvalidJobsByJobNames($_aJobsToValidate) as $_sJobName => $_aInvalidProperties)
             {
@@ -60,7 +60,7 @@ class ValidationCommand extends AbstractCommand
         }
 
         //else
-        $this->oOutput->writeln('<info>All checked jobs looks valid</info>');
+        $this->oOutput->writeln('<info>All checked jobs look valid</info>');
         return 0;
     }
 
@@ -89,8 +89,8 @@ class ValidationCommand extends AbstractCommand
 
         $_aInvalidJobs = [];
 
-        /** @var JobEntityValidatorServiceInterface $_oJobEntityValidationService */
-        $_oJobEntityValidationService = $this->getContainer()->get(JobEntityValidatorServiceInterface::DIC_NAME);
+        /** @var JobValidatorServiceInterface $_oJobEntityValidationService */
+        $_oJobEntityValidationService = $this->getContainer()->get(JobValidatorServiceInterface::DIC_NAME);
 
         /** @var JobRepositoryInterface  $_oJobRepositoryLocale */
         $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM);
@@ -114,8 +114,14 @@ class ValidationCommand extends AbstractCommand
      */
     private function printInvalidJobProperties($sJobName, array $aInvalidProperties)
     {
-        $_sFormat = "\t<fg=red>%s:\t%s</>";
-        $this->oOutput->writeln(sprintf($_sFormat, $sJobName, implode(', ', $aInvalidProperties)));
+        $_sFormatJobName = "\t<fg=red>%s:</>";
+        $_sFormatErrMsg = "\t\t<fg=red>%s</>";
+
+        $this->oOutput->writeln(sprintf($_sFormatJobName, $sJobName));
+        foreach ($aInvalidProperties as $_sErrorMessage)
+        {
+            $this->oOutput->writeln(sprintf($_sFormatErrMsg, $_sErrorMessage));
+        }
     }
 
     /**

@@ -9,6 +9,8 @@
 
 namespace Chapi\Entity\Chronos;
 
+use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
+
 class JobEntity implements JobEntityInterface
 {
     public $name = '';
@@ -23,7 +25,7 @@ class JobEntity implements JobEntityInterface
 
     public $schedule = ''; // todo: move to separate entity
 
-    public $scheduleTimeZone = 'Europe/Berlin'; // todo: add time zone to config
+    public $scheduleTimeZone = '';
 
     public $parents = []; // todo: move to separate entity
 
@@ -71,6 +73,11 @@ class JobEntity implements JobEntityInterface
 
     public $runAsUser = 'root';
 
+    public $constraints = [];
+
+    /** @var ContainerEntity */
+    public $container = null;
+
 
     /**
      * @param array|object $mJobData
@@ -84,7 +91,14 @@ class JobEntity implements JobEntityInterface
             {
                 if (property_exists($this, $_sKey))
                 {
-                    $this->{$_sKey} = $_mValue;
+                    if ($_sKey == 'container')
+                    {
+                        $this->{$_sKey} = new ContainerEntity($_mValue);
+                    }
+                    else
+                    {
+                        $this->{$_sKey} = $_mValue;    
+                    }
                 }
             }
         }
@@ -141,6 +155,11 @@ class JobEntity implements JobEntityInterface
         {
             unset($_aReturn['schedule']);
             unset($_aReturn['scheduleTimeZone']);
+        }
+
+        if (empty($this->container))
+        {
+            unset($_aReturn['container']);
         }
 
         unset($_aReturn['successCount']);

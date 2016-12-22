@@ -44,11 +44,13 @@ class InfoCommand extends AbstractCommand
 
         foreach ($_oJobEntity as $_sKey => $_mValue)
         {
-            if (is_array($_mValue))
+            if (is_array($_mValue) || is_object($_mValue))
             {
+                $_sEmptyString = (is_object($_mValue)) ? '{ }' : '[ ]';
+
                 $_mValue = (!empty($_mValue))
                     ? json_encode($_mValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-                    : '[ ]';
+                    : $_sEmptyString;
             }
             elseif (is_bool($_mValue))
             {

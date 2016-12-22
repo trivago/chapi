@@ -24,7 +24,7 @@ class ListCommand extends AbstractCommand
     protected function configure()
     {
         $this->setName('list')
-            ->setDescription('Display your jobs and filter they by status')
+            ->setDescription('Display your jobs and filter them by status')
             ->addOption('onlyFailed', 'f', InputOption::VALUE_NONE, 'Display only failed jobs')
             ->addOption('onlyDisabled', 'd', InputOption::VALUE_NONE, 'Display only disabled jobs')
         ;
