@@ -241,7 +241,15 @@ class BridgeFileSystem implements BridgeInterface
 
                 } else if (property_exists($_aTemp, "id")) //marathon
                 {
-                    $_oJobEntity = new MarathonAppEntity($_aTemp);
+                    if (property_exists($_aTemp, "apps"))
+                    {
+                        // TODO: implement groups handling
+                        continue;
+                    }
+                    else
+                    {
+                        $_oJobEntity = new MarathonAppEntity($_aTemp);
+                    }
 
                 } else {
                     throw new JobLoadException(
