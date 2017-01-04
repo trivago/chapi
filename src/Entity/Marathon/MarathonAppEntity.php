@@ -44,7 +44,7 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $container = null;
 
-    public $env = [];
+    public $env = null;
 
     /**
      * @var array
@@ -54,7 +54,7 @@ class MarathonAppEntity implements JobEntityInterface
 
     public $acceptedResourceRoles = null;
 
-    public $labels = [];
+    public $labels = null;
 
     /**
      * @var FetchUrl[]
@@ -89,7 +89,6 @@ class MarathonAppEntity implements JobEntityInterface
 
     public function __construct($mData = null)
     {
-
         if (!$mData)
         {
             // initialized with default values
@@ -140,12 +139,15 @@ class MarathonAppEntity implements JobEntityInterface
 
         if (isset($aData["env"]))
         {
-            $this->env = (array) $aData["env"];
+            $this->env =  (object) $aData["env"];
         }
 
+        if (isset($aData["labels"]))
+        {
+            $this->labels = (object) $aData["labels"];
+        }
         MarathonEntityUtils::setPropertyIfExist($aData, $this, "constraints");
         MarathonEntityUtils::setPropertyIfExist($aData, $this, "acceptedResourceRoles");
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, "labels");
         MarathonEntityUtils::setPropertyIfExist($aData, $this, "dependencies");
     }
 
@@ -157,7 +159,6 @@ class MarathonAppEntity implements JobEntityInterface
     {
         $_aRet = (array) $this;
         return $_aRet;
-
     }
 
     /**

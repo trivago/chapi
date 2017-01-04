@@ -164,9 +164,6 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
      */
     public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false)
     {
-        // TODO: Implement storeJobsToLocalRepository() method.
-        print_r("Storing jobs to local repository for marathon");
-
         if (empty($aJobNames))
         {
             $_aApps = $this->oJobRepositoryRemote->getJobs();
