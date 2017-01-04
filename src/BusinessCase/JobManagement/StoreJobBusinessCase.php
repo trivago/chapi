@@ -345,4 +345,15 @@ class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
 
         return false;
     }
+
+    /**
+     * @param $sJobName
+     * @return bool
+     */
+    public function isJobAvailable($sJobName)
+    {
+        $_bLocallyAvailable = $this->oJobRepositoryLocal->getJob($sJobName) ? true : false;
+        $_bRemotelyAvailable = $this->oJobRepositoryChronos->getJob($sJobName) ? true : false;
+        return $_bLocallyAvailable || $_bRemotelyAvailable;
+    }
 }

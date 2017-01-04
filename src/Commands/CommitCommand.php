@@ -10,6 +10,7 @@
 
 namespace Chapi\Commands;
 
+use Chapi\BusinessCase\JobManagement\StoreJobBusinessCaseFactoryInterface;
 use Chapi\BusinessCase\JobManagement\StoreJobBusinessCaseInterface;
 
 class CommitCommand extends AbstractCommand
@@ -29,10 +30,16 @@ class CommitCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var StoreJobBusinessCaseInterface  $_oStoreJobBusinessCase */
-        $_oStoreJobBusinessCase = $this->getContainer()->get(StoreJobBusinessCaseInterface::DIC_NAME);
+        /** @var StoreJobBusinessCaseFactoryInterface $_oStoreJobBusinessCaseFactory */
+        $_oStoreJobBusinessCaseFactory = $this->getContainer()->get(StoreJobBusinessCaseFactoryInterface::DIC_NAME);
 
-        $_oStoreJobBusinessCase->storeIndexedJobs();
+        $_aStoreJobBusinessCase = $_oStoreJobBusinessCaseFactory->getAllStoreJobBusinessCase();
+
+        /** @var StoreJobBusinessCaseInterface $_oStoreJobBusinessCase */
+        foreach ($_aStoreJobBusinessCase as $_oStoreJobBusinessCase)
+        {
+            $_oStoreJobBusinessCase->storeIndexedJobs();
+        }
 
         return 0;
     }

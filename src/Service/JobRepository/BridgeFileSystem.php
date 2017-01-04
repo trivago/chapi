@@ -114,7 +114,7 @@ class BridgeFileSystem implements BridgeInterface
         $_sJobFile = $this->getJobFileFromMap($oJobEntity->getKey());
         $this->oFileSystemService->remove($_sJobFile);
 
-        return $this->hasUnsetJobFileFromMap($oJobEntity->name, $_sJobFile);
+        return $this->hasUnsetJobFileFromMap($oJobEntity->getKey(), $_sJobFile);
     }
 
     /**
@@ -126,7 +126,7 @@ class BridgeFileSystem implements BridgeInterface
         $_sJobPath = str_replace(
             $this->aDirectorySeparators,
             DIRECTORY_SEPARATOR,
-            $oJobEntity->name
+            $oJobEntity->getKey()
         );
         return $this->sRepositoryDir . DIRECTORY_SEPARATOR . $_sJobPath . '.json';
     }

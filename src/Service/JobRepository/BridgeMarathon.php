@@ -40,6 +40,8 @@ class BridgeMarathon implements BridgeInterface
      */
     private $oLogger;
 
+    private $bCacheHasToDelete = false;
+
     public function __construct(
         ApiClientInterface $oApiClient,
         CacheInterface $oCache,
@@ -52,6 +54,14 @@ class BridgeMarathon implements BridgeInterface
         $this->oJobEntityValidatorService = $oJobEntityValidatorService;
         $this->oCache = $oCache;
         $this->oLogger = $oLogger;
+    }
+
+    public function __destruct()
+    {
+        if ($this->bCacheHasToDelete)
+        {
+            $this->oCache->delete(self::CACHE_KEY_APP_LIST);
+        }
     }
 
     /**
@@ -78,7 +88,12 @@ class BridgeMarathon implements BridgeInterface
      */
     public function addJob(JobEntityInterface $oJobEntity)
     {
-        // TODO: Implement addJob() method.
+        if ($this->oApiClient->addingJob($oJobEntity))
+        {
+            $this->bCacheHasToDelete = true;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -87,7 +102,12 @@ class BridgeMarathon implements BridgeInterface
      */
     public function updateJob(JobEntityInterface $oJobEntity)
     {
-        // TODO: Implement updateJob() method.
+        if ($this->oApiClient->updatingJob($oJobEntity))
+        {
+            $this->bCacheHasToDelete = true;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -96,7 +116,12 @@ class BridgeMarathon implements BridgeInterface
      */
     public function removeJob(JobEntityInterface $oJobEntity)
     {
-        // TODO: Implement removeJob() method.
+        if ($this->oApiClient->removeJob($oJobEntity->getKey()))
+        {
+            $this->bCacheHasToDelete = true;
+            return true;
+        }
+        return false;
     }
 
     private function getJobList()
