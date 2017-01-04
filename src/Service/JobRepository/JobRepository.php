@@ -101,7 +101,7 @@ class JobRepository implements JobRepositoryInterface
         {
             if (!is_null($this->oJobCollection)) // if no collection inited the new job will init by chronos request
             {
-                $this->oJobCollection->offsetSet($oJobEntity->name, $oJobEntity);
+                $this->oJobCollection->offsetSet($oJobEntity->getKey(), $oJobEntity);
             }
 
             return true;
@@ -126,7 +126,7 @@ class JobRepository implements JobRepositoryInterface
     public function removeJob($sJobName)
     {
         $_oJobEntity = $this->getJob($sJobName);
-        if (empty ($_oJobEntity->name))
+        if (empty ($_oJobEntity->getKey()))
         {
             throw new \InvalidArgumentException(sprintf('Can\'t remove unknown job "%s"', $sJobName));
         }

@@ -118,16 +118,24 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return string
      */
-    private function generateJobFilePath(ChronosJobEntity $oJobEntity)
+    private function generateJobFilePath(JobEntityInterface $oJobEntity)
     {
-        $_sJobPath = str_replace(
-            $this->aDirectorySeparators,
-            DIRECTORY_SEPARATOR,
-            $oJobEntity->getKey()
-        );
+        if ($oJobEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE)
+        {
+            $_sJobPath = str_replace(
+                $this->aDirectorySeparators,
+                DIRECTORY_SEPARATOR,
+                $oJobEntity->getKey()
+            );
+        }
+        else
+        {
+            $_sJobPath = $oJobEntity->getKey();
+        }
+
         return $this->sRepositoryDir . DIRECTORY_SEPARATOR . $_sJobPath . '.json';
     }
 
@@ -281,10 +289,10 @@ class BridgeFileSystem implements BridgeInterface
 
     /**
      * @param string $sJobFile
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    private function hasDumpFile($sJobFile, ChronosJobEntity $oJobEntity)
+    private function hasDumpFile($sJobFile, JobEntityInterface $oJobEntity)
     {
         $this->oFileSystemService->dumpFile(
             $sJobFile,

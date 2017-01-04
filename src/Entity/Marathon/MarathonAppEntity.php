@@ -16,6 +16,7 @@ use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\AppEntity\IpAddress;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class MarathonAppEntity implements JobEntityInterface
 {
