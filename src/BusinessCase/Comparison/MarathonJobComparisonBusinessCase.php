@@ -85,7 +85,8 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
             $_oRemoteJob = $this->oRemoteRepository->getJob($_oLocalJob->getKey());
             if (!$_oRemoteJob)
             {
-                $_oRemoteJob = new MarathonAppEntity(null);
+                // if doesn't exist in remote, its not update. its new
+                continue;
             }
 
             $_aNonIdenticalProps = $this->compareJobEntities($_oLocalJob, $_oRemoteJob);
