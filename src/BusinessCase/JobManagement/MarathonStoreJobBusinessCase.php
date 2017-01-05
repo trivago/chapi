@@ -85,6 +85,44 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
         {
             /** @var JobEntityInterface $_oJobEntityLocal */
             $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sAppId);
+
+            // check if dependency is satisfied
+            if ( $_oJobEntityLocal->isDependencyJob())
+            {
+                try {
+                    $circular = $this->isDependencyCircular($_oJobEntityLocal, count($_oJobEntityLocal->dependencies));
+                    if ($circular)
+                    {
+                        $this->oLogger->error(sprintf(
+                            "The dependency for %s is circular. Please fix them.", $sAppId
+                        ));
+                        return false;
+                    }
+                }
+                catch(\Exception $e)
+                {
+                    $this->oLogger->error(sprintf(
+                        "Job %s cannot be added to remote : %s",$sAppId, $e->getMessage()
+                    ));
+                }
+
+
+                foreach ($_oJobEntityLocal->dependencies as $_sDependencyKey) {
+                    $_bAdded = $this->addRemoteMissingApp($_sDependencyKey);
+
+                    if (!$_bAdded)
+                    {
+                        $this->oLogger->error(sprintf(
+                            'Job "%s" is dependent on "%s" which is missing. Please add them and try again.',
+                            $sAppId,
+                            $_sDependencyKey
+                        ));
+                        $this->oJobIndexService->removeJob($_sDependencyKey);
+                        return false;
+                    }
+                }
+            }
+
             if ($this->oJobRepositoryRemote->addJob($_oJobEntityLocal))
             {
                 $this->oJobIndexService->removeJob($_oJobEntityLocal->getKey());
@@ -96,12 +134,71 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
                 return true;
             }
             $this->oLogger->error(sprintf(
-                'Job "%s" successfully added to marathon',
+                'Failed to add job "%s" to marathon',
                 $_oJobEntityLocal->getKey()
             ));
         }
         return false;
 
+    }
+
+    private function hasDuplicates($arr)
+    {
+        return !(count($arr) == count(array_unique($arr)));
+    }
+
+    private function isDependencyCircular(JobEntityInterface $oEntity, $immediateChildren, &$path=[])
+    {
+        // Invariant: path will not have duplicates for acyclic dependency tree
+        if ($this->hasDuplicates($path))
+        {
+            return true;
+        }
+
+        // if we hit leaf (emptyarray), and have no
+        // cycle yet, then remove the leaf and return false
+        // removing leaf will help maintain a proper path from root to leaf
+        // For tree : A ---> B ---> D
+        //                      |-> C
+        // When we reach node D, path will be [A, B, D]
+        // so we pop off D so that the next append will properly show [A, B, C] (legit path)
+        if (empty($oEntity->dependencies))
+        {
+            array_pop($path);
+            return false;
+        }
+
+        foreach ($oEntity->dependencies as $_sDependency)
+        {
+            // add this key in path as we will explore its child now
+            $path[] = $oEntity->getKey();
+            $_oDependEntity = $this->oJobRepositoryLocal->getJob($_sDependency);
+
+            if (!$_oDependEntity)
+            {
+                throw new \Exception(sprintf('Dependency chain on non-existing app "%s"', $_sDependency));
+            }
+
+            // check if dependency has cycle
+            if ($this->isDependencyCircular($_oDependEntity, count($_oDependEntity->dependencies), $path))
+            {
+                return true;
+            }
+
+            // tracking immediateChildren, this helps us with
+            // removing knowing when to pop off key for intermediary dependency
+            // For tree: A ---> B ---> D
+            //              |      |-> C
+            //              |->E
+            // for B intermediate Child will be 2.
+            // when we process D, it will be reduced to 1 and with C to 0
+            // then we will pop B to generate path [A, E] when we reach E.
+            $immediateChildren = $immediateChildren -1;
+            if ($immediateChildren == 0)
+            {
+                array_pop($path);
+            }
+        }
     }
 
 
@@ -154,7 +251,6 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
         }
 
         return false;
-
     }
 
     /**

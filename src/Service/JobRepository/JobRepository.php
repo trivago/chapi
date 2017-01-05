@@ -133,7 +133,7 @@ class JobRepository implements JobRepositoryInterface
 
         if ($this->oRepositoryBridge->removeJob($_oJobEntity))
         {
-            $this->oJobCollection->offsetUnset($_oJobEntity->name);
+            $this->oJobCollection->offsetUnset($_oJobEntity->getKey());
             return true;
         }
 

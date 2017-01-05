@@ -202,7 +202,7 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public function isDependencyJob()
     {
-        return false;
+        return count($this->dependencies) ? true : false;
     }
 
     /**
