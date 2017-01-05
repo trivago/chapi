@@ -232,6 +232,7 @@ class BridgeFileSystem implements BridgeInterface
 
         foreach ($aJobFiles as $_sJobFilePath)
         {
+            $_aJobEntities = [];
             // remove comment blocks
             $_aTemp = json_decode(
                 preg_replace(
@@ -245,18 +246,21 @@ class BridgeFileSystem implements BridgeInterface
             {
                 if (property_exists($_aTemp, "name")) // chronos
                 {
-                    $_oJobEntity = new ChronosJobEntity($_aTemp);
+                    $_aJobEntities[] = new ChronosJobEntity($_aTemp);
 
                 } else if (property_exists($_aTemp, "id")) //marathon
                 {
                     if (property_exists($_aTemp, "apps"))
                     {
-                        // TODO: implement groups handling
-                        continue;
+                        // store individual apps like single apps
+                        foreach ($_aTemp->apps as $_oApp)
+                        {
+                            $_aJobEntities[] = new MarathonAppEntity($_oApp);
+                        }
                     }
                     else
                     {
-                        $_oJobEntity = new MarathonAppEntity($_aTemp);
+                        $_aJobEntities[] = new MarathonAppEntity($_aTemp);
                     }
 
                 } else {
@@ -266,13 +270,16 @@ class BridgeFileSystem implements BridgeInterface
                     );
                 }
 
-                if ($bSetToFileMap)
+                foreach ($_aJobEntities as $_oJobEntity)
                 {
-                    // set path to job file map
-                    $this->setJobFileToMap($_oJobEntity->getKey(), $_sJobFilePath);
-                }
+                    if ($bSetToFileMap)
+                    {
+                        // set path to job file map
+                        $this->setJobFileToMap($_oJobEntity->getKey(), $_sJobFilePath);
+                    }
 
-                $_aJobs[] = $_oJobEntity;
+                    $_aJobs[] = $_oJobEntity;
+                }
 
             }
             else
