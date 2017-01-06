@@ -126,7 +126,7 @@ class JobRepository implements JobRepositoryInterface
     public function removeJob($sJobName)
     {
         $_oJobEntity = $this->getJob($sJobName);
-        if (empty ($_oJobEntity->getKey()))
+        if (!$_oJobEntity)
         {
             throw new \InvalidArgumentException(sprintf('Can\'t remove unknown job "%s"', $sJobName));
         }
