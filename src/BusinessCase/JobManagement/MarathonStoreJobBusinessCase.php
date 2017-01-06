@@ -315,7 +315,7 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
                             $_oAppRemote->getKey()
                         ));
                     }
-                    else{
+                    else {
                         $this->oLogger->error(sprintf(
                            'Failed to update app %s in local repository',
                             $_oAppRemote->getKey()

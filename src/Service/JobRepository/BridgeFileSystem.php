@@ -45,6 +45,11 @@ class BridgeFileSystem implements BridgeInterface
     private $aJobFileMap = [];
 
     /**
+     * @var array
+     */
+    private $aGroupedApps = [];
+
+    /**
      * @param Filesystem $oFileSystemService
      * @param CacheInterface $oCache
      * @param string $sRepositoryDir
@@ -94,7 +99,7 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
     public function updateJob(JobEntityInterface $oJobEntity)
@@ -107,7 +112,7 @@ class BridgeFileSystem implements BridgeInterface
             );
         }
 
-        if ($oJobEntity->group == "")
+        if (!in_array($oJobEntity->getKey(), $this->aGroupedApps))
         {
             return $this->hasDumpFile(
                 $this->getJobFileFromMap($oJobEntity->getKey()),
@@ -214,7 +219,6 @@ class BridgeFileSystem implements BridgeInterface
         {
             throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $sJobName));
         }
-
         return $this->aJobFileMap[$sJobName];
     }
 
@@ -273,7 +277,7 @@ class BridgeFileSystem implements BridgeInterface
                         foreach ($_aTemp->apps as $_oApp)
                         {
                             $_oGroupEntity = new MarathonAppEntity($_oApp);
-                            $_oGroupEntity->group = $_aTemp->id;
+                            $this->aGroupedApps[] = $_oApp->id;
                             $_aJobEntities[] = $_oGroupEntity;
                         }
                     }
@@ -333,6 +337,7 @@ class BridgeFileSystem implements BridgeInterface
     private function dumpFileWithGroup($sJobFile, JobEntityInterface $oJobEntity)
     {
         $_sGroupConfig = file_get_contents($sJobFile);
+
         $_oDecodedConfig = json_decode(preg_replace(
             '~\/\*(.*?)\*\/~mis',
             '',
@@ -352,7 +357,7 @@ class BridgeFileSystem implements BridgeInterface
         $_bAppFound = false;
         foreach ($_oDecodedConfig->apps as $key => $_oApp)
         {
-            if ($_oApp->getKey() == $oJobEntity->getKey())
+            if ($_oApp->id == $oJobEntity->getKey())
             {
                 $_oDecodedConfig->apps[$key] = $oJobEntity;
                 $_bAppFound = true;
