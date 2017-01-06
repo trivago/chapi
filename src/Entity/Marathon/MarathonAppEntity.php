@@ -87,6 +87,8 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $ipAddress = null;
 
+    public $group = "";
+
     public function __construct($mData = null)
     {
         if (!$mData)
@@ -158,6 +160,7 @@ class MarathonAppEntity implements JobEntityInterface
     public function jsonSerialize()
     {
         $_aRet = (array) $this;
+        unset($_aRet['group']);
         return $_aRet;
     }
 
@@ -181,6 +184,10 @@ class MarathonAppEntity implements JobEntityInterface
 
         foreach ($this as $_sProperty => $mValue)
         {
+            if ($_sProperty == "group")
+            {
+                continue;
+            }
             $_aReturn[$_sProperty] = (is_array($mValue) || is_object($mValue)) ? json_encode($mValue) : $mValue;
         }
 

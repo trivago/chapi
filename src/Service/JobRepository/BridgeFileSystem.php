@@ -99,7 +99,24 @@ class BridgeFileSystem implements BridgeInterface
      */
     public function updateJob(JobEntityInterface $oJobEntity)
     {
-        return $this->hasDumpFile(
+        if ($oJobEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE)
+        {
+            return $this->hasDumpFile(
+                $this->getJobFileFromMap($oJobEntity->getKey()),
+                $oJobEntity
+            );
+        }
+
+        if ($oJobEntity->group == "")
+        {
+            return $this->hasDumpFile(
+                $this->getJobFileFromMap($oJobEntity->getKey()),
+                $oJobEntity
+            );
+        }
+
+        // marathon's group case where app belongs to a group file
+        return $this->dumpFileWithGroup(
             $this->getJobFileFromMap($oJobEntity->getKey()),
             $oJobEntity
         );
@@ -255,7 +272,9 @@ class BridgeFileSystem implements BridgeInterface
                         // store individual apps like single apps
                         foreach ($_aTemp->apps as $_oApp)
                         {
-                            $_aJobEntities[] = new MarathonAppEntity($_oApp);
+                            $_oGroupEntity = new MarathonAppEntity($_oApp);
+                            $_oGroupEntity->group = $_aTemp->id;
+                            $_aJobEntities[] = $_oGroupEntity;
                         }
                     }
                     else
@@ -270,6 +289,7 @@ class BridgeFileSystem implements BridgeInterface
                     );
                 }
 
+                /** @var JobEntityInterface $_oJobEntity */
                 foreach ($_aJobEntities as $_oJobEntity)
                 {
                     if ($bSetToFileMap)
@@ -304,6 +324,55 @@ class BridgeFileSystem implements BridgeInterface
         $this->oFileSystemService->dumpFile(
             $sJobFile,
             json_encode($oJobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
+
+        return (file_exists($sJobFile));
+    }
+
+
+    private function dumpFileWithGroup($sJobFile, JobEntityInterface $oJobEntity)
+    {
+        $_sGroupConfig = file_get_contents($sJobFile);
+        $_oDecodedConfig = json_decode(preg_replace(
+            '~\/\*(.*?)\*\/~mis',
+            '',
+            $_sGroupConfig
+        ));
+
+        if (!property_exists($_oDecodedConfig, "apps"))
+        {
+            throw new \RuntimeException(sprintf(
+                'Job file %s does not contain group configuration. But, "%s" belogs to group %s',
+                $sJobFile,
+                $oJobEntity->getKey(),
+                $oJobEntity->group
+            ));
+        }
+
+        $_bAppFound = false;
+        foreach ($_oDecodedConfig->apps as $key => $_oApp)
+        {
+            if ($_oApp->getKey() == $oJobEntity->getKey())
+            {
+                $_oDecodedConfig->apps[$key] = $oJobEntity;
+                $_bAppFound = true;
+            }
+        }
+
+        if (!$_bAppFound)
+        {
+            throw new \RuntimeException(sprintf(
+                'Could update job. job %s could not be found in the group file %s.',
+                $oJobEntity->getKey(),
+                $sJobFile
+            ));
+        }
+
+        $_sUpdatedConfig = json_encode($_oDecodedConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        $this->oFileSystemService->dumpFile(
+            $sJobFile,
+            $_sUpdatedConfig
         );
 
         return (file_exists($sJobFile));
