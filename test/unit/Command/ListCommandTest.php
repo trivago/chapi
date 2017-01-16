@@ -47,7 +47,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         $this->oInput->getOption(Argument::exact('onlyDisabled'))->willReturn(false)->shouldBeCalledTimes(1);
 
         $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
-        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection());
+        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
 
         $_oCommand = new ListCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();
@@ -83,7 +83,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         $_oEntityB->errorsSinceLastSuccess = 5;
 
         $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($_oCollection);
-        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection());
+        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
 
         $_oCommand = new ListCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();
@@ -116,7 +116,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         $_oEntityB->disabled = true;
 
         $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($_oCollection);
-        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection());
+        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
 
         $_oCommand = new ListCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();

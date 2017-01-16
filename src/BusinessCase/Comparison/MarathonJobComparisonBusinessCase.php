@@ -109,6 +109,7 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
         $_aDifferences = [];
         $_oLocalJob = $this->oLocalRepository->getJob($sJobName);
         $_oRemoteJob = $this->oRemoteRepository->getJob($sJobName);
+
         if (!$_oLocalJob && !$_oRemoteJob)
         {
             // return as jobs doesnt exist
@@ -179,8 +180,8 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntityA
-     * @param ChronosJobEntity $oJobEntityB
+     * @param JobEntityInterface $oJobEntityA
+     * @param JobEntityInterface $oJobEntityB
      * @return array
      */
     private function compareJobEntities(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)

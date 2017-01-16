@@ -15,11 +15,14 @@ use Chapi\Entity\Marathon\MarathonAppEntity;
 trait AppEntityTrait
 {
 
-    private function createAppCollection()
+    private function createAppCollection($aAppNames)
     {
-        $_aAppEntities = [
-            $this->getValidMarathonAppEntity('/main/id1')
-        ];
+        $_aAppEntities = [];
+
+        foreach ($aAppNames as $_sAppName)
+        {
+            $_aAppEntities[] = $this->getValidMarathonAppEntity($_sAppName);
+        }
 
         return new JobCollection($_aAppEntities);
     }
@@ -31,6 +34,7 @@ trait AppEntityTrait
         $_oEntity->id = $sId;
         return $_oEntity;
     }
+
 
     private function getValidMarathonAppEntityGroup($sId)
     {
