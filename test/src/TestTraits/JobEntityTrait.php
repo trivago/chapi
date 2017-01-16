@@ -79,20 +79,4 @@ trait JobEntityTrait
         return new JobCollection($_aJobEntities);
     }
 
-    private function createAppCollection()
-    {
-        $_aAppEntities = [
-            $this->getValidMarathonAppEntity('/main/id1')
-        ];
-
-        return new JobCollection($_aAppEntities);
-    }
-
-    private function getValidMarathonAppEntity($sId)
-    {
-        /** @var MarathonAppEntity $_oEntity */
-        $_oEntity = new MarathonAppEntity();
-        $_oEntity->id = $sId;
-        return $_oEntity;
-    }
 }

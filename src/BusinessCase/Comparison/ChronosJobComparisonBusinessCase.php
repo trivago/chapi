@@ -27,18 +27,8 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
     /**
      * @var JobRepositoryInterface
      */
-    private $oJobRepositoryLocalMarathon;
-
-    /**
-     * @var JobRepositoryInterface
-     */
     private $oJobRepositoryChronos;
 
-
-    /**
-     * @var JobRepositoryInterface
-     */
-    private $oJobRepositoryMarathon;
     /**
      * @var DiffCompareInterface
      */
@@ -65,18 +55,14 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
      */
     public function __construct(
         JobRepositoryInterface $oJobRepositoryLocalChronos,
-        JobRepositoryInterface $oJobRepositoryLocalMarathon,
         JobRepositoryInterface $oJobRepositoryChronos,
-        JobRepositoryInterface $oJobRepositoryMarathon,
         DiffCompareInterface $oDiffCompare,
         DatePeriodFactoryInterface $oDatePeriodFactory,
         LoggerInterface $oLogger
     )
     {
         $this->oJobRepositoryLocalChronos = $oJobRepositoryLocalChronos;
-        $this->oJobRepositoryLocalMarathon = $oJobRepositoryMarathon;
         $this->oJobRepositoryChronos = $oJobRepositoryChronos;
-        $this->oJobRepositoryMarathon = $oJobRepositoryMarathon;
         $this->oDiffCompare = $oDiffCompare;
         $this->oDatePeriodFactory = $oDatePeriodFactory;
         $this->oLogger = $oLogger;

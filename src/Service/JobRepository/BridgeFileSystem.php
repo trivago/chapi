@@ -271,21 +271,10 @@ class BridgeFileSystem implements BridgeInterface
 
                 } else if (property_exists($_aTemp, "id")) //marathon
                 {
-                    if (property_exists($_aTemp, "apps"))
+                    foreach ($this->getMarathonEntitiesForConfig($_aTemp) as $_oApp)
                     {
-                        // store individual apps like single apps
-                        foreach ($_aTemp->apps as $_oApp)
-                        {
-                            $_oGroupEntity = new MarathonAppEntity($_oApp);
-                            $this->aGroupedApps[] = $_oApp->id;
-                            $_aJobEntities[] = $_oGroupEntity;
-                        }
+                        $_aJobEntities[] = $_oApp;
                     }
-                    else
-                    {
-                        $_aJobEntities[] = new MarathonAppEntity($_aTemp);
-                    }
-
                 } else {
                     throw new JobLoadException(
                         "Could not distinguish job as either chronos or marathon",
@@ -318,6 +307,27 @@ class BridgeFileSystem implements BridgeInterface
         return $_aJobs;
     }
 
+
+    private function getMarathonEntitiesForConfig($aEntityData)
+    {
+        $_aRet = [];
+        if (property_exists($aEntityData, "apps"))
+        {
+            // store individual apps like single apps
+            foreach ($aEntityData->apps as $_oApp)
+            {
+                $_oGroupEntity = new MarathonAppEntity($_oApp);
+                $this->aGroupedApps[] = $_oApp->id;
+                $_aRet[] = $_oGroupEntity;
+            }
+        }
+        else
+        {
+            $_aRet[] = new MarathonAppEntity($aEntityData);
+        }
+        return $_aRet;
+    }
+
     /**
      * @param string $sJobFile
      * @param JobEntityInterface $oJobEntity
@@ -334,7 +344,7 @@ class BridgeFileSystem implements BridgeInterface
     }
 
 
-    private function dumpFileWithGroup($sJobFile, JobEntityInterface $oJobEntity)
+    private function dumpFileWithGroup($sJobFile, JobEntityInterface $oJobEntity, $bAdd = true)
     {
         $_sGroupConfig = file_get_contents($sJobFile);
 
@@ -344,28 +354,33 @@ class BridgeFileSystem implements BridgeInterface
             $_sGroupConfig
         ));
 
-        if (!property_exists($_oDecodedConfig, "apps"))
-        {
+        if (!property_exists($_oDecodedConfig, "apps")) {
             throw new \RuntimeException(sprintf(
-                'Job file %s does not contain group configuration. But, "%s" belogs to group %s',
+                'Job file %s does not contain group configuration. But, "%s" belongs to group %s',
                 $sJobFile,
                 $oJobEntity->getKey(),
-                $oJobEntity->group
+                $_oDecodedConfig->id
             ));
         }
 
         $_bAppFound = false;
-        foreach ($_oDecodedConfig->apps as $key => $_oApp)
-        {
-            if ($_oApp->id == $oJobEntity->getKey())
-            {
-                $_oDecodedConfig->apps[$key] = $oJobEntity;
+        foreach ($_oDecodedConfig->apps as $key => $_oApp) {
+            if ($_oApp->id == $oJobEntity->getKey()) {
+                if (!$bAdd)
+                {
+                    array_splice($_oDecodedConfig->apps, $key, 1);
+                    if (count($_oDecodedConfig->apps) == 0)
+                    {
+                        // TODO: remove file
+                    }
+                } else {
+                    $_oDecodedConfig->apps[$key] = $oJobEntity;
+                }
                 $_bAppFound = true;
             }
         }
 
-        if (!$_bAppFound)
-        {
+        if (!$_bAppFound) {
             throw new \RuntimeException(sprintf(
                 'Could update job. job %s could not be found in the group file %s.',
                 $oJobEntity->getKey(),

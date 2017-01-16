@@ -9,9 +9,7 @@ services:
     class: Chapi\BusinessCase\Comparison\ChronosJobComparisonBusinessCase
     arguments:
       - "@JobRepositoryFileSystemChronos"
-      - "@JobRepositoryFileSystemMarathon"
       - "@JobRepositoryChronos"
-      - "@JobRepositoryMarathon"
       - "@DiffCompareInterface"
       - "@DatePeriodFactoryInterface"
       - "@LoggerInterface"

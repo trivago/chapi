@@ -71,7 +71,34 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($_oJobEntity, "Expected null for non existing job");
     }
 
-    public function testGetJobsSuccess()
+    public function testGetJobSuccessWithFilterFailure()
+    {
+        $_oEntity = $this->getValidScheduledJobEntity('JobA');
+        $this->oRepositoryBridge
+            ->getJobs()
+            ->willReturn([
+                $_oEntity
+            ])
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntity))
+            ->willReturn(false);
+
+
+        $_oJobRepository = new JobRepository(
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
+        );
+
+        $_oJobEntity = $_oJobRepository->getJob('JobA');
+
+        $this->assertNull($_oJobEntity, "Expected null for non-interesting job");
+
+    }
+
+    public function testGetJobsSuccessWithFilterSuccess()
     {
         $_oEntity = $this->getValidScheduledJobEntity('JobA');
         $this->oRepositoryBridge
@@ -103,6 +130,37 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
             $_oJobCollection['JobA']
         );
     }
+
+    public function testGetJobsSuccessWithFilterFailure()
+    {
+        $_oEntity = $this->getValidScheduledJobEntity('JobA');
+        $this->oRepositoryBridge
+            ->getJobs()
+            ->willReturn([
+                $_oEntity
+            ])
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $this->oEntityFilter
+            ->isInteresting(Argument::exact($_oEntity))
+            ->willReturn(false);
+
+        $_oJobRepository = new JobRepository(
+            $this->oRepositoryBridge->reveal(),
+            $this->oEntityFilter->reveal()
+        );
+
+        $_oJobCollection = $_oJobRepository->getJobs();
+
+        $this->assertInstanceOf(
+            'Chapi\Entity\Chronos\JobCollection',
+            $_oJobCollection
+        );
+
+        $this->assertEmpty($_oJobCollection, "Expected empty job collection with no interestesting jobs");
+    }
+
 
     public function testAddJobSuccess()
     {

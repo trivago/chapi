@@ -13,6 +13,7 @@ namespace unit\Command;
 use Chapi\Commands\ListCommand;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
+use ChapiTest\src\TestTraits\AppEntityTrait;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
@@ -21,6 +22,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
 {
     use CommandTestTrait;
     use JobEntityTrait;
+    use AppEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oJobRepositoryChronos;
