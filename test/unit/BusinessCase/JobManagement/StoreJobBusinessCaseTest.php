@@ -9,7 +9,7 @@
  */
 
 
-namespace unit\BusinessCase\Comparison;
+namespace unit\BusinessCase\JobManagement;
 
 
 use Chapi\BusinessCase\JobManagement\StoreJobBusinessCase;

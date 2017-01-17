@@ -6,7 +6,7 @@
  * Time: 10:32
  */
 
-namespace unit\BusinessCase\Comparison;
+namespace unit\BusinessCase\Comparision;
 
 
 use Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase;
@@ -28,7 +28,7 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oDiffCompare;
 
-    public function setup()
+    public function setUp()
     {
         $this->oRemoteRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oLocalRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');

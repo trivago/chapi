@@ -104,6 +104,7 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
                     $this->oLogger->error(sprintf(
                         "Job %s cannot be added to remote : %s",$sAppId, $e->getMessage()
                     ));
+                    return false;
                 }
 
 
@@ -230,7 +231,9 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
         if ($this->oJobIndexService->isJobInIndex($sAppId))
         {
             $_bRemoved = $this->oJobRepositoryRemote->removeJob($sAppId);
-            $_bAddedBack = $this->oJobRepositoryRemote->addJob($sAppId);
+
+            $_oUpdatedConfig = $this->oJobRepositoryLocal->getJob($sAppId);
+            $_bAddedBack = $this->oJobRepositoryRemote->addJob($_oUpdatedConfig);
 
             // updated
             if ($_bRemoved && $_bAddedBack)
@@ -279,55 +282,66 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
             $_oAppLocal = $this->oJobRepositoryLocal->getJob($_oAppRemote->getKey());
             if (null == $_oAppLocal) // add
             {
-                if ($this->oJobRepositoryLocal->addJob($_oAppRemote))
-                {
-                    $this->oLogger->notice(sprintf(
-                           'App %s stored in local repository',
-                        $_oAppRemote->getKey()
-                        ));
-                }
-                else {
-                    $this->oLogger->error(sprintf(
-                        'Failed to store %s in local repository',
-                        $_oAppRemote->getKey()
-                    ));
-                }
+                $this->addJobInLocalRepository($_oAppRemote);
             }
             else // update
             {
-                $_aDiff = $this->oJobComparisionBusinessCase->getJobDiff($_oAppRemote->getKey());
-                if (!empty($_aDiff))
-                {
-                    if (!$bForceOverwrite)
-                    {
-                        throw new \InvalidArgumentException(
-                            sprintf(
-                                'The app "%s" already exist in your local repository. Use the "force" option to overwrite the job',
-                                $_oAppRemote->getKey()
-                            )
-                        );
-                    }
-
-                    if ($this->oJobRepositoryLocal->updateJob($_oAppRemote))
-                    {
-                        $this->oLogger->notice(sprintf(
-                           'App %s is updated in local repository',
-                            $_oAppRemote->getKey()
-                        ));
-                    }
-                    else {
-                        $this->oLogger->error(sprintf(
-                           'Failed to update app %s in local repository',
-                            $_oAppRemote->getKey()
-                        ));
-                    }
-
-                    // remove job from index in case off added in the past
-                    $this->oJobIndexService->removeJob($_oAppRemote->getKey());
-                }
+                $this->updateJobInLocalRepository($_oAppRemote, $bForceOverwrite);
             }
         }
     }
+
+    private function addJobInLocalRepository($oAppRemote)
+    {
+        if ($this->oJobRepositoryLocal->addJob($oAppRemote))
+        {
+            $this->oLogger->notice(sprintf(
+                'App %s stored in local repository',
+                $oAppRemote->getKey()
+            ));
+        }
+        else {
+            $this->oLogger->error(sprintf(
+                'Failed to store %s in local repository',
+                $oAppRemote->getKey()
+            ));
+        }
+    }
+
+    private function updateJobInLocalRepository($oAppRemote, $bForceOverwrite)
+    {
+        $_aDiff = $this->oJobComparisionBusinessCase->getJobDiff($oAppRemote->getKey());
+        if (!empty($_aDiff))
+        {
+            if (!$bForceOverwrite)
+            {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'The app "%s" already exist in your local repository. Use the "force" option to overwrite the job',
+                        $oAppRemote->getKey()
+                    )
+                );
+            }
+
+            if ($this->oJobRepositoryLocal->updateJob($oAppRemote))
+            {
+                $this->oLogger->notice(sprintf(
+                    'App %s is updated in local repository',
+                    $oAppRemote->getKey()
+                ));
+            }
+            else {
+                $this->oLogger->error(sprintf(
+                    'Failed to update app %s in local repository',
+                    $oAppRemote->getKey()
+                ));
+            }
+
+            // remove job from index in case off added in the past
+            $this->oJobIndexService->removeJob($oAppRemote->getKey());
+        }
+    }
+
 
     /**
      * @param $sJobName
