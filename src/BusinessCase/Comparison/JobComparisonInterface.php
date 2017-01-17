@@ -37,8 +37,8 @@ interface JobComparisonInterface
     public function getJobDiff($sJobName);
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntityA
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntityB
+     * @param JobEntityInterface $oJobEntityA
+     * @param JobEntityInterface $oJobEntityB
      * @return bool
      */
     public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);

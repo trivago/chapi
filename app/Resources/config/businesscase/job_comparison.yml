@@ -2,8 +2,8 @@ services:
   JobComparisonInterface:
     class: Chapi\BusinessCase\Comparison\CompositeJobComparisonBusinessCase
     calls:
-      - [AddComparisionCases, ["@ChronosJobComparisionBusinessCase"]]
-      - [AddComparisionCases, ["@MarathonJobComparisionBusinessCase"]]
+      - [addComparisonCases, ["@ChronosJobComparisionBusinessCase"]]
+      - [addComparisonCases, ["@MarathonJobComparisionBusinessCase"]]
 
   ChronosJobComparisionBusinessCase:
     class: Chapi\BusinessCase\Comparison\ChronosJobComparisonBusinessCase

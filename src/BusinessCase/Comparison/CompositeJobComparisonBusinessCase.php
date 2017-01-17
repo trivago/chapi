@@ -23,7 +23,7 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
     /** @var JobComparisonInterface[] */
     private $aComposites = [];
 
-    public function AddComparisionCases(JobComparisonInterface $comparer)
+    public function addComparisonCases(JobComparisonInterface $comparer)
     {
         $this->aComposites[] = $comparer;
     }
