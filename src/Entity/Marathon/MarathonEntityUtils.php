@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * @package: chapi
+ *
+ * @author: bthapaliya
+ * @since: 2016-10-16
+ *
+ */
 namespace Chapi\Entity\Marathon;
 
 

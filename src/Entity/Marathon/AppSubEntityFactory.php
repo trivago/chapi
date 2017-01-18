@@ -1,9 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: bthapaliya
- * Date: 08/12/16
- * Time: 16:08
+ * @package: chapi
+ *
+ * @author: bthapaliya
+ * @since: 2016-12-08
+ *
  */
 
 namespace Chapi\Entity\Marathon;

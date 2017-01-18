@@ -1,9 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: bthapaliya
- * Date: 14/12/16
- * Time: 16:12
+ *
+ * @package: chapi
+ *
+ * @author: bthapaliya
+ * @since: 2016-12-14
+ *
  */
 
 namespace Chapi\BusinessCase\Comparison;

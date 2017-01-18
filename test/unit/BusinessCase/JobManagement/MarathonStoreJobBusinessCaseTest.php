@@ -1,9 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: bthapaliya
- * Date: 16/01/17
- * Time: 17:49
+ * @package: chapi
+ *
+ * @author: bthapaliya
+ * @since: 2017-01-16
+ *
  */
 
 namespace unit\BusinessCase\JobManagement;

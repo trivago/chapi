@@ -1,9 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: bthapaliya
- * Date: 11/01/17
- * Time: 09:03
+ * @package: chapi
+ *
+ * @author: bthapaliya
+ * @since: 2017-01-11
+ *
  */
 
 namespace unit\Service\JobRepository;
