@@ -16,7 +16,7 @@ use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
-class StoreJobBusinessCase implements StoreJobBusinessCaseInterface
+class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
 {
     /**
      * @var JobIndexServiceInterface

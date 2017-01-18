@@ -1,6 +1,6 @@
 services:
-  StoreJobBusinessCaseInterface:
-    class: Chapi\BusinessCase\JobManagement\StoreJobBusinessCase
+  ChronosStoreJobBusinessCase:
+    class: Chapi\BusinessCase\JobManagement\ChronosStoreJobBusinessCase
     arguments:
       - "@JobIndexServiceInterface"
       - "@JobRepositoryChronos"
@@ -23,5 +23,5 @@ services:
   StoreJobBusinessCaseFactoryInterface:
     class: Chapi\BusinessCase\JobManagement\StoreJobBusinessCaseFactory
     calls:
-      - [addBusinesCase, ["@StoreJobBusinessCaseInterface"]]
+      - [addBusinesCase, ["@ChronosStoreJobBusinessCase"]]
       - [addBusinesCase, ["@MarathonStoreBusinessCase"]]

@@ -12,13 +12,13 @@
 namespace unit\BusinessCase\JobManagement;
 
 
-use Chapi\BusinessCase\JobManagement\StoreJobBusinessCase;
+use Chapi\BusinessCase\JobManagement\ChronosStoreJobBusinessCase;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 {
     use JobEntityTrait;
 
@@ -234,7 +234,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->setUpJobsToUpdate([]);
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -261,7 +261,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->setUpJobsToUpdate([]);
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -288,7 +288,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->setUpJobsToUpdate($_aLocalJobUpdates);
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -315,7 +315,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->setUpJobsToUpdate($_aLocalJobUpdates, true, false);
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -340,7 +340,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         ;
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -370,7 +370,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         ;
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -462,7 +462,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         ;
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -497,7 +497,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->oJobIndexService->removeJob(Argument::exact('JobA'))->shouldBeCalledTimes(1);
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -533,7 +533,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->oJobIndexService->removeJob(Argument::exact('JobA'))->shouldNotBeCalled();
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -608,7 +608,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         ;
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -678,7 +678,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         ;
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -741,7 +741,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         ;
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
@@ -809,7 +809,7 @@ class StoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         ;
 
         // test
-        $_oStoreJobBusinessCase = new StoreJobBusinessCase(
+        $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oJobRepositoryLocal->reveal(),
