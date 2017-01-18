@@ -336,6 +336,9 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
             vfsStream::url($this->sRepositoryDir)
         );
 
+        $_aJobs = $_oFileSystemRepository->getJobs();
+        $this->assertEquals(2, count($_aJobs), 'Expected 2 app before removal, found '.count($_aJobs));
+
         $_oFileSystemRepository->removeJob($_aGroupConfig["apps"][0]);
 
         $_aRemainingApps = $_oFileSystemRepository->getJobs();

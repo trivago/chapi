@@ -75,7 +75,6 @@ class BridgeFileSystem implements BridgeInterface
             $_aJobFiles = $this->getJobFilesFromFileSystem($this->sRepositoryDir);
             return $this->loadJobsFromFileContent($_aJobFiles, true);
         }
-
         return $this->loadJobsFromFileContent($this->aJobFileMap, false);
     }
 
@@ -104,24 +103,15 @@ class BridgeFileSystem implements BridgeInterface
      */
     public function updateJob(JobEntityInterface $oJobEntity)
     {
-        if ($oJobEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE)
+        if (in_array($oJobEntity->getKey(), $this->aGroupedApps))
         {
-            return $this->hasDumpFile(
+            // marathon's group case where app belongs to a group file
+            return $this->dumpFileWithGroup(
                 $this->getJobFileFromMap($oJobEntity->getKey()),
                 $oJobEntity
             );
         }
-
-        if (!in_array($oJobEntity->getKey(), $this->aGroupedApps))
-        {
-            return $this->hasDumpFile(
-                $this->getJobFileFromMap($oJobEntity->getKey()),
-                $oJobEntity
-            );
-        }
-
-        // marathon's group case where app belongs to a group file
-        return $this->dumpFileWithGroup(
+        return $this->hasDumpFile(
             $this->getJobFileFromMap($oJobEntity->getKey()),
             $oJobEntity
         );
@@ -133,6 +123,19 @@ class BridgeFileSystem implements BridgeInterface
      */
     public function removeJob(JobEntityInterface $oJobEntity)
     {
+        if (in_array($oJobEntity->getKey(), $this->aGroupedApps))
+        {
+            $_sJobFile = $this->getJobFileFromMap($oJobEntity->getKey());
+            $this->dumpFileWithGroup(
+                $_sJobFile,
+                $oJobEntity,
+                false
+            );
+
+            unset($this->aJobFileMap[$oJobEntity->getKey()]);
+            return true;
+        }
+
         $_sJobFile = $this->getJobFileFromMap($oJobEntity->getKey());
         $this->oFileSystemService->remove($_sJobFile);
 
@@ -371,7 +374,13 @@ class BridgeFileSystem implements BridgeInterface
                     array_splice($_oDecodedConfig->apps, $key, 1);
                     if (count($_oDecodedConfig->apps) == 0)
                     {
-                        // TODO: remove file
+                        $this->oFileSystemService->remove($sJobFile);
+                        $iIndex = array_search($oJobEntity->getKey(), $this->aGroupedApps);
+                        if ($iIndex)
+                        {
+                            unset($this->aGroupedApps[$iIndex]);
+                        }
+                        return false;
                     }
                 } else {
                     $_oDecodedConfig->apps[$key] = $oJobEntity;
