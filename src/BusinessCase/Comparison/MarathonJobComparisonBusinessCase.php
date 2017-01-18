@@ -238,20 +238,19 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
     {
         if (is_array($oJobEntityA->{$sProperty}))
         {
-            if ($sProperty == "env")
-            {
-                return $this->assocArrayEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty}) &&
-                        $this->assocArrayEqual($oJobEntityB->{$sProperty}, $oJobEntityA->{$sProperty});
-            }
-            return $this->arrayOfObjectsEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty});
+            // NOTE: doesn't take care of assoc array
+            // ideally for this use case, assoc array should be represented as objects in the entity
+            // as done with env
+            return $this->arrayOfMixedEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty})
+                && $this->arrayOfMixedEqual($oJobEntityB->{$sProperty}, $oJobEntityA->{$sProperty});
         }
 
-        if (is_object($oJobEntityA->{$sProperty})) {
+        if (is_object($oJobEntityA->{$sProperty}) || is_object($oJobEntityB->{$sProperty}))
+        {
             return $this->strictEqualsObjectProperties($oJobEntityA, $oJobEntityB);
         }
 
         return $oJobEntityA->{$sProperty} === $oJobEntityB->{$sProperty};
-
     }
 
     private function assocArrayEqual($aArrayFromA, $aArrayFromB)
@@ -284,18 +283,28 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
 
     }
 
-    private function arrayOfObjectsEqual($aEntitiesFromA, $aEntitiesFromB)
+    private function arrayOfMixedEqual($aEntitiesFromA, $aEntitiesFromB)
     {
         // this is costly, but since these definitions are objects without any
         // indexable information, there is no better way.
         // we can randomize the array and do this with O((n * m) / 2) average case
         // but how much does that actually help?
-        foreach ($aEntitiesFromA as $_oEntityA)
+        foreach ($aEntitiesFromA as $_mEntityA)
         {
             $_bFound = false;
-            foreach($aEntitiesFromB as $_oEntityB)
+            foreach($aEntitiesFromB as $_mEntityB)
             {
-                if ($this->strictEqualsObjectProperties($_oEntityA, $_oEntityB))
+                if (!is_object($_mEntityA) && !is_object($_mEntityB))
+                {
+                    if ($_mEntityB === $_mEntityA)
+                    {
+                        $_bFound = true;
+                        break;
+                    }
+                    continue;
+                }
+
+                if ($this->strictEqualsObjectProperties($_mEntityA, $_mEntityB))
                 {
                     $_bFound = true;
                     break;
@@ -311,6 +320,7 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
 
     private function strictEqualsObjectProperties($oEntityA, $oEntityB)
     {
+
         return $this->compareFirstToSecond($oEntityA, $oEntityB) &&
             $this->compareFirstToSecond($oEntityB, $oEntityA);
     }

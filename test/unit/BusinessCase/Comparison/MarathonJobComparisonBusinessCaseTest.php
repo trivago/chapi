@@ -127,12 +127,16 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/main/id2', $_aUpdatedApps[0], 'Expected "/main/id2", received ' . $_aUpdatedApps[0]);
     }
 
-    public function testGetJobDiffSuccess()
+    public function testGetJobDiffWithChangesInRemoteSuccess()
     {
         $_oLocalEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $_oLocalEntity->dependencies = ["/some/local/dep"];
 
         $_oRemoteEntity = $this->getValidMarathonAppEntity('/main/id1');
         $_oRemoteEntity->cpus = 4;
+        $_oRemoteEntity->env = new \stdClass();
+        $_oRemoteEntity->env->path = "/test/path";
+        $_oRemoteEntity->dependencies = ["/some/local/dep", "/some/dep"];
 
         $this->oLocalRepository
             ->getJob(Argument::exact($_oLocalEntity->getKey()))
@@ -145,8 +149,18 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $this->oDiffCompare
             ->compare(Argument::exact($_oRemoteEntity->cpus), Argument::exact($_oLocalEntity->cpus))
-            ->willReturn("someDiff")
+            ->willReturn("- 4\n+ 1")
             ->shouldBeCalledTimes(1);
+
+        $this->oDiffCompare
+            ->compare(Argument::exact($_oRemoteEntity->env), Argument::exact($_oLocalEntity->env))
+            ->willReturn('{- "path" : "/test/path"}')
+            ->shouldBeCalled();
+
+        $this->oDiffCompare
+            ->compare(Argument::exact($_oRemoteEntity->dependencies), Argument::exact($_oLocalEntity->dependencies))
+            ->willReturn('- []\n+ [\n+ "/some/dep"\n+ ]')
+            ->shouldBeCalled();
 
         $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
             $this->oLocalRepository->reveal(),
@@ -156,7 +170,11 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $_aGotDiff = $oMarathonJobCompare->getJobDiff('/main/id1');
 
-        $_aExpectedDiff = ["cpus" => "someDiff"];
+        $_aExpectedDiff = [
+            "cpus" => "- 4\n+ 1",
+            "env" => '{- "path" : "/test/path"}',
+            "dependencies" => '- []\n+ [\n+ "/some/dep"\n+ ]'
+        ];
         $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
     }
 
