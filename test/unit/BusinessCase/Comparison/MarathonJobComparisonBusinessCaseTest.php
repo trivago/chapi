@@ -197,4 +197,312 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($oMarathonJobCompare->isJobAvailable('/main/id1'));
     }
+
+    public function testDifferentIdsAreNotEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'id',
+                new MarathonAppEntity([ 'id' => 'A' ]),
+                new MarathonAppEntity([ 'id' => 'B' ])
+            ]
+        );
+
+        $this->assertFalse($result);
+    }
+
+    public function testDifferentLabelsAreNotEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'labels',
+                new MarathonAppEntity([ 'labels' => [ 'A' => 1 ] ]),
+                new MarathonAppEntity([ 'labels' => [ 'B' => 2 ] ])
+            ]
+        );
+
+        $this->assertFalse($result);
+    }
+
+    public function testEqualLabelsAreEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'labels',
+                new MarathonAppEntity([ 'labels' => [ 'A' => 1 ] ]),
+                new MarathonAppEntity([ 'labels' => [ 'A' => 1 ] ])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testEqualLabelsAreEqualEvenIfIdsAreDifferent()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'labels',
+                new MarathonAppEntity([ 'id' => 'A', 'labels' => [ 'A' => 1 ] ]),
+                new MarathonAppEntity([ 'id' => 'B', 'labels' => [ 'A' => 1 ] ])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testMissingLabelIsNotConsideredEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'labels',
+                new MarathonAppEntity([ 'labels' => [ 'A' => 1 ] ]),
+                new MarathonAppEntity([])
+            ]
+        );
+
+        $this->assertFalse($result);
+    }
+
+    public function testAdditionalLabelIsNotConsideredEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'labels',
+                new MarathonAppEntity([]),
+                new MarathonAppEntity([ 'labels' => [ 'A' => 1 ] ])
+            ]
+        );
+
+        $this->assertFalse($result);
+    }
+
+    public function testEmptyLabelsAreEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'labels',
+                new MarathonAppEntity([]),
+                new MarathonAppEntity([])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testEmptyDependenciesAreEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'dependencies',
+                new MarathonAppEntity([ 'dependencies' => [] ]),
+                new MarathonAppEntity([ 'dependencies' => [] ])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testDifferentlyTypedDependenciesAreNotEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'dependencies',
+                new MarathonAppEntity([ 'dependencies' => [ 'abc' ] ]),
+                new MarathonAppEntity([ 'dependencies' => (object)[ '0' => 'abc' ] ])
+            ]
+        );
+
+        $this->assertFalse($result);
+    }
+
+    public function testEqualDependenciesAreEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'dependencies',
+                new MarathonAppEntity([ 'dependencies' => [ 'abc' ] ]),
+                new MarathonAppEntity([ 'dependencies' => [ 'abc' ] ])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testEqualDependenciesAreEqualEvenIfIdsAreDifferent()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'dependencies',
+                new MarathonAppEntity([ 'id' => 'A', 'dependencies' => [ 'abc' ] ]),
+                new MarathonAppEntity([ 'id' => 'B', 'dependencies' => [ 'abc' ] ])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testEquallyComplexDependenciesAreEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'dependencies',
+                new MarathonAppEntity([ 'dependencies' => [ (object)[ 'X' => 'abc' ] ] ]),
+                new MarathonAppEntity([ 'dependencies' => [ (object)[ 'X' => 'abc' ] ] ])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testEquallyComplexDependenciesAreNotEqualIfValueIsDifferent()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'dependencies',
+                new MarathonAppEntity([ 'dependencies' => [ (object)[ 'X' => 'abc' ] ] ]),
+                new MarathonAppEntity([ 'dependencies' => [ (object)[ 'X' => 'def' ] ] ])
+            ]
+        );
+
+        $this->assertFalse($result);
+    }
+
+    public function testEquallyComplexDependenciesAreEqualIfKeyIsDifferent()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'dependencies',
+                new MarathonAppEntity([ 'dependencies' => [ (object)[ 'X' => 'abc' ] ] ]),
+                new MarathonAppEntity([ 'dependencies' => [ (object)[ 'Y' => 'abc' ] ] ])
+            ]
+        );
+
+        $this->assertFalse($result);
+    }
 }
