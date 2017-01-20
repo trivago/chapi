@@ -238,109 +238,71 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
      */
     private function isEntityEqual($sProperty, MarathonAppEntity $oJobEntityA, MarathonAppEntity $oJobEntityB)
     {
-        if (is_array($oJobEntityA->{$sProperty}))
-        {
-            // NOTE: doesn't take care of assoc array
-            // ideally for this use case, assoc array should be represented as objects in the entity
-            // as done with env
-            return $this->arrayOfMixedEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty})
-                && $this->arrayOfMixedEqual($oJobEntityB->{$sProperty}, $oJobEntityA->{$sProperty});
-        }
-
-        if (is_object($oJobEntityA->{$sProperty}) || is_object($oJobEntityB->{$sProperty}))
-        {
-            return $this->strictEqualsObjectProperties($oJobEntityA, $oJobEntityB);
-        }
-
-        return $oJobEntityA->{$sProperty} === $oJobEntityB->{$sProperty};
+        return $this->isEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty});
     }
 
-    private function assocArrayEqual($aArrayFromA, $aArrayFromB)
+    /**
+     * @param mixed $mValueA
+     * @param mixed $mValueB
+     * @return bool
+     */
+    private function isEqual($mValueA, $mValueB)
     {
-
-        foreach($aArrayFromA as $_sKey => $_mValueA)
+        if (is_array($mValueA) && is_array($mValueB)) {
+            return $this->isArrayEqual($mValueA, $mValueB);
+        }
+        elseif (is_object($mValueA) && is_object($mValueB))
         {
-            $_bEqual = false;
-            if (!array_key_exists($_sKey, $aArrayFromB))
-            {
-                return false;
-            }
-            $_mValueB = $aArrayFromB[$_sKey];
-
-            if (is_object($_mValueA) && is_object($_mValueB))
-            {
-                $_bEqual = $this->strictEqualsObjectProperties($_mValueA, $_mValueB);
-            }
-            else if (!is_object($_mValueA) && !is_object($_mValueB)) {
-                $_bEqual = ($_mValueA === $_mValueB);
-            }
-
-            if (!$_bEqual)
-            {
-                return false;
-            }
+            return $this->isArrayEqual(get_object_vars($mValueA), get_object_vars($mValueB));
+        }
+        elseif ((is_scalar($mValueA) && is_scalar($mValueB)) || (is_null($mValueA) && is_null($mValueB)))
+        {
+            return $mValueA == $mValueB;
         }
 
-        return true;
-
+        return false;
     }
 
-    private function arrayOfMixedEqual($aEntitiesFromA, $aEntitiesFromB)
+    /**
+     * @param array $aValuesA
+     * @param array $aValuesB
+     * @return bool
+     */
+    private function isArrayEqual(array $aValuesA, array $aValuesB)
     {
-        // this is costly, but since these definitions are objects without any
-        // indexable information, there is no better way.
-        // we can randomize the array and do this with O((n * m) / 2) average case
-        // but how much does that actually help?
-        foreach ($aEntitiesFromA as $_mEntityA)
+        return $this->isArrayHalfEqual($aValuesA, $aValuesB) && $this->isArrayHalfEqual($aValuesB, $aValuesA);
+    }
+
+    /**
+     * @param array $aValuesA
+     * @param array $aValuesB
+     * @return bool
+     */
+    private function isArrayHalfEqual(array $aValuesA, array $aValuesB)
+    {
+        foreach ($aValuesA as $_mKeyA => $_mValueA)
         {
-            $_bFound = false;
-            foreach($aEntitiesFromB as $_mEntityB)
+            if (is_string($_mKeyA))
             {
-                if (!is_object($_mEntityA) && !is_object($_mEntityB))
+                if (!array_key_exists($_mKeyA, $aValuesB) || !$this->isEqual($_mValueA, $aValuesB[$_mKeyA]))
                 {
-                    if ($_mEntityB === $_mEntityA)
+                    return false;
+                }
+            }
+            else
+            {
+                foreach ($aValuesB as $_mValueB)
+                {
+                    if ($_mValueA == $_mValueB)
                     {
-                        $_bFound = true;
-                        break;
+                        continue 2;
                     }
-                    continue;
                 }
 
-                if ($this->strictEqualsObjectProperties($_mEntityA, $_mEntityB))
-                {
-                    $_bFound = true;
-                    break;
-                }
-            }
-            if (!$_bFound)
-            {
                 return false;
             }
         }
-        return true;
-    }
 
-    private function strictEqualsObjectProperties($oEntityA, $oEntityB)
-    {
-
-        return $this->compareFirstToSecond($oEntityA, $oEntityB) &&
-            $this->compareFirstToSecond($oEntityB, $oEntityA);
-    }
-
-    private function compareFirstToSecond($oEntityA, $oEntityB)
-    {
-        foreach($oEntityA as $_sProperty => $_mValue)
-        {
-            if (!property_exists($oEntityB, $_sProperty))
-            {
-                return false;
-            }
-
-            if ($oEntityA->{$_sProperty} !== $oEntityB->{$_sProperty})
-            {
-                return false;
-            }
-        }
         return true;
     }
 }
