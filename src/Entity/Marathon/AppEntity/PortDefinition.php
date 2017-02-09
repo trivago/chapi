@@ -15,7 +15,7 @@ class PortDefinition
     const DIC = self::class;
     public $port = 0;
 
-    public $protocol = "";
+    public $protocol = "tcp";
 
     public $name = "";
 
