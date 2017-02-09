@@ -91,6 +91,13 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
                 continue;
             }
 
+            // marathon returns portDefinitions values for auto configured port as well
+            // we want to only check if the port is defined in local file.
+            // otherwise we ignore the remote values.
+            if (empty($_oLocalJob->portDefinitions)) {
+                $_oRemoteJob->portDefinitions = [];
+            }
+
             $_aNonIdenticalProps = $this->compareJobEntities($_oLocalJob, $_oRemoteJob);
 
             if (!empty($_aNonIdenticalProps))

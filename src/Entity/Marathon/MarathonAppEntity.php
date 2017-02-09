@@ -29,6 +29,8 @@ class MarathonAppEntity implements JobEntityInterface
 
     public $mem = 0;
 
+    public $args = [];
+
     /**
      * @var PortDefinition[]
      */
@@ -53,14 +55,11 @@ class MarathonAppEntity implements JobEntityInterface
     public $constraints  = [];
 
 
-    public $acceptedResourceRoles = null;
+    public $acceptedResourceRoles = [];
 
     public $labels = null;
 
-    /**
-     * @var FetchUrl[]
-     */
-    public $fetch = [];
+    public $uris = [];
 
     public $dependencies = [];
 
@@ -103,19 +102,12 @@ class MarathonAppEntity implements JobEntityInterface
 
         if (isset($aData["portDefinitions"])) {
             foreach ($aData["portDefinitions"] as $portDefinition) {
-                $this->portDefinitions[] = new DockerPortMapping((array)$portDefinition);
+                $this->portDefinitions[] = new PortDefinition((array)$portDefinition);
             }
         }
 
         if (isset($aData["container"])) {
             $this->container = new Container((array)$aData["container"]);
-        }
-
-        if (isset($aData["fetch"]))
-        {
-            foreach($aData["fetch"] as $fetch) {
-                $this->fetch[] = new FetchUrl((array)$fetch);
-            }
         }
 
         if (isset($aData["healthChecks"]))
@@ -141,6 +133,8 @@ class MarathonAppEntity implements JobEntityInterface
         if (isset($aData["env"]))
         {
             $this->env =  (object) $aData["env"];
+        } else {
+            $this->env = (object)[];
         }
 
         if (isset($aData["labels"]))
@@ -148,6 +142,8 @@ class MarathonAppEntity implements JobEntityInterface
             $this->labels = (object) $aData["labels"];
         }
         MarathonEntityUtils::setPropertyIfExist($aData, $this, "constraints");
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, "args");
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, "uris");
         MarathonEntityUtils::setPropertyIfExist($aData, $this, "acceptedResourceRoles");
         MarathonEntityUtils::setPropertyIfExist($aData, $this, "dependencies");
     }
