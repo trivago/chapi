@@ -52,7 +52,7 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
         $this->oDiffCompare = $oDiffCompare;
     }
     /**
-     * @return array
+     * @return array<string>
      */
     public function getLocalMissingJobs()
     {
@@ -63,7 +63,7 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getRemoteMissingJobs()
     {
@@ -74,7 +74,7 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getLocalJobUpdates()
     {
@@ -239,11 +239,11 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
 
     /**
      * @param $sProperty
-     * @param MarathonAppEntity $oJobEntityA
-     * @param MarathonAppEntity $oJobEntityB
+     * @param $oJobEntityA
+     * @param $oJobEntityB
      * @return bool
      */
-    private function isEntityEqual($sProperty, MarathonAppEntity $oJobEntityA, MarathonAppEntity $oJobEntityB)
+    private function isEntityEqual($sProperty, $oJobEntityA, $oJobEntityB)
     {
         return $this->isEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty});
     }

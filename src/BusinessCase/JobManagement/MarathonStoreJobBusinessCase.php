@@ -13,6 +13,7 @@ namespace Chapi\BusinessCase\JobManagement;
 
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
@@ -85,8 +86,12 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
     {
         if ($this->oJobIndexService->isJobInIndex($sAppId))
         {
-            /** @var JobEntityInterface $_oJobEntityLocal */
+            /** @var MarathonAppEntity $_oJobEntityLocal */
             $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sAppId);
+
+            if (!$_oJobEntityLocal instanceof MarathonAppEntity) {
+                throw new \RuntimeException("Encountered entity that is not MarathonAppEntity");
+            }
 
             // check if dependency is satisfied
             if ( $_oJobEntityLocal->isDependencyJob())
@@ -150,7 +155,7 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
         return !(count($arr) == count(array_unique($arr)));
     }
 
-    private function isDependencyCircular(JobEntityInterface $oEntity, $immediateChildren, &$path=[])
+    private function isDependencyCircular(MarathonAppEntity $oEntity, $immediateChildren, &$path=[])
     {
         // Invariant: path will not have duplicates for acyclic dependency tree
         if ($this->hasDuplicates($path))
@@ -175,12 +180,19 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
         {
             // add this key in path as we will explore its child now
             $path[] = $oEntity->getKey();
+
+            /** @var MarathonAppEntity $_oDependEntity */
             $_oDependEntity = $this->oJobRepositoryLocal->getJob($_sDependency);
 
             if (!$_oDependEntity)
             {
                 throw new \Exception(sprintf('Dependency chain on non-existing app "%s"', $_sDependency));
             }
+
+            if (!$_oDependEntity instanceof MarathonAppEntity) {
+                throw new \RuntimeException("Expected MarathonAppEntity. Found something else");
+            }
+
 
             // check if dependency has cycle
             if ($this->isDependencyCircular($_oDependEntity, count($_oDependEntity->dependencies), $path))

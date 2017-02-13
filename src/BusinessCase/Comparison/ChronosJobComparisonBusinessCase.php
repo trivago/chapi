@@ -16,6 +16,7 @@ use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class ChronosJobComparisonBusinessCase implements JobComparisonInterface
 {
@@ -48,7 +49,6 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
     /**
      * @param JobRepositoryInterface $oJobRepositoryLocal
      * @param JobRepositoryInterface $oJobRepositoryChronos
-     * @param JobRepositoryInterface $oJobRepositoryMarathon
      * @param DiffCompareInterface $oDiffCompare
      * @param DatePeriodFactoryInterface $oDatePeriodFactory
      * @param LoggerInterface $oLogger
@@ -100,9 +100,12 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
         $_aJobsLocal = $this->oJobRepositoryLocalChronos->getJobs();
         $_aLocalJobUpdates = [];
 
-        /** @var ChronosJobEntity|JobEntityInterface $_oJobEntityLocal */
+        /** @var ChronosJobEntity $_oJobEntityLocal */
         foreach ($_aJobsLocal as $_oJobEntityLocal)
         {
+            if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
+                throw new \RuntimeException("Entity not chronos entity");
+            }
 
             $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($_oJobEntityLocal->getKey());
 
