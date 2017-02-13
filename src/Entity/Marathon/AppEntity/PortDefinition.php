@@ -19,18 +19,15 @@ class PortDefinition
 
     public $name = "";
 
-    public $labels = [];
+    public $labels = null;
 
-    public function __construct($oData)
+    public function __construct($aData = [])
     {
-        if ($oData == null)
+        MarathonEntityUtils::setAllPossibleProperties((array)$aData, $this);
+        if(isset($aData["labels"]))
         {
-            return;
+            $this->labels = (object)$aData["labels"];
         }
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
-        if(isset($oData["labels"]))
-        {
-            $this->labels = $oData["labels"];
-        }
+
     }
 }

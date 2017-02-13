@@ -37,17 +37,13 @@ class HealthCheck
      */
     public $command = null;
 
-    public function __construct($oData)
+    public function __construct($aData = [])
     {
-        if ($oData == null)
-        {
-            return;
-        }
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if(isset($oData["command"]))
+        if(isset($aData["command"]))
         {
-            $this->command = new HealthCheckCommand((array)$oData["command"]);
+            $this->command = new HealthCheckCommand((array)$aData["command"]);
         }
     }
 

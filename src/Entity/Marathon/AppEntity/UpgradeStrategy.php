@@ -18,12 +18,8 @@ class UpgradeStrategy
 
     public $maximumOverCapacity = 1;
 
-    public function __construct($oData = null)
+    public function __construct($aData = [])
     {
-        if ($oData == null)
-        {
-            return;
-        }
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
     }
 }

@@ -12,7 +12,6 @@ namespace Chapi\Entity\Marathon;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\Marathon\AppEntity\Container;
 use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
-use Chapi\Entity\Marathon\AppEntity\FetchUrl;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\AppEntity\IpAddress;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
@@ -164,7 +163,6 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public function getIterator()
     {
-        // what does this do? Return an array? But how do nested objects come into play?
         return new \ArrayIterator($this);
     }
 

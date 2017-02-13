@@ -33,25 +33,21 @@ class Docker
      */
     public $parameters = [];
 
-    public function __construct($oData)
+    public function __construct($aData = [])
     {
-        if ($oData == null)
-        {
-            return;
-        }
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if (isset($oData["portMappings"]))
+        if (isset($aData["portMappings"]))
         {
-            foreach($oData["portMappings"] as $portMapping)
+            foreach($aData["portMappings"] as $portMapping)
             {
                 $this->portMappings[] = new DockerPortMapping((array)$portMapping);
             }
         }
 
-        if (isset($oData["parameters"]))
+        if (isset($aData["parameters"]))
         {
-            foreach($oData["parameters"] as $parameter)
+            foreach($aData["parameters"] as $parameter)
             {
                 $this->parameters[] = new DockerParameters((array)$parameter);
             }

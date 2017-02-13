@@ -34,7 +34,6 @@ class MarathonEntityUtils
             if (is_array($attrValue) || is_object($attrValue)) {
                 continue;
             }
-
             MarathonEntityUtils::setPropertyIfExist($oData, $oTarget, $attrName);
         }
     }

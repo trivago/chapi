@@ -17,25 +17,21 @@ class IpAddress
 
     public $groups = [];
 
-    public $labels = [];
+    public $labels = null;
 
     public $networkName = "";
 
-    public function __construct($oData)
+    public function __construct($aData = [])
     {
-        if ($oData == null)
-        {
-            return;
-        }
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if(isset($oData["groups"]))
+        if(isset($aData["groups"]))
         {
-            $this->groups = $oData["groups"];
+            $this->groups = $aData["groups"];
         }
-        if (isset($oData["labels"]))
+        if (isset($aData["labels"]))
         {
-            $this->labels = $oData["labels"];
+            $this->labels = (object)$aData["labels"];
         }
     }
 }

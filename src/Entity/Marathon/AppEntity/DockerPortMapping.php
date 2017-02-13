@@ -22,13 +22,11 @@ class DockerPortMapping
 
     public $protocol = "tcp";
 
-    public function __construct($oData)
+    public $name = "";
+
+    public function __construct($aData = [])
     {
-        if ($oData == null)
-        {
-            return;
-        }
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
     }
 
 }
