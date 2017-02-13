@@ -85,6 +85,10 @@ class ListCommand extends AbstractCommand
             return true;
         }
 
+        if (!$oJobEntity instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Entity not of type ChronosJobEntity');
+        }
+
         $_bPrintAllJobs = (false === $bOnlyFailed && false === $bOnlyDisabled);
         if ($_bPrintAllJobs)
         {
@@ -130,7 +134,7 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return string
      */
     private function getOutputLabel(JobEntityInterface $oJobEntity)
@@ -138,7 +142,11 @@ class ListCommand extends AbstractCommand
 
         if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
         {
-            return "ok";
+            return 'ok';
+        }
+
+        if (!$oJobEntity instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
         $_aJobInfoText = [];
@@ -176,6 +184,10 @@ class ListCommand extends AbstractCommand
         if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
         {
             return '<info>%s</info>';
+        }
+
+        if (!$oJobEntity instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
         if ($oJobEntity->errorsSinceLastSuccess > 0)

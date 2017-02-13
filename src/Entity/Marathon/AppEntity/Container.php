@@ -16,7 +16,7 @@ class Container
 {
     const DIC = self::class;
 
-    public $type = "";
+    public $type = '';
 
     /**
      * @var Docker
@@ -33,14 +33,14 @@ class Container
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if (isset($aData["docker"]))
+        if (isset($aData['docker']))
         {
-            $this->docker = new Docker((array)$aData["docker"]);
+            $this->docker = new Docker((array)$aData['docker']);
         }
 
-        if (isset($aData["volumes"]))
+        if (isset($aData['volumes']))
         {
-            foreach ($aData["volumes"] as $volume)
+            foreach ($aData['volumes'] as $volume)
             {
                 $this->volumes[] = new ContainerVolume((array)$volume);
             }

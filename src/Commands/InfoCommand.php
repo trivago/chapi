@@ -37,7 +37,7 @@ class InfoCommand extends AbstractCommand
         $_oJobEntity = $_oChronosJobEntity == null ? $this->checkInMarathon($_sJobName) : $_oChronosJobEntity;
 
         if (!$_oJobEntity) {
-            $this->oOutput->writeln(sprintf("<fg=red>%s</>", "Could not find the job."));
+            $this->oOutput->writeln(sprintf('<fg=red>%s</>', 'Could not find the job.'));
             return 1;
         }
 
@@ -71,17 +71,17 @@ class InfoCommand extends AbstractCommand
         return 0;
     }
 
-    private function checkInChronos($_sJobName)
+    private function checkInChronos($sJobName)
     {
         /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
         $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
-        return $_oJobRepositoryChronos->getJob($_sJobName);
+        return $_oJobRepositoryChronos->getJob($sJobName);
     }
 
-    private function checkInMarathon($_sJobName)
+    private function checkInMarathon($sJobName)
     {
         /** @var JobRepositoryInterface  $_oJobRepositoryMarathon */
         $_oJobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
-        return $_oJobRepositoryMarathon->getJob($_sJobName);
+        return $_oJobRepositoryMarathon->getJob($sJobName);
     }
 }

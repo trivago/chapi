@@ -16,9 +16,9 @@ class Docker
 {
     const DIC = self::class;
 
-    public $image = "";
+    public $image = '';
 
-    public $network = "";
+    public $network = '';
 
     /**
      * @var DockerPortMapping[]
@@ -37,17 +37,17 @@ class Docker
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if (isset($aData["portMappings"]))
+        if (isset($aData['portMappings']))
         {
-            foreach($aData["portMappings"] as $portMapping)
+            foreach($aData['portMappings'] as $portMapping)
             {
                 $this->portMappings[] = new DockerPortMapping((array)$portMapping);
             }
         }
 
-        if (isset($aData["parameters"]))
+        if (isset($aData['parameters']))
         {
-            foreach($aData["parameters"] as $parameter)
+            foreach($aData['parameters'] as $parameter)
             {
                 $this->parameters[] = new DockerParameters((array)$parameter);
             }

@@ -26,7 +26,7 @@ class MarathonApiClient implements ApiClientInterface
      */
     public function listingJobs()
     {
-        $oResponse = $this->oHttpClient->get("/v2/apps");
+        $oResponse = $this->oHttpClient->get('/v2/apps');
         if (200 == $oResponse->getStatusCode())
         {
             return $oResponse->json();
@@ -41,7 +41,7 @@ class MarathonApiClient implements ApiClientInterface
      */
     public function addingJob(JobEntityInterface $oJobEntity)
     {
-        $_sTargetEndpoint = "/v2/apps";
+        $_sTargetEndpoint = '/v2/apps';
 
         $_oResponse = $this->oHttpClient->postJsonData($_sTargetEndpoint, $oJobEntity);
         return ($_oResponse->getStatusCode() == 201);
@@ -53,7 +53,7 @@ class MarathonApiClient implements ApiClientInterface
      */
     public function updatingJob(JobEntityInterface $oJobEntity)
     {
-        $_sTargetEndpoint = "/v2/apps";
+        $_sTargetEndpoint = '/v2/apps';
 
         $_oResponse = $this->oHttpClient->putJsonData($_sTargetEndpoint, $oJobEntity);
         return ($_oResponse->getstatusCode() == 200);
@@ -65,7 +65,7 @@ class MarathonApiClient implements ApiClientInterface
      */
     public function removeJob($sJobName)
     {
-        $_sTargetEndpoint = "/v2/apps/".$sJobName;
+        $_sTargetEndpoint = '/v2/apps/'.$sJobName;
 
         $_oResponse = $this->oHttpClient->delete($_sTargetEndpoint);
         return ($_oResponse->getStatusCode() == 200);

@@ -268,11 +268,11 @@ class BridgeFileSystem implements BridgeInterface
 
             if ($_aTemp)
             {
-                if (property_exists($_aTemp, "name")) // chronos
+                if (property_exists($_aTemp, 'name')) // chronos
                 {
                     $_aJobEntities[] = new ChronosJobEntity($_aTemp);
 
-                } else if (property_exists($_aTemp, "id")) //marathon
+                } else if (property_exists($_aTemp, 'id')) //marathon
                 {
                     foreach ($this->getMarathonEntitiesForConfig($_aTemp) as $_oApp)
                     {
@@ -280,7 +280,7 @@ class BridgeFileSystem implements BridgeInterface
                     }
                 } else {
                     throw new JobLoadException(
-                        "Could not distinguish job as either chronos or marathon",
+                        'Could not distinguish job as either chronos or marathon',
                         JobLoadException::ERROR_CODE_UNKNOWN_ENTITY_TYPE
                     );
                 }
@@ -314,7 +314,7 @@ class BridgeFileSystem implements BridgeInterface
     private function getMarathonEntitiesForConfig($aEntityData)
     {
         $_aRet = [];
-        if (property_exists($aEntityData, "apps"))
+        if (property_exists($aEntityData, 'apps'))
         {
             // store individual apps like single apps
             foreach ($aEntityData->apps as $_oApp)
@@ -357,7 +357,7 @@ class BridgeFileSystem implements BridgeInterface
             $_sGroupConfig
         ));
 
-        if (!property_exists($_oDecodedConfig, "apps")) {
+        if (!property_exists($_oDecodedConfig, 'apps')) {
             throw new \RuntimeException(sprintf(
                 'Job file %s does not contain group configuration. But, "%s" belongs to group %s',
                 $sJobFile,

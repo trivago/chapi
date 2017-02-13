@@ -20,12 +20,12 @@ use SebastianBergmann\Comparator\ExceptionComparatorTest;
 class AppSubEntityFactory implements AppSubEntityFactoryInterface
 {
     private static $sSubEntityMap = [
-        "portDefinition" => PortDefinition::DIC,
-        "container" => Container::DIC,
-        "fetch" => FetchUrl::DIC,
-        "healthChecks" => HealthCheck::DIC,
-        "upgradeStrategy" => UpgradeStrategy::DIC,
-        "ipAddress" => IpAddress::DIC
+        'portDefinition' => PortDefinition::DIC,
+        'container' => Container::DIC,
+        'fetch' => FetchUrl::DIC,
+        'healthChecks' => HealthCheck::DIC,
+        'upgradeStrategy' => UpgradeStrategy::DIC,
+        'ipAddress' => IpAddress::DIC
     ];
 
     /**
@@ -38,7 +38,7 @@ class AppSubEntityFactory implements AppSubEntityFactoryInterface
     {
         if (!array_key_exists($sName, self::$sSubEntityMap))
         {
-            throw new \Exception(sprintf("sub-entity %s not found for marathon app configuration", $sName));
+            throw new \Exception(sprintf('sub-entity %s not found for marathon app configuration', $sName));
         }
 
         if (is_array($mData))

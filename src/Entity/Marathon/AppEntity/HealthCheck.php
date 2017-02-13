@@ -16,9 +16,9 @@ class HealthCheck
 
     const DIC = self::class;
 
-    public $protocol = "";
+    public $protocol = '';
 
-    public $path = "";
+    public $path = '';
 
     public $gracePeriodSeconds = 0;
 
@@ -41,9 +41,9 @@ class HealthCheck
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if(isset($aData["command"]))
+        if(isset($aData['command']))
         {
-            $this->command = new HealthCheckCommand((array)$aData["command"]);
+            $this->command = new HealthCheckCommand((array)$aData['command']);
         }
     }
 

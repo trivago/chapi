@@ -12,8 +12,8 @@ namespace Chapi\Entity;
 
 interface JobEntityInterface extends \JsonSerializable, \IteratorAggregate
 {
-    const MARATHON_TYPE = "marathon";
-    const CHRONOS_TYPE = "chronos";
+    const MARATHON_TYPE = 'marathon';
+    const CHRONOS_TYPE = 'chronos';
     /**
      * return entity as one-dimensional array
      *

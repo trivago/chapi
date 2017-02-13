@@ -21,7 +21,7 @@ class BridgeMarathon implements BridgeInterface
 {
     const CACHE_TIME_JOB_LIST = 60;
 
-    const CACHE_KEY_APP_LIST = "marathon.app.list";
+    const CACHE_KEY_APP_LIST = 'marathon.app.list';
 
     /**
      * @var \Chapi\Component\RemoteClients\ApiClientInterface
@@ -124,6 +124,9 @@ class BridgeMarathon implements BridgeInterface
         return false;
     }
 
+    /**
+     * @return array|mixed
+     */
     private function getJobList()
     {
         $_aResult = $this->oCache->get(self::CACHE_KEY_APP_LIST);
@@ -135,12 +138,12 @@ class BridgeMarathon implements BridgeInterface
 
         $_aResult = $this->oApiClient->listingJobs();
 
-        if (!empty($_aResult["apps"]))
+        if (!empty($_aResult['apps']))
         {
-            $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult["apps"], self::CACHE_TIME_JOB_LIST);
+            $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult['apps'], self::CACHE_TIME_JOB_LIST);
         }
 
-        return $_aResult["apps"];
+        return $_aResult['apps'];
 
     }
 

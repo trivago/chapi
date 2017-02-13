@@ -19,19 +19,19 @@ class IpAddress
 
     public $labels = null;
 
-    public $networkName = "";
+    public $networkName = '';
 
     public function __construct($aData = [])
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if(isset($aData["groups"]))
+        if(isset($aData['groups']))
         {
-            $this->groups = $aData["groups"];
+            $this->groups = $aData['groups'];
         }
-        if (isset($aData["labels"]))
+        if (isset($aData['labels']))
         {
-            $this->labels = (object)$aData["labels"];
+            $this->labels = (object)$aData['labels'];
         }
     }
 }

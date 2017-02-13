@@ -7,8 +7,8 @@ use Chapi\Entity\JobEntityInterface;
 
 interface JobFilterInterface
 {
-    const DIC_NAME_FILTER_CHRONOS_ENTITY = "FilterForChronosEntity";
-    const DIC_NAME_FILTER_MARATHON_ENTITY = "FilterForMarathonEntity";
+    const DIC_NAME_FILTER_CHRONOS_ENTITY = 'FilterForChronosEntity';
+    const DIC_NAME_FILTER_MARATHON_ENTITY = 'FilterForMarathonEntity';
 
     /**
      * Returns true if the job is of particular entity

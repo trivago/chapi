@@ -14,9 +14,9 @@ class DockerParameters
 {
     const DIC = self::class;
 
-    public $key = "";
+    public $key = '';
 
-    public $value = "";
+    public $value = '';
 
     public function __construct($aData = [])
     {

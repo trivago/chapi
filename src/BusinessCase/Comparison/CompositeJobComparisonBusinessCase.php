@@ -95,7 +95,7 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
     public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
     {
         if ($oJobEntityA->getEntityType() != $oJobEntityB->getEntityType()) {
-            throw new Exception("type compared for different entity types.");
+            throw new Exception('type compared for different entity types.');
         }
         /** @var JobComparisonInterface $comparer */
         $comparer = null;
@@ -110,7 +110,7 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
 
         if ($comparer == null)
         {
-            throw new Exception(sprintf("could not find appropriate comparision businesscase to operate", $oJobEntityA->getKey()));
+            throw new Exception(sprintf('could not find appropriate comparision businesscase to operate', $oJobEntityA->getKey()));
         }
 
         return $comparer->hasSameJobType($oJobEntityA, $oJobEntityB);

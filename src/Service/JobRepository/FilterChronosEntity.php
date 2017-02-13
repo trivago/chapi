@@ -15,9 +15,6 @@ class FilterChronosEntity implements JobFilterInterface
      */
     public function isInteresting(JobEntityInterface $oJobEntity)
     {
-        if ($oJobEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE) {
-            return true;
-        }
-        return false;
+        return $oJobEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE;
     }
 }

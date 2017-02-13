@@ -107,7 +107,12 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
                 throw new \RuntimeException("Entity not chronos entity");
             }
 
+            /** @var ChronosJobEntity $_oJobEntityChronos */
             $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($_oJobEntityLocal->getKey());
+
+            if (!$_oJobEntityChronos instanceof ChronosJobEntity) {
+                throw new \RuntimeException("Entity not chronos entity");
+            }
 
             // if job already exist in chronos (not new or deleted in chronos)
             if ($_oJobEntityChronos && !empty($_oJobEntityChronos->name))

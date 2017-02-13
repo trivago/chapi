@@ -18,9 +18,9 @@ interface ApiClientInterface
 {
     const DIC_NAME = 'ApiClientInterface';
 
-    const DIC_NAME_MARATHON = "MarathonApiClientInterface";
+    const DIC_NAME_MARATHON = 'MarathonApiClientInterface';
 
-    const DIC_NAME_CHRONOS = "ChronosApiClientInterface";
+    const DIC_NAME_CHRONOS = 'ChronosApiClientInterface';
 
     /**
      * @link: https://mesos.github.io/chronos/docs/api.html#listing-jobs

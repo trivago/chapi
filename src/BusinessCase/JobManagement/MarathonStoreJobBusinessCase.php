@@ -90,7 +90,7 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
             $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sAppId);
 
             if (!$_oJobEntityLocal instanceof MarathonAppEntity) {
-                throw new \RuntimeException("Encountered entity that is not MarathonAppEntity");
+                throw new \RuntimeException('Encountered entity that is not MarathonAppEntity');
             }
 
             // check if dependency is satisfied
@@ -101,7 +101,7 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
                     if ($circular)
                     {
                         $this->oLogger->error(sprintf(
-                            "The dependency for %s is circular. Please fix them.", $sAppId
+                            'The dependency for %s is circular. Please fix them.', $sAppId
                         ));
                         return false;
                     }
@@ -109,7 +109,7 @@ class MarathonStoreJobBusinessCase implements StoreJobBusinessCaseInterface
                 catch(\Exception $e)
                 {
                     $this->oLogger->error(sprintf(
-                        "Job %s cannot be added to remote : %s",$sAppId, $e->getMessage()
+                        'Job %s cannot be added to remote : %s',$sAppId, $e->getMessage()
                     ));
                     return false;
                 }

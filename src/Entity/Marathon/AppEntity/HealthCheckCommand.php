@@ -14,7 +14,7 @@ class HealthCheckCommand
 {
     const DIC = self::class;
 
-    public $value = "";
+    public $value = '';
 
     public function __construct($oData)
     {

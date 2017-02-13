@@ -20,9 +20,9 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 
 class MarathonAppEntity implements JobEntityInterface
 {
-    public $id = "";
+    public $id = '';
 
-    public $cmd = "";
+    public $cmd = '';
 
     public $cpus = 0;
 
@@ -39,7 +39,7 @@ class MarathonAppEntity implements JobEntityInterface
 
     public $instances = 0;
 
-    public $executor = "";
+    public $executor = '';
 
     /**
      * @var Container
@@ -99,52 +99,52 @@ class MarathonAppEntity implements JobEntityInterface
 
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if (isset($aData["portDefinitions"])) {
-            foreach ($aData["portDefinitions"] as $portDefinition) {
+        if (isset($aData['portDefinitions'])) {
+            foreach ($aData['portDefinitions'] as $portDefinition) {
                 $this->portDefinitions[] = new PortDefinition((array)$portDefinition);
             }
         }
 
-        if (isset($aData["container"])) {
-            $this->container = new Container((array)$aData["container"]);
+        if (isset($aData['container'])) {
+            $this->container = new Container((array)$aData['container']);
         }
 
-        if (isset($aData["healthChecks"]))
+        if (isset($aData['healthChecks']))
         {
-            foreach($aData["healthChecks"] as $healthCheck)
+            foreach($aData['healthChecks'] as $healthCheck)
             {
                 $this->healthChecks[] = new HealthCheck((array)$healthCheck);
             }
         }
 
-        if (isset($aData["upgradeStrategy"]))
+        if (isset($aData['upgradeStrategy']))
         {
-            $this->upgradeStrategy = new UpgradeStrategy((array)$aData["upgradeStrategy"]);
+            $this->upgradeStrategy = new UpgradeStrategy((array)$aData['upgradeStrategy']);
         } else {
             $this->upgradeStrategy = new UpgradeStrategy();
         }
 
-        if (isset($aData["ipAddress"]))
+        if (isset($aData['ipAddress']))
         {
-            $this->ipAddress = new IpAddress((array)$aData["ipAddress"]);
+            $this->ipAddress = new IpAddress((array)$aData['ipAddress']);
         }
 
-        if (isset($aData["env"]))
+        if (isset($aData['env']))
         {
-            $this->env =  (object) $aData["env"];
+            $this->env =  (object) $aData['env'];
         } else {
             $this->env = (object)[];
         }
 
-        if (isset($aData["labels"]))
+        if (isset($aData['labels']))
         {
             $this->labels = (object) $aData["labels"];
         }
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, "constraints");
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, "args");
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, "uris");
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, "acceptedResourceRoles");
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, "dependencies");
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'constraints');
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'args');
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'uris');
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'acceptedResourceRoles');
+        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'dependencies');
     }
 
     /**

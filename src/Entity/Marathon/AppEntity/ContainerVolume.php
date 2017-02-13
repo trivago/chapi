@@ -14,11 +14,11 @@ class ContainerVolume
 {
     const DIC = self::class;
 
-    public $containerPath = "";
+    public $containerPath = '';
 
-    public $hostPath = "";
+    public $hostPath = '';
 
-    public $mode = "";
+    public $mode = '';
 
     public function __construct($aData = [])
     {

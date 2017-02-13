@@ -56,7 +56,6 @@ class JobRepository implements JobRepositoryInterface
             return $_aJobs[$sJobName];
         }
 
-        // return new ChronosJobEntity();
         return null;
     }
 
@@ -83,7 +82,7 @@ class JobRepository implements JobRepositoryInterface
         // apply filter
         $aJobs = array_filter(
             $this->oRepositoryBridge->getJobs(),
-            array($this->oJobFilter, "isInteresting")
+            array($this->oJobFilter, 'isInteresting')
         );
 
         return $this->oJobCollection = new JobCollection(

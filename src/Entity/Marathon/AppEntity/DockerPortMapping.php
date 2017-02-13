@@ -20,9 +20,9 @@ class DockerPortMapping
 
     public $servicePort = 0;
 
-    public $protocol = "tcp";
+    public $protocol = 'tcp';
 
-    public $name = "";
+    public $name = '';
 
     public function __construct($aData = [])
     {

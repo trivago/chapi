@@ -15,9 +15,6 @@ class FilterMarathonEntity implements JobFilterInterface
      */
     public function isInteresting(JobEntityInterface $oJobEntity)
     {
-        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
-            return true;
-        }
-        return false;
+        return $oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE;
     }
 }

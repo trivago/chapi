@@ -15,18 +15,18 @@ class PortDefinition
     const DIC = self::class;
     public $port = 0;
 
-    public $protocol = "tcp";
+    public $protocol = 'tcp';
 
-    public $name = "";
+    public $name = '';
 
     public $labels = null;
 
     public function __construct($aData = [])
     {
         MarathonEntityUtils::setAllPossibleProperties((array)$aData, $this);
-        if(isset($aData["labels"]))
+        if(isset($aData['labels']))
         {
-            $this->labels = (object)$aData["labels"];
+            $this->labels = (object)$aData['labels'];
         }
 
     }
