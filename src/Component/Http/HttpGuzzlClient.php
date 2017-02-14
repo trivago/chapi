@@ -72,13 +72,19 @@ class HttpGuzzlClient implements HttpClientInterface
      */
     public function postJsonData($sUrl, $mPostData)
     {
-        $_aRequestOptions = $this->getDefaultRequestOptions();
-        $_aRequestOptions['json'] = $mPostData;
-
-        $_oResponse = $this->oGuzzelClient->request('POST', $sUrl, $_aRequestOptions);
-
-        return new HttpGuzzlResponse($_oResponse);
+        return $this->sendJsonDataWithMethod('POST', $sUrl, $mPostData);
     }
+
+    /**
+     * @param string $sUrl
+     * @param mixed $mPutData
+     * @return HttpGuzzlResponse
+     */
+    public function putJsonData($sUrl, $mPutData)
+    {
+        return $this->sendJsonDataWithMethod('PUT', $sUrl, $mPutData);
+    }
+
 
     /**
      * @param string $sUrl
@@ -91,13 +97,18 @@ class HttpGuzzlClient implements HttpClientInterface
         return new HttpGuzzlResponse($_oResponse);
     }
 
-
-    public function putJsonData($sUrl, $mPutData)
-    {
+    /**
+     * @param $sMethod
+     * @param $sUrl
+     * @param $mData
+     * @return HttpGuzzlResponse
+     */
+    private function sendJsonDataWithMethod($sMethod, $sUrl, $mData) {
         $_aRequestOptions = $this->getDefaultRequestOptions();
-        $_aRequestOptions['json'] = $mPutData;
+        $_aRequestOptions['json'] = $mData;
 
-        $_oResponse = $this->oGuzzelClient->request("PUT", $sUrl, $_aRequestOptions);
+        $_oResponse = $this->oGuzzelClient->request($sMethod, $sUrl, $_aRequestOptions);
+
         return new HttpGuzzlResponse($_oResponse);
     }
 
@@ -106,7 +117,7 @@ class HttpGuzzlClient implements HttpClientInterface
      * If an username and password is provided, auth
      * header will be applied as well.
      *
-     * @return array
+     * @return array<string,integer|string>
      */
     private function getDefaultRequestOptions() {
         $_aRequestOptions = [

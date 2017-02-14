@@ -35,7 +35,7 @@ interface HttpClientInterface
     /**
      * @param string $sUrl
      * @param mixed $mPostData
-     * @return HttpClientReponseInterface
+     * @return HttpClientResponseInterface
      */
     public function putJsonData($sUrl, $mPostData);
 }

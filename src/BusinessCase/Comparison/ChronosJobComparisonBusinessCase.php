@@ -47,7 +47,7 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
 
 
     /**
-     * @param JobRepositoryInterface $oJobRepositoryLocal
+     * @param JobRepositoryInterface $oJobRepositoryLocalChronos
      * @param JobRepositoryInterface $oJobRepositoryChronos
      * @param DiffCompareInterface $oDiffCompare
      * @param DatePeriodFactoryInterface $oDatePeriodFactory
@@ -70,7 +70,7 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
 
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getLocalMissingJobs()
     {
@@ -81,7 +81,7 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getRemoteMissingJobs()
     {
@@ -93,7 +93,7 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getLocalJobUpdates()
     {
@@ -104,14 +104,14 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
         foreach ($_aJobsLocal as $_oJobEntityLocal)
         {
             if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
-                throw new \RuntimeException("Entity not chronos entity");
+                throw new \RuntimeException('Entity not chronos entity');
             }
 
             /** @var ChronosJobEntity $_oJobEntityChronos */
             $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($_oJobEntityLocal->getKey());
 
             if (!$_oJobEntityChronos instanceof ChronosJobEntity) {
-                throw new \RuntimeException("Entity not chronos entity");
+                throw new \RuntimeException('Entity not chronos entity');
             }
 
             // if job already exist in chronos (not new or deleted in chronos)

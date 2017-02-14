@@ -16,12 +16,8 @@ class HealthCheckCommand
 
     public $value = '';
 
-    public function __construct($oData)
+    public function __construct($aData = [])
     {
-        if ($oData == null)
-        {
-            return;
-        }
-        MarathonEntityUtils::setAllPossibleProperties($oData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
     }
 }

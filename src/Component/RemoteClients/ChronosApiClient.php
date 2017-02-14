@@ -45,13 +45,17 @@ class ChronosApiClient implements ApiClientInterface
     }
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      * @throws ApiClientException
      */
     public function addingJob(JobEntityInterface $oJobEntity)
     {
         $_sTargetUrl = '';
+
+        if (!$oJobEntity instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Expected ChronosJobEntity.');
+        }
 
         if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
         {
