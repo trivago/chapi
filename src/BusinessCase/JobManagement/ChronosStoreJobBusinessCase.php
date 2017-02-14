@@ -114,22 +114,22 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
         /** @var ChronosJobEntity $_oJobEntity */
         foreach ($_aChronosJobs as $_oJobEntity)
         {
-            $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($_oJobEntity->name);
+            $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($_oJobEntity->getKey());
             // new job
-            if (empty($_oJobEntityLocal->name))
+            if (empty($_oJobEntityLocal->getKey()))
             {
                 if ($this->oJobRepositoryLocal->addJob($_oJobEntity))
                 {
                     $this->oLogger->notice(sprintf(
                         'Job "%s" successfully stored in local repository',
-                        $_oJobEntity->name
+                        $_oJobEntity->getKey()
                     ));
                 }
                 else
                 {
                     $this->oLogger->error(sprintf(
                         'Failed to store job "%s" in local repository',
-                        $_oJobEntity->name
+                        $_oJobEntity->getKey()
                     ));
                 }
 
@@ -137,7 +137,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
             }
 
             // update job
-            $_aDiff = $this->oJobComparisonBusinessCase->getJobDiff($_oJobEntity->name);
+            $_aDiff = $this->oJobComparisonBusinessCase->getJobDiff($_oJobEntity->getKey());
             if (!empty($_aDiff))
             {
                 if (!$bForceOverwrite)
@@ -145,7 +145,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
                     throw new \InvalidArgumentException(
                         sprintf(
                             'The job "%s" already exist in your local repository. Use the "force" option to overwrite the job',
-                            $_oJobEntity->name
+                            $_oJobEntity->getKey()
                         )
                     );
                 }
@@ -154,19 +154,19 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
                 {
                     $this->oLogger->notice(sprintf(
                         'Job "%s" successfully updated in local repository',
-                        $_oJobEntity->name
+                        $_oJobEntity->getKey()
                     ));
                 }
                 else
                 {
                     $this->oLogger->error(sprintf(
                         'Failed to update job "%s" in local repository',
-                        $_oJobEntity->name
+                        $_oJobEntity->getKey()
                     ));
                 }
 
                 // remove job from index in case off added in the past
-                $this->oJobIndexService->removeJob($_oJobEntity->name);
+                $this->oJobIndexService->removeJob($_oJobEntity->getKey());
             }
         }
     }
@@ -179,14 +179,18 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
     {
         $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
 
+        if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Expected ChronosJobEntity. Received something else.');
+        }
+
         if ($this->isAbleToStoreEntity($_oJobEntityLocal))
         {
             if ($this->oJobRepositoryChronos->addJob($_oJobEntityLocal))
             {
-                $this->oJobIndexService->removeJob($_oJobEntityLocal->name);
+                $this->oJobIndexService->removeJob($_oJobEntityLocal->getKey());
                 $this->oLogger->notice(sprintf(
                     'Job "%s" successfully added to chronos',
-                    $_oJobEntityLocal->name
+                    $_oJobEntityLocal->getKey()
                 ));
 
                 return true;
@@ -194,7 +198,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
 
             $this->oLogger->error(sprintf(
                 'Failed to add job "%s" to chronos',
-                $_oJobEntityLocal->name
+                $_oJobEntityLocal->getKey()
             ));
         }
 
@@ -237,6 +241,10 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
     {
         $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
 
+        if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Expected ChronosJobEntity. Received something else.');
+        }
+
         if ($this->isAbleToStoreEntity($_oJobEntityLocal))
         {
             $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($sJobName);
@@ -249,7 +257,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
             else
             {
                 $_bHasUpdatedJob = (
-                    $this->oJobRepositoryChronos->removeJob($_oJobEntityChronos->name)
+                    $this->oJobRepositoryChronos->removeJob($_oJobEntityChronos->getKey())
                     && $this->oJobRepositoryChronos->addJob($_oJobEntityLocal)
                 );
             }
@@ -257,10 +265,10 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
             // handle update result
             if ($_bHasUpdatedJob)
             {
-                $this->oJobIndexService->removeJob($_oJobEntityLocal->name);
+                $this->oJobIndexService->removeJob($_oJobEntityLocal->getKey());
                 $this->oLogger->notice(sprintf(
                     'Job "%s" successfully updated in chronos',
-                    $_oJobEntityLocal->name
+                    $_oJobEntityLocal->getKey()
                 ));
 
                 return true;
@@ -269,7 +277,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
             // in case of an error
             $this->oLogger->error(sprintf(
                 'Failed to update job "%s" in chronos',
-                $_oJobEntityLocal->name
+                $_oJobEntityLocal->getKey()
             ));
         }
 
@@ -282,7 +290,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
      */
     private function isAbleToStoreEntity(ChronosJobEntity $oEntity)
     {
-        if ($this->oJobIndexService->isJobInIndex($oEntity->name))
+        if ($this->oJobIndexService->isJobInIndex($oEntity->getKey()))
         {
             if ($oEntity->isSchedulingJob())
             {
