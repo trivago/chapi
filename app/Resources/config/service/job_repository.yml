@@ -39,6 +39,7 @@ services:
       - "@ExternalFileSystemService"
       - "@CacheInterface"
       - "%repository_dir%"
+      - "@LoggerInterface"
 
   JobRepositoryBridgeFileSystemMarathon:
     class: Chapi\Service\JobRepository\BridgeFileSystem
@@ -47,6 +48,7 @@ services:
       - "@ExternalFileSystemService"
       - "@CacheInterface"
       - "%repository_dir_marathon%"
+      - "@LoggerInterface"
 
   JobRepositoryBridgeMarathon:
     class: Chapi\Service\JobRepository\BridgeMarathon

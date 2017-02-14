@@ -10,9 +10,20 @@ namespace Chapi\Service\JobRepository;
 
 
 use Chapi\Entity\JobEntityInterface;
+use Psr\Log\LoggerInterface;
 
 class DummyBridge implements BridgeInterface
 {
+
+    /** @var LoggerInterface  */
+    private $oLogger;
+
+    public function __construct(
+        LoggerInterface $oLogger
+    )
+    {
+        $this->oLogger = $oLogger;
+    }
 
     /**
      * @return JobEntityInterface[]
@@ -28,6 +39,7 @@ class DummyBridge implements BridgeInterface
      */
     public function addJob(JobEntityInterface $oJobEntity)
     {
+        $this->oLogger->warning('Adding a job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
         return true;
     }
 
@@ -37,6 +49,7 @@ class DummyBridge implements BridgeInterface
      */
     public function updateJob(JobEntityInterface $oJobEntity)
     {
+        $this->oLogger->warning('Updating job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
         return true;
     }
 
@@ -46,6 +59,7 @@ class DummyBridge implements BridgeInterface
      */
     public function removeJob(JobEntityInterface $oJobEntity)
     {
+        $this->oLogger->warning('Removing job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
         return true;
     }
 }

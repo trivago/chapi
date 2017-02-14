@@ -34,7 +34,7 @@ class BridgeFactory
                 $oLogger);
         }
 
-        return new DummyBridge();
+        return new DummyBridge($oLogger);
     }
 
     public static function getMarathonBridge(
@@ -51,17 +51,18 @@ class BridgeFactory
                 $oLogger);
         }
 
-        return new DummyBridge();
+        return new DummyBridge($oLogger);
     }
 
 
     public static function getFilesystemBridge(
         Filesystem $oFileSystemService,
         CacheInterface $oCache,
-        $sRepositoryDir
+        $sRepositoryDir,
+        LoggerInterface $oLogger
     ) {
         if (empty($sRepositoryDir)) {
-            return new DummyBridge();
+            return new DummyBridge($oLogger);
         }
 
         return new BridgeFileSystem(
@@ -70,5 +71,4 @@ class BridgeFactory
             $sRepositoryDir
         );
     }
-
 }
