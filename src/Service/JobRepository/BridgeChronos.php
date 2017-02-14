@@ -127,7 +127,7 @@ class BridgeChronos implements BridgeInterface
      */
     public function removeJob(JobEntityInterface $oJobEntity)
     {
-        if ($this->oApiClient->removeJob($oJobEntity->name))
+        if ($this->oApiClient->removeJob($oJobEntity->getKey()))
         {
             $this->bCacheHasToDelete = true;
             return true;
@@ -151,7 +151,7 @@ class BridgeChronos implements BridgeInterface
         $this->oLogger->warning(
             sprintf(
                 "Can't update job '%s'",
-                $oJobEntity->name
+                $oJobEntity->getKey()
             )
         );
         $this->oLogger->warning(
