@@ -25,6 +25,7 @@ services:
 
   JobRepositoryBridgeChronos:
     class: Chapi\Service\JobRepository\BridgeChronos
+    factory: "BridgeFactory:getChronosBridge"
     arguments:
       - "@ChronosApiClientInterface"
       - "@CacheInterface"
@@ -33,6 +34,7 @@ services:
 
   JobRepositoryBridgeFileSystemChronos:
     class: Chapi\Service\JobRepository\BridgeFileSystem
+    factory: "BridgeFactory:getFilesystemBridge"
     arguments:
       - "@ExternalFileSystemService"
       - "@CacheInterface"
@@ -40,6 +42,7 @@ services:
 
   JobRepositoryBridgeFileSystemMarathon:
     class: Chapi\Service\JobRepository\BridgeFileSystem
+    factory: "BridgeFactory:getFilesystemBridge"
     arguments:
       - "@ExternalFileSystemService"
       - "@CacheInterface"
@@ -47,6 +50,7 @@ services:
 
   JobRepositoryBridgeMarathon:
     class: Chapi\Service\JobRepository\BridgeMarathon
+    factory: "BridgeFactory:getMarathonBridge"
     arguments:
       - "@MarathonApiClientInterface"
       - "@CacheInterface"
@@ -61,3 +65,7 @@ services:
 
   FilterMarathonEntity:
     class: Chapi\Service\JobRepository\FilterMarathonEntity
+
+
+  BridgeFactory:
+    class: Chapi\Service\JobRepository\BridgeFactory

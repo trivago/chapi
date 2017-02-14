@@ -6,6 +6,7 @@ namespace Chapi\Component\RemoteClients;
 use Chapi\Component\Http\HttpClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class MarathonApiClient implements ApiClientInterface
 {
@@ -56,7 +57,7 @@ class MarathonApiClient implements ApiClientInterface
         $_sTargetEndpoint = '/v2/apps';
 
         $_oResponse = $this->oHttpClient->putJsonData($_sTargetEndpoint, $oJobEntity);
-        return ($_oResponse->getstatusCode() == 200);
+        return ($_oResponse->getStatusCode() == 200);
     }
 
     /**
@@ -78,5 +79,19 @@ class MarathonApiClient implements ApiClientInterface
     public function getJobStats($sJobName)
     {
         return [];
+    }
+
+    /**
+     * Returns true if the client can be connected to.
+     * @return bool
+     */
+    public function ping()
+    {
+        try {
+            $this->oHttpClient->get('/v2/info');
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
     }
 }

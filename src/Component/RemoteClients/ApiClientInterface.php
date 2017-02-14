@@ -51,4 +51,10 @@ interface ApiClientInterface
      * @return array
      */
     public function getJobStats($sJobName);
+
+    /**
+     * Returns true if the client can be connected to.
+     * @return bool
+     */
+    public function ping();
 }
