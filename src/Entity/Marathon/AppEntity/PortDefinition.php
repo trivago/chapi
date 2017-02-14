@@ -27,6 +27,8 @@ class PortDefinition
         if(isset($aData['labels']))
         {
             $this->labels = (object)$aData['labels'];
+        } else {
+            $this->labels = (object)[];
         }
 
     }

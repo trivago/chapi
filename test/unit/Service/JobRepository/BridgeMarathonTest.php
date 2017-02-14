@@ -42,6 +42,7 @@ class BridgeMarathonTest extends \PHPUnit_Framework_TestCase
             ->listingJobs()
             ->willReturn($this->aListingJobs);
 
+
         $this->oCache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
         $this->oJobValidatorService = $this->prophesize('Chapi\Service\JobValidator\JobValidatorServiceInterface');
         $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
