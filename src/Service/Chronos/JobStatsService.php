@@ -21,7 +21,7 @@ class JobStatsService implements JobStatsServiceInterface
     const CACHE_KEY_JOB_STATS = 'jobs.stats.%s';
 
     /**
-     * @var \Chapi\Component\ApiClientInterface
+     * @var \Chapi\Component\RemoteClients\ApiClientInterface
      */
     private $oApiClient;
 
