@@ -137,11 +137,12 @@ class BridgeChronos implements BridgeInterface
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    private function hasValidate(ChronosJobEntity $oJobEntity)
+    private function hasValidate(JobEntityInterface $oJobEntity)
     {
+
         $_aInvalidProperties = $this->oJobEntityValidatorService->getInvalidProperties($oJobEntity);
         if (empty($_aInvalidProperties))
         {
@@ -189,10 +190,10 @@ class BridgeChronos implements BridgeInterface
 
     /**
      * @param string $sApiMethod
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    private function hasAddOrUpdateJob($sApiMethod, ChronosJobEntity $oJobEntity)
+    private function hasAddOrUpdateJob($sApiMethod, JobEntityInterface $oJobEntity)
     {
         if ($this->hasValidate($oJobEntity))
         {

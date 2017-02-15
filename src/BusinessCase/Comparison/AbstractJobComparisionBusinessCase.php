@@ -65,7 +65,7 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
     /**
      * @param JobCollection $oJobCollectionA
      * @param JobCollection $oJobCollectionB
-     * @return string[]
+     * @return array<string>
      */
     protected function getMissingJobsInCollectionA(JobCollection $oJobCollectionA, JobCollection $oJobCollectionB)
     {
@@ -217,7 +217,7 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
      *
      * @param JobEntityInterface $oLocalJob
      * @param JobEntityInterface $oRemoteJob
-     * @return
+     * @return null
      */
     abstract protected function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob);
 

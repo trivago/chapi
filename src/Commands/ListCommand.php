@@ -176,7 +176,7 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return string
      */
     private function getOutputFormat(JobEntityInterface $oJobEntity)

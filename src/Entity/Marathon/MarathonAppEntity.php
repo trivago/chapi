@@ -138,7 +138,7 @@ class MarathonAppEntity implements JobEntityInterface
 
         if (isset($aData['labels']))
         {
-            $this->labels = (object) $aData["labels"];
+            $this->labels = (object) $aData['labels'];
         }
         MarathonEntityUtils::setPropertyIfExist($aData, $this, 'constraints');
         MarathonEntityUtils::setPropertyIfExist($aData, $this, 'args');
