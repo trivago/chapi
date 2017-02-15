@@ -143,5 +143,5 @@ abstract class AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInter
     /**
      * @inheritdoc
      */
-    public abstract function storeIndexedJobs();
+    abstract public function storeIndexedJobs();
 }

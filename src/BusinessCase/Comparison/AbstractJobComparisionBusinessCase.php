@@ -219,13 +219,13 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
      * @param JobEntityInterface $oRemoteJob
      * @return
      */
-    protected abstract function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob);
+    abstract protected function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob);
 
     /**
      * Gets entity for each system with defaults set
      * @return JobEntityInterface
      */
-    protected abstract function getEntitySetWithDefaults();
+    abstract protected function getEntitySetWithDefaults();
 
     /**
      * Verify if two entities are equal.
@@ -235,12 +235,12 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
      * @param JobEntityInterface $oJobEntityB
      * @return mixed
      */
-    protected abstract function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
+    abstract protected function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
 
     /**
      * @param JobEntityInterface $oJobEntityA
      * @param JobEntityInterface $oJobEntityB
      * @return bool
      */
-    public abstract function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
+    abstract public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
 }
