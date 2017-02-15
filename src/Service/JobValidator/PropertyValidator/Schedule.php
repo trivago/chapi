@@ -11,6 +11,7 @@ namespace Chapi\Service\JobValidator\PropertyValidator;
 
 
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
@@ -52,6 +53,10 @@ class Schedule extends AbstractPropertyValidator implements PropertyValidatorInt
      */
     private function isSchedulePropertyValid(JobEntityInterface $oJobEntity)
     {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
+        }
+
         if (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
         {
             return true;

@@ -10,6 +10,7 @@ namespace Chapi\Service\JobValidator\PropertyValidator;
 
 
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
@@ -46,11 +47,15 @@ class Epsilon extends AbstractPropertyValidator implements PropertyValidatorInte
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
     private function isEpsilonPropertyValid(JobEntityInterface $oJobEntity)
     {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
+        }
+
         if ($oJobEntity->isSchedulingJob() && !empty($oJobEntity->epsilon))
         {
             try

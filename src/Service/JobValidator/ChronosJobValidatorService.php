@@ -14,7 +14,7 @@ use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\JobValidator\ValidationResult;
 
-class JobValidatorService implements JobValidatorServiceInterface
+class ChronosJobValidatorService implements JobValidatorServiceInterface
 {
     /**
      * @var ValidatorFactoryInterface
@@ -43,7 +43,7 @@ class JobValidatorService implements JobValidatorServiceInterface
     ];
 
     /**
-     * JobValidatorService constructor.
+     * ChronosJobValidatorService constructor.
      * @param ValidatorFactoryInterface $oValidatorFactory
      */
     public function __construct(

@@ -10,6 +10,7 @@
 
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
@@ -37,6 +38,10 @@ class Command extends AbstractPropertyValidator implements PropertyValidatorInte
      */
     private function isCommandPropertyValid(JobEntityInterface $oJobEntity)
     {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
+            throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
+        }
+
         if (is_null($oJobEntity->container))
         {
             return (!empty($oJobEntity->command) && is_string($oJobEntity->command));
