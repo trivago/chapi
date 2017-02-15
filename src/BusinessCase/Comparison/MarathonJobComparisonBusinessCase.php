@@ -20,21 +20,8 @@ use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
-class MarathonJobComparisonBusinessCase implements JobComparisonInterface
+class MarathonJobComparisonBusinessCase extends BaseJobComparisionBusinessCase
 {
-    /**
-     * @var JobRepositoryInterface
-     */
-    private $oRemoteRepository;
-    /**
-     * @var JobRepositoryInterface
-     */
-    private $oLocalRepository;
-    /**
-     * @var DiffCompareInterface
-     */
-    private $oDiffCompare;
-
     /**
      * @param JobRepositoryInterface $oLocalRepository
      * @param JobRepositoryInterface $oRemoteRepository
@@ -46,32 +33,11 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
         DiffCompareInterface $oDiffCompare
     )
     {
-
         $this->oRemoteRepository = $oRemoteRepository;
         $this->oLocalRepository = $oLocalRepository;
         $this->oDiffCompare = $oDiffCompare;
     }
-    /**
-     * @return array<string>
-     */
-    public function getLocalMissingJobs()
-    {
-        return $this->getMissingJobsInCollectionA(
-            $this->oLocalRepository->getJobs(),
-            $this->oRemoteRepository->getJobs()
-        );
-    }
 
-    /**
-     * @return array<string>
-     */
-    public function getRemoteMissingJobs()
-    {
-        return $this->getMissingJobsInCollectionA(
-            $this->oRemoteRepository->getJobs(),
-            $this->oLocalRepository->getJobs()
-        );
-    }
 
     /**
      * @return array<string>
@@ -164,31 +130,6 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
     }
 
     /**
-     * @param $sJobName
-     * @return bool
-     */
-    public function isJobAvailable($sJobName)
-    {
-        $_bLocallyAvailable = $this->oLocalRepository->getJob($sJobName);
-        $_bRemotelyAvailable = $this->oRemoteRepository->getJob($sJobName);
-        return $_bLocallyAvailable || $_bRemotelyAvailable;
-    }
-
-
-    /**
-     * @param JobCollection $oJobCollectionA
-     * @param JobCollection $oJobCollectionB
-     * @return string[]
-     */
-    private function getMissingJobsInCollectionA(JobCollection $oJobCollectionA, JobCollection $oJobCollectionB)
-    {
-        return array_diff(
-            array_keys($oJobCollectionB->getArrayCopy()),
-            array_keys($oJobCollectionA->getArrayCopy())
-        );
-    }
-
-    /**
      * @param JobEntityInterface $oJobEntityA
      * @param JobEntityInterface $oJobEntityB
      * @return array
@@ -197,29 +138,7 @@ class MarathonJobComparisonBusinessCase implements JobComparisonInterface
     {
         $_aNonidenticalProperties = [];
 
-        $aJobACopy = [];
-        $aJobBCopy = [];
-
-        if ($oJobEntityA)
-        {
-            $aJobACopy = $oJobEntityA->getSimpleArrayCopy();
-        }
-
-        if ($oJobEntityB)
-        {
-            $aJobBCopy = $oJobEntityB->getSimpleArrayCopy();
-        }
-
-        $_aDiff = array_merge(
-            array_diff_assoc(
-                $aJobACopy,
-                $aJobBCopy
-            ),
-            array_diff_assoc(
-                $aJobBCopy,
-                $aJobACopy
-            )
-        );
+        $_aDiff = $this->getDifference($oJobEntityA, $oJobEntityB);
 
         if (count($_aDiff) > 0)
         {

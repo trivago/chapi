@@ -18,23 +18,8 @@ use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
-class ChronosJobComparisonBusinessCase implements JobComparisonInterface
+class ChronosJobComparisonBusinessCase extends BaseJobComparisionBusinessCase
 {
-    /**
-     * @var JobRepositoryInterface
-     */
-    private $oJobRepositoryLocalChronos;
-
-    /**
-     * @var JobRepositoryInterface
-     */
-    private $oJobRepositoryChronos;
-
-    /**
-     * @var DiffCompareInterface
-     */
-    private $oDiffCompare;
-
     /**
      * @var DatePeriodFactoryInterface
      */
@@ -61,35 +46,11 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
         LoggerInterface $oLogger
     )
     {
-        $this->oJobRepositoryLocalChronos = $oJobRepositoryLocalChronos;
-        $this->oJobRepositoryChronos = $oJobRepositoryChronos;
+        $this->oLocalRepository = $oJobRepositoryLocalChronos;
+        $this->oRemoteRepository = $oJobRepositoryChronos;
         $this->oDiffCompare = $oDiffCompare;
         $this->oDatePeriodFactory = $oDatePeriodFactory;
         $this->oLogger = $oLogger;
-    }
-
-
-    /**
-     * @return array<string>
-     */
-    public function getLocalMissingJobs()
-    {
-        return $this->getMissingJobsInCollectionA(
-            $this->oJobRepositoryLocalChronos->getJobs(),
-            $this->oJobRepositoryChronos->getJobs()
-        );
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getRemoteMissingJobs()
-    {
-        $_ret =  $this->getMissingJobsInCollectionA(
-            $this->oJobRepositoryChronos->getJobs(),
-            $this->oJobRepositoryLocalChronos->getJobs()
-        );
-        return $_ret;
     }
 
     /**
@@ -97,7 +58,7 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getLocalJobUpdates()
     {
-        $_aJobsLocal = $this->oJobRepositoryLocalChronos->getJobs();
+        $_aJobsLocal = $this->oLocalRepository->getJobs();
         $_aLocalJobUpdates = [];
 
         /** @var ChronosJobEntity $_oJobEntityLocal */
@@ -108,7 +69,7 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
             }
 
             /** @var ChronosJobEntity $_oJobEntityChronos */
-            $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($_oJobEntityLocal->getKey());
+            $_oJobEntityChronos = $this->oRemoteRepository->getJob($_oJobEntityLocal->getKey());
 
             if (!$_oJobEntityChronos instanceof ChronosJobEntity) {
                 throw new \RuntimeException('Entity not chronos entity');
@@ -135,13 +96,13 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
     {
         $_aReturn = [];
 
-        $_oJobEntityLocal = $this->oJobRepositoryLocalChronos->getJob($sJobName);
+        $_oJobEntityLocal = $this->oLocalRepository->getJob($sJobName);
         if (!$_oJobEntityLocal)
         {
             $_oJobEntityLocal = new ChronosJobEntity();
         }
 
-        $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($sJobName);
+        $_oJobEntityChronos = $this->oRemoteRepository->getJob($sJobName);
         if (!$_oJobEntityChronos)
         {
             $_oJobEntityChronos = new ChronosJobEntity();
@@ -185,29 +146,7 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
     {
         $_aNonidenticalProperties = [];
 
-        $aJobACopy = [];
-        $aJobBCopy = [];
-
-        if ($oJobEntityA)
-        {
-            $aJobACopy = $oJobEntityA->getSimpleArrayCopy();
-        }
-
-        if ($oJobEntityB)
-        {
-            $aJobBCopy = $oJobEntityB->getSimpleArrayCopy();
-        }
-
-        $_aDiff = array_merge(
-            array_diff_assoc(
-                $aJobACopy,
-                $aJobBCopy
-            ),
-            array_diff_assoc(
-                $aJobBCopy,
-                $aJobACopy
-            )
-        );
+        $_aDiff = $this->getDifference($oJobEntityA, $oJobEntityB);
 
         if (count($_aDiff) > 0)
         {
@@ -375,30 +314,5 @@ class ChronosJobComparisonBusinessCase implements JobComparisonInterface
         }
 
         return $_oDateTime;
-    }
-
-    /**
-     * @param JobCollection $oJobCollectionA
-     * @param JobCollection $oJobCollectionB
-     * @return string[]
-     */
-    private function getMissingJobsInCollectionA(JobCollection $oJobCollectionA, JobCollection $oJobCollectionB)
-    {
-        return array_diff(
-            array_keys($oJobCollectionB->getArrayCopy()),
-            array_keys($oJobCollectionA->getArrayCopy())
-        );
-    }
-
-    /**
-     * @param $sJobName
-     * @return bool
-     */
-    public function isJobAvailable($sJobName)
-    {
-        $_bLocallyAvailable = $this->oJobRepositoryLocalChronos->getJob($sJobName) ? true : false;
-        $_bRemotelyAvailable = $this->oJobRepositoryChronos->getJob($sJobName) ? true : false;
-
-        return $_bLocallyAvailable || $_bRemotelyAvailable;
     }
 }
