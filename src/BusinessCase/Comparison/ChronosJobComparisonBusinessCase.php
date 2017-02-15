@@ -18,7 +18,7 @@ use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
-class ChronosJobComparisonBusinessCase extends BaseJobComparisionBusinessCase
+class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCase
 {
     /**
      * @var DatePeriodFactoryInterface
@@ -53,75 +53,16 @@ class ChronosJobComparisonBusinessCase extends BaseJobComparisionBusinessCase
         $this->oLogger = $oLogger;
     }
 
-    /**
-     * @return array<string>
-     */
-    public function getLocalJobUpdates()
+
+    protected function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob)
     {
-        $_aJobsLocal = $this->oLocalRepository->getJobs();
-        $_aLocalJobUpdates = [];
-
-        /** @var ChronosJobEntity $_oJobEntityLocal */
-        foreach ($_aJobsLocal as $_oJobEntityLocal)
-        {
-            if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
-                throw new \RuntimeException('Entity not chronos entity');
-            }
-
-            /** @var ChronosJobEntity $_oJobEntityChronos */
-            $_oJobEntityChronos = $this->oRemoteRepository->getJob($_oJobEntityLocal->getKey());
-
-            if (!$_oJobEntityChronos instanceof ChronosJobEntity) {
-                throw new \RuntimeException('Entity not chronos entity');
-            }
-
-            // if job already exist in chronos (not new or deleted in chronos)
-            if ($_oJobEntityChronos && !empty($_oJobEntityChronos->name))
-            {
-                $_aNonidenticalProperties = $this->compareJobEntities($_oJobEntityLocal, $_oJobEntityChronos);
-                if (!empty($_aNonidenticalProperties))
-                {
-                    $_aLocalJobUpdates[] = $_oJobEntityLocal->name;
-                }
-            }
-        }
-        return $_aLocalJobUpdates;
+        // no modification needed
+        return;
     }
 
-    /**
-     * @param string $sJobName
-     * @return string[]
-     */
-    public function getJobDiff($sJobName)
-    {
-        $_aReturn = [];
 
-        $_oJobEntityLocal = $this->oLocalRepository->getJob($sJobName);
-        if (!$_oJobEntityLocal)
-        {
-            $_oJobEntityLocal = new ChronosJobEntity();
-        }
-
-        $_oJobEntityChronos = $this->oRemoteRepository->getJob($sJobName);
-        if (!$_oJobEntityChronos)
-        {
-            $_oJobEntityChronos = new ChronosJobEntity();
-        }
-
-        $_aNonidenticalProperties = $this->compareJobEntities(
-            $_oJobEntityLocal,
-            $_oJobEntityChronos
-        );
-
-        foreach ($_aNonidenticalProperties as $_sProperty)
-        {
-            $_aReturn[$_sProperty] = $this->oDiffCompare->compare(
-                $_oJobEntityChronos->{$_sProperty},
-                $_oJobEntityLocal->{$_sProperty}
-            );
-        }
-
-        return $_aReturn;
+    protected function getEntitySetWithDefaults() {
+        return new ChronosJobEntity();
     }
 
     /**
@@ -138,39 +79,21 @@ class ChronosJobComparisonBusinessCase extends BaseJobComparisionBusinessCase
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntityA
-     * @param ChronosJobEntity $oJobEntityB
-     * @return array
-     */
-    private function compareJobEntities(ChronosJobEntity $oJobEntityA, ChronosJobEntity $oJobEntityB)
-    {
-        $_aNonidenticalProperties = [];
-
-        $_aDiff = $this->getDifference($oJobEntityA, $oJobEntityB);
-
-        if (count($_aDiff) > 0)
-        {
-            $_aDiffKeys = array_keys($_aDiff);
-            foreach ($_aDiffKeys as $_sDiffKey)
-            {
-                if (!$this->isJobEntityValueIdentical($_sDiffKey, $oJobEntityA, $oJobEntityB))
-                {
-                    $_aNonidenticalProperties[] = $_sDiffKey;
-                }
-            }
-        }
-
-        return $_aNonidenticalProperties;
-    }
-
-    /**
      * @param string $sProperty
-     * @param ChronosJobEntity $oJobEntityA
-     * @param ChronosJobEntity $oJobEntityB
+     * @param JobEntityInterface $oJobEntityA
+     * @param JobEntityInterface $oJobEntityB
      * @return bool
      */
-    private function isJobEntityValueIdentical($sProperty, ChronosJobEntity $oJobEntityA, ChronosJobEntity $oJobEntityB)
+    protected function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
     {
+        if (
+            !$oJobEntityA instanceof ChronosJobEntity ||
+            !$oJobEntityB instanceof ChronosJobEntity
+        )
+        {
+            throw new \RuntimeException('Required ChronosJobEntity. Something else encountered');
+        }
+
         $mValueA = $oJobEntityA->{$sProperty};
         $mValueB = $oJobEntityB->{$sProperty};
 

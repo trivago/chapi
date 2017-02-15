@@ -20,7 +20,7 @@ use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
-class MarathonJobComparisonBusinessCase extends BaseJobComparisionBusinessCase
+class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCase
 {
     /**
      * @param JobRepositoryInterface $oLocalRepository
@@ -38,83 +38,28 @@ class MarathonJobComparisonBusinessCase extends BaseJobComparisionBusinessCase
         $this->oDiffCompare = $oDiffCompare;
     }
 
-
-    /**
-     * @return array<string>
-     */
-    public function getLocalJobUpdates()
+    protected function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob)
     {
-        $_aLocallyUpdatedJobs = [];
-        $_aLocalJobs = $this->oLocalRepository->getJobs();
-
-        /** @var JobEntityInterface $_oLocalJob */
-        foreach($_aLocalJobs as $_oLocalJob)
+        if (
+            !$oLocalJob instanceof MarathonAppEntity ||
+            !$oRemoteJob instanceof MarathonAppEntity
+        )
         {
-            $_oRemoteJob = $this->oRemoteRepository->getJob($_oLocalJob->getKey());
-            if (!$_oRemoteJob)
-            {
-                // if doesn't exist in remote, its not update. its new
-                continue;
-            }
-
-            // marathon returns portDefinitions values for auto configured port as well
-            // we want to only check if the port is defined in local file.
-            // otherwise we ignore the remote values.
-            if (empty($_oLocalJob->portDefinitions)) {
-                $_oRemoteJob->portDefinitions = [];
-            }
-
-            $_aNonIdenticalProps = $this->compareJobEntities($_oLocalJob, $_oRemoteJob);
-
-            if (!empty($_aNonIdenticalProps))
-            {
-                $_aLocallyUpdatedJobs[] = $_oLocalJob->getKey();
-            }
+            throw new \RuntimeException('Required MarathonAppEntity. Something else encountered.');
         }
-
-        return $_aLocallyUpdatedJobs;
+        // marathon returns portDefinitions values for auto configured port as well
+        // we want to only check if the port is defined in local file.
+        // otherwise we ignore the remote values.
+        if (empty($oLocalJob->portDefinitions)) {
+            $oRemoteJob->portDefinitions = [];
+        }
     }
 
     /**
-     * @param string $sJobName
-     * @return array
+     * @return JobEntityInterface
      */
-    public function getJobDiff($sJobName)
-    {
-        $_aDifferences = [];
-        $_oLocalJob = $this->oLocalRepository->getJob($sJobName);
-        $_oRemoteJob = $this->oRemoteRepository->getJob($sJobName);
-
-        if (!$_oLocalJob && !$_oRemoteJob)
-        {
-            // return as jobs doesnt exist
-            return [];
-        }
-
-        if (!$_oLocalJob)
-        {
-            $_oLocalJob = new MarathonAppEntity(null);
-        }
-
-        if (!$_oRemoteJob)
-        {
-            $_oRemoteJob = new MarathonAppEntity(null);
-        }
-
-        $_aNonIdenticalProps = $this->compareJobEntities(
-            $_oLocalJob,
-            $_oRemoteJob
-        );
-
-        foreach ($_aNonIdenticalProps as $_sProperty)
-        {
-            $_aDifferences[$_sProperty] = $this->oDiffCompare->compare(
-                $_oRemoteJob->{$_sProperty},
-                $_oLocalJob->{$_sProperty}
-            ) ;
-        }
-
-        return $_aDifferences;
+    protected function getEntitySetWithDefaults() {
+        return new MarathonAppEntity();
     }
 
     /**
@@ -130,40 +75,21 @@ class MarathonJobComparisonBusinessCase extends BaseJobComparisionBusinessCase
     }
 
     /**
-     * @param JobEntityInterface $oJobEntityA
-     * @param JobEntityInterface $oJobEntityB
-     * @return array
-     */
-    private function compareJobEntities(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
-    {
-        $_aNonidenticalProperties = [];
-
-        $_aDiff = $this->getDifference($oJobEntityA, $oJobEntityB);
-
-        if (count($_aDiff) > 0)
-        {
-            $_aDiffKeys = array_keys($_aDiff);
-
-            foreach ($_aDiffKeys as $_sDiffKey)
-            {
-                if (!$this->isEntityEqual($_sDiffKey, $oJobEntityA, $oJobEntityB))
-                {
-                    $_aNonidenticalProperties[] = $_sDiffKey;
-                }
-            }
-        }
-
-        return $_aNonidenticalProperties;
-    }
-
-    /**
      * @param $sProperty
      * @param $oJobEntityA
      * @param $oJobEntityB
      * @return bool
      */
-    private function isEntityEqual($sProperty, $oJobEntityA, $oJobEntityB)
+    protected function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
     {
+        if (
+            !$oJobEntityA instanceof MarathonAppEntity ||
+            !$oJobEntityB instanceof MarathonAppEntity
+        )
+        {
+            throw new \RuntimeException('Required MarathonAppEntity. Something else encountered.');
+        }
+
         return $this->isEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty});
     }
 
