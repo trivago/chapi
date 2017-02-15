@@ -26,17 +26,17 @@ class ConfigureCommand extends AbstractCommand
     {
         $this->setName('configure')
             ->setDescription('Configure application and add necessary configs')
-            ->addOption('chronos_url', 'u', InputOption::VALUE_OPTIONAL, 'The chronos url (inclusive port)')
+            ->addOption('cache_dir', 'd', InputOption::VALUE_OPTIONAL, 'Path to cache directory')
+
+            ->addOption('chronos_url', 'u', InputOption::VALUE_OPTIONAL, 'The chronos url (inclusive port)', '')
             ->addOption('chronos_http_username', 'un', InputOption::VALUE_OPTIONAL, 'The chronos username (HTTP credentials)', '')
             ->addOption('chronos_http_password', 'p', InputOption::VALUE_OPTIONAL, 'The chronos password (HTTP credentials)', '')
-            ->addOption('chronos_url', 'u', InputOption::VALUE_OPTIONAL, 'The chronos url (inclusive port)')
-            ->addOption('cache_dir', 'd', InputOption::VALUE_OPTIONAL, 'Path to cache directory')
-            ->addOption('repository_dir', 'r', InputOption::VALUE_OPTIONAL, 'Root path to your job files')
+            ->addOption('repository_dir', 'r', InputOption::VALUE_OPTIONAL, 'Root path to your job files', '')
 
-            ->addOption('marathon_url', 'mu', InputOption::VALUE_OPTIONAL, 'The marathon url (inclusive port)')
+            ->addOption('marathon_url', 'mu', InputOption::VALUE_OPTIONAL, 'The marathon url (inclusive port)', '')
             ->addOption('marathon_http_username', 'mun', InputOption::VALUE_OPTIONAL, 'The marathon username (HTTP credentials)', '')
             ->addOption('marathon_http_password', 'mp', InputOption::VALUE_OPTIONAL, 'The marathon password (HTTP credentials)', '')
-            ->addOption('repository_dir_marathon', 'mr', InputOption::VALUE_OPTIONAL, 'Root path to the app files')
+            ->addOption('repository_dir_marathon', 'mr', InputOption::VALUE_OPTIONAL, 'Root path to the app files', '')
         ;
     }
 
@@ -76,25 +76,29 @@ class ConfigureCommand extends AbstractCommand
     {
         $_aResult = [];
 
-        $_aResult['chronos_url'] = [
-            'value' => $this->getInputValue('chronos_url', 'Please enter the chronos url (inclusive port)'),
-            'required' => true
-        ];
-        $_aResult['chronos_http_username'] = [
-            'value' => $this->getInputValue('chronos_http_username', 'Please enter the username to access your chronos instance'),
-            'required' => false
-        ];
-        $_aResult['chronos_http_password'] = [
-            'value' => $this->getInputValue('chronos_http_password', 'Please enter the password to access your chronos instance', true),
-            'required' => false
-        ];
         $_aResult['cache_dir'] = [
             'value' => $this->getInputValue('cache_dir', 'Please enter a cache directory'),
             'required' => true
         ];
+
+        $_aResult['chronos_url'] = [
+            'value' => $this->getInputValue('chronos_url', 'Please enter the chronos url (inclusive port)'),
+            'required' => false
+        ];
+
+        $_aResult['chronos_http_username'] = [
+            'value' => $this->getInputValue('chronos_http_username', 'Please enter the username to access your chronos instance'),
+            'required' => false
+        ];
+
+        $_aResult['chronos_http_password'] = [
+            'value' => $this->getInputValue('chronos_http_password', 'Please enter the password to access your chronos instance', true),
+            'required' => false
+        ];
+
         $_aResult['repository_dir'] = [
             'value' => $this->getInputValue('repository_dir', 'Please enter your root path to your job files'),
-            'required' => true
+            'required' => false
         ];
 
         $_aResult['marathon_url'] = [
@@ -108,12 +112,12 @@ class ConfigureCommand extends AbstractCommand
         ];
 
         $_aResult['marathon_http_password'] = [
-            'value' => $this->getInputValue('marathon_http_password', 'Please enter the password to access marathon instance'),
+            'value' => $this->getInputValue('marathon_http_password', 'Please enter the password to access marathon instance', true),
             'required' => false
         ];
 
         $_aResult['repository_dir_marathon'] = [
-            'value' => $this->getInputValue('repository_dir_marathon', 'Please enter the root path to your app fiels'),
+            'value' => $this->getInputValue('repository_dir_marathon', 'Please enter the root path to your app files'),
             'required' => false
         ];
 
@@ -158,7 +162,7 @@ class ConfigureCommand extends AbstractCommand
         }
 
         $_oDumper = new Dumper();
-        $_sYaml = $_oDumper->dump(array('parameters' => $aToStore));
+        $_sYaml = $_oDumper->dump(array('parameters' => $aToStore), 2);
 
         $_oFileSystem = new Filesystem();
         $_oFileSystem->dumpFile($this->getHomeDir() . '/parameters.yml', $_sYaml);
