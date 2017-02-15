@@ -16,42 +16,18 @@ use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
-class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
+class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInterface
 {
-    /**
-     * @var JobIndexServiceInterface
-     */
-    private $oJobIndexService;
-
-    /**
-     * @var JobRepositoryInterface
-     */
-    private $oJobRepositoryChronos;
-
-    /**
-     * @var JobRepositoryInterface
-     */
-    private $oJobRepositoryLocal;
-
-    /**
-     * @var JobComparisonInterface
-     */
-    private $oJobComparisonBusinessCase;
 
     /**
      * @var JobDependencyServiceInterface
      */
     private $oJobDependencyService;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $oLogger;
-
 
     public function __construct(
         JobIndexServiceInterface $oJobIndexService,
-        JobRepositoryInterface $oJobRepositoryChronos,
+        JobRepositoryInterface $oJobRepositoryRemote,
         JobRepositoryInterface $oJobRepositoryLocal,
         JobComparisonInterface  $oJobComparisonBusinessCase,
         JobDependencyServiceInterface $oJobDependencyService,
@@ -59,7 +35,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
     )
     {
         $this->oJobIndexService = $oJobIndexService;
-        $this->oJobRepositoryChronos = $oJobRepositoryChronos;
+        $this->oJobRepositoryRemote = $oJobRepositoryRemote;
         $this->oJobRepositoryLocal = $oJobRepositoryLocal;
         $this->oJobComparisonBusinessCase = $oJobComparisonBusinessCase;
         $this->oJobDependencyService = $oJobDependencyService;
@@ -94,84 +70,6 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false)
-    {
-        if (empty($aJobNames))
-        {
-            $_aChronosJobs = $this->oJobRepositoryChronos->getJobs();
-        }
-        else
-        {
-            $_aChronosJobs = [];
-            foreach ($aJobNames as $_sJobName)
-            {
-                $_aChronosJobs[] = $this->oJobRepositoryChronos->getJob($_sJobName);
-            }
-        }
-
-        /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($_aChronosJobs as $_oJobEntity)
-        {
-            $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($_oJobEntity->getKey());
-            // new job
-            if (empty($_oJobEntityLocal->getKey()))
-            {
-                if ($this->oJobRepositoryLocal->addJob($_oJobEntity))
-                {
-                    $this->oLogger->notice(sprintf(
-                        'Job "%s" successfully stored in local repository',
-                        $_oJobEntity->getKey()
-                    ));
-                }
-                else
-                {
-                    $this->oLogger->error(sprintf(
-                        'Failed to store job "%s" in local repository',
-                        $_oJobEntity->getKey()
-                    ));
-                }
-
-                continue;
-            }
-
-            // update job
-            $_aDiff = $this->oJobComparisonBusinessCase->getJobDiff($_oJobEntity->getKey());
-            if (!empty($_aDiff))
-            {
-                if (!$bForceOverwrite)
-                {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            'The job "%s" already exist in your local repository. Use the "force" option to overwrite the job',
-                            $_oJobEntity->getKey()
-                        )
-                    );
-                }
-
-                if ($this->oJobRepositoryLocal->updateJob($_oJobEntity))
-                {
-                    $this->oLogger->notice(sprintf(
-                        'Job "%s" successfully updated in local repository',
-                        $_oJobEntity->getKey()
-                    ));
-                }
-                else
-                {
-                    $this->oLogger->error(sprintf(
-                        'Failed to update job "%s" in local repository',
-                        $_oJobEntity->getKey()
-                    ));
-                }
-
-                // remove job from index in case off added in the past
-                $this->oJobIndexService->removeJob($_oJobEntity->getKey());
-            }
-        }
-    }
-
-    /**
      * @param string $sJobName
      * @return bool
      */
@@ -185,7 +83,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
 
         if ($this->isAbleToStoreEntity($_oJobEntityLocal))
         {
-            if ($this->oJobRepositoryChronos->addJob($_oJobEntityLocal))
+            if ($this->oJobRepositoryRemote->addJob($_oJobEntityLocal))
             {
                 $this->oJobIndexService->removeJob($_oJobEntityLocal->getKey());
                 $this->oLogger->notice(sprintf(
@@ -213,7 +111,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
     {
         if ($this->isAbleToDeleteJob($sJobName))
         {
-            if ($this->oJobRepositoryChronos->removeJob($sJobName))
+            if ($this->oJobRepositoryRemote->removeJob($sJobName))
             {
                 $this->oJobIndexService->removeJob($sJobName);
                 $this->oLogger->notice(sprintf(
@@ -247,18 +145,18 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
 
         if ($this->isAbleToStoreEntity($_oJobEntityLocal))
         {
-            $_oJobEntityChronos = $this->oJobRepositoryChronos->getJob($sJobName);
+            $_oJobEntityChronos = $this->oJobRepositoryRemote->getJob($sJobName);
 
             // handle job update
             if ($this->oJobComparisonBusinessCase->hasSameJobType($_oJobEntityLocal, $_oJobEntityChronos))
             {
-                $_bHasUpdatedJob = $this->oJobRepositoryChronos->updateJob($_oJobEntityLocal);
+                $_bHasUpdatedJob = $this->oJobRepositoryRemote->updateJob($_oJobEntityLocal);
             }
             else
             {
                 $_bHasUpdatedJob = (
-                    $this->oJobRepositoryChronos->removeJob($_oJobEntityChronos->getKey())
-                    && $this->oJobRepositoryChronos->addJob($_oJobEntityLocal)
+                    $this->oJobRepositoryRemote->removeJob($_oJobEntityChronos->getKey())
+                    && $this->oJobRepositoryRemote->addJob($_oJobEntityLocal)
                 );
             }
 
@@ -300,7 +198,7 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
             //else :: are all parents available?
             foreach ($oEntity->parents as $_sParentJobName)
             {
-                if (false === $this->oJobRepositoryChronos->hasJob($_sParentJobName))
+                if (false === $this->oJobRepositoryRemote->hasJob($_sParentJobName))
                 {
                     $this->oLogger->warning(sprintf(
                         'Parent job is not available for "%s" on chronos. Please add parent "%s" first.',
@@ -352,16 +250,5 @@ class ChronosStoreJobBusinessCase implements StoreJobBusinessCaseInterface
         }
 
         return false;
-    }
-
-    /**
-     * @param $sJobName
-     * @return bool
-     */
-    public function isJobAvailable($sJobName)
-    {
-        $_bLocallyAvailable = $this->oJobRepositoryLocal->getJob($sJobName) ? true : false;
-        $_bRemotelyAvailable = $this->oJobRepositoryChronos->getJob($sJobName) ? true : false;
-        return $_bLocallyAvailable || $_bRemotelyAvailable;
     }
 }

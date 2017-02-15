@@ -18,13 +18,13 @@ use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
-class MarathonStoreJobBusinessCase extends BaseStoreJobBusinessCase implements StoreJobBusinessCaseInterface
+class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInterface
 {
     public function __construct(
         JobIndexServiceInterface $oJobIndexService,
         JobRepositoryInterface $oJobRepositoryRemote,
         JobRepositoryInterface $oJobRepositoryLocal,
-        JobComparisonInterface $oJobComparisionBusinessCase,
+        JobComparisonInterface $oJobComparisonBusinessCase,
         LoggerInterface $oLogger
 
     )
@@ -32,7 +32,7 @@ class MarathonStoreJobBusinessCase extends BaseStoreJobBusinessCase implements S
 
         $this->oJobIndexService = $oJobIndexService;
         $this->oLogger = $oLogger;
-        $this->oJobComparisionBusinessCase = $oJobComparisionBusinessCase;
+        $this->oJobComparisonBusinessCase = $oJobComparisonBusinessCase;
         $this->oJobRepositoryRemote = $oJobRepositoryRemote;
         $this->oJobRepositoryLocal = $oJobRepositoryLocal;
     }
@@ -42,18 +42,18 @@ class MarathonStoreJobBusinessCase extends BaseStoreJobBusinessCase implements S
      */
     public function storeIndexedJobs()
     {
-        $_aRemoteMissingApps = $this->oJobComparisionBusinessCase->getRemoteMissingJobs();
+        $_aRemoteMissingApps = $this->oJobComparisonBusinessCase->getRemoteMissingJobs();
         foreach ($_aRemoteMissingApps as $_sAppId)
         {
             $this->addRemoteMissingApp($_sAppId);
         }
 
-        $_aLocalMissingApps = $this->oJobComparisionBusinessCase->getLocalMissingJobs();
+        $_aLocalMissingApps = $this->oJobComparisonBusinessCase->getLocalMissingJobs();
         foreach ($_aLocalMissingApps as $_sAppId)
         {
             $this->removeLocalMissingAppInRemote($_sAppId);
         }
-        $_aLocalUpdates = $this->oJobComparisionBusinessCase->getLocalJobUpdates();
+        $_aLocalUpdates = $this->oJobComparisonBusinessCase->getLocalJobUpdates();
         foreach ($_aLocalUpdates as $_sAppId)
         {
             $this->updateAppInRemote($_sAppId);
@@ -133,7 +133,7 @@ class MarathonStoreJobBusinessCase extends BaseStoreJobBusinessCase implements S
         return !(count($arr) == count(array_unique($arr)));
     }
 
-    private function isDependencyCircular(MarathonAppEntity $oEntity, $immediateChildren, &$path=[])
+    private function isDependencyCircular(MarathonAppEntity $oEntity, $iImmediateChildren, &$path=[])
     {
         // Invariant: path will not have duplicates for acyclic dependency tree
         if ($this->hasDuplicates($path))
@@ -186,8 +186,8 @@ class MarathonStoreJobBusinessCase extends BaseStoreJobBusinessCase implements S
             // for B intermediate Child will be 2.
             // when we process D, it will be reduced to 1 and with C to 0
             // then we will pop B to generate path [A, E] when we reach E.
-            $immediateChildren = $immediateChildren -1;
-            if ($immediateChildren == 0)
+            $iImmediateChildren = $iImmediateChildren -1;
+            if ($iImmediateChildren == 0)
             {
                 array_pop($path);
             }
@@ -246,51 +246,5 @@ class MarathonStoreJobBusinessCase extends BaseStoreJobBusinessCase implements S
         }
 
         return false;
-    }
-
-    /**
-     * @param array $aJobNames
-     * @param bool|false $bForceOverwrite
-     * @return void
-     */
-    public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false)
-    {
-        if (empty($aJobNames))
-        {
-            $_aApps = $this->oJobRepositoryRemote->getJobs();
-        }
-        else
-        {
-            $_aApps = [];
-            foreach ($aJobNames as $_sAppName)
-            {
-                $_aApps[] = $this->oJobRepositoryRemote->getJob($_sAppName);
-            }
-        }
-
-        /** @var JobEntityInterface $_oApp */
-        foreach ($_aApps as $_oAppRemote)
-        {
-            $_oAppLocal = $this->oJobRepositoryLocal->getJob($_oAppRemote->getKey());
-            if (null == $_oAppLocal) // add
-            {
-                $this->addJobInLocalRepository($_oAppRemote);
-            }
-            else // update
-            {
-                $this->updateJobInLocalRepository($_oAppRemote, $bForceOverwrite);
-            }
-        }
-    }
-
-    /**
-     * @param $sJobName
-     * @return bool
-     */
-    public function isJobAvailable($sJobName)
-    {
-        $_bLocallyAvailable = $this->oJobRepositoryLocal->getJob($sJobName) ? true : false;
-        $_bRemotelyAvailable = $this->oJobRepositoryRemote->getJob($sJobName) ? true : false;
-        return $_bLocallyAvailable || $_bRemotelyAvailable;
     }
 }

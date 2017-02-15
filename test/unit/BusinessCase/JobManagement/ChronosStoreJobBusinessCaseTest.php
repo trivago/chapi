@@ -26,7 +26,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
     private $oJobIndexService;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryChronos;
+    private $oJobRepositoryRemote;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oJobRepositoryLocal;
@@ -43,7 +43,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->oJobIndexService = $this->prophesize('Chapi\Service\JobIndex\JobIndexServiceInterface');
-        $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->oJobRepositoryRemote = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oJobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oJobComparisonBusinessCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
         $this->oJobDependencyService = $this->prophesize('Chapi\Service\JobDependencies\JobDependencyServiceInterface');
@@ -83,7 +83,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
             if ($bIsInIndex)
             {
-                $this->oJobRepositoryChronos
+                $this->oJobRepositoryRemote
                     ->addJob(Argument::exact($_oJobEntity))
                     ->willReturn(true)
                     ->shouldBeCalledTimes(1)
@@ -122,7 +122,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
             if ($bIsInIndex)
             {
-                $this->oJobRepositoryChronos
+                $this->oJobRepositoryRemote
                     ->removeJob(Argument::exact($_sJobName))
                     ->willReturn(true)
                     ->shouldBeCalledTimes(1)
@@ -169,7 +169,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
             if ($bIsInIndex)
             {
-                $this->oJobRepositoryChronos
+                $this->oJobRepositoryRemote
                     ->getJob(Argument::exact($_sJobName))
                     ->willReturn($_oJobEntity)
                     ->shouldBeCalledTimes(1)
@@ -184,7 +184,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
                 if ($bHasSameJobType)
                 {
-                    $this->oJobRepositoryChronos
+                    $this->oJobRepositoryRemote
                         ->updateJob(Argument::exact($_oJobEntity))
                         ->willReturn(true)
                         ->shouldBeCalledTimes(1)
@@ -192,13 +192,13 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
                 }
                 else
                 {
-                    $this->oJobRepositoryChronos
+                    $this->oJobRepositoryRemote
                         ->removeJob(Argument::exact($_oJobEntity->name))
                         ->willReturn(true)
                         ->shouldBeCalledTimes(1)
                     ;
 
-                    $this->oJobRepositoryChronos
+                    $this->oJobRepositoryRemote
                         ->addJob(Argument::exact($_oJobEntity))
                         ->willReturn(true)
                         ->shouldBeCalledTimes(1)
@@ -236,7 +236,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -263,7 +263,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -290,7 +290,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -317,7 +317,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -342,7 +342,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -372,7 +372,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -436,7 +436,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oJobRepositoryChronos
+        $this->oJobRepositoryRemote
             ->addJob(Argument::exact($_oJobEnetityB))
             ->willReturn(false)
             ->shouldBeCalledTimes(1)
@@ -464,7 +464,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -482,11 +482,11 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $_oJobEntityB1 = $this->getValidDependencyJobEntity('JobB', 'JobC');
 
-        $this->oJobRepositoryChronos->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA1);
-        $this->oJobRepositoryChronos->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityB1);
+        $this->oJobRepositoryRemote->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA1);
+        $this->oJobRepositoryRemote->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityB1);
 
         $this->oJobRepositoryLocal->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA2);
-        $this->oJobRepositoryLocal->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn(new ChronosJobEntity());
+        $this->oJobRepositoryLocal->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn(null);
 
         $this->oJobRepositoryLocal->addJob(Argument::exact($_oJobEntityB1))->shouldBeCalledTimes(1)->willReturn(true);
 
@@ -499,7 +499,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -523,7 +523,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_oJobEntityA2->disabled = true;
 
 
-        $this->oJobRepositoryChronos->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA1);
+        $this->oJobRepositoryRemote->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA1);
         $this->oJobRepositoryLocal->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntityA2);
 
         $this->oJobComparisonBusinessCase->getJobDiff(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn(['disabled'=>'div string']);
@@ -535,7 +535,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -590,13 +590,13 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oJobRepositoryChronos
+        $this->oJobRepositoryRemote
             ->hasJob(Argument::exact('JobB'))
             ->willReturn(true)
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oJobRepositoryChronos
+        $this->oJobRepositoryRemote
             ->addJob(Argument::exact($_oJobEntityA))
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
@@ -610,7 +610,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -661,13 +661,13 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oJobRepositoryChronos
+        $this->oJobRepositoryRemote
             ->hasJob(Argument::exact('JobB'))
             ->willReturn(false)
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oJobRepositoryChronos
+        $this->oJobRepositoryRemote
             ->addJob(Argument::exact($_oJobEntityA))
             ->shouldNotBeCalled()
         ;
@@ -680,7 +680,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -729,7 +729,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oJobRepositoryChronos
+        $this->oJobRepositoryRemote
             ->removeJob(Argument::exact('JobA'))
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
@@ -743,7 +743,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),
@@ -798,7 +798,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oJobRepositoryChronos
+        $this->oJobRepositoryRemote
             ->removeJob(Argument::exact('JobA'))
             ->shouldNotBeCalled()
         ;
@@ -811,7 +811,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         // test
         $_oStoreJobBusinessCase = new ChronosStoreJobBusinessCase(
             $this->oJobIndexService->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
+            $this->oJobRepositoryRemote->reveal(),
             $this->oJobRepositoryLocal->reveal(),
             $this->oJobComparisonBusinessCase->reveal(),
             $this->oJobDependencyService->reveal(),

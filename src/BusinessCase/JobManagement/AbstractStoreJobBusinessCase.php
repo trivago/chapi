@@ -14,7 +14,7 @@ use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
-class BaseStoreJobBusinessCase
+abstract class AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInterface
 {
     /**
      * @var JobIndexServiceInterface
@@ -25,7 +25,7 @@ class BaseStoreJobBusinessCase
     /**
      * @var JobComparisonInterface
      */
-    protected $oJobComparisionBusinessCase;
+    protected $oJobComparisonBusinessCase;
 
     /**
      * @var LoggerInterface
@@ -44,12 +44,45 @@ class BaseStoreJobBusinessCase
     protected $oJobRepositoryLocal;
 
 
+    /**
+     * @inheritdoc
+     */
+    public function storeJobsToLocalRepository(array $aEntityNames = [], $bForceOverwrite = false)
+    {
+        if (empty($aEntityNames))
+        {
+            $_aRemoteEntities = $this->oJobRepositoryRemote->getJobs();
+        }
+        else
+        {
+            $_aRemoteEntities = [];
+            foreach ($aEntityNames as $_sJobName)
+            {
+                $_aRemoteEntities[] = $this->oJobRepositoryRemote->getJob($_sJobName);
+            }
+        }
+
+        /** @var JobEntityInterface $_oRemoteEntity */
+        foreach ($_aRemoteEntities as $_oRemoteEntity)
+        {
+            $_oLocalEntity = $this->oJobRepositoryLocal->getJob($_oRemoteEntity->getKey());
+            // new job
+            if (null == $_oLocalEntity)
+            {
+                $this->addJobInLocalRepository($_oRemoteEntity);
+            } else {
+                //update
+                $this->updateJobInLocalRepository($_oRemoteEntity, $bForceOverwrite);
+            }
+        }
+    }
+
     protected function addJobInLocalRepository(JobEntityInterface $oAppRemote)
     {
         if ($this->oJobRepositoryLocal->addJob($oAppRemote))
         {
             $this->oLogger->notice(sprintf(
-                'App %s stored in local repository',
+                'Entity %s stored in local repository',
                 $oAppRemote->getKey()
             ));
         }
@@ -64,14 +97,14 @@ class BaseStoreJobBusinessCase
 
     protected function updateJobInLocalRepository(JobEntityInterface $oAppRemote, $bForceOverwrite)
     {
-        $_aDiff = $this->oJobComparisionBusinessCase->getJobDiff($oAppRemote->getKey());
+        $_aDiff = $this->oJobComparisonBusinessCase->getJobDiff($oAppRemote->getKey());
         if (!empty($_aDiff))
         {
             if (!$bForceOverwrite)
             {
                 throw new \InvalidArgumentException(
                     sprintf(
-                        'The app "%s" already exist in your local repository. Use the "force" option to overwrite the job',
+                        'The entity "%s" already exist in your local repository. Use the "force" option to overwrite the job',
                         $oAppRemote->getKey()
                     )
                 );
@@ -80,7 +113,7 @@ class BaseStoreJobBusinessCase
             if ($this->oJobRepositoryLocal->updateJob($oAppRemote))
             {
                 $this->oLogger->notice(sprintf(
-                    'App %s is updated in local repository',
+                    'Entity %s is updated in local repository',
                     $oAppRemote->getKey()
                 ));
             }
@@ -95,4 +128,20 @@ class BaseStoreJobBusinessCase
             $this->oJobIndexService->removeJob($oAppRemote->getKey());
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function isJobAvailable($sJobName)
+    {
+        $_bLocallyAvailable = $this->oJobRepositoryLocal->getJob($sJobName) ? true : false;
+        $_bRemotelyAvailable = $this->oJobRepositoryRemote->getJob($sJobName) ? true : false;
+        return $_bLocallyAvailable || $_bRemotelyAvailable;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public abstract function storeIndexedJobs();
 }
