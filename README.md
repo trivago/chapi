@@ -1,5 +1,5 @@
 # chapi [![Build Status](https://travis-ci.org/msiebeneicher/chapi.svg?branch=master)](http://travis-ci.org/msiebeneicher/chapi) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/msiebeneicher/chapi/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/msiebeneicher/chapi/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/msiebeneicher/chapi/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/msiebeneicher/chapi/?branch=master)
-Chronos api client for your console
+Chronos and marathon api client for your console. 
 
 ## Description
 Manage your [Chronos](https://github.com/mesos/chronos) and [Marathon](https://github.com/mesosphere/marathon) jobs like a git repository on your console:
@@ -7,6 +7,8 @@ Manage your [Chronos](https://github.com/mesos/chronos) and [Marathon](https://g
 * Prepare your jobs before you send them to Remote
 * Manage a separate git repository for job backups and history
 * Fast check of your jobs status
+
+It is possible to use either of the system independently or both at once.
 
 ## Installation / Configuration
 
@@ -261,8 +263,8 @@ mv clusterAjobs/jobXy.json clusterBjobs/jobXy.json
 
 ## Todos:
 ### Marathon
-- [] The validate command for marathon is not yet implemented.
-- [] The list command has status set as `ok` for marathon entities. This could show the last status of the app.
+- [ ] The validate command for marathon is not yet implemented.
+- [ ] The list command has status set as `ok` for marathon entities. This could show the last status of the app.
 
 
 ## Special cases in marathon:
