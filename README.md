@@ -2,9 +2,9 @@
 Chronos api client for your console
 
 ## Description
-Manage your [Chronos](https://github.com/mesos/chronos) jobs like a git repository on your console:
+Manage your [Chronos](https://github.com/mesos/chronos) and [Marathon](https://github.com/mesosphere/marathon) jobs like a git repository on your console:
 
-* Prepare your jobs before you send them to Chronos
+* Prepare your jobs before you send them to Remote
 * Manage a separate git repository for job backups and history
 * Fast check of your jobs status
 
@@ -37,6 +37,12 @@ parameters:
     chronos_http_username: username
     chronos_http_password: password
     repository_dir: /path/to/your/local/job/repository
+
+    marathon_url: http://your.marathon.url:marathon_api_port/
+    marathon_http_username: username
+    marathon_http_password: password
+    repository_dir_marathon: /path/to/your/local/marathon/apps/repository
+
     cache_dir: /path/to/chapi/cache/dir
 ```
 
@@ -55,9 +61,22 @@ Necessary if the setting `--http_credentials` is activated in your Chronos insta
 
 #### repository_dir
 Root path to your job files. Look also under the [configure command](#configure) option `-r`.
-      
+
+#### marathon_url
+The marathon api url (inclusive port). Look also under [configure command](#configure) option `-mu`.
+
+#### marathon_http_username
+The marathon http username. Look also under [configure command](#configure) option `-mun`.
+
+#### marathon_http_password
+The marathon http password. Look also under [configure command](#configure) option `-mp`.
+
+#### repository_dir_marathon:
+Root path to your apps folder. Look also under [configure command](#configure) option `-mr`.
+
 #### cache_dir
 Path to cache directory. Look also under the [configure command](#configure) option `-d`.
+
 
 ## Usage
 
@@ -73,7 +92,7 @@ bin/chapi list [options]
       -d, --onlyDisabled    Display only disabled jobs
 
 ### info
-Display your job information from chronos
+Display your job information from remote system
 
 ```Shell
 bin/chapi info <jobName> 
@@ -81,6 +100,7 @@ bin/chapi info <jobName>
 
     Arguments:
       jobName               selected job
+The job name incase of marathon would be the full id for the job.
 
 ### status
 Show the working tree status
@@ -120,7 +140,7 @@ bin/chapi reset [<jobnames>]...
       jobnames              Jobs to add to the index
 
 ### pull
-Pull jobs from chronos and add them to local repository
+Pull jobs from remote system and add them to local repository
 
 ```Shell
 bin/chapi pull [options] [--] [<jobnames>]...
@@ -149,6 +169,7 @@ bin/chapi scheduling [options]
     Options:
       -s, --starttime[=STARTTIME]  Start time to display the jobs
       -e, --endtime[=ENDTIME]      End time to display the jobs
+**Note: Not application for marathon**
 
 ### configure
 Configure application and add necessary configs
@@ -221,6 +242,42 @@ mv clusterAjobs/jobXy.json clusterBjobs/jobXy.json
 
 7. Chapi in console 1 will delete the jobs from the "old" cluster and chapi in the second console 2 will add the moved jobs to the new one.
 
+
+## Supported commands for either system
+|            | chronos            | marathon           |
+|------------|--------------------|--------------------|
+| list       | :white_check_mark: | :white_check_mark: |
+| info       | :white_check_mark: | :white_check_mark: |
+| status     | :white_check_mark: | :white_check_mark: |
+| diff       | :white_check_mark: | :white_check_mark: |
+| add        | :white_check_mark: | :white_check_mark: |
+| reset      | :white_check_mark: | :white_check_mark: |
+| pull       | :white_check_mark: | :white_check_mark: |
+| commit     | :white_check_mark: | :white_check_mark: |
+| scheduling | :white_check_mark: | n.a.               |
+| configure  | :white_check_mark: | :white_check_mark: |
+| validate   | :white_check_mark: |                    |
+
+
+## Todos:
+### Marathon
+- [] The validate command for marathon is not yet implemented.
+- [] The list command has status set as `ok` for marathon entities. This could show the last status of the app.
+
+
+## Special cases in marathon:
+* Pulling a job from marathon will dump the json object with default values.
+    This is the choice for now because calling marathon for app info sends
+    the default values set as well. Logic to check this could be implemented in future.
+* Group apps cannot be pulled from marathon in the configuration with which
+    it was posted. This is because once an app is in marathon, the group
+    specific config is lost.
+* The marathon App id should be be prefixed by `/`.
+    This is a good practice. The reason this needs to be forced is because
+    the local configuration with `myapp` will be seen in marathon as `/myapp`
+    and by chapi as two different apps.
+
+If you find any further issues or edge case, please create an issue.
 
 
 ## Supported Chronos versions
