@@ -13,7 +13,7 @@ use Chapi\Component\RemoteClients\ChronosApiClient;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Prophecy\Argument;
 
-class ApiClientTest extends \PHPUnit_Framework_TestCase
+class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oHttpClient;
