@@ -25,8 +25,10 @@ class BridgeFactory
         CacheInterface $oCache,
         JobValidatorServiceInterface $oJobEntityValidatorService,
         LoggerInterface $oLogger
-    ) {
-        if ($oApiClient->ping()) {
+    )
+    {
+        if ($oApiClient->ping())
+        {
             return new BridgeChronos(
                 $oApiClient,
                 $oCache,
@@ -42,8 +44,10 @@ class BridgeFactory
         CacheInterface $oCache,
         JobValidatorServiceInterface $oJobEntityValidatorService,
         LoggerInterface $oLogger
-    ) {
-        if ($oApiClient->ping()) {
+    )
+    {
+        if ($oApiClient->ping())
+        {
             return new BridgeMarathon(
                 $oApiClient,
                 $oCache,
@@ -60,8 +64,10 @@ class BridgeFactory
         CacheInterface $oCache,
         $sRepositoryDir,
         LoggerInterface $oLogger
-    ) {
-        if (empty($sRepositoryDir)) {
+    )
+    {
+        if (empty($sRepositoryDir))
+        {
             return new DummyBridge($oLogger);
         }
 

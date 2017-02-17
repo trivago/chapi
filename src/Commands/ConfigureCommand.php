@@ -157,7 +157,8 @@ class ConfigureCommand extends AbstractCommand
         // With this loop we get rid of the "required" information
         // from getInputValues().
         $aToStore = [];
-        foreach ($aUserInput as $key => $value) {
+        foreach ($aUserInput as $key => $value)
+        {
             $aToStore[$key] = $value['value'];
         }
 
@@ -227,7 +228,8 @@ class ConfigureCommand extends AbstractCommand
         // We know that the user has to enter the password again
         // if he / she want to reconfigure something. But this
         // is an acceptable tradeoff.
-        if ($bHiddenAnswer === true && !empty($mDefaultValue)) {
+        if ($bHiddenAnswer === true && !empty($mDefaultValue))
+        {
             $mDefaultValue = null;
         }
 
@@ -236,7 +238,8 @@ class ConfigureCommand extends AbstractCommand
 
         // Sensitive information (like passwords) should not be
         // visible during the configuration wizard
-        if ($bHiddenAnswer === true) {
+        if ($bHiddenAnswer === true)
+        {
             $_oQuestion->setHidden(true);
             $_oQuestion->setHiddenFallback(false);
         }

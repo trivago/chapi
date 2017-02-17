@@ -99,13 +99,16 @@ class MarathonAppEntity implements JobEntityInterface
 
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if (isset($aData['portDefinitions'])) {
-            foreach ($aData['portDefinitions'] as $portDefinition) {
+        if (isset($aData['portDefinitions']))
+        {
+            foreach ($aData['portDefinitions'] as $portDefinition)
+            {
                 $this->portDefinitions[] = new PortDefinition((array)$portDefinition);
             }
         }
 
-        if (isset($aData['container'])) {
+        if (isset($aData['container']))
+        {
             $this->container = new Container((array)$aData['container']);
         }
 

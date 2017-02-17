@@ -22,11 +22,13 @@ class StoreJobBusinessCaseFactory implements StoreJobBusinessCaseFactoryInterfac
         $this->storeJobBusinessCases[] = $oStoreJob;
 
     }
-    public function getBusinessCaseWithJob($sJobName) {
+    public function getBusinessCaseWithJob($sJobName)
+    {
         /** @var StoreJobBusinessCaseInterface $oStore */
         foreach ($this->storeJobBusinessCases as $oStore)
         {
-            if ($oStore->isJobAvailable($sJobName)) {
+            if ($oStore->isJobAvailable($sJobName))
+            {
                 return $oStore;
             }
         }

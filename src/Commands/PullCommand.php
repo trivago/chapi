@@ -41,7 +41,8 @@ class PullCommand extends AbstractCommand
         /** @var StoreJobBusinessCaseFactoryInterface $_oStoreJobBusinessCaseFactory */
         $_oStoreJobBusinessCaseFactory = $this->getContainer()->get(StoreJobBusinessCaseFactoryInterface::DIC_NAME);
 
-        if (count($_aJobNames) == 0) {
+        if (count($_aJobNames) == 0)
+        {
             $_aStoreJobBusinessCases = $_oStoreJobBusinessCaseFactory->getAllStoreJobBusinessCase();
             /** @var StoreJobBusinessCaseInterface $_oStoreJobBusinessCase */
             foreach ($_aStoreJobBusinessCases as $_oStoreJobBusinessCase)

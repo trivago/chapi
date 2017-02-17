@@ -49,7 +49,8 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
         // marathon returns portDefinitions values for auto configured port as well
         // we want to only check if the port is defined in local file.
         // otherwise we ignore the remote values.
-        if (empty($oLocalJob->portDefinitions)) {
+        if (empty($oLocalJob->portDefinitions))
+        {
             $oRemoteJob->portDefinitions = [];
         }
     }
@@ -57,7 +58,8 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
     /**
      * @return JobEntityInterface
      */
-    protected function getEntitySetWithDefaults() {
+    protected function getEntitySetWithDefaults()
+    {
         return new MarathonAppEntity();
     }
 
@@ -99,7 +101,8 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
      */
     private function isEqual($mValueA, $mValueB)
     {
-        if (is_array($mValueA) && is_array($mValueB)) {
+        if (is_array($mValueA) && is_array($mValueB))
+        {
             return $this->isArrayEqual($mValueA, $mValueB);
         }
         elseif (is_object($mValueA) && is_object($mValueB))

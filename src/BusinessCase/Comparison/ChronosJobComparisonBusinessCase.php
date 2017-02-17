@@ -61,7 +61,8 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
     }
 
 
-    protected function getEntitySetWithDefaults() {
+    protected function getEntitySetWithDefaults()
+    {
         return new ChronosJobEntity();
     }
 
@@ -190,7 +191,8 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
             $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
 
             /** @var \DateTime $_oDateTime */
-            foreach ($_oPeriodA as $_oDateTime) {
+            foreach ($_oPeriodA as $_oDateTime)
+            {
                 $_oLastDateTimeA = $_oDateTime;
             }
 
@@ -198,7 +200,8 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
             $_oPeriodB = $this->oDatePeriodFactory->createDatePeriod($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
 
             /** @var \DateTime $_oDateTime */
-            foreach ($_oPeriodB as $_oDateTime) {
+            foreach ($_oPeriodB as $_oDateTime)
+            {
                 $_oLastDateTimeB = $_oDateTime;
             }
 

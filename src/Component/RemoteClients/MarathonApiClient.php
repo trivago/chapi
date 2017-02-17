@@ -89,7 +89,8 @@ class MarathonApiClient implements ApiClientInterface
     {
         try {
             $this->oHttpClient->get('/v2/info');
-        } catch (\Exception $e) {
+        } catch (\Exception $e)
+        {
             return false;
         }
         return true;

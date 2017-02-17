@@ -357,7 +357,8 @@ class BridgeFileSystem implements BridgeInterface
             $_sGroupConfig
         ));
 
-        if (!property_exists($_oDecodedConfig, 'apps')) {
+        if (!property_exists($_oDecodedConfig, 'apps'))
+        {
             throw new \RuntimeException(sprintf(
                 'Job file %s does not contain group configuration. But, "%s" belongs to group %s',
                 $sJobFile,
@@ -367,8 +368,10 @@ class BridgeFileSystem implements BridgeInterface
         }
 
         $_bAppFound = false;
-        foreach ($_oDecodedConfig->apps as $key => $_oApp) {
-            if ($_oApp->id == $oJobEntity->getKey()) {
+        foreach ($_oDecodedConfig->apps as $key => $_oApp)
+        {
+            if ($_oApp->id == $oJobEntity->getKey())
+            {
                 if (!$bAdd)
                 {
                     array_splice($_oDecodedConfig->apps, $key, 1);
@@ -389,7 +392,8 @@ class BridgeFileSystem implements BridgeInterface
             }
         }
 
-        if (!$_bAppFound) {
+        if (!$_bAppFound)
+        {
             throw new \RuntimeException(sprintf(
                 'Could update job. job %s could not be found in the group file %s.',
                 $oJobEntity->getKey(),

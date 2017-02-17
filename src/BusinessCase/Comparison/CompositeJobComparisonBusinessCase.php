@@ -79,7 +79,8 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
         {
             // NOTE: only gets the first one.
             // does it make sense?
-            if ($jobComparers->isJobAvailable($sJobName)) {
+            if ($jobComparers->isJobAvailable($sJobName))
+            {
                 $_aJobDiffs = $jobComparers->getJobDiff($sJobName);
                 break;
             }
@@ -94,7 +95,8 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
      */
     public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
     {
-        if ($oJobEntityA->getEntityType() != $oJobEntityB->getEntityType()) {
+        if ($oJobEntityA->getEntityType() != $oJobEntityB->getEntityType())
+        {
             throw new Exception('type compared for different entity types.');
         }
         /** @var JobComparisonInterface $comparer */
@@ -123,7 +125,8 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
      */
     public function isJobAvailable($sJobName)
     {
-        foreach($this->aComposites as $child) {
+        foreach($this->aComposites as $child)
+        {
             if ($child->isJobAvailable($sJobName))
             {
                 return true;

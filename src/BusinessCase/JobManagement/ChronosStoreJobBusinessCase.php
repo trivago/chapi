@@ -77,7 +77,8 @@ class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implement
     {
         $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
 
-        if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
+        if (!$_oJobEntityLocal instanceof ChronosJobEntity)
+        {
             throw new \RuntimeException('Expected ChronosJobEntity. Received something else.');
         }
 
@@ -139,7 +140,8 @@ class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implement
     {
         $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
 
-        if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
+        if (!$_oJobEntityLocal instanceof ChronosJobEntity)
+        {
             throw new \RuntimeException('Expected ChronosJobEntity. Received something else.');
         }
 

@@ -36,7 +36,8 @@ class InfoCommand extends AbstractCommand
         $_oChronosJobEntity = $this->checkInChronos($_sJobName);
         $_oJobEntity = $_oChronosJobEntity == null ? $this->checkInMarathon($_sJobName) : $_oChronosJobEntity;
 
-        if (!$_oJobEntity) {
+        if (!$_oJobEntity)
+        {
             $this->oOutput->writeln(sprintf('<fg=red>%s</>', 'Could not find the job.'));
             return 1;
         }

@@ -14,7 +14,8 @@ class ChapiApplication extends Application
 {
     public function __construct($sName = 'Chapi', $sVersion = '@package_version@')
     {
-        if ('@package_version@' !== $sVersion) {
+        if ('@package_version@' !== $sVersion)
+        {
             $sVersion = ltrim($sVersion, 'v');
         }
 

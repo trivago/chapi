@@ -19,8 +19,10 @@ class CommandUtils implements CommandUtilsInterface
      */
     public static function getOsHomeDir()
     {
-        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            if (!getenv('APPDATA')) {
+        if (defined('PHP_WINDOWS_VERSION_MAJOR'))
+        {
+            if (!getenv('APPDATA'))
+            {
                 throw new \RuntimeException('The APPDATA or CHAPI_HOME environment variable must be set for composer to run correctly');
             }
             return  rtrim(
@@ -30,7 +32,8 @@ class CommandUtils implements CommandUtilsInterface
         }
 
         // else
-        if (!getenv('HOME')) {
+        if (!getenv('HOME'))
+        {
             throw new \RuntimeException('The HOME or CHAPI_HOME environment variable must be set for composer to run correctly');
         }
         return rtrim(getenv('HOME'), '/');

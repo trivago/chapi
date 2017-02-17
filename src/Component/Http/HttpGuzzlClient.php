@@ -103,7 +103,8 @@ class HttpGuzzlClient implements HttpClientInterface
      * @param $mData
      * @return HttpGuzzlResponse
      */
-    private function sendJsonDataWithMethod($sMethod, $sUrl, $mData) {
+    private function sendJsonDataWithMethod($sMethod, $sUrl, $mData)
+    {
         $_aRequestOptions = $this->getDefaultRequestOptions();
         $_aRequestOptions['json'] = $mData;
 
@@ -119,7 +120,8 @@ class HttpGuzzlClient implements HttpClientInterface
      *
      * @return array<string,integer|string>
      */
-    private function getDefaultRequestOptions() {
+    private function getDefaultRequestOptions()
+    {
         $_aRequestOptions = [
             'connect_timeout' => self::DEFAULT_CONNECTION_TIMEOUT,
             'timeout' => self::DEFAULT_TIMEOUT

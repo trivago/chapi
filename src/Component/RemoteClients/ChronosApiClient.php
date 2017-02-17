@@ -53,7 +53,8 @@ class ChronosApiClient implements ApiClientInterface
     {
         $_sTargetUrl = '';
 
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
             throw new \RuntimeException('Expected ChronosJobEntity.');
         }
 
@@ -125,7 +126,8 @@ class ChronosApiClient implements ApiClientInterface
     {
         try {
             $this->oHttpClient->get('scheduler/jobs');
-        } catch (\Exception $e) {
+        } catch (\Exception $e)
+        {
             return false;
         }
 

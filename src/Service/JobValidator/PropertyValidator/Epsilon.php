@@ -52,7 +52,8 @@ class Epsilon extends AbstractPropertyValidator implements PropertyValidatorInte
      */
     private function isEpsilonPropertyValid(JobEntityInterface $oJobEntity)
     {
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
             throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
         }
 

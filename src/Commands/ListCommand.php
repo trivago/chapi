@@ -85,7 +85,8 @@ class ListCommand extends AbstractCommand
             return true;
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
@@ -145,7 +146,8 @@ class ListCommand extends AbstractCommand
             return 'ok';
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
@@ -186,7 +188,8 @@ class ListCommand extends AbstractCommand
             return '<info>%s</info>';
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 

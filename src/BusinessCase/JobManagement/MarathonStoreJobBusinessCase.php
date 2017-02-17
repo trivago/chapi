@@ -67,7 +67,8 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
             /** @var MarathonAppEntity $_oJobEntityLocal */
             $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sAppId);
 
-            if (!$_oJobEntityLocal instanceof MarathonAppEntity) {
+            if (!$_oJobEntityLocal instanceof MarathonAppEntity)
+            {
                 throw new \RuntimeException('Encountered entity that is not MarathonAppEntity');
             }
 
@@ -93,7 +94,8 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
                 }
 
 
-                foreach ($_oJobEntityLocal->dependencies as $_sDependencyKey) {
+                foreach ($_oJobEntityLocal->dependencies as $_sDependencyKey)
+                {
                     $_bAdded = $this->addRemoteMissingApp($_sDependencyKey);
 
                     if (!$_bAdded)
@@ -167,7 +169,8 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
                 throw new \Exception(sprintf('Dependency chain on non-existing app "%s"', $_sDependency));
             }
 
-            if (!$_oDependEntity instanceof MarathonAppEntity) {
+            if (!$_oDependEntity instanceof MarathonAppEntity)
+            {
                 throw new \RuntimeException('Expected MarathonAppEntity. Found something else');
             }
 
