@@ -77,8 +77,8 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
         $_aJobDiffs = array();
         foreach($this->aComposites as $jobComparers)
         {
-            // NOTE: only gets the first one.
-            // does it make sense?
+            // assuming same name won't be in all subsystems.
+            // TODO: add support to handle the duplicate names in different subsystems
             if ($jobComparers->isJobAvailable($sJobName))
             {
                 $_aJobDiffs = $jobComparers->getJobDiff($sJobName);

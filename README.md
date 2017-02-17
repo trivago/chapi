@@ -2,11 +2,11 @@
 Chronos and marathon api client for your console. 
 
 ## Description
-Manage your [Chronos](https://github.com/mesos/chronos) and [Marathon](https://github.com/mesosphere/marathon) jobs like a git repository on your console:
+Manage your [Chronos](https://github.com/mesos/chronos) and [Marathon](https://github.com/mesosphere/marathon) tasks like a git repository on your console:
 
-* Prepare your jobs before you send them to Remote
-* Manage a separate git repository for job backups and history
-* Fast check of your jobs status
+* Prepare your tasks before you send them to Remote
+* Manage a separate git repository for tasks backups and history
+* Fast check of your tasks status
 
 It is possible to use either of the system independently or both at once.
 
@@ -19,7 +19,7 @@ If you clone the repository you need to run a `composer install` to install all 
 composer install
 ``` 
 
-Before you use chapi the first time you have to setup your chronos api url and the path to your local job repository.
+Before you use chapi the first time you have to setup your chronos api url and the path to your local task repository.
 You can use the `configure` command to setup your global settings:
 
 ```Shell
@@ -38,7 +38,7 @@ parameters:
     chronos_url: http://your.chronos.url:chronos_api_port/
     chronos_http_username: username
     chronos_http_password: password
-    repository_dir: /path/to/your/local/job/repository
+    repository_dir: /path/to/your/local/task/repository
 
     marathon_url: http://your.marathon.url:marathon_api_port/
     marathon_http_username: username
@@ -74,7 +74,7 @@ The marathon http username. Look also under [configure command](#configure) opti
 The marathon http password. Look also under [configure command](#configure) option `-mp`.
 
 #### repository_dir_marathon:
-Root path to your apps folder. Look also under [configure command](#configure) option `-mr`.
+Root path to your tasks folder. Look also under [configure command](#configure) option `-mr`.
 
 #### cache_dir
 Path to cache directory. Look also under the [configure command](#configure) option `-d`.
@@ -83,7 +83,7 @@ Path to cache directory. Look also under the [configure command](#configure) opt
 ## Usage
 
 ### list
-Display your jobs and filter they by failed
+Display your tasks and filter them by failed
 
 ```Shell
 bin/chapi list [options] 
@@ -94,7 +94,7 @@ bin/chapi list [options]
       -d, --onlyDisabled    Display only disabled jobs
 
 ### info
-Display your job information from remote system
+Display your task information from remote system
 
 ```Shell
 bin/chapi info <jobName> 
@@ -102,7 +102,7 @@ bin/chapi info <jobName>
 
     Arguments:
       jobName               selected job
-The job name incase of marathon would be the full id for the job.
+The task name in case of marathon would be the full id for the task.
 
 ### status
 Show the working tree status
@@ -112,7 +112,7 @@ bin/chapi status
 ```
 
 ### diff
-Show changes between jobs and working tree, etc
+Show changes between tasks and working tree, etc
 
 ```Shell
 bin/chapi diff [<jobName>]
@@ -122,7 +122,7 @@ bin/chapi diff [<jobName>]
       jobName               Show changes for specific job
 
 ### add
-Add job contents to the index
+Add task contents to the index
 
 ```Shell
 bin/chapi add [<jobnames>]...
@@ -132,7 +132,7 @@ bin/chapi add [<jobnames>]...
       jobnames              Jobs to add to the index
  
 ### reset 
-Remove jobs from the index
+Remove tasks from the index
 
 ```Shell
 bin/chapi reset [<jobnames>]...
@@ -142,7 +142,7 @@ bin/chapi reset [<jobnames>]...
       jobnames              Jobs to add to the index
 
 ### pull
-Pull jobs from remote system and add them to local repository
+Pull tasks from remote system and add them to local repository
 
 ```Shell
 bin/chapi pull [options] [--] [<jobnames>]...
@@ -155,7 +155,7 @@ bin/chapi pull [options] [--] [<jobnames>]...
       -f, --force           Force to overwrite local jobs 
 
 ### commit
-Submit changes to chronos
+Submit changes to chronos or marathon
 
 ```Shell
 bin/chapi commit
@@ -171,7 +171,7 @@ bin/chapi scheduling [options]
     Options:
       -s, --starttime[=STARTTIME]  Start time to display the jobs
       -e, --endtime[=ENDTIME]      End time to display the jobs
-**Note: Not application for marathon**
+**Note: Not applicable to marathon**
 
 ### configure
 Configure application and add necessary configs
@@ -211,7 +211,7 @@ A typical workflow to add a new cronjob to your Chronos server via chapi can be:
 7. Apply the changes and update the Chronos server via `chapi commit`
 
 ### Move jobs from chronos cluster A to cluster B successively
-Chapi is able to support you if you need to move your jobs from a chronos cluster to another one.
+Chapi is able to support you if you need to move your tasks from a chronos cluster to another one.
 
 1. Setup your normal chapi config and local job repository
 
@@ -268,7 +268,7 @@ mv clusterAjobs/jobXy.json clusterBjobs/jobXy.json
 
 
 ## Special cases in marathon:
-* Pulling a job from marathon will dump the json object with default values.
+* Pulling a task from marathon will dump the json object with default values.
     This is the choice for now because calling marathon for app info sends
     the default values set as well. Logic to check this could be implemented in future.
 * Group apps cannot be pulled from marathon in the configuration with which
