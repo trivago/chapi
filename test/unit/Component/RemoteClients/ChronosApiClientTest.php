@@ -11,6 +11,7 @@ namespace unit\Component\RemoteClients;
 
 use Chapi\Component\RemoteClients\ChronosApiClient;
 use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Exception\HttpConnectionException;
 use Prophecy\Argument;
 
 class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
@@ -311,5 +312,61 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
         $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals([], $_oApiClient->getJobStats('JobA'));
+    }
+
+    public function testPingSuccess()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willReturn($this->oHttpResponse);
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertTrue($oChronosApiClient->ping());
+    }
+
+    public function testPingFailureForConnectError()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION));
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertFalse($oChronosApiClient->ping());
+    }
+
+    public function testPingFailureForRequestError()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION));
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertFalse($oChronosApiClient->ping());
+    }
+
+    public function testPingSucessFor4xxErrors()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willThrow(new HttpConnectionException("somemessage", 403));
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertTrue($oChronosApiClient->ping());
+    }
+
+    public function testPingSuccessFor5xxErrors()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willThrow(new HttpConnectionException("somemessage", 501));
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertTrue($oChronosApiClient->ping());
+
     }
 }

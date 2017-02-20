@@ -11,6 +11,7 @@ namespace unit\Component\RemoteClients;
 
 use Chapi\Component\RemoteClients\MarathonApiClient;
 use Chapi\Entity\Marathon\MarathonAppEntity;
+use Chapi\Exception\HttpConnectionException;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
 
@@ -112,15 +113,50 @@ class MarathonApiClientTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($oMarathonApiClient->ping());
     }
 
-    public function testPingFailure()
+    public function testPingFailureForConnectError()
     {
         $this->oHttpClient
             ->get(Argument::exact('/v2/info'))
-            ->willThrow(new \Exception());
+            ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION));
 
         $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($oMarathonApiClient->ping());
     }
+
+    public function testPingFailureForRequestError()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/v2/info'))
+            ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION));
+
+        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+
+        $this->assertFalse($oMarathonApiClient->ping());
+    }
+
+    public function testPingSucessFor4xxErrors()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/v2/info'))
+            ->willThrow(new HttpConnectionException("somemessage", 403));
+
+        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+
+        $this->assertTrue($oMarathonApiClient->ping());
+    }
+
+    public function testPingSuccessFor5xxErrors()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/v2/info'))
+            ->willThrow(new HttpConnectionException("somemessage", 501));
+
+        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+
+        $this->assertTrue($oMarathonApiClient->ping());
+
+    }
+
 
 }

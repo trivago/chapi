@@ -16,6 +16,7 @@ use Chapi\Component\Http\HttpClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Exception\ApiClientException;
+use Chapi\Exception\HttpConnectionException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class ChronosApiClient implements ApiClientInterface
@@ -125,10 +126,16 @@ class ChronosApiClient implements ApiClientInterface
     public function ping()
     {
         try {
-            $this->oHttpClient->get('scheduler/jobs');
-        } catch (\Exception $e)
+            $this->oHttpClient->get('/scheduler/jobs');
+        } catch (HttpConnectionException $e)
         {
-            return false;
+            if (
+                $e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
+                $e->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
+            )
+            {
+                return false;
+            }
         }
 
         return true;

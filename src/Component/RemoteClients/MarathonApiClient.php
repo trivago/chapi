@@ -6,6 +6,7 @@ namespace Chapi\Component\RemoteClients;
 use Chapi\Component\Http\HttpClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Exception\HttpConnectionException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class MarathonApiClient implements ApiClientInterface
@@ -89,9 +90,15 @@ class MarathonApiClient implements ApiClientInterface
     {
         try {
             $this->oHttpClient->get('/v2/info');
-        } catch (\Exception $e)
+        } catch (HttpConnectionException $e)
         {
-            return false;
+            if (
+                $e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
+                $e->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
+            )
+            {
+                return false;
+            }
         }
         return true;
     }
