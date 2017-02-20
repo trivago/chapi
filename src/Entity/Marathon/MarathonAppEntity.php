@@ -22,13 +22,13 @@ class MarathonAppEntity implements JobEntityInterface
 {
     public $id = '';
 
-    public $cmd = '';
+    public $cmd = null;
 
     public $cpus = 0;
 
     public $mem = 0;
 
-    public $args = [];
+    public $args = null;
 
     /**
      * @var PortDefinition[]
@@ -54,7 +54,7 @@ class MarathonAppEntity implements JobEntityInterface
     public $constraints  = [];
 
 
-    public $acceptedResourceRoles = [];
+    public $acceptedResourceRoles = null;
 
     public $labels = null;
 
@@ -142,6 +142,8 @@ class MarathonAppEntity implements JobEntityInterface
         if (isset($aData['labels']))
         {
             $this->labels = (object) $aData['labels'];
+        } else {
+            $this->labels = (object)[];
         }
         MarathonEntityUtils::setPropertyIfExist($aData, $this, 'constraints');
         MarathonEntityUtils::setPropertyIfExist($aData, $this, 'args');
