@@ -40,7 +40,7 @@ class DummyBridge implements BridgeInterface
     public function addJob(JobEntityInterface $oJobEntity)
     {
         $this->oLogger->warning('Adding a job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
-        return true;
+        return false;
     }
 
     /**
@@ -50,7 +50,7 @@ class DummyBridge implements BridgeInterface
     public function updateJob(JobEntityInterface $oJobEntity)
     {
         $this->oLogger->warning('Updating job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
-        return true;
+        return false;
     }
 
     /**
@@ -60,6 +60,6 @@ class DummyBridge implements BridgeInterface
     public function removeJob(JobEntityInterface $oJobEntity)
     {
         $this->oLogger->warning('Removing job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
-        return true;
+        return false;
     }
 }
