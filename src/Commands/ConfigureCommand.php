@@ -77,47 +77,47 @@ class ConfigureCommand extends AbstractCommand
         $_aResult = [];
 
         $_aResult['cache_dir'] = [
-            'value' => $this->getInputValue('cache_dir', 'Please enter a cache directory'),
+            'value' => $this->getInputValue('cache_dir', '[GLOBAL] Please enter a cache directory'),
             'required' => true
         ];
 
         $_aResult['chronos_url'] = [
-            'value' => $this->getInputValue('chronos_url', 'Please enter the chronos url (inclusive port)'),
+            'value' => $this->getInputValue('chronos_url', '[CHRONOS] Please enter the chronos url (inclusive port)'),
             'required' => false
         ];
 
         $_aResult['chronos_http_username'] = [
-            'value' => $this->getInputValue('chronos_http_username', 'Please enter the username to access your chronos instance'),
+            'value' => $this->getInputValue('chronos_http_username', '[CHRONOS] Please enter the username to access your chronos instance'),
             'required' => false
         ];
 
         $_aResult['chronos_http_password'] = [
-            'value' => $this->getInputValue('chronos_http_password', 'Please enter the password to access your chronos instance', true),
+            'value' => $this->getInputValue('chronos_http_password', '[CHRONOS] Please enter the password to access your chronos instance', true),
             'required' => false
         ];
 
         $_aResult['repository_dir'] = [
-            'value' => $this->getInputValue('repository_dir', 'Please enter your root path to your job files'),
+            'value' => $this->getInputValue('repository_dir', '[CHRONOS] Please enter absolute path to your local chronos jobs configurations'),
             'required' => false
         ];
 
         $_aResult['marathon_url'] = [
-            'value' => $this->getInputValue('marathon_url', 'Please enter the marathon url (inclusive port)'),
+            'value' => $this->getInputValue('marathon_url', '[MARATHON] Please enter the marathon url (inclusive port)'),
             'required' => false
         ];
 
         $_aResult['marathon_http_username'] = [
-            'value' => $this->getInputValue('marathon_http_username', 'Please enter the username to access marathon instance'),
+            'value' => $this->getInputValue('marathon_http_username', '[MARATHON] Please enter the username to access marathon instance'),
             'required' => false
         ];
 
         $_aResult['marathon_http_password'] = [
-            'value' => $this->getInputValue('marathon_http_password', 'Please enter the password to access marathon instance', true),
+            'value' => $this->getInputValue('marathon_http_password', '[MARATHON] Please enter the password to access marathon instance', true),
             'required' => false
         ];
 
         $_aResult['repository_dir_marathon'] = [
-            'value' => $this->getInputValue('repository_dir_marathon', 'Please enter the root path to your app files'),
+            'value' => $this->getInputValue('repository_dir_marathon', '[MARATHON] Please enter absolute path to your local marathon tasks configurations'),
             'required' => false
         ];
 
