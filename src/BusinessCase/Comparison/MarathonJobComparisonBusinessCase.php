@@ -49,9 +49,9 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
         // marathon returns portDefinitions values for auto configured port as well
         // we want to only check if the port is defined in local file.
         // otherwise we ignore the remote values.
-        if (empty($oLocalJob->portDefinitions))
+        if (!$oLocalJob->portDefinitions)
         {
-            $oRemoteJob->portDefinitions = [];
+            $oRemoteJob->portDefinitions = null;
         }
     }
 

@@ -17,7 +17,7 @@ class PortDefinition
 
     public $protocol = 'tcp';
 
-    public $name = '';
+    public $name = null;
 
     public $labels = null;
 

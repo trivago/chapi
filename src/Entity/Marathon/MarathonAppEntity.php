@@ -33,7 +33,7 @@ class MarathonAppEntity implements JobEntityInterface
     /**
      * @var PortDefinition[]
      */
-    public $portDefinitions =[];
+    public $portDefinitions =null;
 
     public $requirePorts = false;
 
