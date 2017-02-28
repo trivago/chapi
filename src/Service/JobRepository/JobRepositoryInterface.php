@@ -16,7 +16,8 @@ use Chapi\Entity\JobEntityInterface;
 interface JobRepositoryInterface
 {
     const DIC_NAME_CHRONOS = 'JobRepositoryChronos';
-    const DIC_NAME_FILESYSTEM = 'JobRepositoryFileSystem';
+    const DIC_NAME_FILESYSTEM_CHRONOS = 'JobRepositoryFileSystemChronos';
+    const DIC_NAME_FILESYSTEM_MARATHON = "JobRepositoryFileSystemMarathon";
     const DIC_NAME_MARATHON = 'JobRepositoryMarathon';
 
     /**

@@ -93,7 +93,7 @@ class ValidationCommand extends AbstractCommand
         $_oJobEntityValidationService = $this->getContainer()->get(JobValidatorServiceInterface::DIC_NAME);
 
         /** @var JobRepositoryInterface  $_oJobRepositoryLocale */
-        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
+        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
 
         foreach ($aJobs as $_sJobName)
         {
@@ -132,7 +132,7 @@ class ValidationCommand extends AbstractCommand
         $_aJobNames = [];
 
         /** @var JobRepositoryInterface  $_oJobRepositoryLocale */
-        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
+        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
 
         /** @var ChronosJobEntity $_oJobEntity */
         foreach ($_oJobRepositoryLocale->getJobs() as $_oJobEntity)

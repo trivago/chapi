@@ -52,7 +52,7 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
         $this->oJobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(true);
 
         $this->oContainer
-            ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))
+            ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS))
             ->shouldBeCalled()
             ->willReturn($this->oJobRepositoryLocale->reveal())
         ;
@@ -90,7 +90,7 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
         $this->oJobEntityValidatorService->getInvalidProperties(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(['epsilon', 'command']);
 
         $this->oContainer
-            ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))
+            ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS))
             ->shouldBeCalled()
             ->willReturn($this->oJobRepositoryLocale->reveal())
         ;
@@ -123,7 +123,7 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
         $this->oJobEntityValidatorService->isEntityValid(Argument::exact($_oJobEntity))->shouldBeCalledTimes(1)->willReturn(true);
 
         $this->oContainer
-            ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))
+            ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS))
             ->shouldBeCalled()
             ->willReturn($this->oJobRepositoryLocale->reveal())
         ;
