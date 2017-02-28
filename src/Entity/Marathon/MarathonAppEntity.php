@@ -33,7 +33,7 @@ class MarathonAppEntity implements JobEntityInterface
     /**
      * @var PortDefinition[]
      */
-    public $portDefinitions =null;
+    public $portDefinitions = null;
 
     public $requirePorts = false;
 
@@ -65,7 +65,7 @@ class MarathonAppEntity implements JobEntityInterface
     /**
      * @var HealthCheck[]
      */
-    public $healthChecks = [];
+    public $healthChecks = null;
 
     public $backoffSeconds = 1;
 
@@ -159,6 +159,9 @@ class MarathonAppEntity implements JobEntityInterface
     public function jsonSerialize()
     {
         $_aRet = (array) $this;
+        $_aRet = array_filter($_aRet, function($v, $k) {
+            return !is_null($v) || empty($v);
+        }, ARRAY_FILTER_USE_BOTH );
         return $_aRet;
     }
 

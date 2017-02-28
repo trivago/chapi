@@ -10,7 +10,7 @@ namespace Chapi\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\MarathonEntityUtils;
 
-class PortDefinition
+class PortDefinition implements \JsonSerializable
 {
     const DIC = self::class;
     public $port = 0;
@@ -31,5 +31,17 @@ class PortDefinition
             $this->labels = (object)[];
         }
 
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function jsonSerialize()
+    {
+        $_aRet = (array) $this;
+        $_aRet = array_filter($_aRet, function($v, $k) {
+            return !is_null($v);
+        }, ARRAY_FILTER_USE_BOTH );
+        return $_aRet;
     }
 }
