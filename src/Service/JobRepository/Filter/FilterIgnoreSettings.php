@@ -86,26 +86,35 @@ class FilterIgnoreSettings implements JobFilterInterface
                 throw new \RuntimeException(sprintf('Path "%s" is not valid', $_sDirectoryPath));
             }
 
-            $_sIgnoreFilePath = $_sDirectoryPath . DIRECTORY_SEPARATOR . '.chapiignore';
-
-            if (is_file($_sIgnoreFilePath))
-            {
-                $_oFile = new \SplFileObject($_sIgnoreFilePath);
-
-                while (!$_oFile->eof())
-                {
-                    $_sSearchPattern = trim($_oFile->fgets());
-                    if ($_sSearchPattern)
-                    {
-                        $_aSearchPatterns[] = $_sSearchPattern;
-                    }
-                }
-
-                // Unset the file to call __destruct(), closing the file handle.
-                $file = null;
-            }
+            $this->getSearchPatternsFromDir($_sDirectoryPath, $_aSearchPatterns);
         }
 
         return $this->aSearchPatterns = $_aSearchPatterns;
+    }
+
+    /**
+     * @param string $sDirectoryPath
+     * @param array $aSearchPatterns
+     */
+    private function getSearchPatternsFromDir($sDirectoryPath, &$aSearchPatterns=[])
+    {
+        $_sIgnoreFilePath = $sDirectoryPath . DIRECTORY_SEPARATOR . '.chapiignore';
+
+        if (is_file($_sIgnoreFilePath))
+        {
+            $_oFile = new \SplFileObject($_sIgnoreFilePath);
+
+            while (!$_oFile->eof())
+            {
+                $_sSearchPattern = trim($_oFile->fgets());
+                if ($_sSearchPattern)
+                {
+                    $aSearchPatterns[] = $_sSearchPattern;
+                }
+            }
+
+            // Unset the file to call __destruct(), closing the file handle.
+            $_oFile = null;
+        }
     }
 }
