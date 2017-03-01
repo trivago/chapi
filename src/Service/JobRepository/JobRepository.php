@@ -13,6 +13,7 @@ namespace Chapi\Service\JobRepository;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Service\JobRepository\Filter\JobFilterInterface;
 
 class JobRepository implements JobRepositoryInterface
 {

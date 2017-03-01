@@ -29,7 +29,7 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->oRepositoryBridge = $this->prophesize('Chapi\Service\JobRepository\BridgeInterface');
-        $this->oEntityFilter = $this->prophesize('Chapi\Service\JobRepository\JobFilterInterface');
+        $this->oEntityFilter = $this->prophesize('Chapi\Service\JobRepository\Filter\JobFilterInterface');
     }
 
     public function testGetJobSuccess()

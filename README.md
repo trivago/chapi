@@ -79,6 +79,18 @@ Root path to your tasks folder. Look also under [configure command](#configure) 
 #### cache_dir
 Path to cache directory. Look also under the [configure command](#configure) option `-d`.
 
+### .chapiignore files
+
+You can add a `.chapiignore` file to your job repositories to untrack jobs to ignore.
+
+Each line in a `.chapiignore` file specifies a regular expression pattern.
+If the pattern will match with the job/app id it will not be tracked anymore.
+
+Example content:
+```
+^/app_prefix_xy/.*
+-ignore$
+```
 
 ## Usage
 
