@@ -1,28 +1,34 @@
 services:
+  # --
+  # JobRepositories
+  # --
   JobRepositoryChronos:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeChronos"
-      - "@FilterChronosEntity"
+      - "@FilterChronosComposite"
 
   JobRepositoryFileSystemChronos:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeFileSystemChronos"
-      - "@FilterChronosEntity"
+      - "@FilterChronosComposite"
 
   JobRepositoryFileSystemMarathon:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeFileSystemMarathon"
-      - "@FilterMarathonEntity"
+      - "@FilterMarathonComposite"
 
   JobRepositoryMarathon:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeMarathon"
-      - "@FilterMarathonEntity"
+      - "@FilterMarathonComposite"
 
+  # --
+  # bridges
+  # --
   JobRepositoryBridgeChronos:
     class: Chapi\Service\JobRepository\BridgeChronos
     factory: "BridgeFactory:getChronosBridge"
@@ -59,14 +65,40 @@ services:
       - "@JobValidatorServiceInterface"
       - "@LoggerInterface"
 
+  BridgeFactory:
+    class: Chapi\Service\JobRepository\BridgeFactory
+
   ExternalFileSystemService:
     class: \Symfony\Component\Filesystem\Filesystem
 
+  # --
+  # filter setups
+  # --
   FilterChronosEntity:
     class: Chapi\Service\JobRepository\Filter\FilterChronosEntity
+
+  FilterChronosJobIgnore:
+    class: Chapi\Service\JobRepository\Filter\FilterIgnoreSettings
+    arguments:
+      - ["%repository_dir%"]
+      - "@LoggerInterface"
+
+  FilterChronosComposite:
+    class: Chapi\Service\JobRepository\Filter\JobFilterComposite
+    arguments:
+      - ["@FilterChronosEntity", "@FilterChronosJobIgnore"]
+
 
   FilterMarathonEntity:
     class: Chapi\Service\JobRepository\Filter\FilterMarathonEntity
 
-  BridgeFactory:
-    class: Chapi\Service\JobRepository\BridgeFactory
+  FilterMarathonJobIgnore:
+    class: Chapi\Service\JobRepository\Filter\FilterIgnoreSettings
+    arguments:
+      - ["%repository_dir_marathon%"]
+      - "@LoggerInterface"
+
+  FilterMarathonComposite:
+    class: Chapi\Service\JobRepository\Filter\JobFilterComposite
+    arguments:
+      - ["@FilterMarathonEntity", "@FilterMarathonJobIgnore"]
