@@ -63,11 +63,10 @@ services:
     class: \Symfony\Component\Filesystem\Filesystem
 
   FilterChronosEntity:
-    class: Chapi\Service\JobRepository\FilterChronosEntity
+    class: Chapi\Service\JobRepository\Filter\FilterChronosEntity
 
   FilterMarathonEntity:
-    class: Chapi\Service\JobRepository\FilterMarathonEntity
-
+    class: Chapi\Service\JobRepository\Filter\FilterMarathonEntity
 
   BridgeFactory:
     class: Chapi\Service\JobRepository\BridgeFactory

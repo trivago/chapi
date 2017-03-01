@@ -1,6 +1,6 @@
 <?php
 
-namespace Chapi\Service\JobRepository;
+namespace Chapi\Service\JobRepository\Filter;
 
 
 use Chapi\Entity\JobEntityInterface;
