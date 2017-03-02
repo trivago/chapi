@@ -84,7 +84,7 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
             }
 
             // check if dependency is satisfied
-            if ( $_oJobEntityLocal->isDependencyJob())
+            if ($_oJobEntityLocal->isDependencyJob())
             {
                 try {
                     $circular = $this->isDependencyCircular($_oJobEntityLocal, count($_oJobEntityLocal->dependencies));
@@ -96,10 +96,10 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
                         return false;
                     }
                 }
-                catch(\Exception $e)
+                catch (\Exception $e)
                 {
                     $this->oLogger->error(sprintf(
-                        'Job %s cannot be added to remote : %s',$sAppId, $e->getMessage()
+                        'Job %s cannot be added to remote : %s', $sAppId, $e->getMessage()
                     ));
                     return false;
                 }
@@ -157,7 +157,7 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
      * @return bool
      * @throws \Exception
      */
-    private function isDependencyCircular(MarathonAppEntity $oEntity, $iImmediateChildren, &$path=[])
+    private function isDependencyCircular(MarathonAppEntity $oEntity, $iImmediateChildren, &$path = [])
     {
         // Invariant: path will not have duplicates for acyclic dependency tree
         if ($this->hasDuplicates($path))
@@ -211,7 +211,7 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
             // for B intermediate Child will be 2.
             // when we process D, it will be reduced to 1 and with C to 0
             // then we will pop B to generate path [A, E] when we reach E.
-            $iImmediateChildren = $iImmediateChildren -1;
+            $iImmediateChildren = $iImmediateChildren - 1;
             if ($iImmediateChildren == 0)
             {
                 array_pop($path);

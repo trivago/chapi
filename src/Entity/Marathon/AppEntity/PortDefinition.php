@@ -27,7 +27,8 @@ class PortDefinition implements \JsonSerializable
         if (isset($aData['labels']))
         {
             $this->labels = (object) $aData['labels'];
-        } else {
+        }
+        else {
             $this->labels = (object) [];
         }
 
