@@ -55,7 +55,8 @@ class MarathonApiClient implements ApiClientInterface
      */
     public function updatingJob(JobEntityInterface $oJobEntity)
     {
-        $_sTargetEndpoint = '/v2/apps';
+        $_sJobName = $oJobEntity->getKey();
+        $_sTargetEndpoint = '/v2/apps/' . $_sJobName;
 
         $_oResponse = $this->oHttpClient->putJsonData($_sTargetEndpoint, $oJobEntity);
         return ($_oResponse->getStatusCode() == 200);

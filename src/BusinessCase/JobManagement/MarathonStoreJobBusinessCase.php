@@ -256,13 +256,11 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
     {
         if ($this->oJobIndexService->isJobInIndex($sAppId))
         {
-            $_bRemoved = $this->oJobRepositoryRemote->removeJob($sAppId);
-
             $_oUpdatedConfig = $this->oJobRepositoryLocal->getJob($sAppId);
-            $_bAddedBack = $this->oJobRepositoryRemote->addJob($_oUpdatedConfig);
+            $_bAddedBack = $this->oJobRepositoryRemote->updateJob($_oUpdatedConfig);
 
             // updated
-            if ($_bRemoved && $_bAddedBack)
+            if ($_bAddedBack)
             {
                 $this->oJobIndexService->removeJob($sAppId);
                 $this->oLogger->notice(sprintf(
