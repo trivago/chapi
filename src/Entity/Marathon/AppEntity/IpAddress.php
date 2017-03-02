@@ -25,13 +25,13 @@ class IpAddress
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if(isset($aData['groups']))
+        if (isset($aData['groups']))
         {
             $this->groups = $aData['groups'];
         }
         if (isset($aData['labels']))
         {
-            $this->labels = (object)$aData['labels'];
+            $this->labels = (object) $aData['labels'];
         }
     }
 }

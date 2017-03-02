@@ -70,7 +70,8 @@ abstract class AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInter
             if (null == $_oLocalEntity)
             {
                 $this->addJobInLocalRepository($_oRemoteEntity);
-            } else {
+            }
+            else {
                 //update
                 $this->updateJobInLocalRepository($_oRemoteEntity, $bForceOverwrite);
             }

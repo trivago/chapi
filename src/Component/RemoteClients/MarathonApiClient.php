@@ -67,7 +67,7 @@ class MarathonApiClient implements ApiClientInterface
      */
     public function removeJob($sJobName)
     {
-        $_sTargetEndpoint = '/v2/apps/'.$sJobName;
+        $_sTargetEndpoint = '/v2/apps/' . $sJobName;
 
         $_oResponse = $this->oHttpClient->delete($_sTargetEndpoint);
         return ($_oResponse->getStatusCode() == 200);

@@ -96,7 +96,7 @@ class FilterIgnoreSettings implements JobFilterInterface
      * @param string $sDirectoryPath
      * @param array $aSearchPatterns
      */
-    private function getSearchPatternsFromDir($sDirectoryPath, &$aSearchPatterns=[])
+    private function getSearchPatternsFromDir($sDirectoryPath, &$aSearchPatterns = [])
     {
         $_sIgnoreFilePath = $sDirectoryPath . DIRECTORY_SEPARATOR . '.chapiignore';
 

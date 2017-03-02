@@ -62,7 +62,8 @@ class ChronosApiClient implements ApiClientInterface
         if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
         {
             $_sTargetUrl = '/scheduler/iso8601';
-        } elseif (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
+        }
+        elseif (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
         {
             $_sTargetUrl = '/scheduler/dependency';
         }

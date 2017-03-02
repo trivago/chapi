@@ -166,7 +166,7 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
             $_aDifferences[$_sProperty] = $this->oDiffCompare->compare(
                 $_oRemoteEntity->{$_sProperty},
                 $_oLocalEntity->{$_sProperty}
-            ) ;
+            );
         }
 
         return $_aDifferences;

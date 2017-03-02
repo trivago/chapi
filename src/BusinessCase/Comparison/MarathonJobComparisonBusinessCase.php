@@ -13,9 +13,7 @@ namespace Chapi\BusinessCase\Comparison;
 
 use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
-use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\JobEntityInterface;
-use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
