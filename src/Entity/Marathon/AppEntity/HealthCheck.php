@@ -11,26 +11,26 @@ namespace Chapi\Entity\Marathon\AppEntity;
 use Chapi\Entity\Marathon\AppEntity\HealthCheckCommand;
 use Chapi\Entity\Marathon\MarathonEntityUtils;
 
-class HealthCheck
+class HealthCheck implements \JsonSerializable
 {
 
     const DIC = self::class;
 
-    public $protocol = '';
+    public $protocol = 'HTTP';
 
-    public $path = '';
+    public $path = '/';
 
-    public $gracePeriodSeconds = 0;
+    public $gracePeriodSeconds = 300;
 
-    public $intervalSeconds = 0;
+    public $intervalSeconds = 60;
 
     public $portIndex = 0;
 
-    public $port = 0;
+    public $port = null;
 
     public $timeoutSeconds = 20;
 
-    public $maxConsecutiveFailures = 0;
+    public $maxConsecutiveFailures = 3;
 
     /**
      * @var HealthCheckCommand
@@ -47,4 +47,15 @@ class HealthCheck
         }
     }
 
+    /**
+     * @inheritdoc
+     */
+    function jsonSerialize()
+    {
+        $_aRet = (array) $this;
+        if (is_null($this->port))
+        {
+            unset($_aRet["port"]);
+        }
+    }
 }
