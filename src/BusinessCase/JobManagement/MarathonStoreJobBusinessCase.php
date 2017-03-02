@@ -211,7 +211,7 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
             // for B intermediate Child will be 2.
             // when we process D, it will be reduced to 1 and with C to 0
             // then we will pop B to generate path [A, E] when we reach E.
-            $iImmediateChildren = $iImmediateChildren - 1;
+            $iImmediateChildren--;
             if ($iImmediateChildren == 0)
             {
                 array_pop($path);

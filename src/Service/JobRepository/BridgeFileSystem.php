@@ -183,7 +183,8 @@ class BridgeFileSystem implements BridgeInterface
             if (is_file($_sPath) && preg_match('~\.json~i', $_sPath))
             {
                 $aJobFiles[] = $_sPath;
-            } elseif (is_dir($_sPath))
+            }
+            elseif (is_dir($_sPath))
             {
                 $this->getJobFilesFromFileSystem($_sPath, $aJobFiles);
             }
@@ -268,17 +269,22 @@ class BridgeFileSystem implements BridgeInterface
 
             if ($_aTemp)
             {
-                if (property_exists($_aTemp, 'name')) // chronos
+                // chronos
+                if (property_exists($_aTemp, 'name'))
                 {
                     $_aJobEntities[] = new ChronosJobEntity($_aTemp);
 
-                } else if (property_exists($_aTemp, 'id')) //marathon
+                }
+                //marathon
+                else if (property_exists($_aTemp, 'id'))
                 {
                     foreach ($this->getMarathonEntitiesForConfig($_aTemp) as $_oApp)
                     {
                         $_aJobEntities[] = $_oApp;
                     }
-                } else {
+                }
+                else
+                {
                     throw new JobLoadException(
                         'Could not distinguish job as either chronos or marathon',
                         JobLoadException::ERROR_CODE_UNKNOWN_ENTITY_TYPE
