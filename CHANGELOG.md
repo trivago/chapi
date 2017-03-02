@@ -2,6 +2,20 @@
     2017-03-02 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#69] added `.chapiignore` file handling
         * changed travis-ci settings
+        * Updating dependencies
+            - Updating symfony/debug (v3.2.1 => v3.2.4)
+            - Updating symfony/console (v3.2.1 => v3.2.4)
+            - Updating symfony/dependency-injection (v3.2.1 => v3.2.4)
+            - Updating symfony/filesystem (v3.2.1 => v3.2.4)
+            - Updating symfony/config (v3.2.1 => v3.2.4)
+            - Updating symfony/http-foundation (v3.2.1 => v3.2.4)
+            - Updating symfony/event-dispatcher (v3.2.1 => v3.2.4)
+            - Updating symfony/http-kernel (v3.2.1 => v3.2.4)
+            - Updating symfony/monolog-bridge (v3.2.1 => v3.2.4)
+            - Updating guzzlehttp/promises (1.3.0 => v1.3.1)
+            - Updating guzzlehttp/psr7 (1.3.1 => 1.4.1)
+            - Updating guzzlehttp/guzzle (6.2.2 => 6.2.3)
+            - Updating symfony/yaml (v3.2.1 => v3.2.4)
 
     2017-03-02 bidesh <bideshthapaliya@gmail.com>
         * [issue#58] added marathon support (BC)
