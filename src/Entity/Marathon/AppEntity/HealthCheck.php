@@ -41,9 +41,9 @@ class HealthCheck
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if(isset($aData['command']))
+        if (isset($aData['command']))
         {
-            $this->command = new HealthCheckCommand((array)$aData['command']);
+            $this->command = new HealthCheckCommand((array) $aData['command']);
         }
     }
 

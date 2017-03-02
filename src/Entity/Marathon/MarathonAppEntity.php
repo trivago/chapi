@@ -107,12 +107,12 @@ class MarathonAppEntity implements JobEntityInterface
 
         if (isset($aData['container']))
         {
-            $this->container = new Container((array)$aData['container']);
+            $this->container = new Container((array) $aData['container']);
         }
 
         if (isset($aData['healthChecks']))
         {
-            foreach($aData['healthChecks'] as $healthCheck)
+            foreach ($aData['healthChecks'] as $healthCheck)
             {
                 $this->healthChecks[] = new HealthCheck((array) $healthCheck);
             }
@@ -121,7 +121,8 @@ class MarathonAppEntity implements JobEntityInterface
         if (isset($aData['upgradeStrategy']))
         {
             $this->upgradeStrategy = new UpgradeStrategy((array) $aData['upgradeStrategy']);
-        } else {
+        }
+        else {
             $this->upgradeStrategy = new UpgradeStrategy();
         }
 
@@ -132,7 +133,7 @@ class MarathonAppEntity implements JobEntityInterface
 
         if (isset($aData['env']))
         {
-            $this->env =  (object) $aData['env'];
+            $this->env = (object) $aData['env'];
         } else {
             $this->env = (object) [];
         }
