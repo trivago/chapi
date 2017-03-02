@@ -10,6 +10,10 @@ Manage your [Chronos](https://github.com/mesos/chronos) and [Marathon](https://g
 
 It is possible to use either of the system independently or both at once.
 
+## Requirements
+
+* php >= 5.6 || hhvm >= 3.15
+
 ## Installation / Configuration
 
 To install chapi you can download the latest [release](https://github.com/msiebeneicher/chapi/releases) or clone this repository.
@@ -90,6 +94,16 @@ Example content:
 ```
 ^/app_prefix_xy/.*
 -ignore$
+```
+
+### Update notes
+
+#### v0.9.0
+
+Because of the new marathon support with v0.9.0 you need to update your configurations:
+
+```sh
+bin/chapi configure
 ```
 
 ## Usage

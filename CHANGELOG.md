@@ -1,4 +1,11 @@
 # dev-master (v0.9.0)
+    2017-03-02 msiebeneicher <marc.siebeneicher@trivago.com>
+        * [issue#69] added `.chapiignore` file handling
+        * changed travis-ci settings
+
+    2017-03-02 bidesh <bideshthapaliya@gmail.com>
+        * [issue#58] added marathon support (BC)
+
     2016-11-29 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies
             - Updating symfony/debug (v3.1.7 => v3.2.1)
