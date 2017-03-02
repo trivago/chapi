@@ -10,22 +10,24 @@
 
 namespace Chapi\Service\JobRepository;
 
-
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\JobCollection;
+use Chapi\Entity\JobEntityInterface;
 
 interface JobRepositoryInterface
 {
     const DIC_NAME_CHRONOS = 'JobRepositoryChronos';
-    const DIC_NAME_FILESYSTEM = 'JobRepositoryFileSystem';
+    const DIC_NAME_FILESYSTEM_CHRONOS = 'JobRepositoryFileSystemChronos';
+    const DIC_NAME_FILESYSTEM_MARATHON = "JobRepositoryFileSystemMarathon";
+    const DIC_NAME_MARATHON = 'JobRepositoryMarathon';
 
     /**
      * @param string $sJobName
-     * @return JobEntity
+     * @return JobEntityInterface
      */
     public function getJob($sJobName);
 
     /**
-     * @return \Chapi\Entity\Chronos\JobCollection
+     * @return JobCollection
      */
     public function getJobs();
 
@@ -36,16 +38,16 @@ interface JobRepositoryInterface
     public function hasJob($sJobName);
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function addJob(JobEntity $oJobEntity);
+    public function addJob(JobEntityInterface $oJobEntity);
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function updateJob(JobEntity $oJobEntity);
+    public function updateJob(JobEntityInterface $oJobEntity);
 
     /**
      * @param string $sJobName

@@ -26,4 +26,10 @@ interface StoreJobBusinessCaseInterface
      * @return void
      */
     public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false);
+
+    /**
+     * @param $sJobName
+     * @return bool
+     */
+    public function isJobAvailable($sJobName);
 }

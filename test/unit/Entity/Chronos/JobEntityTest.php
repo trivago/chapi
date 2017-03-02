@@ -10,13 +10,13 @@
 namespace unit\Entity\Chronos;
 
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 
 class JobEntityTest extends \PHPUnit_Framework_TestCase
 {
     public function testInitSuccess()
     {
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'unknownProperty' => 'value']);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'unknownProperty' => 'value']);
 
         $this->assertEquals('jobname', $_oJobEntity->name);
         $this->assertFalse(property_exists($_oJobEntity, 'unknownProperty'));
@@ -27,7 +27,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
      */
     public function testInitFailure()
     {
-        $_oJobEntity = new JobEntity('string');
+        $_oJobEntity = new ChronosJobEntity('string');
     }
 
     public function testInitSuccessForContainer()
@@ -48,7 +48,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $_oJobEntity = new JobEntity($_aData);
+        $_oJobEntity = new ChronosJobEntity($_aData);
 
         $this->assertEquals('jobname', $_oJobEntity->name);
         $this->assertEquals('docker', $_oJobEntity->container->type);
@@ -66,13 +66,13 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
             'name' => 'jobname',
             'container' => 'foo'
         ];
-        $_oJobEntity = new JobEntity($_aData);
+        $_oJobEntity = new ChronosJobEntity($_aData);
     }
     
     public function testGetSimpleArrayCopy()
     {
         $_aParents = ['jobA', 'jobB'];
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'parents' => $_aParents]);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'parents' => $_aParents]);
 
         $_aSimpleArrayCopy = $_oJobEntity->getSimpleArrayCopy();
 
@@ -82,7 +82,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
     public function testGetSimpleArrayCopyWithUris()
     {
         $_aUris = ['http://a.url.com', 'http://b.url.com'];
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'uris' => $_aUris]);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'uris' => $_aUris]);
 
         $_aSimpleArrayCopy = $_oJobEntity->getSimpleArrayCopy();
 
@@ -94,7 +94,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
         $_oEnvironmentVariables = new \stdClass();
         $_oEnvironmentVariables->FOO = 'bar';
 
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'environmentVariables' => [$_oEnvironmentVariables]]);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'environmentVariables' => [$_oEnvironmentVariables]]);
 
         $_aSimpleArrayCopy = $_oJobEntity->getSimpleArrayCopy();
         $this->assertEquals(json_encode([$_oEnvironmentVariables]), $_aSimpleArrayCopy['environmentVariables']);
@@ -102,7 +102,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testScheduleJobJsonSerialize()
     {
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D']);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D']);
 
         $this->assertInstanceOf('\JsonSerializable', $_oJobEntity);
 
@@ -124,7 +124,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testDependencyJobJsonSerialize()
     {
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'parents' => ['jobA', 'jobB']]);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'parents' => ['jobA', 'jobB']]);
 
         $this->assertInstanceOf('\JsonSerializable', $_oJobEntity);
 
@@ -147,7 +147,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSchedulingJob()
     {
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D']);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D']);
 
         $this->assertTrue($_oJobEntity->isSchedulingJob());
         $this->assertFalse($_oJobEntity->isDependencyJob());
@@ -155,14 +155,14 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDependencyJob()
     {
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'parents' => ['parentjob']]);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'parents' => ['parentjob']]);
         $this->assertTrue($_oJobEntity->isDependencyJob());
         $this->assertFalse($_oJobEntity->isSchedulingJob());
     }
 
     public function testNeitherNorJob()
     {
-        $_oJobEntity = new JobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D', 'parents' => ['parentjob']]);
+        $_oJobEntity = new ChronosJobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D', 'parents' => ['parentjob']]);
         $this->assertFalse($_oJobEntity->isDependencyJob());
         $this->assertFalse($_oJobEntity->isSchedulingJob());
     }

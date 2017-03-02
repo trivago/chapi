@@ -11,6 +11,7 @@ namespace Chapi\Service\JobValidator\PropertyValidator;
 
 
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
 
 abstract class AbstractPropertyValidator implements PropertyValidatorInterface
@@ -21,7 +22,7 @@ abstract class AbstractPropertyValidator implements PropertyValidatorInterface
     /**
      * @inheritDoc
      */
-    abstract public function isValid($sProperty, JobEntity $oJobEntity);
+    abstract public function isValid($sProperty, JobEntityInterface $oJobEntity);
     
     /**
      * @inheritDoc

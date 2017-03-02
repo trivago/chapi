@@ -31,13 +31,18 @@ class InfoCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
-        $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
-
         $_sJobName = $this->oInput->getArgument('jobName');
-        $_oJobEntity = $_oJobRepositoryChronos->getJob($_sJobName);
 
-        $this->oOutput->writeln(sprintf("\n<comment>info '%s'</comment>\n", $_oJobEntity->name));
+        $_oChronosJobEntity = $this->checkInChronos($_sJobName);
+        $_oJobEntity = $_oChronosJobEntity == null ? $this->checkInMarathon($_sJobName) : $_oChronosJobEntity;
+
+        if (!$_oJobEntity)
+        {
+            $this->oOutput->writeln(sprintf('<fg=red>%s</>', 'Could not find the job.'));
+            return 1;
+        }
+
+        $this->oOutput->writeln(sprintf("\n<comment>info '%s'</comment>\n", $_oJobEntity->getKey()));
 
         $_oTable = new Table($this->oOutput);
         $_oTable->setHeaders(array('Property', 'Value'));
@@ -65,5 +70,19 @@ class InfoCommand extends AbstractCommand
         $_oTable->render();
 
         return 0;
+    }
+
+    private function checkInChronos($sJobName)
+    {
+        /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
+        $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
+        return $_oJobRepositoryChronos->getJob($sJobName);
+    }
+
+    private function checkInMarathon($sJobName)
+    {
+        /** @var JobRepositoryInterface  $_oJobRepositoryMarathon */
+        $_oJobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
+        return $_oJobRepositoryMarathon->getJob($sJobName);
     }
 }

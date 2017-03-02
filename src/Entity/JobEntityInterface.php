@@ -7,11 +7,13 @@
  */
 
 
-namespace Chapi\Entity\Chronos;
+namespace Chapi\Entity;
 
 
 interface JobEntityInterface extends \JsonSerializable, \IteratorAggregate
 {
+    const MARATHON_TYPE = 'marathon';
+    const CHRONOS_TYPE = 'chronos';
     /**
      * return entity as one-dimensional array
      *
@@ -28,4 +30,14 @@ interface JobEntityInterface extends \JsonSerializable, \IteratorAggregate
      * @return bool
      */
     public function isDependencyJob();
+
+    /**
+     * @return string
+     */
+    public function getEntityType();
+
+    /**
+     * @return string
+     */
+    public function getKey();
 }

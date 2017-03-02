@@ -59,12 +59,17 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
         $this->oInput->getOption(Argument::exact('cache_dir'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('repository_dir'))->shouldBeCalledTimes(1)->willReturn(null);
 
+        $this->oInput->getOption(Argument::exact('marathon_url'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('marathon_http_username'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('marathon_http_password'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('repository_dir_marathon'))->shouldBeCalledTimes(1)->willReturn(null);
+
         $this->oQuestionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(5)
+            ->shouldBeCalledTimes(9)
             ->willReturn('stringInput')
         ;
 
@@ -89,6 +94,11 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
         $this->oInput->getOption(Argument::exact('chronos_http_password'))->shouldBeCalledTimes(1)->willReturn('password');
         $this->oInput->getOption(Argument::exact('cache_dir'))->shouldBeCalledTimes(1)->willReturn('/cacheDir');
         $this->oInput->getOption(Argument::exact('repository_dir'))->shouldBeCalledTimes(1)->willReturn('/path');
+
+        $this->oInput->getOption(Argument::exact('marathon_url'))->shouldBeCalledTimes(1)->willReturn('http://marathon.com');
+        $this->oInput->getOption(Argument::exact('marathon_http_username'))->shouldBeCalledTimes(1)->willReturn('musername');
+        $this->oInput->getOption(Argument::exact('marathon_http_password'))->shouldBeCalledTimes(1)->willReturn('mpassword');
+        $this->oInput->getOption(Argument::exact('repository_dir_marathon'))->shouldBeCalledTimes(1)->willReturn('/path/marathon');
 
         $this->oQuestionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
@@ -120,12 +130,17 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
         $this->oInput->getOption(Argument::exact('cache_dir'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('repository_dir'))->shouldBeCalledTimes(1)->willReturn(null);
 
+        $this->oInput->getOption(Argument::exact('marathon_url'))->shouldBeCalledTimes(1)->willReturn('http://url.com');
+        $this->oInput->getOption(Argument::exact('marathon_http_username'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('marathon_http_password'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('repository_dir_marathon'))->shouldBeCalledTimes(1)->willReturn(null);
+
         $this->oQuestionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(4)
+            ->shouldBeCalledTimes(7)
             ->willReturn('inputValue')
         ;
 
@@ -151,12 +166,17 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
         $this->oInput->getOption(Argument::exact('cache_dir'))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oInput->getOption(Argument::exact('repository_dir'))->shouldBeCalledTimes(1)->willReturn(null);
 
+        $this->oInput->getOption(Argument::exact('marathon_url'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('marathon_http_username'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('marathon_http_password'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->oInput->getOption(Argument::exact('repository_dir_marathon'))->shouldBeCalledTimes(1)->willReturn(null);
+
         $this->oQuestionHelper->ask(
             Argument::type('Symfony\Component\Console\Input\InputInterface'),
             Argument::type('Symfony\Component\Console\Output\OutputInterface'),
             Argument::type('Symfony\Component\Console\Question\Question')
         )
-            ->shouldBeCalledTimes(4)
+            ->shouldBeCalledTimes(8)
             ->willReturn('')
         ;
 

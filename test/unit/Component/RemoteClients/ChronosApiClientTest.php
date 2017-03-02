@@ -7,13 +7,14 @@
  *
  */
 
-namespace unit\Component\Chronos;
+namespace unit\Component\RemoteClients;
 
-use Chapi\Component\Chronos\ApiClient;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Component\RemoteClients\ChronosApiClient;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Exception\HttpConnectionException;
 use Prophecy\Argument;
 
-class ApiClientTest extends \PHPUnit_Framework_TestCase
+class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oHttpClient;
@@ -45,7 +46,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals($_aTestResult, $_oApiClient->listingJobs());
     }
@@ -60,7 +61,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals([], $_oApiClient->listingJobs());
     }
@@ -70,7 +71,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
     // --------------------
     public function testAddingScheduleJobSuccess()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
@@ -80,14 +81,14 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->addingJob($_oTestJobEntity));
     }
 
     public function testAddingDependencyJobSuccess()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->parents = ['jobA', 'jobB'];
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
@@ -97,14 +98,14 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->addingJob($_oTestJobEntity));
     }
 
     public function testAddingScheduleJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
@@ -114,14 +115,14 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->addingJob($_oTestJobEntity));
     }
 
     public function testAddingDependencyJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->parents = ['jobA', 'jobB'];
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
@@ -131,7 +132,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->addingJob($_oTestJobEntity));
     }
@@ -141,13 +142,13 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddingJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
 
         $this->oHttpClient->postJsonData()
             ->shouldNotBeCalled()
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertNull($_oApiClient->addingJob($_oTestJobEntity));
     }
@@ -157,7 +158,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
     // --------------------
     public function testUpdatingScheduleJobSuccess()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
@@ -167,14 +168,14 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->updatingJob($_oTestJobEntity));
     }
 
     public function testUpdatingDependencyJobSuccess()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->parents = ['jobA', 'jobB'];
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
@@ -184,14 +185,14 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->updatingJob($_oTestJobEntity));
     }
 
     public function testUpdatingScheduleJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
@@ -201,14 +202,14 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->updatingJob($_oTestJobEntity));
     }
 
     public function testUpdatingDependencyJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
         $_oTestJobEntity->parents = ['jobA', 'jobB'];
 
         $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
@@ -218,7 +219,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->updatingJob($_oTestJobEntity));
     }
@@ -228,13 +229,13 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdatingJobFailure()
     {
-        $_oTestJobEntity = new JobEntity();
+        $_oTestJobEntity = new ChronosJobEntity();
 
         $this->oHttpClient->postJsonData()
             ->shouldNotBeCalled()
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertNull($_oApiClient->updatingJob($_oTestJobEntity));
     }
@@ -251,7 +252,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($_oApiClient->removeJob('jobName'));
     }
@@ -265,7 +266,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertFalse($_oApiClient->removeJob('jobName'));
     }
@@ -293,7 +294,7 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals($_aTestResult, $_oApiClient->getJobStats('JobA'));
     }
@@ -308,8 +309,64 @@ class ApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->oHttpResponse->reveal())
         ;
 
-        $_oApiClient = new ApiClient($this->oHttpClient->reveal());
+        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertEquals([], $_oApiClient->getJobStats('JobA'));
+    }
+
+    public function testPingSuccess()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willReturn($this->oHttpResponse);
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertTrue($oChronosApiClient->ping());
+    }
+
+    public function testPingFailureForConnectError()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION));
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertFalse($oChronosApiClient->ping());
+    }
+
+    public function testPingFailureForRequestError()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION));
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertFalse($oChronosApiClient->ping());
+    }
+
+    public function testPingSucessFor4xxErrors()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willThrow(new HttpConnectionException("somemessage", 403));
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertTrue($oChronosApiClient->ping());
+    }
+
+    public function testPingSuccessFor5xxErrors()
+    {
+        $this->oHttpClient
+            ->get(Argument::exact('/scheduler/jobs'))
+            ->willThrow(new HttpConnectionException("somemessage", 501));
+
+        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+
+        $this->assertTrue($oChronosApiClient->ping());
+
     }
 }

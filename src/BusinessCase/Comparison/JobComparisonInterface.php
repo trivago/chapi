@@ -8,7 +8,8 @@
  */
 namespace Chapi\BusinessCase\Comparison;
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
 
 interface JobComparisonInterface
 {
@@ -22,7 +23,7 @@ interface JobComparisonInterface
     /**
      * @return array
      */
-    public function getChronosMissingJobs();
+    public function getRemoteMissingJobs();
 
     /**
      * @return array
@@ -36,9 +37,15 @@ interface JobComparisonInterface
     public function getJobDiff($sJobName);
 
     /**
-     * @param JobEntity $oJobEntityA
-     * @param JobEntity $oJobEntityB
+     * @param JobEntityInterface $oJobEntityA
+     * @param JobEntityInterface $oJobEntityB
      * @return bool
      */
-    public function hasSameJobType(JobEntity $oJobEntityA, JobEntity $oJobEntityB);
+    public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
+
+    /**
+     * @param $sJobName
+     * @return bool
+     */
+    public function isJobAvailable($sJobName);
 }

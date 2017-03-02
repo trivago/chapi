@@ -11,15 +11,16 @@ namespace Chapi\Service\JobValidator;
 
 
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\JobEntityInterface;
 
 interface PropertyValidatorInterface
 {
     /**
      * @param string $sProperty
-     * @param JobEntity $oJobEntity
-     * @return boolean
+     * @param JobEntityInterface $oJobEntity
+     * @return bool
      */
-    public function isValid($sProperty, JobEntity $oJobEntity);
+    public function isValid($sProperty, JobEntityInterface $oJobEntity);
 
     /**
      * @return string

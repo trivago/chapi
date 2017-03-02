@@ -1,6 +1,6 @@
 services:
   JobValidatorServiceInterface:
-    class: Chapi\Service\JobValidator\JobValidatorService
+    class: Chapi\Service\JobValidator\ChronosJobValidatorService
     arguments:
       - "@ValidatorFactory"
 

@@ -10,6 +10,7 @@
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
 use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
 
 class Container extends AbstractPropertyValidator implements PropertyValidatorInterface
@@ -20,7 +21,7 @@ class Container extends AbstractPropertyValidator implements PropertyValidatorIn
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntity $oJobEntity)
+    public function isValid($sProperty, JobEntityInterface $oJobEntity)
     {
         return $this->returnIsValidHelper(
             $this->isContainerPropertyValid($oJobEntity->{$sProperty}),

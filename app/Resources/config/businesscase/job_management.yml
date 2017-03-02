@@ -1,10 +1,27 @@
 services:
-  StoreJobBusinessCaseInterface:
-    class: Chapi\BusinessCase\JobManagement\StoreJobBusinessCase
+  ChronosStoreJobBusinessCase:
+    class: Chapi\BusinessCase\JobManagement\ChronosStoreJobBusinessCase
     arguments:
       - "@JobIndexServiceInterface"
       - "@JobRepositoryChronos"
-      - "@JobRepositoryFileSystem"
-      - "@JobComparisonInterface"
+      - "@JobRepositoryFileSystemChronos"
+      - "@ChronosJobComparisionBusinessCase"
       - "@JobDependencyServiceInterface"
       - "@LoggerInterface"
+
+
+  MarathonStoreBusinessCase:
+    class: Chapi\BusinessCase\JobManagement\MarathonStoreJobBusinessCase
+    arguments:
+      - "@JobIndexServiceInterface"
+      - "@JobRepositoryMarathon"
+      - "@JobRepositoryFileSystemMarathon"
+      - "@MarathonJobComparisionBusinessCase"
+      - "@LoggerInterface"
+
+
+  StoreJobBusinessCaseFactoryInterface:
+    class: Chapi\BusinessCase\JobManagement\StoreJobBusinessCaseFactory
+    calls:
+      - [addBusinesCase, ["@ChronosStoreJobBusinessCase"]]
+      - [addBusinesCase, ["@MarathonStoreBusinessCase"]]

@@ -8,14 +8,19 @@
  */
 
 
-namespace Chapi\Component\Chronos;
+namespace Chapi\Component\RemoteClients;
 
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
 
 interface ApiClientInterface
 {
     const DIC_NAME = 'ApiClientInterface';
+
+    const DIC_NAME_MARATHON = 'MarathonApiClientInterface';
+
+    const DIC_NAME_CHRONOS = 'ChronosApiClientInterface';
 
     /**
      * @link: https://mesos.github.io/chronos/docs/api.html#listing-jobs
@@ -24,16 +29,16 @@ interface ApiClientInterface
     public function listingJobs();
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
      * @return bool
      */
-    public function addingJob(JobEntity $oJobEntity);
+    public function addingJob(JobEntityInterface $oJobEntity);
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
      * @return bool
      */
-    public function updatingJob(JobEntity $oJobEntity);
+    public function updatingJob(JobEntityInterface $oJobEntity);
 
     /**
      * @param string $sJobName
@@ -46,4 +51,10 @@ interface ApiClientInterface
      * @return array
      */
     public function getJobStats($sJobName);
+
+    /**
+     * Returns true if the client can be connected to.
+     * @return bool
+     */
+    public function ping();
 }

@@ -1,28 +1,104 @@
 services:
+  # --
+  # JobRepositories
+  # --
   JobRepositoryChronos:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
       - "@JobRepositoryBridgeChronos"
+      - "@FilterChronosComposite"
 
-  JobRepositoryFileSystem:
+  JobRepositoryFileSystemChronos:
     class: Chapi\Service\JobRepository\JobRepository
     arguments:
-      - "@JobRepositoryBridgeFileSystem"
+      - "@JobRepositoryBridgeFileSystemChronos"
+      - "@FilterChronosComposite"
 
+  JobRepositoryFileSystemMarathon:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeFileSystemMarathon"
+      - "@FilterMarathonComposite"
+
+  JobRepositoryMarathon:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeMarathon"
+      - "@FilterMarathonComposite"
+
+  # --
+  # bridges
+  # --
   JobRepositoryBridgeChronos:
     class: Chapi\Service\JobRepository\BridgeChronos
+    factory: "BridgeFactory:getChronosBridge"
     arguments:
-      - "@ApiClientInterface"
+      - "@ChronosApiClientInterface"
       - "@CacheInterface"
       - "@JobValidatorServiceInterface"
       - "@LoggerInterface"
 
-  JobRepositoryBridgeFileSystem:
+  JobRepositoryBridgeFileSystemChronos:
     class: Chapi\Service\JobRepository\BridgeFileSystem
+    factory: "BridgeFactory:getFilesystemBridge"
     arguments:
       - "@ExternalFileSystemService"
       - "@CacheInterface"
       - "%repository_dir%"
+      - "@LoggerInterface"
+
+  JobRepositoryBridgeFileSystemMarathon:
+    class: Chapi\Service\JobRepository\BridgeFileSystem
+    factory: "BridgeFactory:getFilesystemBridge"
+    arguments:
+      - "@ExternalFileSystemService"
+      - "@CacheInterface"
+      - "%repository_dir_marathon%"
+      - "@LoggerInterface"
+
+  JobRepositoryBridgeMarathon:
+    class: Chapi\Service\JobRepository\BridgeMarathon
+    factory: "BridgeFactory:getMarathonBridge"
+    arguments:
+      - "@MarathonApiClientInterface"
+      - "@CacheInterface"
+      - "@JobValidatorServiceInterface"
+      - "@LoggerInterface"
+
+  BridgeFactory:
+    class: Chapi\Service\JobRepository\BridgeFactory
 
   ExternalFileSystemService:
     class: \Symfony\Component\Filesystem\Filesystem
+
+  # --
+  # filter setups
+  # --
+  FilterChronosEntity:
+    class: Chapi\Service\JobRepository\Filter\FilterChronosEntity
+
+  FilterChronosJobIgnore:
+    class: Chapi\Service\JobRepository\Filter\FilterIgnoreSettings
+    arguments:
+      - ["%repository_dir%"]
+      - "@LoggerInterface"
+
+  FilterChronosComposite:
+    class: Chapi\Service\JobRepository\Filter\JobFilterComposite
+    arguments:
+      - ["@FilterChronosEntity", "@FilterChronosJobIgnore"]
+
+
+  FilterMarathonEntity:
+    class: Chapi\Service\JobRepository\Filter\FilterMarathonEntity
+
+  FilterMarathonJobIgnore:
+    class: Chapi\Service\JobRepository\Filter\FilterIgnoreSettings
+    arguments:
+      - ["%repository_dir_marathon%"]
+      - "@LoggerInterface"
+
+  FilterMarathonComposite:
+    class: Chapi\Service\JobRepository\Filter\JobFilterComposite
+    arguments:
+      - ["@FilterMarathonEntity", "@FilterMarathonJobIgnore"]

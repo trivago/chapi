@@ -8,14 +8,18 @@
  */
 
 
-namespace Chapi\Component\Chronos;
+namespace Chapi\Component\RemoteClients;
 
 
+use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Component\Http\HttpClientInterface;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Exception\ApiClientException;
+use Chapi\Exception\HttpConnectionException;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
-class ApiClient implements ApiClientInterface
+class ChronosApiClient implements ApiClientInterface
 {
     /**
      * @var HttpClientInterface
@@ -42,13 +46,18 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      * @throws ApiClientException
      */
-    public function addingJob(JobEntity $oJobEntity)
+    public function addingJob(JobEntityInterface $oJobEntity)
     {
         $_sTargetUrl = '';
+
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
+            throw new \RuntimeException('Expected ChronosJobEntity.');
+        }
 
         if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
         {
@@ -68,10 +77,11 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
      * @return bool
+     * @throws ApiClientException
      */
-    public function updatingJob(JobEntity $oJobEntity)
+    public function updatingJob(JobEntityInterface $oJobEntity)
     {
         return $this->addingJob($oJobEntity);
     }
@@ -107,5 +117,27 @@ class ApiClient implements ApiClientInterface
         }
 
         return [];
+    }
+
+    /**
+     * Returns true if the client can be connected to.
+     * @return bool
+     */
+    public function ping()
+    {
+        try {
+            $this->oHttpClient->get('/scheduler/jobs');
+        } catch (HttpConnectionException $e)
+        {
+            if (
+                $e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
+                $e->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
+            )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -12,9 +12,9 @@ namespace Chapi\Commands;
 
 use Chapi\Commands\AbstractCommand;
 use Chapi\Component\Command\JobUtils;
-use Chapi\Entity\Chronos\JobEntity;
-use Chapi\Service\JobValidator\JobValidatorServiceInterface;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
+use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 
 class ValidationCommand extends AbstractCommand
 {
@@ -93,7 +93,7 @@ class ValidationCommand extends AbstractCommand
         $_oJobEntityValidationService = $this->getContainer()->get(JobValidatorServiceInterface::DIC_NAME);
 
         /** @var JobRepositoryInterface  $_oJobRepositoryLocale */
-        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM);
+        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
 
         foreach ($aJobs as $_sJobName)
         {
@@ -132,9 +132,9 @@ class ValidationCommand extends AbstractCommand
         $_aJobNames = [];
 
         /** @var JobRepositoryInterface  $_oJobRepositoryLocale */
-        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM);
+        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
 
-        /** @var JobEntity $_oJobEntity */
+        /** @var ChronosJobEntity $_oJobEntity */
         foreach ($_oJobRepositoryLocale->getJobs() as $_oJobEntity)
         {
             $_aJobNames[] = $_oJobEntity->name;

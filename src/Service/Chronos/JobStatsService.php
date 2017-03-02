@@ -11,7 +11,7 @@
 namespace Chapi\Service\Chronos;
 
 use Chapi\Component\Cache\CacheInterface;
-use Chapi\Component\Chronos\ApiClientInterface;
+use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Entity\Chronos\JobStatsEntity;
 
 class JobStatsService implements JobStatsServiceInterface
@@ -21,7 +21,7 @@ class JobStatsService implements JobStatsServiceInterface
     const CACHE_KEY_JOB_STATS = 'jobs.stats.%s';
 
     /**
-     * @var ApiClientInterface
+     * @var \Chapi\Component\RemoteClients\ApiClientInterface
      */
     private $oApiClient;
 
@@ -31,11 +31,11 @@ class JobStatsService implements JobStatsServiceInterface
     private $oCache;
 
     /**
-     * @param ApiClientInterface $oApiClient
+     * @param \Chapi\Component\RemoteClients\ApiClientInterface $oApiClient
      * @param CacheInterface $oCache
      */
     public function __construct(
-        ApiClientInterface $oApiClient,
+        \Chapi\Component\RemoteClients\ApiClientInterface $oApiClient,
         CacheInterface $oCache
     )
     {

@@ -9,7 +9,9 @@
 
 namespace Chapi\Commands;
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
+use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputOption;
@@ -38,6 +40,8 @@ class ListCommand extends AbstractCommand
     {
         /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
         $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
+        /** @var  JobRepositoryInterface $_oJobRepositoryMarathon */
+        $_oJobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
 
         $_bOnlyFailed = (bool) $this->oInput->getOption('onlyFailed');
         $_bOnlyDisabled = (bool) $this->oInput->getOption('onlyDisabled');
@@ -45,11 +49,17 @@ class ListCommand extends AbstractCommand
         $_oTable = new Table($this->oOutput);
         $_oTable->setHeaders(array(
             'Job',
-            'Info'
+            'Info',
+            'Type'
         ));
 
-        /** @var JobEntity $_oJobEntity */
-        foreach ($_oJobRepositoryChronos->getJobs() as $_oJobEntity)
+        $_aAllEntities = array_merge(
+            $_oJobRepositoryChronos->getJobs()->getArrayCopy(),
+            $_oJobRepositoryMarathon->getJobs()->getArrayCopy()
+        );
+
+        /** @var ChronosJobEntity $_oJobEntity */
+        foreach ($_aAllEntities as $_oJobEntity)
         {
             if ($this->hasJobToPrint($_oJobEntity, $_bOnlyFailed, $_bOnlyDisabled))
             {
@@ -63,13 +73,23 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @param bool $bOnlyFailed
      * @param bool $bOnlyDisabled
      * @return bool
      */
-    private function hasJobToPrint(JobEntity $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
+    private function hasJobToPrint(JobEntityInterface $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
     {
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
+        {
+            return true;
+        }
+
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
+            throw new \RuntimeException('Entity not of type ChronosJobEntity');
+        }
+
         $_bPrintAllJobs = (false === $bOnlyFailed && false === $bOnlyDisabled);
         if ($_bPrintAllJobs)
         {
@@ -93,29 +113,44 @@ class ListCommand extends AbstractCommand
 
     /**
      * @param Table $oTable
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      */
-    private function printJobTableRow(Table $oTable, JobEntity $oJobEntity)
+    private function printJobTableRow(Table $oTable, JobEntityInterface $oJobEntity)
     {
         $oTable->addRow([
             sprintf(
                 $this->getOutputFormat($oJobEntity),
-                $oJobEntity->name
+                $oJobEntity->getKey()
             ),
 
             sprintf(
                 $this->getOutputFormat($oJobEntity),
                 $this->getOutputLabel($oJobEntity)
             ),
+            sprintf(
+                $this->getOutputFormat($oJobEntity),
+                $oJobEntity->getEntityType()
+            )
         ]);
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return string
      */
-    private function getOutputLabel(JobEntity $oJobEntity)
+    private function getOutputLabel(JobEntityInterface $oJobEntity)
     {
+
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
+        {
+            return 'ok';
+        }
+
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
+            throw new \RuntimeException('Entity not of type ChronosJobEntity');
+        }
+
         $_aJobInfoText = [];
 
         if ($oJobEntity->disabled)
@@ -143,11 +178,21 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return string
      */
-    private function getOutputFormat(JobEntity $oJobEntity)
+    private function getOutputFormat(JobEntityInterface $oJobEntity)
     {
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
+        {
+            return '<info>%s</info>';
+        }
+
+        if (!$oJobEntity instanceof ChronosJobEntity)
+        {
+            throw new \RuntimeException('Entity not of type ChronosJobEntity');
+        }
+
         if ($oJobEntity->errorsSinceLastSuccess > 0)
         {
             return '<fg=red>%s</>';

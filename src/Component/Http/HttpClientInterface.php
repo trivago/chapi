@@ -31,4 +31,11 @@ interface HttpClientInterface
      * @return HttpClientResponseInterface
      */
     public function delete($sUrl);
+
+    /**
+     * @param string $sUrl
+     * @param mixed $mPostData
+     * @return HttpClientResponseInterface
+     */
+    public function putJsonData($sUrl, $mPostData);
 }

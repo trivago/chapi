@@ -1,4 +1,8 @@
 services:
-  ApiClientInterface:
-    class: Chapi\Component\Chronos\ApiClient
-    arguments: ["@HttpClientGuzzle"]
+  ChronosApiClientInterface:
+    class: Chapi\Component\RemoteClients\ChronosApiClient
+    arguments: ["@ChronosHttpClientGuzzle"]
+
+  MarathonApiClientInterface:
+    class: Chapi\Component\RemoteClients\MarathonApiClient
+    arguments: ["@MarathonHttpClientGuzzle"]

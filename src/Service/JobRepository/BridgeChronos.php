@@ -10,8 +10,9 @@
 namespace Chapi\Service\JobRepository;
 
 use Chapi\Component\Cache\CacheInterface;
-use Chapi\Component\Chronos\ApiClientInterface;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Component\RemoteClients\ApiClientInterface;
+use Chapi\Entity\Chronos\ChronosJobEntity;
+use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use Psr\Log\LoggerInterface;
 
@@ -51,7 +52,7 @@ class BridgeChronos implements BridgeInterface
     private $oLogger;
 
     /**
-     * @param ApiClientInterface $oApiClient
+     * @param \Chapi\Component\RemoteClients\ApiClientInterface $oApiClient
      * @param CacheInterface $oCache
      * @param JobValidatorServiceInterface $oJobEntityValidatorService
      * @param LoggerInterface $oLogger
@@ -82,7 +83,7 @@ class BridgeChronos implements BridgeInterface
 
 
     /**
-     * @return JobEntity[]
+     * @return ChronosJobEntity[]
      */
     public function getJobs()
     {
@@ -94,7 +95,7 @@ class BridgeChronos implements BridgeInterface
             // prepare return value
             foreach ($_aJobList as $_aJobData)
             {
-                $_aReturn[] = new JobEntity($_aJobData);
+                $_aReturn[] = new ChronosJobEntity($_aJobData);
             }
         }
 
@@ -102,31 +103,31 @@ class BridgeChronos implements BridgeInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function addJob(JobEntity $oJobEntity)
+    public function addJob(JobEntityInterface $oJobEntity)
     {
         return $this->hasAddOrUpdateJob(self::API_CALL_ADD, $oJobEntity);
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function updateJob(JobEntity $oJobEntity)
+    public function updateJob(JobEntityInterface $oJobEntity)
     {
         return $this->hasAddOrUpdateJob(self::API_CALL_UPDATE, $oJobEntity);
     }
 
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
      * @return bool
      */
-    public function removeJob(JobEntity $oJobEntity)
+    public function removeJob(JobEntityInterface $oJobEntity)
     {
-        if ($this->oApiClient->removeJob($oJobEntity->name))
+        if ($this->oApiClient->removeJob($oJobEntity->getKey()))
         {
             $this->bCacheHasToDelete = true;
             return true;
@@ -136,11 +137,12 @@ class BridgeChronos implements BridgeInterface
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    private function hasValidate(JobEntity $oJobEntity)
+    private function hasValidate(JobEntityInterface $oJobEntity)
     {
+
         $_aInvalidProperties = $this->oJobEntityValidatorService->getInvalidProperties($oJobEntity);
         if (empty($_aInvalidProperties))
         {
@@ -150,7 +152,7 @@ class BridgeChronos implements BridgeInterface
         $this->oLogger->warning(
             sprintf(
                 "Can't update job '%s'",
-                $oJobEntity->name
+                $oJobEntity->getKey()
             )
         );
         $this->oLogger->warning(
@@ -188,10 +190,10 @@ class BridgeChronos implements BridgeInterface
 
     /**
      * @param string $sApiMethod
-     * @param JobEntity $oJobEntity
+     * @param JobEntityInterface $oJobEntity
      * @return bool
      */
-    private function hasAddOrUpdateJob($sApiMethod, JobEntity $oJobEntity)
+    private function hasAddOrUpdateJob($sApiMethod, JobEntityInterface $oJobEntity)
     {
         if ($this->hasValidate($oJobEntity))
         {

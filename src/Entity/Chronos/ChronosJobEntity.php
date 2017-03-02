@@ -9,9 +9,11 @@
 
 namespace Chapi\Entity\Chronos;
 
-use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
 
-class JobEntity implements JobEntityInterface
+use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
+use Chapi\Entity\JobEntityInterface;
+
+class ChronosJobEntity implements JobEntityInterface
 {
     public $name = '';
 
@@ -177,5 +179,21 @@ class JobEntity implements JobEntityInterface
     public function getIterator()
     {
         return new \ArrayIterator($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntityType()
+    {
+        return JobEntityInterface::CHRONOS_TYPE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->name;
     }
 }

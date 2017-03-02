@@ -10,16 +10,16 @@
 namespace ChapiTest\unit\BusinessCase\Comparison;
 
 
-use Chapi\BusinessCase\Comparison\JobComparisonBusinessCase;
+use Chapi\BusinessCase\Comparison\ChronosJobComparisonBusinessCase;
 use Chapi\Component\DatePeriod\DatePeriodFactory;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
-class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 {
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryLocal;
+    private $oJobRepositoryLocalChronos;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $oJobRepositoryChronos;
@@ -35,7 +35,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->oJobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->oJobRepositoryLocalChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->oDiffCompare = $this->prophesize('Chapi\Component\Comparison\DiffCompareInterface');
         $this->oDatePeriodFactory = new DatePeriodFactory();
@@ -94,7 +94,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $_JobEntityG1
         ];
 
-        $this->oJobRepositoryLocal
+        $this->oJobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
             ->willReturn($_aJobCollection);
@@ -134,8 +134,8 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn($_JobEntityG2);
 
-        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
-            $this->oJobRepositoryLocal->reveal(),
+        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->oJobRepositoryLocalChronos->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
@@ -160,7 +160,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $_JobEntityA1
         ];
 
-        $this->oJobRepositoryLocal
+        $this->oJobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
             ->willReturn($_aJobCollection);
@@ -170,8 +170,8 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn($_JobEntityA2);
 
-        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
-            $this->oJobRepositoryLocal->reveal(),
+        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->oJobRepositoryLocalChronos->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
@@ -194,8 +194,8 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_JobEntityB1 = $this->getValidDependencyJobEntity('JobB');
         $_JobEntityB2 = $this->getValidDependencyJobEntity('JobB');
 
-        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
-            $this->oJobRepositoryLocal->reveal(),
+        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->oJobRepositoryLocalChronos->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
@@ -214,8 +214,8 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $_JobEntityB1 = $this->getValidDependencyJobEntity('JobB');
         $_JobEntityB2 = $this->getValidScheduledJobEntity('JobB');
 
-        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
-            $this->oJobRepositoryLocal->reveal(),
+        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->oJobRepositoryLocalChronos->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
@@ -246,7 +246,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $_JobEntityA1
         ];
 
-        $this->oJobRepositoryLocal
+        $this->oJobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
             ->willReturn($_aJobCollection);
@@ -256,8 +256,8 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn($_JobEntityA2);
 
-        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
-            $this->oJobRepositoryLocal->reveal(),
+        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->oJobRepositoryLocalChronos->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
@@ -287,7 +287,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $_JobEntityA1
         ];
 
-        $this->oJobRepositoryLocal
+        $this->oJobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
             ->willReturn($_aJobCollection);
@@ -297,8 +297,8 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn($_JobEntityA2);
 
-        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
-            $this->oJobRepositoryLocal->reveal(),
+        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->oJobRepositoryLocalChronos->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,
@@ -350,7 +350,7 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $_JobEntityA1
         ];
 
-        $this->oJobRepositoryLocal
+        $this->oJobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
             ->willReturn($_aJobCollection);
@@ -360,8 +360,8 @@ class JobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn($_JobEntityA2);
 
-        $_oJobComparisonBusinessCase = new JobComparisonBusinessCase(
-            $this->oJobRepositoryLocal->reveal(),
+        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->oJobRepositoryLocalChronos->reveal(),
             $this->oJobRepositoryChronos->reveal(),
             $this->oDiffCompare->reveal(),
             $this->oDatePeriodFactory,

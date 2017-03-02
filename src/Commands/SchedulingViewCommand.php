@@ -12,7 +12,7 @@
 namespace Chapi\Commands;
 
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\Chronos\JobStatsServiceInterface;
 use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
@@ -102,7 +102,7 @@ class SchedulingViewCommand extends AbstractCommand
 
         $_iRowCount = 0;
 
-        /** @var JobEntity $_oJobEntity */
+        /** @var ChronosJobEntity $_oJobEntity */
         foreach ($_aJobs as $_oJobEntity)
         {
             if (!empty($_oJobEntity->schedule))
@@ -327,11 +327,11 @@ class SchedulingViewCommand extends AbstractCommand
     }
 
     /**
-     * @param JobEntity $oJobEntity
+     * @param ChronosJobEntity $oJobEntity
      * @param int $iEndTime
      * @return \DatePeriod
      */
-    private function createDatePeriodForJob(JobEntity $oJobEntity, $iEndTime)
+    private function createDatePeriodForJob(ChronosJobEntity $oJobEntity, $iEndTime)
     {
         $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($oJobEntity->schedule);
         return $this->createDatePeriod($_oIso8601Entity->sStartTime, 0, null, $iEndTime, $_oIso8601Entity->sInterval);
@@ -367,7 +367,7 @@ class SchedulingViewCommand extends AbstractCommand
     /**
      * @param int $iStartTime
      * @param int $iEndTime
-     * @return JobEntity[]
+     * @return ChronosJobEntity[]
      */
     private function getJobsWhichShouldStartInPeriod($iStartTime, $iEndTime)
     {
@@ -375,7 +375,7 @@ class SchedulingViewCommand extends AbstractCommand
 
         $_aJobs = [];
 
-        /** @var JobEntity $_oJobEntity */
+        /** @var ChronosJobEntity $_oJobEntity */
         foreach ($_oJobCollection as $_oJobEntity)
         {
             if (

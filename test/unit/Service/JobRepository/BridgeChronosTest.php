@@ -11,7 +11,7 @@
 namespace unit\Service\JobRepository;
 
 
-use Chapi\Entity\Chronos\JobEntity;
+use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\BridgeChronos;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
@@ -40,7 +40,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
     {
         $this->aListingJobs = json_decode($this->sJsonListingJobs, true);
 
-        $this->oApiClient = $this->prophesize('Chapi\Component\Chronos\ApiClientInterface');
+        $this->oApiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
         $this->oApiClient
             ->listingJobs()
             ->willReturn($this->aListingJobs)
@@ -57,7 +57,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
         ;
 
-        $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobValidator\JobValidatorService');
+        $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobValidator\ChronosJobValidatorService');
 
         $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
     }
@@ -94,7 +94,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobEntity',
+            'Chapi\Entity\Chronos\ChronosJobEntity',
             $_aJobs[0]
         );
 
@@ -144,7 +144,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(
-            'Chapi\Entity\Chronos\JobEntity',
+            'Chapi\Entity\Chronos\ChronosJobEntity',
             $_aJobs[0]
         );
 
@@ -164,13 +164,13 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
     public function testAddJobSuccess()
     {
         $this->oJobEntityValidatorService
-            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn([])
         ;
 
         $this->oApiClient
-            ->addingJob(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->addingJob(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
         ;
@@ -188,19 +188,19 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
             $this->oLogger->reveal()
         );
 
-        $this->assertTrue($_oJobRepositoryChronos->addJob(new JobEntity()));
+        $this->assertTrue($_oJobRepositoryChronos->addJob(new ChronosJobEntity()));
     }
 
     public function testAddJobFailed()
     {
         $this->oJobEntityValidatorService
-            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn(['sProperty'])
         ;
 
         $this->oApiClient
-            ->addingJob(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->addingJob(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldNotBeCalled()
         ;
 
@@ -216,19 +216,19 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
             $this->oLogger->reveal()
         );
 
-        $this->assertFalse($_oJobRepositoryChronos->addJob(new JobEntity()));
+        $this->assertFalse($_oJobRepositoryChronos->addJob(new ChronosJobEntity()));
     }
 
     public function testUpdateJobSuccess()
     {
         $this->oJobEntityValidatorService
-            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn([])
         ;
 
         $this->oApiClient
-            ->updatingJob(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->updatingJob(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
         ;
@@ -246,19 +246,19 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
             $this->oLogger->reveal()
         );
 
-        $this->assertTrue($_oJobRepositoryChronos->updateJob(new JobEntity()));
+        $this->assertTrue($_oJobRepositoryChronos->updateJob(new ChronosJobEntity()));
     }
 
     public function testUpdateJobFailure()
     {
         $this->oJobEntityValidatorService
-            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn(['sProperty'])
         ;
 
         $this->oApiClient
-            ->updatingJob(Argument::type('Chapi\Entity\Chronos\JobEntity'))
+            ->updatingJob(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldNotBeCalled()
         ;
 
@@ -274,7 +274,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
             $this->oLogger->reveal()
         );
 
-        $this->assertFalse($_oJobRepositoryChronos->updateJob(new JobEntity()));
+        $this->assertFalse($_oJobRepositoryChronos->updateJob(new ChronosJobEntity()));
     }
 
     public function testRemoveJobSuccess()
@@ -305,7 +305,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertTrue($_oJobRepositoryChronos->removeJob($this->getValidScheduledJobEntity('JobA')));
-        $this->assertFalse($_oJobRepositoryChronos->removeJob(new JobEntity()));
+        $this->assertFalse($_oJobRepositoryChronos->removeJob(new ChronosJobEntity()));
     }
 
     public function testRemoveJobFailure()
