@@ -11,12 +11,10 @@ namespace Chapi\Entity\Marathon;
 
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\Marathon\AppEntity\Container;
-use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\AppEntity\IpAddress;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
-use Symfony\Component\Config\Definition\Exception\Exception;
 
 class MarathonAppEntity implements JobEntityInterface
 {
@@ -51,7 +49,7 @@ class MarathonAppEntity implements JobEntityInterface
     /**
      * @var array
      */
-    public $constraints  = [];
+    public $constraints = [];
 
 
     public $acceptedResourceRoles = null;
@@ -103,7 +101,7 @@ class MarathonAppEntity implements JobEntityInterface
         {
             foreach ($aData['portDefinitions'] as $portDefinition)
             {
-                $this->portDefinitions[] = new PortDefinition((array)$portDefinition);
+                $this->portDefinitions[] = new PortDefinition((array) $portDefinition);
             }
         }
 
@@ -116,34 +114,34 @@ class MarathonAppEntity implements JobEntityInterface
         {
             foreach($aData['healthChecks'] as $healthCheck)
             {
-                $this->healthChecks[] = new HealthCheck((array)$healthCheck);
+                $this->healthChecks[] = new HealthCheck((array) $healthCheck);
             }
         }
 
         if (isset($aData['upgradeStrategy']))
         {
-            $this->upgradeStrategy = new UpgradeStrategy((array)$aData['upgradeStrategy']);
+            $this->upgradeStrategy = new UpgradeStrategy((array) $aData['upgradeStrategy']);
         } else {
             $this->upgradeStrategy = new UpgradeStrategy();
         }
 
         if (isset($aData['ipAddress']))
         {
-            $this->ipAddress = new IpAddress((array)$aData['ipAddress']);
+            $this->ipAddress = new IpAddress((array) $aData['ipAddress']);
         }
 
         if (isset($aData['env']))
         {
             $this->env =  (object) $aData['env'];
         } else {
-            $this->env = (object)[];
+            $this->env = (object) [];
         }
 
         if (isset($aData['labels']))
         {
             $this->labels = (object) $aData['labels'];
         } else {
-            $this->labels = (object)[];
+            $this->labels = (object) [];
         }
         MarathonEntityUtils::setPropertyIfExist($aData, $this, 'constraints');
         MarathonEntityUtils::setPropertyIfExist($aData, $this, 'args');
@@ -159,9 +157,13 @@ class MarathonAppEntity implements JobEntityInterface
     public function jsonSerialize()
     {
         $_aRet = (array) $this;
-        $_aRet = array_filter($_aRet, function($v, $k) {
-            return !is_null($v) || empty($v);
-        }, ARRAY_FILTER_USE_BOTH );
+        $_aRet = array_filter(
+            $_aRet,
+            function($v, $k) {
+                return !is_null($v) || empty($v);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
         return $_aRet;
     }
 

@@ -113,10 +113,11 @@ abstract class AbstractCommand extends Command
      */
     protected function isAppRunable()
     {
+        // one file have to exist
         if (
             !file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . 'parameters.yml')
             && !file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . '.chapiconfig')
-        ) // one file have to exist
+        )
         {
             $this->oOutput->writeln(sprintf(
                 '<error>%s</error>',

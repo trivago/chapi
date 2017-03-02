@@ -99,7 +99,8 @@ class JobRepository implements JobRepositoryInterface
     {
         if ($this->oRepositoryBridge->addJob($oJobEntity))
         {
-            if (!is_null($this->oJobCollection)) // if no collection inited the new job will init by chronos request
+            // if no collection inited the new job will init by chronos request
+            if (!is_null($this->oJobCollection))
             {
                 $this->oJobCollection->offsetSet($oJobEntity->getKey(), $oJobEntity);
             }

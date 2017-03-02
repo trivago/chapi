@@ -12,7 +12,6 @@ namespace Chapi\BusinessCase\JobManagement;
 
 
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
-use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
@@ -20,6 +19,14 @@ use Psr\Log\LoggerInterface;
 
 class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInterface
 {
+    /**
+     * MarathonStoreJobBusinessCase constructor.
+     * @param JobIndexServiceInterface $oJobIndexService
+     * @param JobRepositoryInterface $oJobRepositoryRemote
+     * @param JobRepositoryInterface $oJobRepositoryLocal
+     * @param JobComparisonInterface $oJobComparisonBusinessCase
+     * @param LoggerInterface $oLogger
+     */
     public function __construct(
         JobIndexServiceInterface $oJobIndexService,
         JobRepositoryInterface $oJobRepositoryRemote,
@@ -60,6 +67,10 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
         }
     }
 
+    /**
+     * @param string $sAppId
+     * @return bool
+     */
     private function addRemoteMissingApp($sAppId)
     {
         if ($this->oJobIndexService->isJobInIndex($sAppId))
@@ -130,11 +141,22 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
 
     }
 
+    /**
+     * @param array $arr
+     * @return bool
+     */
     private function hasDuplicates($arr)
     {
         return !(count($arr) == count(array_unique($arr)));
     }
 
+    /**
+     * @param MarathonAppEntity $oEntity
+     * @param int $iImmediateChildren
+     * @param array $path
+     * @return bool
+     * @throws \Exception
+     */
     private function isDependencyCircular(MarathonAppEntity $oEntity, $iImmediateChildren, &$path=[])
     {
         // Invariant: path will not have duplicates for acyclic dependency tree
@@ -195,9 +217,14 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
                 array_pop($path);
             }
         }
+
+        return false;
     }
 
-
+    /**
+     * @param string $sAppId
+     * @return bool
+     */
     private function removeLocalMissingAppInRemote($sAppId)
     {
         if ($this->oJobIndexService->isJobInIndex($sAppId))
@@ -221,6 +248,10 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
         return false;
     }
 
+    /**
+     * @param string $sAppId
+     * @return bool
+     */
     private function updateAppInRemote($sAppId)
     {
         if ($this->oJobIndexService->isJobInIndex($sAppId))

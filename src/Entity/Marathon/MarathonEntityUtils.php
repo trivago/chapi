@@ -27,7 +27,7 @@ class MarathonEntityUtils
      */
     public static function setAllPossibleProperties($oData, $oTarget)
     {
-        foreach($oData as $attrName => $attrValue)
+        foreach ($oData as $attrName => $attrValue)
         {
             // dont set array or objects.
             // Because this would need further type information to properly set.

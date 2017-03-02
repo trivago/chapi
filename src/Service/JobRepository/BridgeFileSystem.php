@@ -346,7 +346,12 @@ class BridgeFileSystem implements BridgeInterface
         return (file_exists($sJobFile));
     }
 
-
+    /**
+     * @param string $sJobFile
+     * @param JobEntityInterface $oJobEntity
+     * @param bool $bAdd
+     * @return bool
+     */
     private function dumpFileWithGroup($sJobFile, JobEntityInterface $oJobEntity, $bAdd = true)
     {
         $_sGroupConfig = file_get_contents($sJobFile);

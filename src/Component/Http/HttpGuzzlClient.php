@@ -143,9 +143,9 @@ class HttpGuzzlClient implements HttpClientInterface
     }
 
     /**
-     * @param $sMethod
-     * @param $sUrl
-     * @param $mData
+     * @param string $sMethod
+     * @param string $sUrl
+     * @param mixed $mData
      * @return HttpGuzzlResponse
      */
     private function sendJsonDataWithMethod($sMethod, $sUrl, $mData)
