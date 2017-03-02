@@ -28,6 +28,8 @@ class Docker
 
     public $privileged = false;
 
+    public $forcePullImage = false;
+
     /**
      * @var DockerParameters
      */
