@@ -690,12 +690,7 @@ class MarathonStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
 
         $this->oJobRepositoryRemote
-            ->removeJob(Argument::exact("/local/update1"))
-            ->willReturn(true)
-            ->shouldBeCalled();
-
-        $this->oJobRepositoryRemote
-            ->addJob(Argument::exact($_oUpdatedApp))
+            ->updateJob(Argument::exact($_oUpdatedApp))
             ->willReturn(true)
             ->shouldBeCalled();
 

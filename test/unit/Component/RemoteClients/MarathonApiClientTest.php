@@ -78,7 +78,7 @@ class MarathonApiClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn(200);
 
         $this->oHttpClient
-            ->putJsonData(Argument::exact('/v2/apps'), Argument::exact($oAppEntity))
+            ->putJsonData(Argument::exact('/v2/apps//some/id'), Argument::exact($oAppEntity))
             ->willReturn($this->oHttpResponse->reveal());
 
         $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
