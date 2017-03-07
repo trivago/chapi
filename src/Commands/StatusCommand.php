@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StatusCommand extends AbstractCommand
 {
-    const LABEL_CHRONOS = 'chronos';
+    const LABEL_CHRONOS  = 'chronos';
     const LABEL_MARATHON = 'marathon';
 
     /** @var JobIndexServiceInterface  */
@@ -68,39 +68,29 @@ class StatusCommand extends AbstractCommand
     }
 
     /**
-     * @return array
+     * @return array<string,array<string,array>>
      */
     private function getChangedAppJobs()
     {
-        $_aResult = [
-            'new' => [
-                self::LABEL_CHRONOS => [],
-                self::LABEL_MARATHON => [],
-            ],
-            'missing' => [
-                self::LABEL_CHRONOS => [],
-                self::LABEL_MARATHON => [],
-            ],
-            'updates' => [
-                self::LABEL_CHRONOS => [],
-                self::LABEL_MARATHON => [],
-            ],
-        ];
-
         /** @var JobComparisonInterface $_oJobComparisonBusinessCaseChronos */
         /** @var JobComparisonInterface $_oJobComparisonBusinessCaseMarathon */
         $_oJobComparisonBusinessCaseChronos  = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_CHRONOS);
         $_oJobComparisonBusinessCaseMarathon = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_MARATHON);
 
-        $_aResult['new'][self::LABEL_MARATHON] = $_oJobComparisonBusinessCaseMarathon->getRemoteMissingJobs();
-        $_aResult['new'][self::LABEL_CHRONOS]  = $_oJobComparisonBusinessCaseChronos->getRemoteMissingJobs();
-
-        $_aResult['missing'][self::LABEL_MARATHON] = $_oJobComparisonBusinessCaseMarathon->getLocalMissingJobs();
-        $_aResult['missing'][self::LABEL_CHRONOS]  = $_oJobComparisonBusinessCaseChronos->getLocalMissingJobs();
-
-        $_aResult['updates'][self::LABEL_MARATHON] = $_oJobComparisonBusinessCaseMarathon->getLocalJobUpdates();
-        $_aResult['updates'][self::LABEL_CHRONOS]  = $_oJobComparisonBusinessCaseChronos->getLocalJobUpdates();
-
+        $_aResult = [
+            'new' => [
+                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getRemoteMissingJobs(),
+                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getRemoteMissingJobs(),
+            ],
+            'missing' => [
+                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getLocalMissingJobs(),
+                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getLocalMissingJobs(),
+            ],
+            'updates' => [
+                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getLocalJobUpdates(),
+                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getLocalJobUpdates(),
+            ],
+        ];
 
         return $_aResult;
     }
