@@ -83,6 +83,11 @@ Root path to your tasks folder. Look also under [configure command](#configure) 
 #### cache_dir
 Path to cache directory. Look also under the [configure command](#configure) option `-d`.
 
+### Profiles
+
+You can use different profiles by the global `--profile[=PROFILE]` option. 
+If you use the the `--profile` option chapi will try to load a `~/.chapi/parameters_<PROFILE>.yml` instead of the default `~/.chapi/parameters.yml` one.
+
 ### .chapiignore files
 
 You can add a `.chapiignore` file to your job repositories to untrack jobs to ignore.
@@ -118,6 +123,7 @@ bin/chapi list [options]
     Options:
       -f, --onlyFailed      Display only failed jobs
       -d, --onlyDisabled    Display only disabled jobs
+      --profile[=PROFILE]  Use a specific profile from your config file.
 
 ### info
 Display your task information from remote system
@@ -128,6 +134,10 @@ bin/chapi info <jobName>
 
     Arguments:
       jobName               selected job
+      
+    Options:
+      --profile[=PROFILE]  Use a specific profile from your config file.
+      
 The task name in case of marathon would be the full id for the task.
 
 ### status
@@ -136,6 +146,9 @@ Show the working tree status
 ```Shell
 bin/chapi status
 ```
+
+    Options:
+      --profile[=PROFILE]  Use a specific profile from your config file.
 
 ### diff
 Show changes between tasks and working tree, etc
@@ -146,6 +159,9 @@ bin/chapi diff [<jobName>]
 
     Arguments:
       jobName               Show changes for specific job
+      
+    Options:
+      --profile[=PROFILE]  Use a specific profile from your config file.
 
 ### add
 Add task contents to the index
@@ -156,6 +172,9 @@ bin/chapi add [<jobnames>]...
 
     Arguments:
       jobnames              Jobs to add to the index
+      
+    Options:
+      --profile[=PROFILE]  Use a specific profile from your config file.
  
 ### reset 
 Remove tasks from the index
@@ -166,6 +185,9 @@ bin/chapi reset [<jobnames>]...
 
     Arguments:
       jobnames              Jobs to add to the index
+      
+    Options:
+      --profile[=PROFILE]  Use a specific profile from your config file.
 
 ### pull
 Pull tasks from remote system and add them to local repository
@@ -179,6 +201,7 @@ bin/chapi pull [options] [--] [<jobnames>]...
     
     Options:
       -f, --force           Force to overwrite local jobs 
+      --profile[=PROFILE]  Use a specific profile from your config file.
 
 ### commit
 Submit changes to chronos or marathon
@@ -186,6 +209,9 @@ Submit changes to chronos or marathon
 ```Shell
 bin/chapi commit
 ```
+
+    Options:
+      --profile[=PROFILE]  Use a specific profile from your config file.
 
 ### scheduling
 Display upcoming jobs in a specified timeframe
@@ -197,6 +223,8 @@ bin/chapi scheduling [options]
     Options:
       -s, --starttime[=STARTTIME]  Start time to display the jobs
       -e, --endtime[=ENDTIME]      End time to display the jobs
+      --profile[=PROFILE]  Use a specific profile from your config file.
+      
 **Note: Not applicable to marathon**
 
 ### configure
@@ -212,6 +240,7 @@ bin/chapi configure
       -p, --chronos_http_password[=CHRONOS_HTTP_PASSWORD]   The chronos password (HTTP credentials) [default: ""]
       -d, --cache_dir[=CACHE_DIR]            Path to cache directory
       -r, --repository_dir[=REPOSITORY_DIR]  Root path to your job files
+      --profile[=PROFILE]  Use a specific profile from your config file.
       
 ### validate
 Validate local jobs
@@ -222,6 +251,9 @@ bin/chapi validate [<jobmames>]...
 
     Arguments:
       jobmames              Jobs to validate
+      
+    Options:
+      --profile[=PROFILE]  Use a specific profile from your config file.
 
 ## Example workflows
 
