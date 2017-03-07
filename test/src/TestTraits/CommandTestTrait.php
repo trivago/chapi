@@ -9,7 +9,6 @@
 
 namespace ChapiTest\src\TestTraits;
 
-use Chapi\Component\Command\JobUtilsInterface;
 use Prophecy\Argument;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,6 +30,9 @@ trait CommandTestTrait
         // after symfony console v2.7.5
         $this->oInput->hasArgument('command')->willReturn(true);
         $this->oInput->getArgument('command')->willReturn('testCommand');
+
+        // global profile option from Chapi\Commands\AbstractCommand
+        $this->oInput->getOption('profile')->willReturn(null);
 
         $this->oOutput = $this->prophesize('Symfony\Component\Console\Output\OutputInterface');
         $this->oOutput->writeln(Argument::type('string'))->willReturn(null);

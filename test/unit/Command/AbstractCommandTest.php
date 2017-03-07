@@ -14,8 +14,9 @@ namespace unit\Command;
 use Chapi\Commands\AbstractCommand;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
 use Prophecy\Argument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -112,6 +113,30 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($_oCommand->isAppRunablePub());
     }
+
+    public function testGetParameterFileNameDefault()
+    {
+        $this->oInput->getOption('profile')->willReturn(null);
+        $_oCommand = new AbstractCommandDummy();
+        $_oCommand->initializePub(
+            $this->oInput->reveal(),
+            $this->oOutput->reveal()
+        );
+
+        $this->assertEquals('parameters.yml', $_oCommand->getParameterFileNamePub());
+    }
+
+    public function testGetParameterFileNameWithProfile()
+    {
+        $this->oInput->getOption('profile')->willReturn('abc');
+        $_oCommand = new AbstractCommandDummy();
+        $_oCommand->initializePub(
+            $this->oInput->reveal(),
+            $this->oOutput->reveal()
+        );
+
+        $this->assertEquals('parameters_abc.yml', $_oCommand->getParameterFileNamePub());
+    }
 }
 
 class AbstractCommandDummy extends AbstractCommand
@@ -139,14 +164,14 @@ class AbstractCommandDummy extends AbstractCommand
         return 0;
     }
 
-    public function getHomeDirPub()
-    {
-        return parent::getHomeDir();
-    }
-
     protected function getHomeDir()
     {
         return vfsStream::url('unitTestRoot/homeDir');
+    }
+
+    protected function getWorkingDir()
+    {
+        return vfsStream::url('unitTestRoot/workingDir');
     }
 
     public function isAppRunablePub()
@@ -154,8 +179,18 @@ class AbstractCommandDummy extends AbstractCommand
         return $this->isAppRunable();
     }
 
-    protected function getWorkingDir()
+    public function getHomeDirPub()
     {
-        return vfsStream::url('unitTestRoot/workingDir');
+        return parent::getHomeDir();
+    }
+
+    public function initializePub(InputInterface $oInput, OutputInterface $oOutput)
+    {
+        parent::initialize($oInput, $oOutput);
+    }
+
+    public function getParameterFileNamePub()
+    {
+        return parent::getParameterFileName();
     }
 }
