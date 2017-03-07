@@ -13,7 +13,9 @@ use Chapi\Entity\JobEntityInterface;
 
 interface JobComparisonInterface
 {
-    const DIC_NAME = 'JobComparisonInterface';
+    const DIC_NAME          = 'JobComparisonInterface';
+    const DIC_NAME_CHRONOS  = 'ChronosJobComparisionBusinessCase';
+    const DIC_NAME_MARATHON = 'MarathonJobComparisionBusinessCase';
 
     /**
      * @return array

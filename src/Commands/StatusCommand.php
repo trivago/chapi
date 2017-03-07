@@ -16,6 +16,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StatusCommand extends AbstractCommand
 {
+    const LABEL_CHRONOS  = 'chronos';
+    const LABEL_MARATHON = 'marathon';
+
     /** @var JobIndexServiceInterface  */
     private $oJobIndexService;
 
@@ -44,21 +47,14 @@ class StatusCommand extends AbstractCommand
      */
     protected function process()
     {
-        // job data
-        /** @var JobComparisonInterface  $_oJobComparisonBusinessCase */
-        $_oJobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
-
-
-        $_aNewJobs = $_oJobComparisonBusinessCase->getRemoteMissingJobs();
-        $_aMissingJobs = $_oJobComparisonBusinessCase->getLocalMissingJobs();
-        $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
+        $_aChangedJobs = $this->getChangedAppJobs();
 
         // tracked jobs
         $this->oOutput->writeln("\nChanges to be committed");
         $this->oOutput->writeln("  (use 'chapi reset <job>...' to unstage)");
         $this->oOutput->writeln('');
 
-        $this->printStatusView(true, $_aNewJobs, $_aMissingJobs, $_aLocalJobUpdates);
+        $this->printStatusView($_aChangedJobs, true);
 
         // untracked jobs
         $this->oOutput->writeln("\nChanges not staged for commit");
@@ -66,90 +62,103 @@ class StatusCommand extends AbstractCommand
         $this->oOutput->writeln("  (use 'chapi checkout <job>...' to discard changes in local repository)");
         $this->oOutput->writeln('');
 
-        $this->printStatusView(false, $_aNewJobs, $_aMissingJobs, $_aLocalJobUpdates);
+        $this->printStatusView($_aChangedJobs, false);
 
         return 0;
     }
 
     /**
-     * @param $bJobIsInIndex
-     * @param $aNewJobs
-     * @param $aMissingJobs
-     * @param $aLocalJobUpdates
+     * @return array<string,array<string,array>>
      */
-    private function printStatusView($bJobIsInIndex, $aNewJobs, $aMissingJobs, $aLocalJobUpdates)
+    private function getChangedAppJobs()
     {
-        // new jobs
-        if (!empty($aNewJobs))
-        {
-            $this->printJobListComparedWithIndex($bJobIsInIndex, 'New jobs in local repository', $aNewJobs, "\t<comment>new job:\t%s</comment>");
-        }
+        /** @var JobComparisonInterface $_oJobComparisonBusinessCaseChronos */
+        /** @var JobComparisonInterface $_oJobComparisonBusinessCaseMarathon */
+        $_oJobComparisonBusinessCaseChronos  = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_CHRONOS);
+        $_oJobComparisonBusinessCaseMarathon = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_MARATHON);
 
-        // missing jobs
-        if (!empty($aMissingJobs))
-        {
-            $this->printJobListComparedWithIndex($bJobIsInIndex, 'Missing jobs in local repository', $aMissingJobs, "\t<fg=red>delete job:\t%s</>");
-        }
+        $_aResult = [
+            'new' => [
+                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getRemoteMissingJobs(),
+                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getRemoteMissingJobs(),
+            ],
+            'missing' => [
+                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getLocalMissingJobs(),
+                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getLocalMissingJobs(),
+            ],
+            'updates' => [
+                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getLocalJobUpdates(),
+                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getLocalJobUpdates(),
+            ],
+        ];
 
-        // updated jobs
-        if (!empty($aLocalJobUpdates))
+        return $_aResult;
+    }
+
+    /**
+     * @param array $aChangedJobs
+     * @param bool $bFilterIsInIndex
+     */
+    private function printStatusView($aChangedJobs, $bFilterIsInIndex)
+    {
+        $_aFormatMap = [
+            'new' => ['title' => 'New jobs in local repository', 'format' => "\t<comment>new %s job:\t%s</comment>"],
+            'missing' => ['title' => 'Missing jobs in local repository', 'format' => "\t<fg=red>delete %s job:\t%s</>"],
+            'updates' => ['title' => 'Updated jobs in local repository', 'format' => "\t<info>modified %s job:\t%s</info>"]
+        ];
+
+        foreach ($aChangedJobs as $_sJobStatus => $_aJobList)
         {
-            $this->printJobListComparedWithIndex($bJobIsInIndex, 'Updated jobs in local repository', $aLocalJobUpdates, "\t<info>modified job:\t%s</info>");
+            $_aFilteredJobList = $this->filterJobListWithIndex($_aJobList, $bFilterIsInIndex);
+            if (!empty($_aFilteredJobList))
+            {
+                $this->printJobList($_aFormatMap[$_sJobStatus]['title'], $_aFilteredJobList, $_aFormatMap[$_sJobStatus]['format']);
+            }
         }
     }
 
     /**
-     * @param $bJobIsInIndex
-     * @param $sTitle
-     * @param $aJobList
-     * @param $sListFormat
+     * @param array $aJobLists
+     * @param bool $bFilterIsInIndex
+     * @return array
      */
-    private function printJobListComparedWithIndex($bJobIsInIndex, $sTitle, $aJobList, $sListFormat)
+    private function filterJobListWithIndex($aJobLists, $bFilterIsInIndex)
     {
         $_aFilteredJobList = [];
 
-        foreach ($aJobList as $_sJobName)
+        foreach ($aJobLists as $sAppLabel => $aJobList)
         {
-            if (true == $bJobIsInIndex)
+            foreach ($aJobList as $_sJobName)
             {
-                if ($this->oJobIndexService->isJobInIndex($_sJobName))
+                if ($bFilterIsInIndex == $this->oJobIndexService->isJobInIndex($_sJobName))
                 {
-                    $_aFilteredJobList[] = $_sJobName;
-                }
-            }
-            else
-            {
-                if (!$this->oJobIndexService->isJobInIndex($_sJobName))
-                {
-                    $_aFilteredJobList[] = $_sJobName;
+                    $_aFilteredJobList[$sAppLabel][] = $_sJobName;
                 }
             }
         }
 
-        if (!empty($_aFilteredJobList))
-        {
-            $this->printJobList($sTitle, $_aFilteredJobList, $sListFormat);
-        }
-
+        return $_aFilteredJobList;
     }
 
     /**
-     * @param $sTitle
-     * @param $aJobList
-     * @param $sListFormat
-     * @return $this
+     * @param string $sTitle
+     * @param array $aJobLists
+     * @param string $sListFormat
      */
-    private function printJobList($sTitle, $aJobList, $sListFormat)
+    private function printJobList($sTitle, $aJobLists, $sListFormat)
     {
         $this->oOutput->writeln(sprintf('  %s:', $sTitle));
 
-        foreach ($aJobList as $_sJobName)
+        foreach ($aJobLists as $sLabel => $aJobList)
         {
-            $this->oOutput->writeln(sprintf($sListFormat, $_sJobName));
+            foreach ($aJobList as $_sJobName)
+            {
+                $this->oOutput->writeln(
+                    sprintf($sListFormat, $sLabel, $_sJobName)
+                );
+            }
         }
 
         $this->oOutput->writeln("\n");
-
-        return $this;
     }
 }
