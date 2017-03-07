@@ -87,19 +87,19 @@ class StatusCommand extends AbstractCommand
             ],
         ];
 
-        /** @var JobComparisonInterface  $_oJobComparisonBusinessCaseChronos */
-        /** @var JobComparisonInterface  $_oJobComparisonBusinessCaseMarathon */
-        $_oJobComparisonBusinessCaseChronos = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_CHRONOS);
+        /** @var JobComparisonInterface $_oJobComparisonBusinessCaseChronos */
+        /** @var JobComparisonInterface $_oJobComparisonBusinessCaseMarathon */
+        $_oJobComparisonBusinessCaseChronos  = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_CHRONOS);
         $_oJobComparisonBusinessCaseMarathon = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_MARATHON);
 
         $_aResult['new'][self::LABEL_MARATHON] = $_oJobComparisonBusinessCaseMarathon->getRemoteMissingJobs();
-        $_aResult['new'][self::LABEL_CHRONOS] = $_oJobComparisonBusinessCaseChronos->getRemoteMissingJobs();
+        $_aResult['new'][self::LABEL_CHRONOS]  = $_oJobComparisonBusinessCaseChronos->getRemoteMissingJobs();
 
         $_aResult['missing'][self::LABEL_MARATHON] = $_oJobComparisonBusinessCaseMarathon->getLocalMissingJobs();
-        $_aResult['missing'][self::LABEL_CHRONOS] = $_oJobComparisonBusinessCaseChronos->getLocalMissingJobs();
+        $_aResult['missing'][self::LABEL_CHRONOS]  = $_oJobComparisonBusinessCaseChronos->getLocalMissingJobs();
 
         $_aResult['updates'][self::LABEL_MARATHON] = $_oJobComparisonBusinessCaseMarathon->getLocalJobUpdates();
-        $_aResult['updates'][self::LABEL_CHRONOS] = $_oJobComparisonBusinessCaseChronos->getLocalJobUpdates();
+        $_aResult['updates'][self::LABEL_CHRONOS]  = $_oJobComparisonBusinessCaseChronos->getLocalJobUpdates();
 
 
         return $_aResult;
@@ -150,12 +150,10 @@ class StatusCommand extends AbstractCommand
         return $_aFilteredJobList;
     }
 
-
     /**
-     * @param $sTitle
-     * @param $aJobLists
-     * @param $sListFormat
-     * @return $this
+     * @param string $sTitle
+     * @param array $aJobLists
+     * @param string $sListFormat
      */
     private function printJobList($sTitle, $aJobLists, $sListFormat)
     {
@@ -172,7 +170,5 @@ class StatusCommand extends AbstractCommand
         }
 
         $this->oOutput->writeln("\n");
-
-        return $this;
     }
 }
