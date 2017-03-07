@@ -396,7 +396,9 @@ class BridgeFileSystem implements BridgeInterface
                         }
                         return false;
                     }
-                } else {
+                }
+                else
+                {
                     $_oDecodedConfig->apps[$key] = $oJobEntity;
                 }
                 $_bAppFound = true;

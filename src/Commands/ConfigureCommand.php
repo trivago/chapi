@@ -166,7 +166,10 @@ class ConfigureCommand extends AbstractCommand
         $_sYaml = $_oDumper->dump(array('parameters' => $aToStore), 2);
 
         $_oFileSystem = new Filesystem();
-        $_oFileSystem->dumpFile($this->getHomeDir() . '/parameters.yml', $_sYaml);
+        $_oFileSystem->dumpFile(
+            $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName(),
+            $_sYaml
+        );
     }
 
     /**
@@ -195,7 +198,7 @@ class ConfigureCommand extends AbstractCommand
     private function getParameterValue($sKey, $mDefaultValue = null)
     {
         $_oParser = new Parser();
-        $_sParameterFile = $this->getHomeDir() . '/parameters.yml';
+        $_sParameterFile = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
 
         if (file_exists($_sParameterFile))
         {
