@@ -15,6 +15,7 @@ use Chapi\Component\Command\CommandUtils;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -36,12 +37,34 @@ abstract class AbstractCommand extends Command
     /**
      * @var ContainerBuilder
      */
-    private static $oContainer;
+    private $oContainer;
 
     /**
      * @var string
      */
     private static $sHomeDir = '';
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
+
+        // setup default --profile option for all commands
+        $this->addOption('profile', null, InputOption::VALUE_OPTIONAL, 'Use a specific profile from your config file.');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function initialize(InputInterface $oInput, OutputInterface $oOutput)
+    {
+        $this->oInput = $oInput;
+        $this->oOutput = $oOutput;
+
+        parent::initialize($oInput, $oOutput);
+    }
 
     /**
      * Executes the current command.
@@ -62,9 +85,6 @@ abstract class AbstractCommand extends Command
      */
     protected function execute(InputInterface $oInput, OutputInterface $oOutput)
     {
-        $this->oInput = $oInput;
-        $this->oOutput = $oOutput;
-
         if (!$this->isAppRunable())
         {
             return 1;
@@ -88,12 +108,12 @@ abstract class AbstractCommand extends Command
      */
     protected function getContainer()
     {
-        if (is_null(self::$oContainer))
+        if (is_null($this->oContainer))
         {
             $_oContainer = new ContainerBuilder();
 
             // load local parameters
-            $this->loadParameterConfig($this->getHomeDir(), 'parameters.yml', $_oContainer);
+            $this->loadParameterConfig($this->getHomeDir(), $this->getParameterFileName(), $_oContainer);
 
             // load optional parameter in the current working directory
             $this->loadParameterConfig($this->getWorkingDir(), '.chapiconfig', $_oContainer);
@@ -102,10 +122,21 @@ abstract class AbstractCommand extends Command
             $_oLoader = new YamlFileLoader($_oContainer, new FileLocator(__DIR__ . self::FOLDER_RESOURCES));
             $_oLoader->load('services.yml');
 
-            self::$oContainer = $_oContainer;
+            $this->oContainer = $_oContainer;
         }
 
-        return self::$oContainer;
+        return $this->oContainer;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getParameterFileName()
+    {
+        $_sProfile = $this->oInput->getOption('profile');
+        return (is_string($_sProfile))
+            ? sprintf('parameters_%s.yml', $_sProfile)
+            : 'parameters.yml';
     }
 
     /**
