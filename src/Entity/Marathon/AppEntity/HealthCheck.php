@@ -57,5 +57,6 @@ class HealthCheck implements \JsonSerializable
         {
             unset($_aRet["port"]);
         }
+        return $_aRet;
     }
 }
