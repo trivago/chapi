@@ -145,7 +145,7 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
             {
                 foreach ($aValuesB as $_mValueB)
                 {
-                    if ($_mValueA == $_mValueB)
+                    if ($this->isEqual($_mValueA, $_mValueB))
                     {
                         continue 2;
                     }

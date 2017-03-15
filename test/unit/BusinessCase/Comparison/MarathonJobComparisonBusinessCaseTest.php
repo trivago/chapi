@@ -11,6 +11,7 @@ namespace unit\BusinessCase\Comparision;
 
 
 use Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase;
+use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
@@ -500,6 +501,33 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
                 'dependencies',
                 new MarathonAppEntity([ 'dependencies' => [ (object)[ 'X' => 'abc' ] ] ]),
                 new MarathonAppEntity([ 'dependencies' => [ (object)[ 'Y' => 'abc' ] ] ])
+            ]
+        );
+
+        $this->assertFalse($result);
+    }
+
+    public function testArrayOfSubentitiesEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEqual');
+        $method->setAccessible(true);
+
+        $healthCheckA = new HealthCheck();
+        $healthCheckA->port = 0;
+
+        $healthCheckB = new HealthCheck();
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->oLocalRepository->reveal(),
+                $this->oRemoteRepository->reveal(),
+                $this->oDiffCompare->reveal()
+            ),
+            [
+                'dependencies',
+                [$healthCheckA],
+                [$healthCheckB]
             ]
         );
 

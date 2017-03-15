@@ -14,7 +14,8 @@ use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 class HealthCheckTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testCheckAllKeysAreCorrect() {
+    public function testCheckAllKeysAreCorrect()
+    {
         $_aKeys = ["command", "gracePeriodSeconds", "intervalSeconds",
                     "maxConsecutiveFailures", "path", "port", "portIndex", "protocol" , "timeoutSeconds"];
 
@@ -24,7 +25,8 @@ class HealthCheckTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testHealthCheckIsSetProperly() {
+    public function testHealthCheckIsSetProperly()
+    {
         $aData = [
             "protocol" => "HTTP",
             "path" => "/health",
@@ -48,5 +50,50 @@ class HealthCheckTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(40, $oHealthCheck->timeoutSeconds);
         $this->assertEquals(4, $oHealthCheck->maxConsecutiveFailures);
         $this->assertTrue(isset($oHealthCheck->command));
+    }
+
+    public function testHealthCheckGivesProperJson()
+    {
+        $_sExpectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"port":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"command":{"value":"someCommand"}}';
+
+        $aData = [
+            "protocol" => "HTTP",
+            "path" => "/",
+            "gracePeriodSeconds" => 10,
+            "intervalSeconds" => 10,
+            "portIndex" => 0,
+            "port" => 0,
+            "timeoutSeconds" => 20,
+            "maxConsecutiveFailures" => 3,
+            "command" => ["value" => "someCommand"]
+        ];
+
+        $oHealthCheck = new HealthCheck($aData);
+
+        $_sGotData = json_encode($oHealthCheck);
+
+        $this->assertEquals($_sExpectedData, $_sGotData);
+    }
+
+    public function testHealthCheckHasPortUnsetWithNullValue()
+    {
+        $_sExpectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"command":{"value":"someCommand"}}';
+
+        $aData = [
+            "protocol" => "HTTP",
+            "path" => "/",
+            "gracePeriodSeconds" => 10,
+            "intervalSeconds" => 10,
+            "portIndex" => 0,
+            "timeoutSeconds" => 20,
+            "maxConsecutiveFailures" => 3,
+            "command" => ["value" => "someCommand"]
+        ];
+
+        $oHealthCheck = new HealthCheck($aData);
+
+        $_sGotData = json_encode($oHealthCheck);
+
+        $this->assertEquals($_sExpectedData, $_sGotData);
     }
 }
