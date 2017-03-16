@@ -2,13 +2,13 @@
 Chronos and marathon api client for your console. 
 
 ## Description
-Manage your [Chronos](https://github.com/mesos/chronos) and [Marathon](https://github.com/mesosphere/marathon) tasks like a git repository on your console:
+Manage your [Chronos](https://github.com/mesos/chronos) and [Marathon](https://github.com/mesosphere/marathon) tasks like a git repository in your console:
 
 * Prepare your tasks before you send them to Remote
-* Manage a separate git repository for tasks backups and history
-* Fast check of your tasks status
+* Manage a separate git repository for task backups and history
+* Quickly check your tasks' status
 
-It is possible to use either of the system independently or both at once.
+It is possible to use either of the systems independently or both at once.
 
 ## Requirements
 
@@ -30,12 +30,35 @@ You can use the `configure` command to setup your global settings:
 bin/chapi configure 
 ```
 
-Chapi will accept your global settings, which are located in your home directory, and/or a local `.chapiconfig` in your working directory.
-Both files are using the [yaml](http://yaml.org/) format. The settings of the local `.chapiconfig` will overwrite the global settings.
+### Configuration file locations
+Chapi attempts to read a global and a local configuration file, at least one of which must exist. 
+Should both files exist, values found in the local configuration override those defined in the global one.
 
-### Parameters
+The global configuration file's location is
 
-The parameter settings will be found under the `parameters` property:
+- `~/.chapi/parameters.yml`
+  if $CHAPI_HOME is not set and the --profile=[profilename] parameter is absent
+
+- `~/.chapi/parameters_<profilename>.yml`, 
+  if $CHAPI_HOME is not set and the --profile=[profilename] parameter is present
+
+- `${CHAPI_HOME}/parameters.yml`, 
+  if $CHAPI_HOME is set and the --profile=[profilename] parameter is absent
+
+- `${CHAPI_HOME}/parameters_<profilename>.yml`, 
+  if $CHAPI_HOME is set and the --profile=[profilename] parameter is present
+
+The local configuration file is named `.chapiconfig` and searched for in your current working directory.
+
+### Profiles
+You can switch between different profiles by using the global
+`--profile[=PROFILE]` option. This directs chapi to load a 
+`~/.chapi/parameters_<PROFILE>.yml` file instead of the default 
+`~/.chapi/parameters.yml` one.
+
+
+### Configuration file contents
+Both configuration files are in the [yaml](http://yaml.org/) format. All settings are located in the `parameters` property:
 
 ```yml
 parameters:
@@ -52,54 +75,36 @@ parameters:
     cache_dir: /path/to/chapi/cache/dir
 ```
 
-#### chronos_url
-The chronos api url (inclusive port). Look also under the [configure command](#configure) option `-u`.
+#### `chronos_url`
+The chronos api url (inclusive port). See also [configure command](#configure) option `-u`.
 
-#### chronos_http_username
-The chronos http username. Look also under the [configure command](#configure) option `-un`.
-
-Necessary if the setting `--http_credentials` is activated in your Chronos instance.
-
-#### chronos_http_password
-The chronos http password. Look also under the [configure command](#configure) option `-un`.
+#### `chronos_http_username`
+The chronos http username. See also [configure command](#configure) option `-un`.
 
 Necessary if the setting `--http_credentials` is activated in your Chronos instance.
 
-#### repository_dir
-Root path to your job files. Look also under the [configure command](#configure) option `-r`.
+#### `chronos_http_password`
+The chronos http password. See also [configure command](#configure) option `-un`.
 
-#### marathon_url
-The marathon api url (inclusive port). Look also under [configure command](#configure) option `-mu`.
+Necessary if the setting `--http_credentials` is activated in your Chronos instance.
 
-#### marathon_http_username
-The marathon http username. Look also under [configure command](#configure) option `-mun`.
+#### `repository_dir`
+Root path to your job files. See also [configure command](#configure) option `-r`.
 
-#### marathon_http_password
-The marathon http password. Look also under [configure command](#configure) option `-mp`.
+#### `marathon_url`
+The marathon api url (inclusive port). See also [configure command](#configure) option `-mu`.
 
-#### repository_dir_marathon:
-Root path to your tasks folder. Look also under [configure command](#configure) option `-mr`.
+#### `marathon_http_username`
+The marathon http username. See also [configure command](#configure) option `-mun`.
 
-#### cache_dir
-Path to cache directory. Look also under the [configure command](#configure) option `-d`.
+#### `marathon_http_password`
+The marathon http password. See also [configure command](#configure) option `-mp`.
 
-### Profiles
+#### `repository_dir_marathon`
+Root path to your tasks folder. See also [configure command](#configure) option `-mr`.
 
-You can use different profiles by the global `--profile[=PROFILE]` option. 
-If you use the the `--profile` option chapi will try to load a `~/.chapi/parameters_<PROFILE>.yml` instead of the default `~/.chapi/parameters.yml` one.
-
-### .chapiignore files
-
-You can add a `.chapiignore` file to your job repositories to untrack jobs to ignore.
-
-Each line in a `.chapiignore` file specifies a regular expression pattern.
-If the pattern will match with the job/app id it will not be tracked anymore.
-
-Example content:
-```
-^/app_prefix_xy/.*
--ignore$
-```
+#### `cache_dir`
+Path to cache directory. See also [configure command](#configure) option `-d`.
 
 ### Update notes
 
@@ -109,6 +114,33 @@ Because of the new marathon support with v0.9.0 you need to update your configur
 
 ```sh
 bin/chapi configure
+```
+
+### Disabling services
+
+To disable Chronos support and only use Marathon, set all the 
+Chronos parameters to "":
+
+```yaml
+parameters:
+    # [....]
+    chronos_url: ""
+    chronos_http_username: ""
+    chronos_http_password: ""
+    repository_dir: ""
+```
+
+## .chapiignore files
+
+You can add a `.chapiignore` file to your job repositories to untrack jobs you want chapi to ignore.
+
+Each line in `.chapiignore` specifies a regular expression pattern. Job/app ids matching the pattern
+will not be tracked anymore.
+
+Example content:
+```
+^/app_prefix_xy/.*
+-ignore$
 ```
 
 ## Usage
