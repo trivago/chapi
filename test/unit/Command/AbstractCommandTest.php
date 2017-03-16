@@ -74,6 +74,10 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
         $_oCommand = new AbstractCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $_oCommand->initializePub(
+            $this->oInput->reveal(),
+            $this->oOutput->reveal()
+        );
 
         $this->assertTrue($_oCommand->isAppRunablePub());
     }
@@ -91,6 +95,10 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
         $_oCommand = new AbstractCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $_oCommand->initializePub(
+            $this->oInput->reveal(),
+            $this->oOutput->reveal()
+        );
 
         $this->assertTrue($_oCommand->isAppRunablePub());
     }
@@ -110,6 +118,10 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
         $_oCommand = new AbstractCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $_oCommand->initializePub(
+            $this->oInput->reveal(),
+            $this->oOutput->reveal()
+        );
 
         $this->assertTrue($_oCommand->isAppRunablePub());
     }
