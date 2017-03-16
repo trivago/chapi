@@ -21,7 +21,7 @@ class CommitCommand extends AbstractCommand
     protected function configure()
     {
         $this->setName('commit')
-            ->setDescription('Record changes to chronos')
+            ->setDescription('Record changes to chronos/marathon')
         ;
     }
 
