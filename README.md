@@ -319,12 +319,6 @@ mv clusterAjobs/jobXy.json clusterBjobs/jobXy.json
 | validate   | :white_check_mark: |                    |
 
 
-## Todos:
-### Marathon
-- [ ] The validate command for marathon is not yet implemented.
-- [ ] The list command has status set as `ok` for marathon entities. This could show the last status of the app.
-
-
 ## Special cases in marathon:
 * Pulling a task from marathon will dump the json object with default values.
     This is the choice for now because calling marathon for app info sends
@@ -343,3 +337,42 @@ If you find any further issues or edge case, please create an issue.
 ## Supported Chronos versions
 * v2.3
 * v2.4
+
+## Docker
+
+You can run chapi also in a docker container.
+You will find the laster releases under [dockerhub](https://hub.docker.com/r/msiebeneicher/chapi-client/).
+
+### Prepare a parameters file for docker
+
+Create a `parameters_docker.yml` file with the following content:
+
+```yaml
+parameters:
+    cache_dir: /root/.chapi/cache
+    chronos_url: 'http://your.chronos.url:4400/'
+    chronos_http_username: YOUR_CHRONOS_USER
+    chronos_http_password: YOUR_CHRONOS_PASS
+    repository_dir: /chronos-jobs
+    marathon_url: 'http://your.marathon.url:8080/'
+    marathon_http_username: YOUR_MARATHON_USER
+    marathon_http_password: YOUR_MARATHON_PASS
+    repository_dir_marathon: /marathon-jobs
+```
+
+### Run docker
+
+```sh
+docker pull msiebeneicher/chapi-client:latest
+
+docker run -it \
+    -v ~/parameters_docker.yml:/root/.chapi/parameters.yml \
+    -v /your/local/checkout/chronos-jobs:/chronos-jobs \
+    -v /your/local/checkout/marathon-jobs:/marathon-jobs \
+    msiebeneicher/chapi-client:latest <COMMAND>
+```
+
+## Todos:
+### Marathon
+- [ ] The validate command for marathon is not yet implemented.
+- [ ] The list command has status set as `ok` for marathon entities. This could show the last status of the app.

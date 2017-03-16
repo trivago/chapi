@@ -1,0 +1,9 @@
+# vim swp files
+*.swp
+
+build/*
+vendor/*
+
+# Chapi
+/.chapiconfig*
+/*chapi.phar

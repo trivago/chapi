@@ -1,4 +1,10 @@
 # dev-master (v0.9.0)
+    2017-03-16 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Provided docker file and docs
+        
+    2017-03-10 bidesh <bideshthapaliya@gmail.com>
+        * Calculate correct difference in HealthCheck [PR#79]
+    
     2017-03-07 msiebeneicher <marc.siebeneicher@trivago.com>
         * [issue#70] added new `profile` handling
         *  added applications labels to `status` command
