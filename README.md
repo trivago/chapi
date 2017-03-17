@@ -404,6 +404,20 @@ docker run -it \
     msiebeneicher/chapi-client:latest <COMMAND>
 ```
 
+### Run docker for development
+
+```sh
+docker pull msiebeneicher/chapi-client:latest
+
+docker run -it \
+    -v ~/parameters_docker.yml:/root/.chapi/parameters.yml \
+    -v /your/local/checkout/chronos-jobs:/chronos-jobs \
+    -v /your/local/checkout/marathon-jobs:/marathon-jobs \
+    -v /Users/msiebeneicher/develop/checkout/chapi:/chapi \
+    --entrypoint /bin/bash \
+    msiebeneicher/chapi-client:latest
+```
+
 ## Todos:
 ### Marathon
 - [ ] The validate command for marathon is not yet implemented.

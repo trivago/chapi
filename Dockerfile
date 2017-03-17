@@ -17,6 +17,9 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # Copy code
 COPY . /chapi
 
+# create symlink
+RUN ln -s /chapi/bin/chapi /usr/local/bin/chapi
+
 # Install chapi
 WORKDIR /chapi
 RUN composer install --no-dev --optimize-autoloader --no-interaction
