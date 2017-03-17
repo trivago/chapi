@@ -52,7 +52,7 @@ abstract class AbstractCommand extends Command
         parent::__construct($name);
 
         // setup default --profile option for all commands
-        $this->addOption('profile', null, InputOption::VALUE_OPTIONAL, 'Use a specific profile from your config file.');
+        $this->addOption('profile', null, InputOption::VALUE_OPTIONAL, 'Look for global confguration in .../parameters_<profile>.yml instead of .../parameters.yml');
     }
 
     /**
@@ -144,9 +144,9 @@ abstract class AbstractCommand extends Command
      */
     protected function isAppRunable()
     {
-        // one file have to exist
+        // one file has to exist
         if (
-            !file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . 'parameters.yml')
+            !file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName())
             && !file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . '.chapiconfig')
         )
         {
