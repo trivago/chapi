@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Chapi\Component\DependencyInjection\Loader\YamChapiConfigLoader;
 
 abstract class AbstractCommand extends Command
 {
@@ -52,7 +53,13 @@ abstract class AbstractCommand extends Command
         parent::__construct($name);
 
         // setup default --profile option for all commands
-        $this->addOption('profile', null, InputOption::VALUE_OPTIONAL, 'Look for global confguration in .../parameters_<profile>.yml instead of .../parameters.yml');
+        $this->addOption(
+            'profile',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Look for global confguration in .../parameters_<profile>.yml instead of .../parameters.yml',
+            'default'
+        );
     }
 
     /**
@@ -133,10 +140,7 @@ abstract class AbstractCommand extends Command
      */
     protected function getParameterFileName()
     {
-        $_sProfile = $this->oInput->getOption('profile');
-        return (is_string($_sProfile))
-            ? sprintf('parameters_%s.yml', $_sProfile)
-            : 'parameters.yml';
+        return 'parameters.yml';
     }
 
     /**
@@ -210,8 +214,16 @@ abstract class AbstractCommand extends Command
         // load local parameters
         if (file_exists($sPath . DIRECTORY_SEPARATOR . $sFile))
         {
-            $_oLoader = new YamlFileLoader($oContainer, new FileLocator($sPath));
-            $_oLoader->load($sFile);
+            $_oLoader = new YamChapiConfigLoader($oContainer, new FileLocator($sPath));
+            $_oLoader->loadProfileParameters($sFile, $this->getProfileName());
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProfileName()
+    {
+        return $this->oInput->getOption('profile');
     }
 }

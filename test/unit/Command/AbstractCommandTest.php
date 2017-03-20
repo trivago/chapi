@@ -128,7 +128,7 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testGetParameterFileNameDefault()
     {
-        $this->oInput->getOption('profile')->willReturn(null);
+        $this->oInput->getOption('profile')->willReturn('default');
         $_oCommand = new AbstractCommandDummy();
         $_oCommand->initializePub(
             $this->oInput->reveal(),
@@ -147,7 +147,7 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
             $this->oOutput->reveal()
         );
 
-        $this->assertEquals('parameters_abc.yml', $_oCommand->getParameterFileNamePub());
+        $this->assertEquals('parameters.yml', $_oCommand->getParameterFileNamePub());
     }
 }
 

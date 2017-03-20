@@ -9,6 +9,8 @@
 
 namespace Chapi\Commands;
 
+use Chapi\Component\DependencyInjection\Loader\YamChapiConfigLoader;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -159,15 +161,29 @@ class ConfigureCommand extends AbstractCommand
         $aToStore = [];
         foreach ($aUserInput as $key => $value)
         {
-            $aToStore[$key] = $value['value'];
+            $aToStore[$key] = ('null' === $value['value']) ? null : $value['value'];
         }
 
+        $_aConfigToSave = [
+            $this->getProfileName() => [
+                'parameters' => $aToStore
+            ]
+        ];
+
+        $_sPath = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
+
+        // load exiting config to merge
+        $_aConfig = $this->loadConfigFile();
+        $_aFinalConfig['profiles'] = array_merge($_aConfig['profiles'], $_aConfigToSave);
+
+
+        // dump final config
         $_oDumper = new Dumper();
-        $_sYaml = $_oDumper->dump(array('parameters' => $aToStore), 2);
+        $_sYaml = $_oDumper->dump($_aFinalConfig, 4);
 
         $_oFileSystem = new Filesystem();
         $_oFileSystem->dumpFile(
-            $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName(),
+            $_sPath,
             $_sYaml
         );
     }
@@ -197,23 +213,48 @@ class ConfigureCommand extends AbstractCommand
      */
     private function getParameterValue($sKey, $mDefaultValue = null)
     {
+        $_aParameters = $this->loadConfigFile($this->getProfileName());
+
+        if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey]))
+        {
+            return $_aParameters['parameters'][$sKey];
+        }
+
+
+        return $mDefaultValue;
+    }
+
+    /**
+     * @param null $sProfile
+     * @return array|mixed
+     */
+    private function loadConfigFile($sProfile = null)
+    {
+        $_aEmptyResult = [
+            'profiles' => []
+        ];
+
         $_oParser = new Parser();
         $_sParameterFile = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
 
-        if (file_exists($_sParameterFile))
-        {
+        if (file_exists($_sParameterFile)) {
             $_aParameters = $_oParser->parse(
                 file_get_contents($_sParameterFile)
             );
 
-            if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey]))
+            if (null === $sProfile)
             {
-                return $_aParameters['parameters'][$sKey];
+                return $_aParameters;
             }
+
+            return (isset($_aParameters['profiles']) && isset($_aParameters['profiles'][$sProfile]))
+                ? $_aParameters['profiles'][$sProfile]
+                : $_aEmptyResult;
         }
 
-        return $mDefaultValue;
+        return $_aEmptyResult;
     }
+
 
     /**
      * @param string $sQuestion
