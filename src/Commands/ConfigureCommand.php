@@ -241,7 +241,7 @@ class ConfigureCommand extends AbstractCommand
 
     /**
      * @param mixed $mDefaultValue
-     * @return array
+     * @return mixed
      */
     private function loadConfigFile($mDefaultValue = [])
     {
