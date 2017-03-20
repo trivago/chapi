@@ -173,8 +173,11 @@ class ConfigureCommand extends AbstractCommand
         $_sPath = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
 
         // load exiting config to merge
-        $_aConfig = $this->loadConfigFile();
-        $_aFinalConfig['profiles'] = array_merge($_aConfig['profiles'], $_aConfigToSave);
+        $_aConfig = $this->loadConfigFile(['profiles' => []]);
+
+        $_aFinalConfig = [
+            'profiles' => array_merge($_aConfig['profiles'], $_aConfigToSave)
+        ];
 
 
         // dump final config
@@ -213,46 +216,48 @@ class ConfigureCommand extends AbstractCommand
      */
     private function getParameterValue($sKey, $mDefaultValue = null)
     {
-        $_aParameters = $this->loadConfigFile($this->getProfileName());
+        $_aParameters = $this->getParameters();
 
         if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey]))
         {
             return $_aParameters['parameters'][$sKey];
         }
 
-
         return $mDefaultValue;
     }
 
     /**
-     * @param null $sProfile
-     * @return array|mixed
+     * @return array
      */
-    private function loadConfigFile($sProfile = null)
+    private function getParameters()
     {
-        $_aEmptyResult = [
-            'profiles' => []
-        ];
+        $_sProfile = $this->getProfileName();
+        $_aParameters = $this->loadConfigFile();
 
-        $_oParser = new Parser();
+        return (isset($_aParameters['profiles']) && isset($_aParameters['profiles'][$_sProfile]))
+            ? $_aParameters['profiles'][$_sProfile]
+            : ['profiles' => []];
+    }
+
+    /**
+     * @param mixed $mDefaultValue
+     * @return array
+     */
+    private function loadConfigFile($mDefaultValue = [])
+    {
         $_sParameterFile = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
 
-        if (file_exists($_sParameterFile)) {
-            $_aParameters = $_oParser->parse(
-                file_get_contents($_sParameterFile)
-            );
-
-            if (null === $sProfile)
-            {
-                return $_aParameters;
-            }
-
-            return (isset($_aParameters['profiles']) && isset($_aParameters['profiles'][$sProfile]))
-                ? $_aParameters['profiles'][$sProfile]
-                : $_aEmptyResult;
+        if (!file_exists($_sParameterFile)) {
+            return $mDefaultValue;
         }
 
-        return $_aEmptyResult;
+        $_oParser = new Parser();
+
+        $_aParameters = $_oParser->parse(
+            file_get_contents($_sParameterFile)
+        );
+
+        return $_aParameters;
     }
 
 

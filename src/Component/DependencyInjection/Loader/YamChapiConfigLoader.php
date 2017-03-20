@@ -29,24 +29,20 @@ class YamChapiConfigLoader extends \Symfony\Component\DependencyInjection\Loader
      */
     public function loadProfileParameters($sResource, $sProfile)
     {
-        $path = $this->locator->locate($sResource);
-
-        $content = $this->loadFile($path);
-
-        $this->container->addResource(new FileResource($path));
+        $content = $this->loadProfileFileContent($sResource, $sProfile);
 
         // empty file
-        if (null === $content) {
+        if (empty($content)) {
             return;
         }
 
         // parameters
-        if (isset($content['profiles']) && isset($content['profiles'][$sProfile]) && isset($content['profiles'][$sProfile]['parameters'])) {
-            if (!is_array($content['profiles'][$sProfile]['parameters'])) {
+        if (isset($content['parameters'])) {
+            if (!is_array($content['parameters'])) {
                 throw new InvalidArgumentException(sprintf('The "parameters" key should contain an array in %s. Check your YAML syntax.', $sResource));
             }
 
-            foreach ($content['profiles'][$sProfile]['parameters'] as $key => $value) {
+            foreach ($content['parameters'] as $key => $value) {
                 $this->container->setParameter($key, $value);
             }
         }
@@ -113,5 +109,30 @@ class YamChapiConfigLoader extends \Symfony\Component\DependencyInjection\Loader
         }
 
         return $content;
+    }
+
+    /**
+     * @param string $sResource
+     * @param string $sProfile
+     * @return array
+     */
+    private function loadProfileFileContent($sResource, $sProfile)
+    {
+        $path = $this->locator->locate($sResource);
+        $content = $this->loadFile($path);
+
+        $this->container->addResource(new FileResource($path));
+
+        // empty file
+        if (null === $content) {
+            return [];
+        }
+
+        // parameters
+        if (isset($content['profiles']) && isset($content['profiles'][$sProfile])) {
+            return $content['profiles'][$sProfile];
+        }
+
+        return [];
     }
 }
