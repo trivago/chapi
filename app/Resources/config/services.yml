@@ -17,6 +17,7 @@ imports:
     - { resource: "component/cache.yml" }
     - { resource: "component/chronos_api_client.yml" }
     - { resource: "component/comparison.yml" }
+    - { resource: "component/config.yml" }
     - { resource: "component/date_period_factory.yml" }
     - { resource: "component/http_client.yml" }
     - { resource: "component/logger.yml" }

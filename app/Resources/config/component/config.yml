@@ -1,0 +1,10 @@
+services:
+  ChapiConfig:
+     class: Chapi\Component\Config\ChapiConfig
+     arguments:
+       - ["%chapi_home%", "%chapi_work_dir%"]
+       - "@ConfigYamlParser"
+       - "%chapi_profile%"
+
+  ConfigYamlParser:
+      class: Symfony\Component\Yaml\Parser
