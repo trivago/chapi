@@ -13,8 +13,6 @@ use Symfony\Component\Yaml\Parser as YamlParser;
 
 class ChapiConfig implements ChapiConfigInterface
 {
-    const CONFIG_FILE_NAME = '.chapiconfig';
-
     /**
      * @var string[]
      */

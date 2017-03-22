@@ -45,9 +45,9 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        if (file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'parameters.yml'))
+        if (file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'))
         {
-            unlink($this->sTempTestDir . DIRECTORY_SEPARATOR . 'parameters.yml');
+            unlink($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig');
         }
     }
 
@@ -84,7 +84,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $this->assertTrue(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'parameters.yml'));
+        $this->assertTrue(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
     }
 
     public function testConfigureWithArgumentsSuccess()
@@ -119,7 +119,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $this->assertTrue(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'parameters.yml'));
+        $this->assertTrue(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
     }
 
     public function testConfigureWithAndWithoutArgumentsSuccess()
@@ -155,7 +155,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $this->assertTrue(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'parameters.yml'));
+        $this->assertTrue(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
     }
 
     public function testConfigureWithoutArgumentsFailure()
@@ -191,7 +191,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $this->assertFalse(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'parameters.yml'));
+        $this->assertFalse(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
     }
 }
 

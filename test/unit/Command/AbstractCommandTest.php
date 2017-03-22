@@ -66,7 +66,7 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
         $_aStructure = [
             'homeDir' => [],
             'workingDir'=> [
-                '.chapiconfig' => "{ parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } }"
+                '.chapiconfig' => "{ profiles: { default: { parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } } } }"
             ]
         ];
 
@@ -86,7 +86,7 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
     {
         $_aStructure = [
             'homeDir'=>[
-                'parameters.yml' => "{ parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } }"
+                '.chapiconfig' => "{ profiles: { default: { parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } } } }"
             ],
             'workingDir'=>[]
         ];
@@ -107,10 +107,10 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
     {
         $_aStructure = [
             'homeDir' => [
-                'parameters.yml' => "{ parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } }"
+                '.chapiconfig' => "{ profiles: { default: { parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } } } }"
             ],
             'workingDir '=> [
-                '.chapiconfig' => "{ parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } }"
+                '.chapiconfig' => "{ profiles: { default: { parameters: { chronos_url: 'http://chronos.url:4400/', cache_dir: /tmp, repository_dir: /path/job/repository } } } }"
             ]
         ];
 
@@ -135,19 +135,7 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
             $this->oOutput->reveal()
         );
 
-        $this->assertEquals('parameters.yml', $_oCommand->getParameterFileNamePub());
-    }
-
-    public function testGetParameterFileNameWithProfile()
-    {
-        $this->oInput->getOption('profile')->willReturn('abc');
-        $_oCommand = new AbstractCommandDummy();
-        $_oCommand->initializePub(
-            $this->oInput->reveal(),
-            $this->oOutput->reveal()
-        );
-
-        $this->assertEquals('parameters.yml', $_oCommand->getParameterFileNamePub());
+        $this->assertEquals('.chapiconfig', $_oCommand->getParameterFileNamePub());
     }
 }
 

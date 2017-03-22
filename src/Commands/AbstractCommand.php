@@ -12,6 +12,7 @@ namespace Chapi\Commands;
 
 
 use Chapi\Component\Command\CommandUtils;
+use Chapi\Component\Config\ChapiConfigInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -145,7 +146,7 @@ abstract class AbstractCommand extends Command
      */
     protected function getParameterFileName()
     {
-        return 'parameters.yml';
+        return ChapiConfigInterface::CONFIG_FILE_NAME;
     }
 
     /**
@@ -155,8 +156,8 @@ abstract class AbstractCommand extends Command
     {
         // one file has to exist
         if (
-            !file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName())
-            && !file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . '.chapiconfig')
+            !file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . ChapiConfigInterface::CONFIG_FILE_NAME)
+            && !file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . ChapiConfigInterface::CONFIG_FILE_NAME)
         )
         {
             $this->oOutput->writeln(sprintf(
