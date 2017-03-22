@@ -80,14 +80,20 @@ services:
   FilterChronosJobIgnore:
     class: Chapi\Service\JobRepository\Filter\FilterIgnoreSettings
     arguments:
-      - ["%repository_dir%"]
       - "@LoggerInterface"
+      - "@FilterChronosChapiConfig"
 
   FilterChronosComposite:
     class: Chapi\Service\JobRepository\Filter\JobFilterComposite
     arguments:
       - ["@FilterChronosEntity", "@FilterChronosJobIgnore"]
 
+  FilterChronosChapiConfig:
+    class: Chapi\Component\Config\ChapiConfig
+    arguments:
+      - ["%chapi_home%", "%chapi_work_dir%", "%repository_dir%"]
+      - "@ConfigYamlParser"
+      - "%chapi_profile%"
 
   FilterMarathonEntity:
     class: Chapi\Service\JobRepository\Filter\FilterMarathonEntity
@@ -95,10 +101,17 @@ services:
   FilterMarathonJobIgnore:
     class: Chapi\Service\JobRepository\Filter\FilterIgnoreSettings
     arguments:
-      - ["%repository_dir_marathon%"]
       - "@LoggerInterface"
+      - "@FilterMarathonChapiConfig"
 
   FilterMarathonComposite:
     class: Chapi\Service\JobRepository\Filter\JobFilterComposite
     arguments:
       - ["@FilterMarathonEntity", "@FilterMarathonJobIgnore"]
+
+  FilterMarathonChapiConfig:
+    class: Chapi\Component\Config\ChapiConfig
+    arguments:
+      - ["%chapi_home%", "%chapi_work_dir%", "%repository_dir_marathon%"]
+      - "@ConfigYamlParser"
+      - "%chapi_profile%"
