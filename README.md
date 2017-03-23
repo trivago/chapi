@@ -36,13 +36,15 @@ Should both files exist, values found in the local configuration override those 
 
 The global configuration file's location is
 
-- `~/.chapi/parameters.yml`
+- `~/.chapi/.chapiconfig`
   if $CHAPI_HOME is not set
 
-- `${CHAPI_HOME}/parameters.yml`, 
+- `${CHAPI_HOME}/.chapiconfig`, 
   if $CHAPI_HOME is set
 
-The local configuration file is named `.chapiconfig` and searched for in your current working directory.
+The local configuration searched for in your current working directory.
+
+- `${PWD}/.chapiconfig`,
 
 ### Profiles
 You can switch between different profiles by using the global
@@ -74,6 +76,10 @@ profiles:
             repository_dir_marathon: /path/to/your/local/marathon/apps/repository
         
             cache_dir: /path/to/chapi/cache/dir
+            
+        ignore:
+          - *-dev
+          - !my-active-job-dev
     develop:
        parameters:
            chronos_url: http://your.chronos.url:chronos_api_port/
@@ -125,7 +131,9 @@ Path to cache directory. See also [configure command](#configure) option `-d`.
 #### v0.9.0
 
 Because of the new marathon support with v0.9.0 you need to update your configurations.
-The `parameters.yml` structure changed and need to recreate. 
+The `parameters.yml` structure changed and renamed to `.chapiconfig`.
+
+You need to recreate your config settings: 
 
 ```sh
 bin/chapi configure
@@ -147,17 +155,24 @@ profiles:
             repository_dir: null
 ```
 
-## .chapiignore files
+## Ignoring jobs
 
-You can add a `.chapiignore` file to your job repositories to untrack jobs you want chapi to ignore.
+You can specify pattern for each profile in your `.chapiconfig` file(s) and add a file to your job repositories to untrack jobs you want chapi to ignore.
 
-Each line in `.chapiignore` specifies a regular expression pattern. Job/app ids matching the pattern
-will not be tracked anymore.
+* The matching pattern according to the rules used by the libc [glob()](https://en.wikipedia.org/wiki/Glob_(programming)) function, which is similar to the rules used by common shells.
+* An optional prefix "`!`" which negates the pattern; any matching job excluded by a previous pattern will become included again.
 
 Example content:
-```
-^/app_prefix_xy/.*
--ignore$
+```yaml
+profiles:
+    default:
+        ignore:
+          - *-dev
+          - !my-active-job-dev
+    dev:
+        ignore:
+          - "*"
+          - "!*-dev"
 ```
 
 ## Usage
@@ -392,9 +407,9 @@ If you find any further issues or edge case, please create an issue.
 You can run chapi also in a docker container.
 You will find the laster releases under [dockerhub](https://hub.docker.com/r/msiebeneicher/chapi-client/).
 
-### Prepare a parameters file for docker
+### Prepare a config file for docker
 
-Create a `parameters_docker.yml` file with the following content:
+Create a `.chapiconfig_docker` file with the following content:
 
 ```yaml
 profiles:
@@ -417,7 +432,7 @@ profiles:
 docker pull msiebeneicher/chapi-client:latest
 
 docker run -it \
-    -v ~/parameters_docker.yml:/root/.chapi/parameters.yml \
+    -v ~/.chapiconfig_docker:/root/.chapi/.chapiconfig \
     -v /your/local/checkout/chronos-jobs:/chronos-jobs \
     -v /your/local/checkout/marathon-jobs:/marathon-jobs \
     msiebeneicher/chapi-client:latest <COMMAND>
@@ -429,7 +444,7 @@ docker run -it \
 docker pull msiebeneicher/chapi-client:latest
 
 docker run -it \
-    -v ~/parameters_docker.yml:/root/.chapi/parameters.yml \
+    -v ~/.chapiconfig_docker:/root/.chapi/.chapiconfig_docker \
     -v /your/local/checkout/chronos-jobs:/chronos-jobs \
     -v /your/local/checkout/marathon-jobs:/marathon-jobs \
     -v /your/local/checkout/chapi:/chapi \
@@ -438,6 +453,7 @@ docker run -it \
 ```
 
 ## Todos:
+
 ### Marathon
 - [ ] The validate command for marathon is not yet implemented.
 - [ ] The list command has status set as `ok` for marathon entities. This could show the last status of the app.
