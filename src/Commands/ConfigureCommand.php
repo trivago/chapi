@@ -9,8 +9,6 @@
 
 namespace Chapi\Commands;
 
-use Chapi\Component\DependencyInjection\Loader\YamChapiConfigLoader;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
