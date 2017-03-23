@@ -35,7 +35,7 @@ class ChapiConfig implements ChapiConfigInterface
 
     /**
      * ChapiConfig constructor.
-     * @param array $aDirectoryPaths
+     * @param string[] $aDirectoryPaths
      * @param YamlParser $oParser
      * @param string $sActiveProfile
      */

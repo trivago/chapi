@@ -221,7 +221,7 @@ abstract class AbstractCommand extends Command
             $this->getProfileName()
         );
 
-        $_oChapiConfigLoader  = new ChapiConfigLoader($_oContainer, $_oChapiConfig);
+        $_oChapiConfigLoader = new ChapiConfigLoader($_oContainer, $_oChapiConfig);
         $_oChapiConfigLoader->loadProfileParameters();
 
         // load basic parameters

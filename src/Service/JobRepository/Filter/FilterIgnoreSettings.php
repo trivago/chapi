@@ -80,7 +80,7 @@ class FilterIgnoreSettings implements JobFilterInterface
     }
 
     /**
-     * @return array[]
+     * @return array<*,array>
      */
     private function getSearchPatterns()
     {

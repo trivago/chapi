@@ -13,7 +13,7 @@ namespace Chapi\Component\DependencyInjection\Loader;
 interface ChapiConfigLoaderInterface
 {
     /**
-     *
+     * @return void
      */
     public function loadProfileParameters();
 }

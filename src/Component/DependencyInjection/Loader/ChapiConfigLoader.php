@@ -53,13 +53,21 @@ class ChapiConfigLoader implements ChapiConfigLoaderInterface
 
         // parameters
         if (isset($_aContent['parameters'])) {
-            if (!is_array($_aContent['parameters'])) {
-                throw new InvalidArgumentException('The "parameters" key should contain an array. Please check your configuration files.');
-            }
+            $this->setParameters($_aContent['parameters']);
+        }
+    }
 
-            foreach ($_aContent['parameters'] as $key => $value) {
-                $this->oContainer->setParameter($key, $value);
-            }
+    /**
+     * @param array $aParameters
+     */
+    private function setParameters(array &$aParameters)
+    {
+        if (!is_array($aParameters)) {
+            throw new InvalidArgumentException('The "parameters" key should contain an array. Please check your configuration files.');
+        }
+
+        foreach ($aParameters as $key => $value) {
+            $this->oContainer->setParameter($key, $value);
         }
     }
 }
