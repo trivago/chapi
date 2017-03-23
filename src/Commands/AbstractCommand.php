@@ -12,7 +12,9 @@ namespace Chapi\Commands;
 
 
 use Chapi\Component\Command\CommandUtils;
+use Chapi\Component\Config\ChapiConfig;
 use Chapi\Component\Config\ChapiConfigInterface;
+use Chapi\Component\DependencyInjection\Loader\ChapiConfigLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +22,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Chapi\Component\DependencyInjection\Loader\YamChapiConfigLoader;
+use Symfony\Component\Yaml\Parser;
 
 abstract class AbstractCommand extends Command
 {
@@ -200,21 +202,6 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @param string $sPath
-     * @param string $sFile
-     * @param ContainerBuilder $oContainer
-     */
-    private function loadParameterConfig($sPath, $sFile, $oContainer)
-    {
-        // load local parameters
-        if (file_exists($sPath . DIRECTORY_SEPARATOR . $sFile))
-        {
-            $_oLoader = new YamChapiConfigLoader($oContainer, new FileLocator($sPath));
-            $_oLoader->loadProfileParameters($sFile, $this->getProfileName());
-        }
-    }
-
-    /**
      * @return string
      */
     protected function getProfileName()
@@ -228,12 +215,14 @@ abstract class AbstractCommand extends Command
     private function loadContainer()
     {
         $_oContainer = new ContainerBuilder();
+        $_oChapiConfig = new ChapiConfig(
+            [$this->getHomeDir(), $this->getWorkingDir()],
+            new Parser(),
+            $this->getProfileName()
+        );
 
-        // load local parameters
-        $this->loadParameterConfig($this->getHomeDir(), '.chapiconfig', $_oContainer);
-
-        // load optional parameter in the current working directory
-        $this->loadParameterConfig($this->getWorkingDir(), '.chapiconfig', $_oContainer);
+        $_oChapiConfigLoader  = new ChapiConfigLoader($_oContainer, $_oChapiConfig);
+        $_oChapiConfigLoader->loadProfileParameters();
 
         // load basic parameters
         $_oContainer->setParameter('chapi_home', $this->getHomeDir());
