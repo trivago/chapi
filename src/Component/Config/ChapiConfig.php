@@ -83,7 +83,7 @@ class ChapiConfig implements ChapiConfigInterface
             }
 
             $_aConfigPart = $this->loadConfig($_sDirectoryPath);
-            $_aConfig = self::array_merge_recursive_distinct($_aConfig, $_aConfigPart);
+            $_aConfig = self::arrayMergeRecursiveDistinct($_aConfig, $_aConfigPart);
         }
 
         return $_aConfig;
@@ -134,7 +134,7 @@ class ChapiConfig implements ChapiConfigInterface
      *
      * @see http://php.net/manual/de/function.array-merge-recursive.php
      */
-    private static function array_merge_recursive_distinct ( array &$array1, array &$array2 )
+    private static function arrayMergeRecursiveDistinct(array &$array1, array &$array2)
     {
         $merged = $array1;
 
@@ -142,7 +142,7 @@ class ChapiConfig implements ChapiConfigInterface
         {
             if (is_array($value) && isset ($merged[$key]) && is_array($merged[$key]))
             {
-                $merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value);
+                $merged[$key] = self::arrayMergeRecursiveDistinct($merged[$key], $value);
             }
             else
             {

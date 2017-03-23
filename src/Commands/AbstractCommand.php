@@ -118,18 +118,7 @@ abstract class AbstractCommand extends Command
     {
         if (is_null($this->oContainer))
         {
-            $_oContainer = new ContainerBuilder();
-
-            // load local parameters
-            $this->loadParameterConfig($this->getHomeDir(), '.chapiconfig', $_oContainer);
-
-            // load optional parameter in the current working directory
-            $this->loadParameterConfig($this->getWorkingDir(), '.chapiconfig', $_oContainer);
-
-            // load basic parameters
-            $_oContainer->setParameter('chapi_home', $this->getHomeDir());
-            $_oContainer->setParameter('chapi_work_dir', $this->getWorkingDir());
-            $_oContainer->setParameter('chapi_profile', $this->getProfileName());
+            $_oContainer = $this->loadContainer();
 
             // load services
             $_oLoader = new YamlFileLoader($_oContainer, new FileLocator(__DIR__ . self::FOLDER_RESOURCES));
@@ -231,5 +220,26 @@ abstract class AbstractCommand extends Command
     protected function getProfileName()
     {
         return $this->oInput->getOption('profile');
+    }
+
+    /**
+     * @return ContainerBuilder
+     */
+    private function loadContainer()
+    {
+        $_oContainer = new ContainerBuilder();
+
+        // load local parameters
+        $this->loadParameterConfig($this->getHomeDir(), '.chapiconfig', $_oContainer);
+
+        // load optional parameter in the current working directory
+        $this->loadParameterConfig($this->getWorkingDir(), '.chapiconfig', $_oContainer);
+
+        // load basic parameters
+        $_oContainer->setParameter('chapi_home', $this->getHomeDir());
+        $_oContainer->setParameter('chapi_work_dir', $this->getWorkingDir());
+        $_oContainer->setParameter('chapi_profile', $this->getProfileName());
+
+        return $_oContainer;
     }
 }

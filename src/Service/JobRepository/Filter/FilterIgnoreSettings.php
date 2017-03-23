@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
 class FilterIgnoreSettings implements JobFilterInterface
 {
     /**
-     * @var string[]
+     * @var array[]
      */
     private $aSearchPatterns;
 
@@ -80,7 +80,7 @@ class FilterIgnoreSettings implements JobFilterInterface
     }
 
     /**
-     * @return string[]
+     * @return array[]
      */
     private function getSearchPatterns()
     {
@@ -98,7 +98,8 @@ class FilterIgnoreSettings implements JobFilterInterface
         if (isset($_aProfileConfig['ignore']))
         {
 
-            foreach ($_aProfileConfig['ignore'] as $_sSearchPattern) {
+            foreach ($_aProfileConfig['ignore'] as $_sSearchPattern)
+            {
                 if ('!' == substr($_sSearchPattern, 0, 1))
                 {
                     $_aSearchPatterns['ignore_not'][] = substr($_sSearchPattern, 1);
