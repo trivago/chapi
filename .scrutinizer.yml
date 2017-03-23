@@ -54,7 +54,7 @@ checks:
             verify_documented_constraints: true
             verify_parent_constraints: true
         avoid_multiple_statements_on_same_line: true
-        align_assignments: true
+        align_assignments: false
 
 tools:
     php_cs_fixer: true

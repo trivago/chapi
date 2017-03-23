@@ -10,18 +10,14 @@
 namespace Chapi\Service\JobRepository\Filter;
 
 
+use Chapi\Component\Config\ChapiConfigInterface;
 use Chapi\Entity\JobEntityInterface;
 use Psr\Log\LoggerInterface;
 
 class FilterIgnoreSettings implements JobFilterInterface
 {
     /**
-     * @var string[]
-     */
-    private $aDirectoryPaths = [];
-
-    /**
-     * @var string[]
+     * @var array[]
      */
     private $aSearchPatterns;
 
@@ -31,16 +27,22 @@ class FilterIgnoreSettings implements JobFilterInterface
     private $oLogger;
 
     /**
+     * @var ChapiConfigInterface
+     */
+    private $oConfig;
+
+    /**
      * FilterIgnoreSettings constructor.
-     * @param $aDirectoryPaths
+     * @param LoggerInterface $oLogger
+     * @param ChapiConfigInterface $oConfig
      */
     public function __construct(
-        $aDirectoryPaths,
-        LoggerInterface $oLogger
+        LoggerInterface $oLogger,
+        ChapiConfigInterface $oConfig
     )
     {
-        $this->aDirectoryPaths = $aDirectoryPaths;
         $this->oLogger = $oLogger;
+        $this->oConfig = $oConfig;
     }
 
     /**
@@ -50,25 +52,35 @@ class FilterIgnoreSettings implements JobFilterInterface
     public function isInteresting(JobEntityInterface $oJobEntity)
     {
         $_aSearchPatterns = $this->getSearchPatterns();
-        foreach ($_aSearchPatterns as $_sSearchPattern)
-        {
-            $_sRegEx = sprintf('~%s~s', $_sSearchPattern);
 
-            if (preg_match($_sRegEx, $oJobEntity->getKey()))
+        foreach ($_aSearchPatterns['ignore'] as $_sPatternIgnore)
+        {
+            if (fnmatch($_sPatternIgnore, $oJobEntity->getKey()))
             {
                 $this->oLogger->debug(
-                    sprintf('FilterIgnoreSettings :: HIT "%s" FOR "%s"', $_sSearchPattern, $oJobEntity->getKey())
+                    sprintf('FilterIgnoreSettings :: IGNORE "%s" FOR "%s"', $_sPatternIgnore, $oJobEntity->getKey())
                 );
+
+                foreach ($_aSearchPatterns['ignore_not'] as $_sPatternIgnoreNot)
+                {
+                    if (fnmatch($_sPatternIgnoreNot, $oJobEntity->getKey())) {
+                        $this->oLogger->debug(
+                            sprintf('FilterIgnoreSettings ::   IGNORE NOT "%s" FOR "%s"', $_sPatternIgnoreNot, $oJobEntity->getKey())
+                        );
+
+                        return true;
+                    }
+                }
+
                 return false;
             }
-
         }
 
         return true;
     }
 
     /**
-     * @return string[]
+     * @return array<*,array>
      */
     private function getSearchPatterns()
     {
@@ -77,44 +89,28 @@ class FilterIgnoreSettings implements JobFilterInterface
             return $this->aSearchPatterns;
         }
 
-        $_aSearchPatterns = [];
+        $_aProfileConfig = $this->oConfig->getProfileConfig();
+        $_aSearchPatterns = [
+            'ignore' => [],
+            'ignore_not' => []
+        ];
 
-        foreach ($this->aDirectoryPaths as $_sDirectoryPath)
+        if (isset($_aProfileConfig['ignore']))
         {
-            if (!is_dir($_sDirectoryPath))
-            {
-                throw new \RuntimeException(sprintf('Path "%s" is not valid', $_sDirectoryPath));
-            }
 
-            $this->getSearchPatternsFromDir($_sDirectoryPath, $_aSearchPatterns);
+            foreach ($_aProfileConfig['ignore'] as $_sSearchPattern)
+            {
+                if ('!' == substr($_sSearchPattern, 0, 1))
+                {
+                    $_aSearchPatterns['ignore_not'][] = substr($_sSearchPattern, 1);
+                }
+                else
+                {
+                    $_aSearchPatterns['ignore'][] = $_sSearchPattern;
+                }
+            }
         }
 
         return $this->aSearchPatterns = $_aSearchPatterns;
-    }
-
-    /**
-     * @param string $sDirectoryPath
-     * @param array $aSearchPatterns
-     */
-    private function getSearchPatternsFromDir($sDirectoryPath, &$aSearchPatterns = [])
-    {
-        $_sIgnoreFilePath = $sDirectoryPath . DIRECTORY_SEPARATOR . '.chapiignore';
-
-        if (is_file($_sIgnoreFilePath))
-        {
-            $_oFile = new \SplFileObject($_sIgnoreFilePath);
-
-            while (!$_oFile->eof())
-            {
-                $_sSearchPattern = trim($_oFile->fgets());
-                if ($_sSearchPattern)
-                {
-                    $aSearchPatterns[] = $_sSearchPattern;
-                }
-            }
-
-            // Unset the file to call __destruct(), closing the file handle.
-            $_oFile = null;
-        }
     }
 }

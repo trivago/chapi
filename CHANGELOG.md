@@ -1,4 +1,7 @@
 # dev-master (v0.9.0)
+    2017-03-23 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Normalised config files and chapiignor handling (BC)
+    
     2017-03-16 msiebeneicher <marc.siebeneicher@trivago.com>
         * Provided docker file and docs
         

@@ -159,15 +159,32 @@ class ConfigureCommand extends AbstractCommand
         $aToStore = [];
         foreach ($aUserInput as $key => $value)
         {
-            $aToStore[$key] = $value['value'];
+            $aToStore[$key] = ('null' === $value['value']) ? null : $value['value'];
         }
 
+        $_aConfigToSave = [
+            $this->getProfileName() => [
+                'parameters' => $aToStore
+            ]
+        ];
+
+        $_sPath = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
+
+        // load exiting config to merge
+        $_aConfig = $this->loadConfigFile(['profiles' => []]);
+
+        $_aFinalConfig = [
+            'profiles' => array_merge($_aConfig['profiles'], $_aConfigToSave)
+        ];
+
+
+        // dump final config
         $_oDumper = new Dumper();
-        $_sYaml = $_oDumper->dump(array('parameters' => $aToStore), 2);
+        $_sYaml = $_oDumper->dump($_aFinalConfig, 4);
 
         $_oFileSystem = new Filesystem();
         $_oFileSystem->dumpFile(
-            $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName(),
+            $_sPath,
             $_sYaml
         );
     }
@@ -197,23 +214,50 @@ class ConfigureCommand extends AbstractCommand
      */
     private function getParameterValue($sKey, $mDefaultValue = null)
     {
-        $_oParser = new Parser();
-        $_sParameterFile = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
+        $_aParameters = $this->getParameters();
 
-        if (file_exists($_sParameterFile))
+        if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey]))
         {
-            $_aParameters = $_oParser->parse(
-                file_get_contents($_sParameterFile)
-            );
-
-            if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey]))
-            {
-                return $_aParameters['parameters'][$sKey];
-            }
+            return $_aParameters['parameters'][$sKey];
         }
 
         return $mDefaultValue;
     }
+
+    /**
+     * @return array
+     */
+    private function getParameters()
+    {
+        $_sProfile = $this->getProfileName();
+        $_aParameters = $this->loadConfigFile();
+
+        return (isset($_aParameters['profiles']) && isset($_aParameters['profiles'][$_sProfile]))
+            ? $_aParameters['profiles'][$_sProfile]
+            : ['profiles' => []];
+    }
+
+    /**
+     * @param mixed $mDefaultValue
+     * @return mixed
+     */
+    private function loadConfigFile($mDefaultValue = [])
+    {
+        $_sParameterFile = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
+
+        if (!file_exists($_sParameterFile)) {
+            return $mDefaultValue;
+        }
+
+        $_oParser = new Parser();
+
+        $_aParameters = $_oParser->parse(
+            file_get_contents($_sParameterFile)
+        );
+
+        return $_aParameters;
+    }
+
 
     /**
      * @param string $sQuestion

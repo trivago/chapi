@@ -36,43 +36,63 @@ Should both files exist, values found in the local configuration override those 
 
 The global configuration file's location is
 
-- `~/.chapi/parameters.yml`
-  if $CHAPI_HOME is not set and the --profile=[profilename] parameter is absent
+- `~/.chapi/.chapiconfig`
+  if $CHAPI_HOME is not set
 
-- `~/.chapi/parameters_<profilename>.yml`, 
-  if $CHAPI_HOME is not set and the --profile=[profilename] parameter is present
+- `${CHAPI_HOME}/.chapiconfig`, 
+  if $CHAPI_HOME is set
 
-- `${CHAPI_HOME}/parameters.yml`, 
-  if $CHAPI_HOME is set and the --profile=[profilename] parameter is absent
+The local configuration searched for in your current working directory.
 
-- `${CHAPI_HOME}/parameters_<profilename>.yml`, 
-  if $CHAPI_HOME is set and the --profile=[profilename] parameter is present
-
-The local configuration file is named `.chapiconfig` and searched for in your current working directory.
+- `${PWD}/.chapiconfig`,
 
 ### Profiles
 You can switch between different profiles by using the global
-`--profile[=PROFILE]` option. This directs chapi to load a 
-`~/.chapi/parameters_<PROFILE>.yml` file instead of the default 
-`~/.chapi/parameters.yml` one.
+`--profile[=PROFILE]` option.
+
+If no profile is set chapi will use `default` as active profile.
 
 
 ### Configuration file contents
-Both configuration files are in the [yaml](http://yaml.org/) format. All settings are located in the `parameters` property:
+Both configuration files are in the [yaml](http://yaml.org/) format. 
 
-```yml
-parameters:
-    chronos_url: http://your.chronos.url:chronos_api_port/
-    chronos_http_username: username
-    chronos_http_password: password
-    repository_dir: /path/to/your/local/task/repository
+The configuration is located in the `profiles` property. 
+There you will find the `parameters` for each set profile.
 
-    marathon_url: http://your.marathon.url:marathon_api_port/
-    marathon_http_username: username
-    marathon_http_password: password
-    repository_dir_marathon: /path/to/your/local/marathon/apps/repository
+`default` will be used if you don't use a explicit profile.
 
-    cache_dir: /path/to/chapi/cache/dir
+```yaml
+profiles:
+    default:
+        parameters:
+            chronos_url: http://your.chronos.url:chronos_api_port/
+            chronos_http_username: username
+            chronos_http_password: password
+            repository_dir: /path/to/your/local/task/repository
+        
+            marathon_url: http://your.marathon.url:marathon_api_port/
+            marathon_http_username: username
+            marathon_http_password: password
+            repository_dir_marathon: /path/to/your/local/marathon/apps/repository
+        
+            cache_dir: /path/to/chapi/cache/dir
+            
+        ignore:
+          - *-dev
+          - !my-active-job-dev
+    develop:
+       parameters:
+           chronos_url: http://your.chronos.url:chronos_api_port/
+           chronos_http_username: null
+           chronos_http_password: null
+           repository_dir: /path/to/your/local/task/repository
+      
+           marathon_url: null
+           marathon_http_username: null
+           marathon_http_password: null
+           repository_dir_marathon: null
+      
+           cache_dir: /path/to/chapi/cache/dir_dev
 ```
 
 #### `chronos_url`
@@ -110,7 +130,10 @@ Path to cache directory. See also [configure command](#configure) option `-d`.
 
 #### v0.9.0
 
-Because of the new marathon support with v0.9.0 you need to update your configurations:
+Because of the new marathon support with v0.9.0 you need to update your configurations.
+The `parameters.yml` structure changed and renamed to `.chapiconfig`.
+
+You need to recreate your config settings: 
 
 ```sh
 bin/chapi configure
@@ -119,28 +142,37 @@ bin/chapi configure
 ### Disabling services
 
 To disable Chronos support and only use Marathon, set all the 
-Chronos parameters to "":
+Chronos parameters to `null`:
 
 ```yaml
-parameters:
-    # [....]
-    chronos_url: ""
-    chronos_http_username: ""
-    chronos_http_password: ""
-    repository_dir: ""
+profiles:
+    default:
+        parameters:
+            # [....]
+            chronos_url: null
+            chronos_http_username: null
+            chronos_http_password: null
+            repository_dir: null
 ```
 
-## .chapiignore files
+## Ignoring jobs
 
-You can add a `.chapiignore` file to your job repositories to untrack jobs you want chapi to ignore.
+You can specify pattern for each profile in your `.chapiconfig` file(s) and add a file to your job repositories to untrack jobs you want chapi to ignore.
 
-Each line in `.chapiignore` specifies a regular expression pattern. Job/app ids matching the pattern
-will not be tracked anymore.
+* The matching pattern according to the rules used by the libc [glob()](https://en.wikipedia.org/wiki/Glob_(programming)) function, which is similar to the rules used by common shells.
+* An optional prefix "`!`" which negates the pattern; any matching job excluded by a previous pattern will become included again.
 
 Example content:
-```
-^/app_prefix_xy/.*
--ignore$
+```yaml
+profiles:
+    default:
+        ignore:
+          - *-dev
+          - !my-active-job-dev
+    dev:
+        ignore:
+          - "*"
+          - "!*-dev"
 ```
 
 ## Usage
@@ -375,21 +407,23 @@ If you find any further issues or edge case, please create an issue.
 You can run chapi also in a docker container.
 You will find the laster releases under [dockerhub](https://hub.docker.com/r/msiebeneicher/chapi-client/).
 
-### Prepare a parameters file for docker
+### Prepare a config file for docker
 
-Create a `parameters_docker.yml` file with the following content:
+Create a `.chapiconfig_docker` file with the following content:
 
 ```yaml
-parameters:
-    cache_dir: /root/.chapi/cache
-    chronos_url: 'http://your.chronos.url:4400/'
-    chronos_http_username: YOUR_CHRONOS_USER
-    chronos_http_password: YOUR_CHRONOS_PASS
-    repository_dir: /chronos-jobs
-    marathon_url: 'http://your.marathon.url:8080/'
-    marathon_http_username: YOUR_MARATHON_USER
-    marathon_http_password: YOUR_MARATHON_PASS
-    repository_dir_marathon: /marathon-jobs
+profiles:
+    default:
+        parameters:
+            cache_dir: /root/.chapi/cache
+            chronos_url: 'http://your.chronos.url:4400/'
+            chronos_http_username: YOUR_CHRONOS_USER
+            chronos_http_password: YOUR_CHRONOS_PASS
+            repository_dir: /chronos-jobs
+            marathon_url: 'http://your.marathon.url:8080/'
+            marathon_http_username: YOUR_MARATHON_USER
+            marathon_http_password: YOUR_MARATHON_PASS
+            repository_dir_marathon: /marathon-jobs
 ```
 
 ### Run docker
@@ -398,7 +432,7 @@ parameters:
 docker pull msiebeneicher/chapi-client:latest
 
 docker run -it \
-    -v ~/parameters_docker.yml:/root/.chapi/parameters.yml \
+    -v ~/.chapiconfig_docker:/root/.chapi/.chapiconfig \
     -v /your/local/checkout/chronos-jobs:/chronos-jobs \
     -v /your/local/checkout/marathon-jobs:/marathon-jobs \
     msiebeneicher/chapi-client:latest <COMMAND>
@@ -410,15 +444,16 @@ docker run -it \
 docker pull msiebeneicher/chapi-client:latest
 
 docker run -it \
-    -v ~/parameters_docker.yml:/root/.chapi/parameters.yml \
+    -v ~/.chapiconfig_docker:/root/.chapi/.chapiconfig_docker \
     -v /your/local/checkout/chronos-jobs:/chronos-jobs \
     -v /your/local/checkout/marathon-jobs:/marathon-jobs \
-    -v /Users/msiebeneicher/develop/checkout/chapi:/chapi \
+    -v /your/local/checkout/chapi:/chapi \
     --entrypoint /bin/bash \
     msiebeneicher/chapi-client:latest
 ```
 
 ## Todos:
+
 ### Marathon
 - [ ] The validate command for marathon is not yet implemented.
 - [ ] The list command has status set as `ok` for marathon entities. This could show the last status of the app.
