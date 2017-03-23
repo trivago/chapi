@@ -11,7 +11,7 @@ namespace Chapi\Component\DependencyInjection\Loader;
 
 
 use Chapi\Component\Config\ChapiConfigInterface;
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
+use \InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ChapiConfigLoader implements ChapiConfigLoaderInterface
@@ -53,7 +53,20 @@ class ChapiConfigLoader implements ChapiConfigLoaderInterface
 
         // parameters
         if (isset($_aContent['parameters'])) {
+            $this->validate($_aContent);
             $this->setParameters($_aContent['parameters']);
+        }
+    }
+
+    /**
+     * @param array $aContent
+     * @throws InvalidArgumentException
+     * @return void
+     */
+    private function validate(array &$aContent)
+    {
+        if (isset($aContent['parameters']) && !is_array($aContent['parameters'])) {
+            throw new InvalidArgumentException('The "parameters" key should contain an array. Please check your configuration files.');
         }
     }
 
@@ -62,10 +75,6 @@ class ChapiConfigLoader implements ChapiConfigLoaderInterface
      */
     private function setParameters(array &$aParameters)
     {
-        if (!is_array($aParameters)) {
-            throw new InvalidArgumentException('The "parameters" key should contain an array. Please check your configuration files.');
-        }
-
         foreach ($aParameters as $key => $value) {
             $this->oContainer->setParameter($key, $value);
         }
