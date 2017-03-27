@@ -1,4 +1,22 @@
 # dev-master (v0.9.0)
+    2017-03-27 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies (including require-dev)
+            - Updating symfony/debug (v3.2.4 => v3.2.6)
+            - Updating symfony/console (v3.2.4 => v3.2.6)
+            - Updating symfony/dependency-injection (v3.2.4 => v3.2.6)
+            - Updating symfony/filesystem (v3.2.4 => v3.2.6)
+            - Updating symfony/config (v3.2.4 => v3.2.6)
+            - Updating symfony/http-foundation (v3.2.4 => v3.2.6)    
+            - Updating symfony/event-dispatcher (v3.2.4 => v3.2.6)
+            - Updating symfony/http-kernel (v3.2.4 => v3.2.6)
+            - Updating monolog/monolog (1.22.0 => 1.22.1)
+            - Updating symfony/monolog-bridge (v3.2.4 => v3.2.6)
+            - Updating symfony/yaml (v3.2.4 => v3.2.6)
+            - Updating sebastian/code-unit-reverse-lookup (1.0.0 => 1.0.1)
+            - Updating phpspec/prophecy (v1.6.2 => v1.7.0)
+            - Updating phpunit/phpunit (5.7.14 => 5.7.17)
+            - Updating guzzlehttp/psr7 (1.4.1 => 1.4.2)
+    
     2017-03-23 msiebeneicher <marc.siebeneicher@trivago.com>
         * Normalised config files and chapiignor handling (BC)
     
