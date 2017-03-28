@@ -1,4 +1,6 @@
-# dev-master (v0.9.0)
+# dev-master (v0.10.0)
+
+# v0.9.0
     2017-03-27 msiebeneicher <marc.siebeneicher@trivago.com>
         * Updating dependencies (including require-dev)
             - Updating symfony/debug (v3.2.4 => v3.2.6)
