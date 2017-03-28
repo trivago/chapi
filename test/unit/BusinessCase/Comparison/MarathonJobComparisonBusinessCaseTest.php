@@ -12,6 +12,7 @@ namespace unit\BusinessCase\Comparision;
 
 use Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
+use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
@@ -52,14 +53,14 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->willReturn($_aLocalEntities);
 
         $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
-          $this->oLocalRepository->reveal(),
+            $this->oLocalRepository->reveal(),
             $this->oRemoteRepository->reveal(),
             $this->oDiffCompare->reveal()
         );
 
         $_aLocalMissingJobs = $oMarathonJobCompare->getLocalMissingJobs();
 
-        $this->assertEquals(1, count($_aLocalMissingJobs), 'Expected 1 job, got '. count($_aLocalMissingJobs));
+        $this->assertEquals(1, count($_aLocalMissingJobs), 'Expected 1 job, got ' . count($_aLocalMissingJobs));
 
         $_sGotKey = $_aLocalMissingJobs[0];
         $this->assertEquals("/main/id1", $_sGotKey, 'Expected ”/main/id1", received ' . $_sGotKey);
@@ -87,7 +88,7 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $_aRemoteMissingJobs = $oMarathonJobCompare->getRemoteMissingJobs();
 
-        $this->assertEquals(1, count($_aRemoteMissingJobs), 'Expected 1 job, got '. count($_aRemoteMissingJobs));
+        $this->assertEquals(1, count($_aRemoteMissingJobs), 'Expected 1 job, got ' . count($_aRemoteMissingJobs));
 
         $_sGotKey = $_aRemoteMissingJobs[0];
         $this->assertEquals("/main/id1", $_sGotKey, 'Expected ”/main/id1", received ' . $_sGotKey);
@@ -124,9 +125,43 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $_aUpdatedApps = $oMarathonJobCompare->getLocalJobUpdates();
 
-        $this->assertEquals(1, count($_aUpdatedApps), 'Expected 1 job, got '. count($_aUpdatedApps));
+        $this->assertEquals(1, count($_aUpdatedApps), 'Expected 1 job, got ' . count($_aUpdatedApps));
 
         $this->assertEquals('/main/id2', $_aUpdatedApps[0], 'Expected "/main/id2", received ' . $_aUpdatedApps[0]);
+    }
+
+    public function testGetLocalUpdatesCallsPreCompareModification()
+    {
+        $_oLocalEntity = $this->getValidMarathonAppEntity('/main/id1');
+
+        $_oRemoteEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $_oRemoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
+
+
+        $this->oLocalRepository
+            ->getJobs()
+            ->willReturn([$_oLocalEntity]);
+
+        $this->oRemoteRepository
+            ->getJobs()
+            ->willReturn([$_oRemoteEntity]);
+
+        $this->oRemoteRepository
+            ->getJob(Argument::exact($_oRemoteEntity->getKey()))
+            ->willReturn($_oRemoteEntity);
+
+
+        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->oLocalRepository->reveal(),
+            $this->oRemoteRepository->reveal(),
+            $this->oDiffCompare->reveal()
+        );
+
+        $_aGotDiff = $oMarathonJobCompare->getLocalJobUpdates('/main/id1');
+
+        $_aExpectedDiff = [];
+        $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
+
     }
 
     public function testGetJobDiffWithChangesInRemoteSuccess()
@@ -178,6 +213,36 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             "dependencies" => '- []\n+ [\n+ "/some/dep"\n+ ]'
         ];
         $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
+    }
+
+    public function testGetJobDiffCallsPreCompareModification()
+    {
+        $_oLocalEntity = $this->getValidMarathonAppEntity('/main/id1');
+
+        $_oRemoteEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $_oRemoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
+
+
+        $this->oLocalRepository
+            ->getJob(Argument::exact($_oLocalEntity->getKey()))
+            ->willReturn($_oLocalEntity);
+
+        $this->oRemoteRepository
+            ->getJob(Argument::exact($_oRemoteEntity->getKey()))
+            ->willReturn($_oRemoteEntity);
+
+
+        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->oLocalRepository->reveal(),
+            $this->oRemoteRepository->reveal(),
+            $this->oDiffCompare->reveal()
+        );
+
+        $_aGotDiff = $oMarathonJobCompare->getJobDiff('/main/id1');
+
+        $_aExpectedDiff = [];
+        $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
+
     }
 
     public function testIsJobAvailableSuccess()
