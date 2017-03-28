@@ -156,6 +156,7 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
             $_oRemoteEntity = $this->getEntitySetWithDefaults();
         }
 
+        $this->preCompareModifications($_oLocalEntity, $_oRemoteEntity);
         $_aNonIdenticalProps = $this->compareJobEntities(
             $_oLocalEntity,
             $_oRemoteEntity
