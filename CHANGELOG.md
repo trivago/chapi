@@ -1,29 +1,44 @@
 # dev-master (v0.10.0)
-    2017-06-28 msiebeneicher <marc.siebeneicher@trivago.com>
-            * Updating dependencies 
-              Package operations: 1 install, 21 updates, 0 removals
-                - Updating symfony/debug (v3.2.6 => v3.3.5)
-                - Updating symfony/polyfill-mbstring (v1.3.0 => v1.4.0)
-                - Updating symfony/console (v3.2.6 => v3.3.5)
-                - Installing psr/container (1.0.0)
-                - Updating symfony/dependency-injection (v3.2.6 => v3.3.5)
-                - Updating symfony/filesystem (v3.2.6 => v3.3.5)
-                - Updating symfony/config (v3.2.6 => v3.3.5)
-                - Updating symfony/http-foundation (v3.2.6 => v3.3.5)
-                - Updating symfony/event-dispatcher (v3.2.6 => v3.3.5)
-                - Updating symfony/http-kernel (v3.2.6 => v3.3.5)
-                - Updating monolog/monolog (1.22.1 => 1.23.0)
-                - Updating symfony/monolog-bridge (v3.2.6 => v3.3.5)
-                - Updating doctrine/cache (v1.6.1 => v1.6.2)
-                - Updating guzzlehttp/guzzle (6.2.3 => 6.3.0)
-                - Updating symfony/yaml (v3.2.6 => v3.3.5
-                - Updating sebastian/diff (1.4.1 => 1.4.3)
-                - Updating phpunit/phpunit-mock-objects (3.4.3 => 3.4.4)
-                - Updating phpunit/php-code-coverage (4.0.7 => 4.0.8)
-                - Updating phpdocumentor/type-resolver (0.2.1 => 0.4.0)
-                - Updating phpdocumentor/reflection-docblock (3.1.1 => 3.2.0)
-                - Updating myclabs/deep-copy (1.6.0 => 1.6.1)
-                - Updating phpunit/phpunit (5.7.17 => 5.7.21)
+    2017-08-02 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies 
+           Package operations: 0 installs, 11 updates, 0 removals
+             - Updating symfony/debug (v3.3.5 => v3.3.6)
+             - Updating symfony/console (v3.3.5 => v3.3.6)
+             - Updating symfony/dependency-injection (v3.3.5 => v3.3.6)
+             - Updating symfony/yaml (v3.3.5 => v3.3.6)
+             - Updating symfony/filesystem (v3.3.5 => v3.3.6)
+             - Updating symfony/config (v3.3.5 => v3.3.6)
+             - Updating symfony/http-foundation (v3.3.5 => v3.3.6)
+             - Updating symfony/event-dispatcher (v3.3.5 => v3.3.6)
+             - Updating symfony/http-kernel (v3.3.5 => v3.3.6)
+             - Updating symfony/monolog-bridge (v3.3.5 => v3.3.6)
+             - Updating mikey179/vfsstream (v1.6.4 => v1.6.5)
+    
+    2017-07-28 msiebeneicher <marc.siebeneicher@trivago.com>
+        * Updating dependencies 
+          Package operations: 1 install, 21 updates, 0 removals
+            - Updating symfony/debug (v3.2.6 => v3.3.5)
+            - Updating symfony/polyfill-mbstring (v1.3.0 => v1.4.0)
+            - Updating symfony/console (v3.2.6 => v3.3.5)
+            - Installing psr/container (1.0.0)
+            - Updating symfony/dependency-injection (v3.2.6 => v3.3.5)
+            - Updating symfony/filesystem (v3.2.6 => v3.3.5)
+            - Updating symfony/config (v3.2.6 => v3.3.5)
+            - Updating symfony/http-foundation (v3.2.6 => v3.3.5)
+            - Updating symfony/event-dispatcher (v3.2.6 => v3.3.5)
+            - Updating symfony/http-kernel (v3.2.6 => v3.3.5)
+            - Updating monolog/monolog (1.22.1 => 1.23.0)
+            - Updating symfony/monolog-bridge (v3.2.6 => v3.3.5)
+            - Updating doctrine/cache (v1.6.1 => v1.6.2)
+            - Updating guzzlehttp/guzzle (6.2.3 => 6.3.0)
+            - Updating symfony/yaml (v3.2.6 => v3.3.5
+            - Updating sebastian/diff (1.4.1 => 1.4.3)
+            - Updating phpunit/phpunit-mock-objects (3.4.3 => 3.4.4)
+            - Updating phpunit/php-code-coverage (4.0.7 => 4.0.8)
+            - Updating phpdocumentor/type-resolver (0.2.1 => 0.4.0)
+            - Updating phpdocumentor/reflection-docblock (3.1.1 => 3.2.0)
+            - Updating myclabs/deep-copy (1.6.0 => 1.6.1)
+            - Updating phpunit/phpunit (5.7.17 => 5.7.21)
 
 # v0.9.0
     2017-03-27 msiebeneicher <marc.siebeneicher@trivago.com>
