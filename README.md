@@ -12,7 +12,7 @@ It is possible to use either of the systems independently or both at once.
 
 ## Requirements
 
-* php >= 5.6 || hhvm >= 3.15
+* php >= 5.6
 
 ## Installation / Configuration
 
