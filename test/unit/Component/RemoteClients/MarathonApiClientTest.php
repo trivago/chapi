@@ -8,7 +8,6 @@
 
 namespace unit\Component\RemoteClients;
 
-
 use Chapi\Component\RemoteClients\MarathonApiClient;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Exception\HttpConnectionException;
@@ -155,8 +154,5 @@ class MarathonApiClientTest extends \PHPUnit_Framework_TestCase
         $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($oMarathonApiClient->ping());
-
     }
-
-
 }

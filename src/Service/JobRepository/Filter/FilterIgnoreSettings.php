@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobRepository\Filter;
 
-
 use Chapi\Component\Config\ChapiConfigInterface;
 use Chapi\Entity\JobEntityInterface;
 use Psr\Log\LoggerInterface;
@@ -39,8 +38,7 @@ class FilterIgnoreSettings implements JobFilterInterface
     public function __construct(
         LoggerInterface $oLogger,
         ChapiConfigInterface $oConfig
-    )
-    {
+    ) {
         $this->oLogger = $oLogger;
         $this->oConfig = $oConfig;
     }
@@ -53,16 +51,13 @@ class FilterIgnoreSettings implements JobFilterInterface
     {
         $_aSearchPatterns = $this->getSearchPatterns();
 
-        foreach ($_aSearchPatterns['ignore'] as $_sPatternIgnore)
-        {
-            if (fnmatch($_sPatternIgnore, $oJobEntity->getKey()))
-            {
+        foreach ($_aSearchPatterns['ignore'] as $_sPatternIgnore) {
+            if (fnmatch($_sPatternIgnore, $oJobEntity->getKey())) {
                 $this->oLogger->debug(
                     sprintf('FilterIgnoreSettings :: IGNORE "%s" FOR "%s"', $_sPatternIgnore, $oJobEntity->getKey())
                 );
 
-                foreach ($_aSearchPatterns['ignore_not'] as $_sPatternIgnoreNot)
-                {
+                foreach ($_aSearchPatterns['ignore_not'] as $_sPatternIgnoreNot) {
                     if (fnmatch($_sPatternIgnoreNot, $oJobEntity->getKey())) {
                         $this->oLogger->debug(
                             sprintf('FilterIgnoreSettings ::   IGNORE NOT "%s" FOR "%s"', $_sPatternIgnoreNot, $oJobEntity->getKey())
@@ -84,8 +79,7 @@ class FilterIgnoreSettings implements JobFilterInterface
      */
     private function getSearchPatterns()
     {
-        if (!is_null($this->aSearchPatterns))
-        {
+        if (!is_null($this->aSearchPatterns)) {
             return $this->aSearchPatterns;
         }
 
@@ -95,17 +89,11 @@ class FilterIgnoreSettings implements JobFilterInterface
             'ignore_not' => []
         ];
 
-        if (isset($_aProfileConfig['ignore']))
-        {
-
-            foreach ($_aProfileConfig['ignore'] as $_sSearchPattern)
-            {
-                if ('!' == substr($_sSearchPattern, 0, 1))
-                {
+        if (isset($_aProfileConfig['ignore'])) {
+            foreach ($_aProfileConfig['ignore'] as $_sSearchPattern) {
+                if ('!' == substr($_sSearchPattern, 0, 1)) {
                     $_aSearchPatterns['ignore_not'][] = substr($_sSearchPattern, 1);
-                }
-                else
-                {
+                } else {
                     $_aSearchPatterns['ignore'][] = $_sSearchPattern;
                 }
             }

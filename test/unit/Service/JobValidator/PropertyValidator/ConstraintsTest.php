@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\Constraints;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
@@ -23,7 +22,6 @@ class ConstraintsTest extends AbstractValidatorTest
         $this->handleValidTestCase($_oValidator, 'constraints', []);
         $this->handleValidTestCase($_oValidator, 'constraints', null);
         $this->handleValidTestCase($_oValidator, 'constraints', [[1, 2, 3], ['a', 'b', 'c']]);
-        
     }
 
     public function testIsValidFailure()

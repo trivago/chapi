@@ -367,6 +367,5 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
         $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
 
         $this->assertTrue($oChronosApiClient->ping());
-
     }
 }

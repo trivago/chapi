@@ -71,8 +71,7 @@ class SchedulingViewCommand extends AbstractCommand
         $_sEndTime = $this->oInput->getOption('endtime');
 
         $_iStartTime = ($_sStartTime == null) ? $_iCurrentTime : strtotime($_sStartTime);
-        if ($_sStartTime != null && $_iStartTime < $_iCurrentTime)
-        {
+        if ($_sStartTime != null && $_iStartTime < $_iCurrentTime) {
             $_iStartTime = strtotime($_sStartTime . ' + 24 hours');
         }
 
@@ -103,10 +102,8 @@ class SchedulingViewCommand extends AbstractCommand
         $_iRowCount = 0;
 
         /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($_aJobs as $_oJobEntity)
-        {
-            if (!empty($_oJobEntity->schedule))
-            {
+        foreach ($_aJobs as $_oJobEntity) {
+            if (!empty($_oJobEntity->schedule)) {
                 $_bPrintTime = (0 == ($_iRowCount % 5)) ? true : false;
                 $_oJobStats = $this->oJobStatsService->getJobStats($_oJobEntity->name);
 
@@ -152,12 +149,10 @@ class SchedulingViewCommand extends AbstractCommand
         $fParentJobRunTime,
         &$iRowCount,
         $iCurrentChildLevel = 0
-    )
-    {
+    ) {
         $_aChildJobs = $this->oJobDependencyService->getChildJobs($sParentJobName, JobDependencyServiceInterface::REPOSITORY_LOCAL);
 
-        foreach ($_aChildJobs as $_sChildJobName)
-        {
+        foreach ($_aChildJobs as $_sChildJobName) {
             $_bPrintTime = (0 == ($iRowCount % 5)) ? true : false;
             $_oChildJobStats = $this->oJobStatsService->getJobStats($_sChildJobName);
 
@@ -203,8 +198,7 @@ class SchedulingViewCommand extends AbstractCommand
         $fRunSeconds = 0.0,
         $bPrintTime = true,
         $iJobStartTimeDelay = 0
-    )
-    {
+    ) {
         $_sTimeline = '';
         $_aStartTimes = $this->getJobStartTimesInPeriod($oJobDatePeriod, $iJobStartTimeDelay);
 
@@ -217,24 +211,20 @@ class SchedulingViewCommand extends AbstractCommand
         $_bHasToCloseFinalTag = false;
 
         /** @var \DateTime $_oTime */
-        foreach ($oDatePeriod as $_oTime)
-        {
+        foreach ($oDatePeriod as $_oTime) {
             $_bPrintJobEnd = false;
             $_bPrintJobStart = false;
 
-            if (isset($_aStartTimes[$_oTime->format('YmdHi')]))
-            {
+            if (isset($_aStartTimes[$_oTime->format('YmdHi')])) {
                 $_bJobStarted = true;
                 $_bPrintJobStart = true;
                 $_sSpacer = '=';
             }
 
-            if ($_bJobStarted)
-            {
+            if ($_bJobStarted) {
                 ++$_iPrintedRunMinutes;
 
-                if ($_iRunMinutes <= $_iPrintedRunMinutes)
-                {
+                if ($_iRunMinutes <= $_iPrintedRunMinutes) {
                     $_bJobStarted = false;
                     $_bPrintJobEnd = true;
                     $_sSpacer = '-';
@@ -244,27 +234,19 @@ class SchedulingViewCommand extends AbstractCommand
 
             $_iMod = ((int) $_oTime->format('i')) % 15;
 
-            if ($_iMod == 0)
-            {
-                if ($bPrintTime)
-                {
+            if ($_iMod == 0) {
+                if ($bPrintTime) {
                     $_sTimeline .= $this->parseTimeLineStrMark($_bPrintJobStart, $_bPrintJobEnd, $_bHasToCloseFinalTag, $_oTime->format('H>i'), $_oTime->format('H:i'));
-
-                }
-                else
-                {
+                } else {
                     $_sTimeline .= $this->parseTimeLineStrMark($_bPrintJobStart, $_bPrintJobEnd, $_bHasToCloseFinalTag, str_repeat('>', 5), str_repeat($_sSpacer, 5));
                 }
-            }
-            else
-            {
+            } else {
                 $_sTimeline .= $this->parseTimeLineStrMark($_bPrintJobStart, $_bPrintJobEnd, $_bHasToCloseFinalTag, '>', $_sSpacer);
             }
         }
 
         // add final tag to the end if you runs longer than current timeframe
-        if ($_bHasToCloseFinalTag)
-        {
+        if ($_bHasToCloseFinalTag) {
             $_sTimeline .= '</comment>';
         }
 
@@ -281,22 +263,15 @@ class SchedulingViewCommand extends AbstractCommand
      */
     private function parseTimeLineStrMark($bPrintJobStart, $bPrintJobEnd, &$bHasToCloseFinalTag, $sStartStopMark, $sSpacer)
     {
-        if ($bPrintJobStart && $bPrintJobEnd)
-        {
+        if ($bPrintJobStart && $bPrintJobEnd) {
             $_sTimelineSnippet = sprintf('<comment>%s</comment>', $sStartStopMark);
-        }
-        elseif ($bPrintJobStart)
-        {
+        } elseif ($bPrintJobStart) {
             $_sTimelineSnippet = sprintf('<comment>%s', $sStartStopMark);
             $bHasToCloseFinalTag = true;
-        }
-        elseif ($bPrintJobEnd)
-        {
+        } elseif ($bPrintJobEnd) {
             $_sTimelineSnippet = sprintf('%s</comment>', $sStartStopMark);
             $bHasToCloseFinalTag = false;
-        }
-        else
-        {
+        } else {
             $_sTimelineSnippet = $sSpacer;
         }
 
@@ -313,10 +288,8 @@ class SchedulingViewCommand extends AbstractCommand
         $_aStartTimes = [];
 
         /** @var \DateTime $_oJobTime */
-        foreach ($oJobDatePeriod as $_oJobTime)
-        {
-            if ($iJobStartTimeDelay > 0)
-            {
+        foreach ($oJobDatePeriod as $_oJobTime) {
+            if ($iJobStartTimeDelay > 0) {
                 $_oJobTime->add(new \DateInterval('PT' . $iJobStartTimeDelay . 'S'));
             }
 
@@ -348,14 +321,12 @@ class SchedulingViewCommand extends AbstractCommand
     private function createDatePeriod($sDateTimeStart = '', $iTimestampStart = 0, $sDateTimeEnd = '', $iTimestampEnd = 0, $sDateInterval = 'PT1M')
     {
         $_oDateStart = new \DateTime($sDateTimeStart);
-        if ($iTimestampStart > 0)
-        {
+        if ($iTimestampStart > 0) {
             $_oDateStart->setTimestamp($iTimestampStart);
         }
 
         $_oDateEnd = new \DateTime($sDateTimeEnd);
-        if ($iTimestampEnd > 0)
-        {
+        if ($iTimestampEnd > 0) {
             $_oDateEnd->setTimestamp($iTimestampEnd);
         }
 
@@ -376,17 +347,13 @@ class SchedulingViewCommand extends AbstractCommand
         $_aJobs = [];
 
         /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($_oJobCollection as $_oJobEntity)
-        {
-            if (
-                $_oJobEntity->isSchedulingJob()
+        foreach ($_oJobCollection as $_oJobEntity) {
+            if ($_oJobEntity->isSchedulingJob()
                 && false === $_oJobEntity->disabled
                 && false === strpos($_oJobEntity->schedule, 'R0')
-            )
-            {
+            ) {
                 $_oJobDatePeriod = $this->createDatePeriodForJob($_oJobEntity, $iEndTime);
-                if ($this->isPeriodInTimeFrame($_oJobDatePeriod, $iStartTime, $iEndTime))
-                {
+                if ($this->isPeriodInTimeFrame($_oJobDatePeriod, $iStartTime, $iEndTime)) {
                     $_aJobs[] = $_oJobEntity;
                 }
             }
@@ -406,17 +373,14 @@ class SchedulingViewCommand extends AbstractCommand
         $_iLastTime = 0;
 
         /** @var \DateTime $_oJobTime */
-        foreach ($oJobDatePeriod as $_oJobTime)
-        {
+        foreach ($oJobDatePeriod as $_oJobTime) {
             // jobs under 1 hours should always be displayed (break after the second loop)
-            if ($_oJobTime->getTimestamp() - $_iLastTime <= 3600)
-            {
+            if ($_oJobTime->getTimestamp() - $_iLastTime <= 3600) {
                 return true;
             }
 
             // is one starting point in timeframe?
-            if ($_oJobTime->getTimestamp() >= $iStartTime && $_oJobTime->getTimestamp() <= $iEndTime)
-            {
+            if ($_oJobTime->getTimestamp() >= $iStartTime && $_oJobTime->getTimestamp() <= $iEndTime) {
                 return true;
             }
 

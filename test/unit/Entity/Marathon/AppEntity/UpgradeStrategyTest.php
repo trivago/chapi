@@ -8,12 +8,12 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
 
 class UpgradeStrategyTest extends \PHPUnit_Framework_TestCase
 {
-    function testAllKeysAreCorrect() {
+    function testAllKeysAreCorrect()
+    {
         $_aKeys = ["minimumHealthCapacity", "maximumOverCapacity"];
 
         $oUpgradeStrategy = new UpgradeStrategy();
@@ -23,7 +23,8 @@ class UpgradeStrategyTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    function testUpgradeStrategySetCorrectly() {
+    function testUpgradeStrategySetCorrectly()
+    {
         $aData = [
             "minimumHealthCapacity" => 2,
             "maximumOverCapacity" => 3

@@ -37,8 +37,7 @@ class JobStatsService implements JobStatsServiceInterface
     public function __construct(
         \Chapi\Component\RemoteClients\ApiClientInterface $oApiClient,
         CacheInterface $oCache
-    )
-    {
+    ) {
         $this->oApiClient = $oApiClient;
         $this->oCache = $oCache;
     }
@@ -52,13 +51,11 @@ class JobStatsService implements JobStatsServiceInterface
         $_sCacheKey = sprintf(self::CACHE_KEY_JOB_STATS, $sJobName);
         $_aStats = $this->oCache->get($_sCacheKey);
 
-        if (empty($_aStats))
-        {
+        if (empty($_aStats)) {
             $_aStats = $this->oApiClient->getJobStats($sJobName);
 
             // set result to cache
-            if (!empty($_aStats))
-            {
+            if (!empty($_aStats)) {
                 $this->oCache->set($_sCacheKey, $_aStats, self::CACHE_TIME_JOB_STATS);
             }
         }

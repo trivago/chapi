@@ -2,7 +2,6 @@
 
 namespace Chapi\Component\RemoteClients;
 
-
 use Chapi\Component\Http\HttpClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
@@ -17,8 +16,7 @@ class MarathonApiClient implements ApiClientInterface
 
     public function __construct(
         HttpClientInterface $oHttpClient
-    )
-    {
+    ) {
         $this->oHttpClient = $oHttpClient;
     }
 
@@ -29,8 +27,7 @@ class MarathonApiClient implements ApiClientInterface
     public function listingJobs()
     {
         $oResponse = $this->oHttpClient->get('/v2/apps');
-        if (200 == $oResponse->getStatusCode())
-        {
+        if (200 == $oResponse->getStatusCode()) {
             return $oResponse->json();
         }
 
@@ -91,13 +88,10 @@ class MarathonApiClient implements ApiClientInterface
     {
         try {
             $this->oHttpClient->get('/v2/info');
-        } catch (HttpConnectionException $e)
-        {
-            if (
-                $e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
+        } catch (HttpConnectionException $e) {
+            if ($e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
                 $e->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
-            )
-            {
+            ) {
                 return false;
             }
         }

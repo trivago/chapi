@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\Retries;
 
 class RetriesTest extends AbstractValidatorTest

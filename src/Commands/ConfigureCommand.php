@@ -60,8 +60,7 @@ class ConfigureCommand extends AbstractCommand
     {
         $_aParams = $this->getInputValues();
 
-        if ($this->hasValidateUserInput($_aParams))
-        {
+        if ($this->hasValidateUserInput($_aParams)) {
             $this->saveParameters($_aParams);
             return 0;
         }
@@ -133,8 +132,7 @@ class ConfigureCommand extends AbstractCommand
     private function getInputValue($sValueKey, $sQuestion, $bHiddenAnswer = false)
     {
         $_sValue = $this->oInput->getOption($sValueKey);
-        if (empty($_sValue))
-        {
+        if (empty($_sValue)) {
             $_sValue = $this->printQuestion(
                 $sQuestion,
                 $this->getParameterValue($sValueKey),
@@ -157,8 +155,7 @@ class ConfigureCommand extends AbstractCommand
         // With this loop we get rid of the "required" information
         // from getInputValues().
         $aToStore = [];
-        foreach ($aUserInput as $key => $value)
-        {
+        foreach ($aUserInput as $key => $value) {
             $aToStore[$key] = ('null' === $value['value']) ? null : $value['value'];
         }
 
@@ -195,10 +192,8 @@ class ConfigureCommand extends AbstractCommand
      */
     private function hasValidateUserInput(array $aUserInput)
     {
-        foreach ($aUserInput as $_sKey => $_sValue)
-        {
-            if ($_sValue['required'] == true && empty($_sValue['value']))
-            {
+        foreach ($aUserInput as $_sKey => $_sValue) {
+            if ($_sValue['required'] == true && empty($_sValue['value'])) {
                 $this->oOutput->writeln(sprintf('<error>Please add a valid value for parameter "%s"</error>', $_sKey));
                 return false;
             }
@@ -216,8 +211,7 @@ class ConfigureCommand extends AbstractCommand
     {
         $_aParameters = $this->getParameters();
 
-        if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey]))
-        {
+        if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey])) {
             return $_aParameters['parameters'][$sKey];
         }
 
@@ -275,8 +269,7 @@ class ConfigureCommand extends AbstractCommand
         // We know that the user has to enter the password again
         // if he / she want to reconfigure something. But this
         // is an acceptable tradeoff.
-        if ($bHiddenAnswer === true && !empty($mDefaultValue))
-        {
+        if ($bHiddenAnswer === true && !empty($mDefaultValue)) {
             $mDefaultValue = null;
         }
 
@@ -285,8 +278,7 @@ class ConfigureCommand extends AbstractCommand
 
         // Sensitive information (like passwords) should not be
         // visible during the configuration wizard
-        if ($bHiddenAnswer === true)
-        {
+        if ($bHiddenAnswer === true) {
             $_oQuestion->setHidden(true);
             $_oQuestion->setHiddenFallback(false);
         }

@@ -48,8 +48,7 @@ class ChronosJobValidatorService implements JobValidatorServiceInterface
      */
     public function __construct(
         ValidatorFactoryInterface $oValidatorFactory
-    )
-    {
+    ) {
         $this->oValidatorFactory = $oValidatorFactory;
     }
 
@@ -59,10 +58,8 @@ class ChronosJobValidatorService implements JobValidatorServiceInterface
      */
     public function isEntityValid(JobEntityInterface $oJobEntity)
     {
-        foreach ($this->validateJobEntity($oJobEntity) as $_oValidatorResult)
-        {
-            if (!$_oValidatorResult->bIsValid)
-            {
+        foreach ($this->validateJobEntity($oJobEntity) as $_oValidatorResult) {
+            if (!$_oValidatorResult->bIsValid) {
                 return false;
             }
         }
@@ -79,10 +76,8 @@ class ChronosJobValidatorService implements JobValidatorServiceInterface
         $_aValidationFields = $this->validateJobEntity($oJobEntity);
 
         $_aInvalidFields = [];
-        foreach ($_aValidationFields as $_sProperty => $_oValidationResult)
-        {
-            if (false == $_oValidationResult->bIsValid)
-            {
+        foreach ($_aValidationFields as $_sProperty => $_oValidationResult) {
+            if (false == $_oValidationResult->bIsValid) {
                 $_aInvalidFields[$_sProperty] = $_oValidationResult->sErrorMessage;
             }
         }
@@ -98,8 +93,7 @@ class ChronosJobValidatorService implements JobValidatorServiceInterface
     {
         $_aValidProperties = [];
 
-        foreach (self::$aValidationMap as $_sProperty => $_iValidator)
-        {
+        foreach (self::$aValidationMap as $_sProperty => $_iValidator) {
             $_aValidProperties[$_sProperty] = $this->getValidationResult($_iValidator, $_sProperty, $oJobEntity);
         }
 

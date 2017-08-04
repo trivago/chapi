@@ -34,17 +34,12 @@ class DiffCommand extends AbstractCommand
         $_oJobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
         $_sJobName = $this->oInput->getArgument('jobName');
 
-        if (!empty($_sJobName))
-        {
+        if (!empty($_sJobName)) {
             $this->printJobDiff($_sJobName);
-        }
-        else
-        {
+        } else {
             $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
-            if (!empty($_aLocalJobUpdates))
-            {
-                foreach ($_aLocalJobUpdates as $_sJobName)
-                {
+            if (!empty($_aLocalJobUpdates)) {
+                foreach ($_aLocalJobUpdates as $_sJobName) {
                     $this->printJobDiff($_sJobName);
                 }
             }
@@ -65,24 +60,17 @@ class DiffCommand extends AbstractCommand
 
         $_aJobDiff = $_oJobComparisonBusinessCase->getJobDiff($sJobName);
 
-        foreach ($_aJobDiff as $_sProperty => $_sDiff)
-        {
+        foreach ($_aJobDiff as $_sProperty => $_sDiff) {
             $_aDiffLines = array_reverse(explode(PHP_EOL, $_sDiff));
 
-            foreach ($_aDiffLines as $_sDiffLine)
-            {
+            foreach ($_aDiffLines as $_sDiffLine) {
                 $_sDiffSign = substr($_sDiffLine, 0, 1);
 
-                if ($_sDiffSign == '+')
-                {
+                if ($_sDiffSign == '+') {
                     $this->oOutput->writeln(sprintf("<info>%s\t%s: %s</info>", $_sDiffSign, $_sProperty, substr($_sDiffLine, 1)));
-                }
-                elseif ($_sDiffSign == '-')
-                {
+                } elseif ($_sDiffSign == '-') {
                     $this->oOutput->writeln(sprintf("<fg=red>%s\t%s: %s</>", $_sDiffSign, $_sProperty, substr($_sDiffLine, 1)));
-                }
-                else
-                {
+                } else {
                     $this->oOutput->writeln(sprintf("\t%s: %s", $_sProperty, $_sDiffLine));
                 }
             }

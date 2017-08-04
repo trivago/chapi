@@ -10,7 +10,6 @@
 
 namespace Chapi\BusinessCase\JobManagement;
 
-
 interface StoreJobBusinessCaseInterface
 {
     const DIC_NAME = 'StoreJobBusinessCaseInterface';

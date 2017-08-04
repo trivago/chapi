@@ -9,7 +9,6 @@
 
 namespace unit\Entity\Chronos;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 
 class JobEntityTest extends \PHPUnit_Framework_TestCase

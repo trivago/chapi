@@ -43,8 +43,7 @@ class ChapiConfig implements ChapiConfigInterface
         $aDirectoryPaths,
         YamlParser $oParser,
         $sActiveProfile
-    )
-    {
+    ) {
         $this->aDirectoryPaths = $aDirectoryPaths;
         $this->oParser = $oParser;
         $this->sActiveProfile = $sActiveProfile;
@@ -53,7 +52,8 @@ class ChapiConfig implements ChapiConfigInterface
     /**
      * @inheritdoc
      */
-    public function getProfileConfig() {
+    public function getProfileConfig()
+    {
         $_aConfig = $this->getConfig();
         return $_aConfig['profiles'][$this->sActiveProfile];
     }
@@ -61,7 +61,8 @@ class ChapiConfig implements ChapiConfigInterface
     /**
      * @inheritdoc
      */
-    public function getConfig() {
+    public function getConfig()
+    {
         if (is_null($this->aConfig)) {
             $this->aConfig = $this->loadConfigs();
         }
@@ -72,13 +73,12 @@ class ChapiConfig implements ChapiConfigInterface
     /**
      * @return array
      */
-    private function loadConfigs() {
+    private function loadConfigs()
+    {
         $_aConfig = [];
 
-        foreach ($this->aDirectoryPaths as $_sDirectoryPath)
-        {
-            if (!is_dir($_sDirectoryPath))
-            {
+        foreach ($this->aDirectoryPaths as $_sDirectoryPath) {
+            if (!is_dir($_sDirectoryPath)) {
                 throw new \InvalidArgumentException(sprintf('Path "%s" is not valid', $_sDirectoryPath));
             }
 
@@ -93,7 +93,8 @@ class ChapiConfig implements ChapiConfigInterface
      * @param string $sPath
      * @return array
      */
-    private function loadConfig($sPath) {
+    private function loadConfig($sPath)
+    {
         $_sFilePath = $sPath . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME;
 
         if (is_file($_sFilePath)) {
@@ -138,21 +139,14 @@ class ChapiConfig implements ChapiConfigInterface
     {
         $merged = $array1;
 
-        foreach ($array2 as $key => &$value)
-        {
-            if (is_array($value) && isset ($merged[$key]) && is_array($merged[$key]))
-            {
+        foreach ($array2 as $key => &$value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
                 $merged[$key] = self::arrayMergeRecursiveDistinct($merged[$key], $value);
-            }
-            else
-            {
+            } else {
                 // add new element for numeric arrays
-                if (isset($merged[$key]) && is_numeric($key))
-                {
+                if (isset($merged[$key]) && is_numeric($key)) {
                     $merged[] = $value;
-                }
-                else
-                {
+                } else {
                     $merged[$key] = $value;
                 }
             }

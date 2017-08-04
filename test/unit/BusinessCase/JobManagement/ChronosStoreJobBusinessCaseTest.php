@@ -11,7 +11,6 @@
 
 namespace unit\BusinessCase\JobManagement;
 
-
 use Chapi\BusinessCase\JobManagement\ChronosStoreJobBusinessCase;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
@@ -65,8 +64,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        foreach ($_aMissingJobs as $_sJobName)
-        {
+        foreach ($_aMissingJobs as $_sJobName) {
             $_oJobEntity = $this->getValidScheduledJobEntity($_sJobName);
 
             $this->oJobRepositoryLocal
@@ -81,8 +79,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
                 ->shouldBeCalledTimes(1)
             ;
 
-            if ($bIsInIndex)
-            {
+            if ($bIsInIndex) {
                 $this->oJobRepositoryRemote
                     ->addJob(Argument::exact($_oJobEntity))
                     ->willReturn(true)
@@ -112,16 +109,14 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        foreach ($_aLocalMissingJobs as $_sJobName)
-        {
+        foreach ($_aLocalMissingJobs as $_sJobName) {
             $this->oJobIndexService
                 ->isJobInIndex(Argument::exact($_sJobName))
                 ->willReturn($bIsInIndex)
                 ->shouldBeCalledTimes(1)
             ;
 
-            if ($bIsInIndex)
-            {
+            if ($bIsInIndex) {
                 $this->oJobRepositoryRemote
                     ->removeJob(Argument::exact($_sJobName))
                     ->willReturn(true)
@@ -151,8 +146,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
         ;
 
-        foreach ($_aLocalJobUpdates as $_sJobName)
-        {
+        foreach ($_aLocalJobUpdates as $_sJobName) {
             $_oJobEntity = $this->getValidScheduledJobEntity($_sJobName);
 
             $this->oJobRepositoryLocal
@@ -167,8 +161,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
                 ->shouldBeCalledTimes(1)
             ;
 
-            if ($bIsInIndex)
-            {
+            if ($bIsInIndex) {
                 $this->oJobRepositoryRemote
                     ->getJob(Argument::exact($_sJobName))
                     ->willReturn($_oJobEntity)
@@ -182,16 +175,13 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
                 ;
 
 
-                if ($bHasSameJobType)
-                {
+                if ($bHasSameJobType) {
                     $this->oJobRepositoryRemote
                         ->updateJob(Argument::exact($_oJobEntity))
                         ->willReturn(true)
                         ->shouldBeCalledTimes(1)
                     ;
-                }
-                else
-                {
+                } else {
                     $this->oJobRepositoryRemote
                         ->removeJob(Argument::exact($_oJobEntity->name))
                         ->willReturn(true)

@@ -44,8 +44,7 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
         DiffCompareInterface $oDiffCompare,
         DatePeriodFactoryInterface $oDatePeriodFactory,
         LoggerInterface $oLogger
-    )
-    {
+    ) {
         $this->oLocalRepository = $oJobRepositoryLocalChronos;
         $this->oRemoteRepository = $oJobRepositoryChronos;
         $this->oDiffCompare = $oDiffCompare;
@@ -87,19 +86,16 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
      */
     protected function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
     {
-        if (
-            !$oJobEntityA instanceof ChronosJobEntity ||
+        if (!$oJobEntityA instanceof ChronosJobEntity ||
             !$oJobEntityB instanceof ChronosJobEntity
-        )
-        {
+        ) {
             throw new \RuntimeException('Required ChronosJobEntity. Something else encountered');
         }
 
         $mValueA = $oJobEntityA->{$sProperty};
         $mValueB = $oJobEntityB->{$sProperty};
 
-        switch ($sProperty)
-        {
+        switch ($sProperty) {
             case 'schedule':
                 return $this->isSchedulePropertyIdentical($oJobEntityA, $oJobEntityB);
 
@@ -133,13 +129,11 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
      */
     private function isScheduleTimeZonePropertyIdentical(ChronosJobEntity $oJobEntityA, ChronosJobEntity $oJobEntityB)
     {
-        if ($oJobEntityA->scheduleTimeZone == $oJobEntityB->scheduleTimeZone)
-        {
+        if ($oJobEntityA->scheduleTimeZone == $oJobEntityB->scheduleTimeZone) {
             return true;
         }
 
-        if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule))
-        {
+        if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule)) {
             $_oDateA = $this->createDateTimeObj($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
             $_oDateB = $this->createDateTimeObj($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
 
@@ -157,28 +151,24 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
     private function isSchedulePropertyIdentical(ChronosJobEntity $oJobEntityA, ChronosJobEntity $oJobEntityB)
     {
         // if values are exact the same
-        if ($oJobEntityA->schedule === $oJobEntityB->schedule)
-        {
+        if ($oJobEntityA->schedule === $oJobEntityB->schedule) {
             $this->oLogger->debug(sprintf('%s::EXCACT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
             return true;
         }
 
         // if one value is empty and not both, compare the time periods
-        if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule))
-        {
+        if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule)) {
             $_oIso8601EntityA = $this->oDatePeriodFactory->createIso8601Entity($oJobEntityA->schedule);
             $_oIso8601EntityB = $this->oDatePeriodFactory->createIso8601Entity($oJobEntityB->schedule);
 
             // if the clean interval is different return directly false (P1D != P1M)
-            if ($_oIso8601EntityA->sInterval != $_oIso8601EntityB->sInterval)
-            {
+            if ($_oIso8601EntityA->sInterval != $_oIso8601EntityB->sInterval) {
                 $this->oLogger->debug(sprintf('%s::DIFFERENT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
                 return false;
             }
 
             // else if the interval is <= 1Min return directly true (performance)
-            if ($_oIso8601EntityA->sInterval == 'PT1M' || $_oIso8601EntityA->sInterval == 'PT1S')
-            {
+            if ($_oIso8601EntityA->sInterval == 'PT1M' || $_oIso8601EntityA->sInterval == 'PT1S') {
                 $this->oLogger->debug(sprintf('%s::PT1M|PT1S INTERVAL FOR "%s" - Job execution should be equal', 'ScheduleComparison', $oJobEntityA->name));
                 return true;
             }
@@ -191,8 +181,7 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
             $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
 
             /** @var \DateTime $_oDateTime */
-            foreach ($_oPeriodA as $_oDateTime)
-            {
+            foreach ($_oPeriodA as $_oDateTime) {
                 $_oLastDateTimeA = $_oDateTime;
             }
 
@@ -200,14 +189,12 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
             $_oPeriodB = $this->oDatePeriodFactory->createDatePeriod($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
 
             /** @var \DateTime $_oDateTime */
-            foreach ($_oPeriodB as $_oDateTime)
-            {
+            foreach ($_oPeriodB as $_oDateTime) {
                 $_oLastDateTimeB = $_oDateTime;
             }
 
             // $_oLastDateTimeA !== false happen if no dates are in the period
-            if ($_oLastDateTimeA !== null && $_oLastDateTimeB !== null)
-            {
+            if ($_oLastDateTimeA !== null && $_oLastDateTimeB !== null) {
                 $_oDiffInterval = $_oLastDateTimeA->diff($_oLastDateTimeB);
                 $_iDiffInterval = (int) $_oDiffInterval->format('%Y%M%D%H%I');
 
@@ -229,13 +216,10 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
     {
         $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($sIso8601String);
 
-        if (!empty($sTimeZone))
-        {
+        if (!empty($sTimeZone)) {
             $_oDateTime = new \DateTime(str_replace('Z', '', $_oIso8601Entity->sStartTime));
             $_oDateTime->setTimezone(new \DateTimeZone($sTimeZone));
-        }
-        else
-        {
+        } else {
             $_oDateTime = new \DateTime($_oIso8601Entity->sStartTime);
         }
 

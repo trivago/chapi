@@ -10,7 +10,6 @@
 
 namespace Chapi\Service\JobValidator;
 
-
 interface ValidatorFactoryInterface
 {
     const NOT_EMPTY_VALIDATOR = 1;

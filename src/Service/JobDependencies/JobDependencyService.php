@@ -42,8 +42,7 @@ class JobDependencyService implements JobDependencyServiceInterface
     public function __construct(
         JobRepositoryInterface $oJobRepositoryLocal,
         JobRepositoryInterface $oJobRepositoryChronos
-    )
-    {
+    ) {
         $this->oJobRepositoryLocal = $oJobRepositoryLocal;
         $this->oJobRepositoryChronos = $oJobRepositoryChronos;
     }
@@ -75,8 +74,7 @@ class JobDependencyService implements JobDependencyServiceInterface
      */
     private function getJobTreeLocal()
     {
-        if (empty($this->aJobTreeLocal))
-        {
+        if (empty($this->aJobTreeLocal)) {
             $this->initJobTree($this->aJobTreeLocal, $this->oJobRepositoryLocal);
         }
 
@@ -88,8 +86,7 @@ class JobDependencyService implements JobDependencyServiceInterface
      */
     private function getJobTreeChronos()
     {
-        if (empty($this->aJobTreeChronos))
-        {
+        if (empty($this->aJobTreeChronos)) {
             $this->initJobTree($this->aJobTreeChronos, $this->oJobRepositoryChronos);
         }
 
@@ -107,15 +104,11 @@ class JobDependencyService implements JobDependencyServiceInterface
         $aJobTree = [];
 
         /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($oJobRepository->getJobs() as $_oJobEntity)
-        {
-            if ($_oJobEntity->isDependencyJob())
-            {
-                foreach ($_oJobEntity->parents as $_sParentJobName)
-                {
+        foreach ($oJobRepository->getJobs() as $_oJobEntity) {
+            if ($_oJobEntity->isDependencyJob()) {
+                foreach ($_oJobEntity->parents as $_sParentJobName) {
                     // init parent in tree
-                    if (!isset($aJobTree[$_sParentJobName]))
-                    {
+                    if (!isset($aJobTree[$_sParentJobName])) {
                         $aJobTree[$_sParentJobName] = [];
                     }
                     // set job as children to parent

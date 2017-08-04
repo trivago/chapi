@@ -10,7 +10,6 @@
 
 namespace Chapi\Exception;
 
-
 class DatePeriodException extends \Exception
 {
 

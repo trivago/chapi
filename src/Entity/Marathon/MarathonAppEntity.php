@@ -86,8 +86,7 @@ class MarathonAppEntity implements JobEntityInterface
 
     public function __construct($mData = null)
     {
-        if (!$mData)
-        {
+        if (!$mData) {
             // initialized with default values
             return;
         }
@@ -97,53 +96,41 @@ class MarathonAppEntity implements JobEntityInterface
 
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if (isset($aData['portDefinitions']))
-        {
-            foreach ($aData['portDefinitions'] as $portDefinition)
-            {
+        if (isset($aData['portDefinitions'])) {
+            foreach ($aData['portDefinitions'] as $portDefinition) {
                 $this->portDefinitions[] = new PortDefinition((array) $portDefinition);
             }
         }
 
-        if (isset($aData['container']))
-        {
+        if (isset($aData['container'])) {
             $this->container = new Container((array) $aData['container']);
         }
 
-        if (isset($aData['healthChecks']))
-        {
-            foreach ($aData['healthChecks'] as $healthCheck)
-            {
+        if (isset($aData['healthChecks'])) {
+            foreach ($aData['healthChecks'] as $healthCheck) {
                 $this->healthChecks[] = new HealthCheck((array) $healthCheck);
             }
         }
 
-        if (isset($aData['upgradeStrategy']))
-        {
+        if (isset($aData['upgradeStrategy'])) {
             $this->upgradeStrategy = new UpgradeStrategy((array) $aData['upgradeStrategy']);
-        }
-        else {
+        } else {
             $this->upgradeStrategy = new UpgradeStrategy();
         }
 
-        if (isset($aData['ipAddress']))
-        {
+        if (isset($aData['ipAddress'])) {
             $this->ipAddress = new IpAddress((array) $aData['ipAddress']);
         }
 
-        if (isset($aData['env']))
-        {
+        if (isset($aData['env'])) {
             $this->env = (object) $aData['env'];
-        }
-        else {
+        } else {
             $this->env = (object) [];
         }
 
-        if (isset($aData['labels']))
-        {
+        if (isset($aData['labels'])) {
             $this->labels = (object) $aData['labels'];
-        }
-        else {
+        } else {
             $this->labels = (object) [];
         }
         MarathonEntityUtils::setPropertyIfExist($aData, $this, 'constraints');
@@ -162,7 +149,7 @@ class MarathonAppEntity implements JobEntityInterface
         $_aRet = (array) $this;
         $_aRet = array_filter(
             $_aRet,
-            function($v, $k) {
+            function ($v, $k) {
                 return !is_null($v) || empty($v);
             },
             ARRAY_FILTER_USE_BOTH
@@ -187,8 +174,7 @@ class MarathonAppEntity implements JobEntityInterface
     {
         $_aReturn = [];
 
-        foreach ($this as $_sProperty => $mValue)
-        {
+        foreach ($this as $_sProperty => $mValue) {
             $_aReturn[$_sProperty] = (is_array($mValue) || is_object($mValue)) ? json_encode($mValue) : $mValue;
         }
 

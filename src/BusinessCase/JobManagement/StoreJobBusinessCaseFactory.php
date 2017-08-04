@@ -9,7 +9,6 @@
 
 namespace Chapi\BusinessCase\JobManagement;
 
-
 class StoreJobBusinessCaseFactory implements StoreJobBusinessCaseFactoryInterface
 {
     /**
@@ -20,15 +19,12 @@ class StoreJobBusinessCaseFactory implements StoreJobBusinessCaseFactoryInterfac
     public function addBusinesCase(StoreJobBusinessCaseInterface $oStoreJob)
     {
         $this->storeJobBusinessCases[] = $oStoreJob;
-
     }
     public function getBusinessCaseWithJob($sJobName)
     {
         /** @var StoreJobBusinessCaseInterface $oStore */
-        foreach ($this->storeJobBusinessCases as $oStore)
-        {
-            if ($oStore->isJobAvailable($sJobName))
-            {
+        foreach ($this->storeJobBusinessCases as $oStore) {
+            if ($oStore->isJobAvailable($sJobName)) {
                 return $oStore;
             }
         }

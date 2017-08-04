@@ -9,12 +9,12 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\Container;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testContainerSetProperly() {
+    public function testContainerSetProperly()
+    {
         $aData = [
             "type" => "DOCKER",
             "docker" => [
@@ -32,11 +32,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($container->volumes));
     }
 
-    public function testAllKeysAreCorrect() {
+    public function testAllKeysAreCorrect()
+    {
         $aKeys = ["docker", "volumes", "type"];
         $container = new Container();
 
-        foreach($aKeys as $sProperty) {
+        foreach ($aKeys as $sProperty) {
             $this->assertObjectHasAttribute($sProperty, $container);
         }
     }

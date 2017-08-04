@@ -9,7 +9,6 @@
 
 namespace ChapiTest\unit\Service\JobValidator;
 
-
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobValidator\ChronosJobValidatorService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -123,9 +122,8 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
             count($_aResult)
         );
         
-        foreach ($_aResult as $_sErrMsg)
-        {
-            $this->assertEquals('error message', $_sErrMsg);   
+        foreach ($_aResult as $_sErrMsg) {
+            $this->assertEquals('error message', $_sErrMsg);
             break; // one check is enough
         }
     }

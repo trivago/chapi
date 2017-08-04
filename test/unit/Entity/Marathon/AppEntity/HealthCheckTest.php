@@ -8,7 +8,6 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 
 class HealthCheckTest extends \PHPUnit_Framework_TestCase

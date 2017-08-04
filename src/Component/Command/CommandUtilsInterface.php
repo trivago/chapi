@@ -10,7 +10,6 @@
 
 namespace Chapi\Component\Command;
 
-
 interface CommandUtilsInterface
 {
     /**

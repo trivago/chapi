@@ -59,10 +59,8 @@ class ListCommand extends AbstractCommand
         );
 
         /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($_aAllEntities as $_oJobEntity)
-        {
-            if ($this->hasJobToPrint($_oJobEntity, $_bOnlyFailed, $_bOnlyDisabled))
-            {
+        foreach ($_aAllEntities as $_oJobEntity) {
+            if ($this->hasJobToPrint($_oJobEntity, $_bOnlyFailed, $_bOnlyDisabled)) {
                 $this->printJobTableRow($_oTable, $_oJobEntity);
             }
         }
@@ -80,31 +78,26 @@ class ListCommand extends AbstractCommand
      */
     private function hasJobToPrint(JobEntityInterface $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
     {
-        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
-        {
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
             return true;
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity)
-        {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
         $_bPrintAllJobs = (false === $bOnlyFailed && false === $bOnlyDisabled);
-        if ($_bPrintAllJobs)
-        {
+        if ($_bPrintAllJobs) {
             return true;
         }
 
         $_bHasToPrint = false;
 
-        if (true === $bOnlyFailed && $oJobEntity->errorsSinceLastSuccess > 0)
-        {
+        if (true === $bOnlyFailed && $oJobEntity->errorsSinceLastSuccess > 0) {
             $_bHasToPrint = true;
         }
 
-        if (true === $bOnlyDisabled && true === $oJobEntity->disabled)
-        {
+        if (true === $bOnlyDisabled && true === $oJobEntity->disabled) {
             $_bHasToPrint = true;
         }
 
@@ -141,25 +134,21 @@ class ListCommand extends AbstractCommand
     private function getOutputLabel(JobEntityInterface $oJobEntity)
     {
 
-        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
-        {
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
             return 'ok';
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity)
-        {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
         $_aJobInfoText = [];
 
-        if ($oJobEntity->disabled)
-        {
+        if ($oJobEntity->disabled) {
             $_aJobInfoText[] = 'disabled';
         }
 
-        if ($oJobEntity->errorCount > 0)
-        {
+        if ($oJobEntity->errorCount > 0) {
             $_fErrorRate = ($oJobEntity->successCount > 0)
                 ? 100 / $oJobEntity->successCount * $oJobEntity->errorCount
                 : 100;
@@ -167,8 +156,7 @@ class ListCommand extends AbstractCommand
             $_aJobInfoText[] = 'errors rate: ' . round($_fErrorRate, 2) . '%';
         }
 
-        if ($oJobEntity->errorsSinceLastSuccess > 0)
-        {
+        if ($oJobEntity->errorsSinceLastSuccess > 0) {
             $_aJobInfoText[] = 'errors since last success:' . $oJobEntity->errorsSinceLastSuccess;
         }
 
@@ -183,23 +171,19 @@ class ListCommand extends AbstractCommand
      */
     private function getOutputFormat(JobEntityInterface $oJobEntity)
     {
-        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
-        {
+        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
             return '<info>%s</info>';
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity)
-        {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
-        if ($oJobEntity->errorsSinceLastSuccess > 0)
-        {
+        if ($oJobEntity->errorsSinceLastSuccess > 0) {
             return '<fg=red>%s</>';
         }
 
-        if ($oJobEntity->errorCount > 0 || true === $oJobEntity->disabled)
-        {
+        if ($oJobEntity->errorCount > 0 || true === $oJobEntity->disabled) {
             return '<comment>%s</comment>';
         }
 

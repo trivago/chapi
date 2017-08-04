@@ -9,7 +9,6 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
@@ -32,10 +31,8 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
         $mValidValue,
         $mInvalidValue,
         JobEntityInterface $oJobEntity = null
-    )
-    {
-        if (is_null($oJobEntity))
-        {
+    ) {
+        if (is_null($oJobEntity)) {
             $oJobEntity = $this->getValidScheduledJobEntity();
         }
         
@@ -59,11 +56,9 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
         $sProperty,
         $mValidValue,
         JobEntityInterface $oJobEntity = null
-    )
-    {
-        if (is_null($oJobEntity))
-        {
-            $oJobEntity = $this->getValidScheduledJobEntity();    
+    ) {
+        if (is_null($oJobEntity)) {
+            $oJobEntity = $this->getValidScheduledJobEntity();
         }
         
         $oJobEntity->{$sProperty} = $mValidValue;
@@ -82,10 +77,8 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
         $sProperty,
         $mInvalidValue,
         JobEntityInterface $oJobEntity = null
-    )
-    {
-        if (is_null($oJobEntity))
-        {
+    ) {
+        if (is_null($oJobEntity)) {
             $oJobEntity = $this->getValidScheduledJobEntity();
         }
         

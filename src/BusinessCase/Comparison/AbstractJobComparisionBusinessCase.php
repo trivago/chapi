@@ -8,7 +8,6 @@
 
 namespace Chapi\BusinessCase\Comparison;
 
-
 use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\JobEntityInterface;
@@ -80,13 +79,11 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
         $aJobACopy = [];
         $aJobBCopy = [];
 
-        if ($oJobEntityA)
-        {
+        if ($oJobEntityA) {
             $aJobACopy = $oJobEntityA->getSimpleArrayCopy();
         }
 
-        if ($oJobEntityB)
-        {
+        if ($oJobEntityB) {
             $aJobBCopy = $oJobEntityB->getSimpleArrayCopy();
         }
 
@@ -114,14 +111,11 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
 
         $_aDiff = $this->getDifference($oJobEntityA, $oJobEntityB);
 
-        if (count($_aDiff) > 0)
-        {
+        if (count($_aDiff) > 0) {
             $_aDiffKeys = array_keys($_aDiff);
 
-            foreach ($_aDiffKeys as $_sDiffKey)
-            {
-                if (!$this->isEntityEqual($_sDiffKey, $oJobEntityA, $oJobEntityB))
-                {
+            foreach ($_aDiffKeys as $_sDiffKey) {
+                if (!$this->isEntityEqual($_sDiffKey, $oJobEntityA, $oJobEntityB)) {
                     $_aNonidenticalProperties[] = $_sDiffKey;
                 }
             }
@@ -140,19 +134,16 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
         $_oLocalEntity = $this->oLocalRepository->getJob($sJobName);
         $_oRemoteEntity = $this->oRemoteRepository->getJob($sJobName);
 
-        if (!$_oLocalEntity && !$_oRemoteEntity)
-        {
+        if (!$_oLocalEntity && !$_oRemoteEntity) {
             // return as jobs doesnt exist
             return [];
         }
 
-        if (!$_oLocalEntity)
-        {
+        if (!$_oLocalEntity) {
             $_oLocalEntity = $this->getEntitySetWithDefaults();
         }
 
-        if (!$_oRemoteEntity)
-        {
+        if (!$_oRemoteEntity) {
             $_oRemoteEntity = $this->getEntitySetWithDefaults();
         }
 
@@ -162,8 +153,7 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
             $_oRemoteEntity
         );
 
-        foreach ($_aNonIdenticalProps as $_sProperty)
-        {
+        foreach ($_aNonIdenticalProps as $_sProperty) {
             $_aDifferences[$_sProperty] = $this->oDiffCompare->compare(
                 $_oRemoteEntity->{$_sProperty},
                 $_oLocalEntity->{$_sProperty}
@@ -184,13 +174,11 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
         $_aLocalJobs = $this->oLocalRepository->getJobs();
 
         /** @var JobEntityInterface $_oLocalJob */
-        foreach ($_aLocalJobs as $_oLocalJob)
-        {
+        foreach ($_aLocalJobs as $_oLocalJob) {
 
             /** @var JobEntityInterface $_oRemoteJob */
             $_oRemoteJob = $this->oRemoteRepository->getJob($_oLocalJob->getKey());
-            if (!$_oRemoteJob)
-            {
+            if (!$_oRemoteJob) {
                 // if doesn't exist in remote, its not update. its new
                 continue;
             }
@@ -199,8 +187,7 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
 
             $_aNonidenticalProperties = $this->compareJobEntities($_oLocalJob, $_oRemoteJob);
 
-            if (!empty($_aNonidenticalProperties))
-            {
+            if (!empty($_aNonidenticalProperties)) {
                 $_aLocallyUpdatedJobs[] = $_oLocalJob->getKey();
             }
         }

@@ -10,7 +10,6 @@
 
 namespace Chapi\Service\JobIndex;
 
-
 interface JobIndexServiceInterface
 {
     const DIC_NAME = 'JobIndexServiceInterface';

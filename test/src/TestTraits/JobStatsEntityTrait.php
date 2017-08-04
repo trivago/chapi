@@ -11,7 +11,6 @@
 
 namespace ChapiTest\src\TestTraits;
 
-
 use Chapi\Entity\Chronos\JobStatsEntity;
 
 trait JobStatsEntityTrait

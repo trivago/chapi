@@ -11,7 +11,6 @@
 
 namespace unit\Service\JobDependency;
 
-
 use Chapi\Service\JobDependencies\JobDependencyService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 

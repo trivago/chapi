@@ -12,7 +12,8 @@ use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 
 class PortDefinitionTest extends \PHPUnit_Framework_TestCase
 {
-    public function testPortDefinitionsSetProperly() {
+    public function testPortDefinitionsSetProperly()
+    {
         $portDefinition = (array)[
                 "port" => 10000,
                 "labels" => (object)["key" => "somelabel"],
@@ -25,11 +26,12 @@ class PortDefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($recPortdef->port, 10000, "Port not set correctly for portDefinitions");
         $this->assertEquals($recPortdef->name, "myport");
         $this->assertEquals($recPortdef->protocol, "udp");
-        $this->assertObjectHasAttribute("key" , $recPortdef->labels);
+        $this->assertObjectHasAttribute("key", $recPortdef->labels);
         $this->assertEquals("somelabel", $recPortdef->labels->key);
     }
 
-    public function testAllKeysAreCorrect() {
+    public function testAllKeysAreCorrect()
+    {
         $_aKeys = ["port", "labels", "name", "protocol"];
 
         $oPortDefinition = new PortDefinition();
@@ -38,5 +40,4 @@ class PortDefinitionTest extends \PHPUnit_Framework_TestCase
             $this->assertObjectHasAttribute($property, $oPortDefinition);
         }
     }
-
 }

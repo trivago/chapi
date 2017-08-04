@@ -49,29 +49,22 @@ abstract class AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInter
      */
     public function storeJobsToLocalRepository(array $aEntityNames = [], $bForceOverwrite = false)
     {
-        if (empty($aEntityNames))
-        {
+        if (empty($aEntityNames)) {
             $_aRemoteEntities = $this->oJobRepositoryRemote->getJobs();
-        }
-        else
-        {
+        } else {
             $_aRemoteEntities = [];
-            foreach ($aEntityNames as $_sJobName)
-            {
+            foreach ($aEntityNames as $_sJobName) {
                 $_aRemoteEntities[] = $this->oJobRepositoryRemote->getJob($_sJobName);
             }
         }
 
         /** @var JobEntityInterface $_oRemoteEntity */
-        foreach ($_aRemoteEntities as $_oRemoteEntity)
-        {
+        foreach ($_aRemoteEntities as $_oRemoteEntity) {
             $_oLocalEntity = $this->oJobRepositoryLocal->getJob($_oRemoteEntity->getKey());
             // new job
-            if (null == $_oLocalEntity)
-            {
+            if (null == $_oLocalEntity) {
                 $this->addJobInLocalRepository($_oRemoteEntity);
-            }
-            else {
+            } else {
                 //update
                 $this->updateJobInLocalRepository($_oRemoteEntity, $bForceOverwrite);
             }
@@ -80,14 +73,12 @@ abstract class AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInter
 
     protected function addJobInLocalRepository(JobEntityInterface $oAppRemote)
     {
-        if ($this->oJobRepositoryLocal->addJob($oAppRemote))
-        {
+        if ($this->oJobRepositoryLocal->addJob($oAppRemote)) {
             $this->oLogger->notice(sprintf(
                 'Entity %s stored in local repository',
                 $oAppRemote->getKey()
             ));
-        }
-        else {
+        } else {
             $this->oLogger->error(sprintf(
                 'Failed to store %s in local repository',
                 $oAppRemote->getKey()
@@ -99,10 +90,8 @@ abstract class AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInter
     protected function updateJobInLocalRepository(JobEntityInterface $oAppRemote, $bForceOverwrite)
     {
         $_aDiff = $this->oJobComparisonBusinessCase->getJobDiff($oAppRemote->getKey());
-        if (!empty($_aDiff))
-        {
-            if (!$bForceOverwrite)
-            {
+        if (!empty($_aDiff)) {
+            if (!$bForceOverwrite) {
                 throw new \InvalidArgumentException(
                     sprintf(
                         'The entity "%s" already exist in your local repository. Use the "force" option to overwrite the job',
@@ -111,14 +100,12 @@ abstract class AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInter
                 );
             }
 
-            if ($this->oJobRepositoryLocal->updateJob($oAppRemote))
-            {
+            if ($this->oJobRepositoryLocal->updateJob($oAppRemote)) {
                 $this->oLogger->notice(sprintf(
                     'Entity %s is updated in local repository',
                     $oAppRemote->getKey()
                 ));
-            }
-            else {
+            } else {
                 $this->oLogger->error(sprintf(
                     'Failed to update app %s in local repository',
                     $oAppRemote->getKey()

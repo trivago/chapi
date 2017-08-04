@@ -9,7 +9,6 @@
 
 namespace Chapi\Component\DependencyInjection\Loader;
 
-
 use Chapi\Component\Config\ChapiConfigInterface;
 use \InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

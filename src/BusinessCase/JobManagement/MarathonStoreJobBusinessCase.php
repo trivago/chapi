@@ -10,7 +10,6 @@
 
 namespace Chapi\BusinessCase\JobManagement;
 
-
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
@@ -33,10 +32,7 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
         JobRepositoryInterface $oJobRepositoryLocal,
         JobComparisonInterface $oJobComparisonBusinessCase,
         LoggerInterface $oLogger
-
-    )
-    {
-
+    ) {
         $this->oJobIndexService = $oJobIndexService;
         $this->oLogger = $oLogger;
         $this->oJobComparisonBusinessCase = $oJobComparisonBusinessCase;
@@ -50,19 +46,16 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
     public function storeIndexedJobs()
     {
         $_aRemoteMissingApps = $this->oJobComparisonBusinessCase->getRemoteMissingJobs();
-        foreach ($_aRemoteMissingApps as $_sAppId)
-        {
+        foreach ($_aRemoteMissingApps as $_sAppId) {
             $this->addRemoteMissingApp($_sAppId);
         }
 
         $_aLocalMissingApps = $this->oJobComparisonBusinessCase->getLocalMissingJobs();
-        foreach ($_aLocalMissingApps as $_sAppId)
-        {
+        foreach ($_aLocalMissingApps as $_sAppId) {
             $this->removeLocalMissingAppInRemote($_sAppId);
         }
         $_aLocalUpdates = $this->oJobComparisonBusinessCase->getLocalJobUpdates();
-        foreach ($_aLocalUpdates as $_sAppId)
-        {
+        foreach ($_aLocalUpdates as $_sAppId) {
             $this->updateAppInRemote($_sAppId);
         }
     }
@@ -73,44 +66,39 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
      */
     private function addRemoteMissingApp($sAppId)
     {
-        if ($this->oJobIndexService->isJobInIndex($sAppId))
-        {
+        if ($this->oJobIndexService->isJobInIndex($sAppId)) {
             /** @var MarathonAppEntity $_oJobEntityLocal */
             $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sAppId);
 
-            if (!$_oJobEntityLocal instanceof MarathonAppEntity)
-            {
+            if (!$_oJobEntityLocal instanceof MarathonAppEntity) {
                 throw new \RuntimeException('Encountered entity that is not MarathonAppEntity');
             }
 
             // check if dependency is satisfied
-            if ($_oJobEntityLocal->isDependencyJob())
-            {
+            if ($_oJobEntityLocal->isDependencyJob()) {
                 try {
                     $circular = $this->isDependencyCircular($_oJobEntityLocal, count($_oJobEntityLocal->dependencies));
-                    if ($circular)
-                    {
+                    if ($circular) {
                         $this->oLogger->error(sprintf(
-                            'The dependency for %s is circular. Please fix them.', $sAppId
+                            'The dependency for %s is circular. Please fix them.',
+                            $sAppId
                         ));
                         return false;
                     }
-                }
-                catch (\Exception $e)
-                {
+                } catch (\Exception $e) {
                     $this->oLogger->error(sprintf(
-                        'Job %s cannot be added to remote : %s', $sAppId, $e->getMessage()
+                        'Job %s cannot be added to remote : %s',
+                        $sAppId,
+                        $e->getMessage()
                     ));
                     return false;
                 }
 
 
-                foreach ($_oJobEntityLocal->dependencies as $_sDependencyKey)
-                {
+                foreach ($_oJobEntityLocal->dependencies as $_sDependencyKey) {
                     $_bAdded = $this->addRemoteMissingApp($_sDependencyKey);
 
-                    if (!$_bAdded)
-                    {
+                    if (!$_bAdded) {
                         $this->oLogger->error(sprintf(
                             'Job "%s" is dependent on "%s" which is missing. Please add them and try again.',
                             $sAppId,
@@ -122,8 +110,7 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
                 }
             }
 
-            if ($this->oJobRepositoryRemote->addJob($_oJobEntityLocal))
-            {
+            if ($this->oJobRepositoryRemote->addJob($_oJobEntityLocal)) {
                 $this->oJobIndexService->removeJob($_oJobEntityLocal->getKey());
                 $this->oLogger->notice(sprintf(
                     'Job "%s" successfully added to marathon',
@@ -138,7 +125,6 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
             ));
         }
         return false;
-
     }
 
     /**
@@ -160,8 +146,7 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
     private function isDependencyCircular(MarathonAppEntity $oEntity, $iImmediateChildren, &$path = [])
     {
         // Invariant: path will not have duplicates for acyclic dependency tree
-        if ($this->hasDuplicates($path))
-        {
+        if ($this->hasDuplicates($path)) {
             return true;
         }
 
@@ -172,34 +157,29 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
         //                      |-> C
         // When we reach node D, path will be [A, B, D]
         // so we pop off D so that the next append will properly show [A, B, C] (legit path)
-        if (empty($oEntity->dependencies))
-        {
+        if (empty($oEntity->dependencies)) {
             array_pop($path);
             return false;
         }
 
-        foreach ($oEntity->dependencies as $_sDependency)
-        {
+        foreach ($oEntity->dependencies as $_sDependency) {
             // add this key in path as we will explore its child now
             $path[] = $oEntity->getKey();
 
             /** @var MarathonAppEntity $_oDependEntity */
             $_oDependEntity = $this->oJobRepositoryLocal->getJob($_sDependency);
 
-            if (!$_oDependEntity)
-            {
+            if (!$_oDependEntity) {
                 throw new \Exception(sprintf('Dependency chain on non-existing app "%s"', $_sDependency));
             }
 
-            if (!$_oDependEntity instanceof MarathonAppEntity)
-            {
+            if (!$_oDependEntity instanceof MarathonAppEntity) {
                 throw new \RuntimeException('Expected MarathonAppEntity. Found something else');
             }
 
 
             // check if dependency has cycle
-            if ($this->isDependencyCircular($_oDependEntity, count($_oDependEntity->dependencies), $path))
-            {
+            if ($this->isDependencyCircular($_oDependEntity, count($_oDependEntity->dependencies), $path)) {
                 return true;
             }
 
@@ -212,8 +192,7 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
             // when we process D, it will be reduced to 1 and with C to 0
             // then we will pop B to generate path [A, E] when we reach E.
             $iImmediateChildren--;
-            if ($iImmediateChildren == 0)
-            {
+            if ($iImmediateChildren == 0) {
                 array_pop($path);
             }
         }
@@ -227,10 +206,8 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
      */
     private function removeLocalMissingAppInRemote($sAppId)
     {
-        if ($this->oJobIndexService->isJobInIndex($sAppId))
-        {
-            if ($this->oJobRepositoryRemote->removeJob($sAppId))
-            {
+        if ($this->oJobIndexService->isJobInIndex($sAppId)) {
+            if ($this->oJobRepositoryRemote->removeJob($sAppId)) {
                 $this->oJobIndexService->removeJob($sAppId);
                 $this->oLogger->notice(sprintf(
                     'Job "%s" successfully removed from marathon',
@@ -243,7 +220,6 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
                 'Failed to remove"%s" from marathon',
                 $sAppId
             ));
-
         }
         return false;
     }
@@ -254,14 +230,12 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
      */
     private function updateAppInRemote($sAppId)
     {
-        if ($this->oJobIndexService->isJobInIndex($sAppId))
-        {
+        if ($this->oJobIndexService->isJobInIndex($sAppId)) {
             $_oUpdatedConfig = $this->oJobRepositoryLocal->getJob($sAppId);
             $_bAddedBack = $this->oJobRepositoryRemote->updateJob($_oUpdatedConfig);
 
             // updated
-            if ($_bAddedBack)
-            {
+            if ($_bAddedBack) {
                 $this->oJobIndexService->removeJob($sAppId);
                 $this->oLogger->notice(sprintf(
                     'Job "%s" successfully updated in marathon',

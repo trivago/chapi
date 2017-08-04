@@ -28,5 +28,4 @@ class DockerPortMapping
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
     }
-
 }

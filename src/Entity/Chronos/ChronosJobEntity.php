@@ -9,7 +9,6 @@
 
 namespace Chapi\Entity\Chronos;
 
-
 use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
 use Chapi\Entity\JobEntityInterface;
 
@@ -87,25 +86,17 @@ class ChronosJobEntity implements JobEntityInterface
      */
     public function __construct($mJobData = [])
     {
-        if (is_array($mJobData) || is_object($mJobData))
-        {
-            foreach ($mJobData as $_sKey => $_mValue)
-            {
-                if (property_exists($this, $_sKey))
-                {
-                    if ($_sKey == 'container')
-                    {
+        if (is_array($mJobData) || is_object($mJobData)) {
+            foreach ($mJobData as $_sKey => $_mValue) {
+                if (property_exists($this, $_sKey)) {
+                    if ($_sKey == 'container') {
                         $this->{$_sKey} = new ContainerEntity($_mValue);
-                    }
-                    else
-                    {
-                        $this->{$_sKey} = $_mValue;    
+                    } else {
+                        $this->{$_sKey} = $_mValue;
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an array or object', __METHOD__));
         }
     }
@@ -119,8 +110,7 @@ class ChronosJobEntity implements JobEntityInterface
     {
         $_aReturn = [];
 
-        foreach ($this as $_sProperty => $mValue)
-        {
+        foreach ($this as $_sProperty => $mValue) {
             $_aReturn[$_sProperty] = (is_array($mValue) || is_object($mValue)) ? json_encode($mValue) : $mValue;
         }
 
@@ -149,18 +139,14 @@ class ChronosJobEntity implements JobEntityInterface
     public function jsonSerialize()
     {
         $_aReturn = (array) $this;
-        if (!empty($this->schedule))
-        {
+        if (!empty($this->schedule)) {
             unset($_aReturn['parents']);
-        }
-        else
-        {
+        } else {
             unset($_aReturn['schedule']);
             unset($_aReturn['scheduleTimeZone']);
         }
 
-        if (empty($this->container))
-        {
+        if (empty($this->container)) {
             unset($_aReturn['container']);
         }
 

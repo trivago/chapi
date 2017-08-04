@@ -9,7 +9,6 @@
 
 namespace unit\Service\JobRepository;
 
-
 use Chapi\Service\JobRepository\BridgeMarathon;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
@@ -66,16 +65,13 @@ class BridgeMarathonTest extends \PHPUnit_Framework_TestCase
 
         $_aApps = $_oMarathonBridge->getJobs();
 
-        foreach($_aApps as $_gotApp)
-        {
+        foreach ($_aApps as $_gotApp) {
             $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', 'Entity expected to be fullfill of JobEntityInterface interface');
             $this->assertInstanceOf('Chapi\Entity\Marathon\MarathonAppEntity', 'Entity expected to be instance of MarathonAppEntity');
 
             $_bFound = false;
-            foreach($this->aListingJobs["apps"] as $_listedApp)
-            {
-                if ($_gotApp->getKey() == $_listedApp["id"])
-                {
+            foreach ($this->aListingJobs["apps"] as $_listedApp) {
+                if ($_gotApp->getKey() == $_listedApp["id"]) {
                     $_bFound = true;
                     break;
                 }
@@ -103,7 +99,6 @@ class BridgeMarathonTest extends \PHPUnit_Framework_TestCase
         $_bSuccess = $_oMarathonBridge->addJob($_oApp);
 
         $this->assertTrue($_bSuccess, "Expected addJob to return true, false returned");
-
     }
 
     public function testAddJobSuccessFailure()
@@ -206,5 +201,4 @@ class BridgeMarathonTest extends \PHPUnit_Framework_TestCase
         $_bSuccess = $_oMarathonBridge->removeJob($_oApp);
         $this->assertFalse($_bSuccess, "Expected false, true returned");
     }
-
 }

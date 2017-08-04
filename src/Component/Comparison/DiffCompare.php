@@ -8,7 +8,6 @@
  */
 namespace Chapi\Component\Comparison;
 
-
 class DiffCompare implements DiffCompareInterface
 {
     /**
@@ -39,8 +38,7 @@ class DiffCompare implements DiffCompareInterface
      */
     private function valueToString($mValue)
     {
-        if (is_array($mValue) || is_object($mValue))
-        {
+        if (is_array($mValue) || is_object($mValue)) {
             return trim(json_encode($mValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
 
@@ -52,8 +50,7 @@ class DiffCompare implements DiffCompareInterface
      */
     private static function getCompare()
     {
-        if (is_null(self::$oCompare))
-        {
+        if (is_null(self::$oCompare)) {
             self::$oCompare = new \Diff();
         }
 

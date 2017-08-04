@@ -107,11 +107,9 @@ class StatusCommand extends AbstractCommand
             'updates' => ['title' => 'Updated jobs in local repository', 'format' => "\t<info>modified %s job:\t%s</info>"]
         ];
 
-        foreach ($aChangedJobs as $_sJobStatus => $_aJobList)
-        {
+        foreach ($aChangedJobs as $_sJobStatus => $_aJobList) {
             $_aFilteredJobList = $this->filterJobListWithIndex($_aJobList, $bFilterIsInIndex);
-            if (!empty($_aFilteredJobList))
-            {
+            if (!empty($_aFilteredJobList)) {
                 $this->printJobList($_aFormatMap[$_sJobStatus]['title'], $_aFilteredJobList, $_aFormatMap[$_sJobStatus]['format']);
             }
         }
@@ -126,12 +124,9 @@ class StatusCommand extends AbstractCommand
     {
         $_aFilteredJobList = [];
 
-        foreach ($aJobLists as $sAppLabel => $aJobList)
-        {
-            foreach ($aJobList as $_sJobName)
-            {
-                if ($bFilterIsInIndex == $this->oJobIndexService->isJobInIndex($_sJobName))
-                {
+        foreach ($aJobLists as $sAppLabel => $aJobList) {
+            foreach ($aJobList as $_sJobName) {
+                if ($bFilterIsInIndex == $this->oJobIndexService->isJobInIndex($_sJobName)) {
                     $_aFilteredJobList[$sAppLabel][] = $_sJobName;
                 }
             }
@@ -149,10 +144,8 @@ class StatusCommand extends AbstractCommand
     {
         $this->oOutput->writeln(sprintf('  %s:', $sTitle));
 
-        foreach ($aJobLists as $sLabel => $aJobList)
-        {
-            foreach ($aJobList as $_sJobName)
-            {
+        foreach ($aJobLists as $sLabel => $aJobList) {
+            foreach ($aJobList as $_sJobName) {
                 $this->oOutput->writeln(
                     sprintf($sListFormat, $sLabel, $_sJobName)
                 );

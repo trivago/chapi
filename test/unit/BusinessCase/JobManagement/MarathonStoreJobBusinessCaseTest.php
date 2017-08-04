@@ -9,7 +9,6 @@
 
 namespace unit\BusinessCase\JobManagement;
 
-
 use Chapi\BusinessCase\JobManagement\MarathonStoreJobBusinessCase;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use Exception;
@@ -136,7 +135,6 @@ class MarathonStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         );
 
         $oMarathonStore->storeJobsToLocalRepository(["/main/id1", "/main/id2"]);
-
     }
 
     public function testStoreJobsToLocalRepositoryWithUpdateSuccess()
@@ -567,7 +565,6 @@ class MarathonStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         );
 
         $oMarathonStore->storeIndexedJobs();
-
     }
 
     public function testStoreIndexedJobWithNonExistentDependencyApp()
@@ -708,5 +705,4 @@ class MarathonStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $oMarathonStore->storeIndexedJobs();
     }
-
 }

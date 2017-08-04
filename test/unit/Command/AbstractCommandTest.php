@@ -10,7 +10,6 @@
 
 namespace unit\Command;
 
-
 use Chapi\Commands\AbstractCommand;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use org\bovigo\vfs\vfsStream;
@@ -37,8 +36,7 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testGetHomeDirUnix()
     {
-        if (defined('PHP_WINDOWS_VERSION_MAJOR'))
-        {
+        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
             $this->markTestSkipped('OS should be windows');
         }
 
@@ -47,8 +45,8 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
         $_oCommand = new AbstractCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();
 
-        $this->assertContains('.chapi',  $_oCommand->getHomeDirPub());
-        $this->assertContains($_sHomeDir,  $_oCommand->getHomeDirPub());
+        $this->assertContains('.chapi', $_oCommand->getHomeDirPub());
+        $this->assertContains($_sHomeDir, $_oCommand->getHomeDirPub());
         $this->assertTrue(is_dir($_oCommand->getHomeDirPub()));
     }
 
@@ -57,7 +55,7 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
         $_oCommand = new AbstractCommandDummy();
         $_oCommand::$oContainerDummy = $this->oContainer->reveal();
 
-        $this->assertContains('cache',  $_oCommand->getCacheDir());
+        $this->assertContains('cache', $_oCommand->getCacheDir());
         $this->assertTrue(is_dir($_oCommand->getCacheDir()));
     }
 

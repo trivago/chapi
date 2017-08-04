@@ -40,8 +40,7 @@ class HttpGuzzlClient implements HttpClientInterface
     public function __construct(
         ClientInterface $oGuzzelClient,
         AuthEntity $oAuthEntity
-    )
-    {
+    ) {
         $this->oGuzzelClient = $oGuzzelClient;
         $this->oAuthEntity = $oAuthEntity;
     }
@@ -55,53 +54,40 @@ class HttpGuzzlClient implements HttpClientInterface
     {
         $_aRequestOptions = $this->getDefaultRequestOptions();
 
-        try
-        {
+        try {
             $_oResponse = $this->oGuzzelClient->request('GET', $sUrl, $_aRequestOptions);
             return new HttpGuzzlResponse($_oResponse);
-        }
-        catch (ClientException $oException) // 400 level errors
-        {
+        } catch (ClientException $oException) { // 400 level errors
             throw new HttpConnectionException(
                 sprintf('Client error: Calling %s returned %d', $this->oGuzzelClient->getConfig('base_uri') . $sUrl, $oException->getCode()),
                 $oException->getCode(),
                 $oException
             );
-        }
-        catch (ServerException $oException) // 500 level errors
-        {
+        } catch (ServerException $oException) { // 500 level errors
             throw new HttpConnectionException(
                 sprintf('Server error: Calling %s returned %d', $this->oGuzzelClient->getConfig('base_uri') . $sUrl, $oException->getCode()),
                 $oException->getCode(),
                 $oException
             );
-        }
-        catch (TooManyRedirectsException $oException) // too many redirects to follow
-        {
+        } catch (TooManyRedirectsException $oException) { // too many redirects to follow
             throw new HttpConnectionException(
                 sprintf('Request to %s failed due to too many redirects', $this->oGuzzelClient->getConfig('base_uri') . $sUrl),
                 HttpConnectionException::ERROR_CODE_TOO_MANY_REDIRECT_EXCEPTION,
                 $oException
             );
-        }
-        catch (ConnectException $oException) // networking error
-        {
+        } catch (ConnectException $oException) { // networking error
             throw new HttpConnectionException(
                 sprintf('Cannot connect to %s due to some networking error', $this->oGuzzelClient->getConfig('base_uri') . $sUrl),
                 HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION,
                 $oException
             );
-        }
-        catch (RequestException $oException) // networking error (connection timeout, DNS errors, etc.)
-        {
+        } catch (RequestException $oException) { // networking error (connection timeout, DNS errors, etc.)
             throw new HttpConnectionException(
                 sprintf('Cannot connect to %s due to networking error', $this->oGuzzelClient->getConfig('base_uri') . $sUrl),
                 HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION,
                 $oException
             );
-        }
-        catch (\Exception $oException)
-        {
+        } catch (\Exception $oException) {
             throw new HttpConnectionException(
                 sprintf('Can\'t get response from "%s"', $this->oGuzzelClient->getConfig('base_uri') . $sUrl),
                 HttpConnectionException::ERROR_CODE_UNKNOWN,
@@ -174,8 +160,7 @@ class HttpGuzzlClient implements HttpClientInterface
 
         if (!empty($this->oAuthEntity->username)
             && !empty($this->oAuthEntity->password)
-        )
-        {
+        ) {
             $_aRequestOptions['auth'] = [
                 $this->oAuthEntity->username,
                 $this->oAuthEntity->password
@@ -184,5 +169,4 @@ class HttpGuzzlClient implements HttpClientInterface
 
         return $_aRequestOptions;
     }
-
 }

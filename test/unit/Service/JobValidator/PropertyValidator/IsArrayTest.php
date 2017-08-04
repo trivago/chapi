@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\IsArray;
 
 class IsArrayTest extends AbstractValidatorTest

@@ -9,7 +9,6 @@
 
 namespace Chapi\Component\DependencyInjection\Loader;
 
-
 interface ChapiConfigLoaderInterface
 {
     /**

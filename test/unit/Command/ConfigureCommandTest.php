@@ -35,8 +35,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
         // init and set up temp directory
         $_sTempTestDir = sys_get_temp_dir();
         $this->sTempTestDir = $_sTempTestDir . DIRECTORY_SEPARATOR . 'ChapiUnitTest';
-        if (!is_dir($this->sTempTestDir))
-        {
+        if (!is_dir($this->sTempTestDir)) {
             mkdir($this->sTempTestDir, 0755);
         }
 
@@ -45,8 +44,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        if (file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'))
-        {
+        if (file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig')) {
             unlink($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig');
         }
     }

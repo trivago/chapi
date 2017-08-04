@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Exception\DatePeriodException;
 use Chapi\Service\JobValidator\PropertyValidator\Schedule;
 use ChapiTest\src\TestTraits\JobEntityTrait;

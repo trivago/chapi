@@ -10,7 +10,6 @@
 
 namespace Chapi\Commands;
 
-
 use Chapi\Component\Command\CommandUtils;
 use Chapi\Component\Config\ChapiConfig;
 use Chapi\Component\Config\ChapiConfigInterface;
@@ -95,8 +94,7 @@ abstract class AbstractCommand extends Command
      */
     protected function execute(InputInterface $oInput, OutputInterface $oOutput)
     {
-        if (!$this->isAppRunable())
-        {
+        if (!$this->isAppRunable()) {
             return 1;
         }
 
@@ -118,8 +116,7 @@ abstract class AbstractCommand extends Command
      */
     protected function getContainer()
     {
-        if (is_null($this->oContainer))
-        {
+        if (is_null($this->oContainer)) {
             $_oContainer = $this->loadContainer();
 
             // load services
@@ -146,11 +143,9 @@ abstract class AbstractCommand extends Command
     protected function isAppRunable()
     {
         // one file has to exist
-        if (
-            !file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . ChapiConfigInterface::CONFIG_FILE_NAME)
+        if (!file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . ChapiConfigInterface::CONFIG_FILE_NAME)
             && !file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . ChapiConfigInterface::CONFIG_FILE_NAME)
-        )
-        {
+        ) {
             $this->oOutput->writeln(sprintf(
                 '<error>%s</error>',
                 'No parameter file found. Please run "configure" command for initial setup or add a local `.chapiconfig` to your working directory.'
@@ -166,14 +161,12 @@ abstract class AbstractCommand extends Command
      */
     protected function getHomeDir()
     {
-        if (!empty(self::$sHomeDir))
-        {
+        if (!empty(self::$sHomeDir)) {
             return self::$sHomeDir;
         }
 
         $_sHomeDir = getenv('CHAPI_HOME');
-        if (!$_sHomeDir)
-        {
+        if (!$_sHomeDir) {
             $_sHomeDir = CommandUtils::getOsHomeDir() . DIRECTORY_SEPARATOR . '.chapi';
         }
 

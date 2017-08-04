@@ -8,7 +8,6 @@
 
 namespace Chapi\Entity\Chronos\JobEntity;
 
-
 class ContainerVolumeEntity
 {
     /**
@@ -17,18 +16,13 @@ class ContainerVolumeEntity
      */
     public function __construct($mJobData = [])
     {
-        if (is_array($mJobData) || is_object($mJobData))
-        {
-            foreach ($mJobData as $_sKey => $_mValue)
-            {
-                if (property_exists($this, $_sKey))
-                {
+        if (is_array($mJobData) || is_object($mJobData)) {
+            foreach ($mJobData as $_sKey => $_mValue) {
+                if (property_exists($this, $_sKey)) {
                     $this->{$_sKey} = $_mValue;
                 }
             }
-        }
-        else
-        {
+        } else {
             throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an array or object', __METHOD__));
         }
     }
@@ -41,7 +35,7 @@ class ContainerVolumeEntity
 
     /**
      * @var string
-     * 
+     *
      * read-write and read-only.
      * val RW, RO = Value
      */

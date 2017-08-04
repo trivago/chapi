@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\Command;
 use Chapi\Service\JobValidator\PropertyValidator\Constraints;
 use Chapi\Service\JobValidator\PropertyValidator\Container;
@@ -60,8 +59,7 @@ class ValidatorFactory implements ValidatorFactoryInterface
      */
     public function getValidator($iValidator)
     {
-        if (!isset(self::$aValidatorMap[$iValidator]))
-        {
+        if (!isset(self::$aValidatorMap[$iValidator])) {
             throw new \InvalidArgumentException(sprintf('Unknown validator type "%s"', $iValidator));
         }
         

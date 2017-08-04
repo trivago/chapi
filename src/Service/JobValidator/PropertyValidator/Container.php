@@ -41,25 +41,20 @@ class Container extends AbstractPropertyValidator implements PropertyValidatorIn
      */
     private function isContainerPropertyValid($oContainer)
     {
-        if (is_null($oContainer))
-        {
+        if (is_null($oContainer)) {
             return true;
         }
 
-        if (empty($oContainer->type) || empty($oContainer->image))
-        {
+        if (empty($oContainer->type) || empty($oContainer->image)) {
             return false;
         }
 
-        if (!is_array($oContainer->volumes))
-        {
+        if (!is_array($oContainer->volumes)) {
             return false;
         }
 
-        foreach ($oContainer->volumes as $_oVolume)
-        {
-            if (!in_array($_oVolume->mode, ['RO', 'RW']))
-            {
+        foreach ($oContainer->volumes as $_oVolume) {
+            if (!in_array($_oVolume->mode, ['RO', 'RW'])) {
                 return false;
             }
         }

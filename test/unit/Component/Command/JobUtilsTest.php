@@ -9,7 +9,6 @@
 
 namespace unit\Component\Command;
 
-
 use Chapi\Component\Command\JobUtils;
 use Chapi\Component\Command\JobUtilsInterface;
 use Prophecy\Argument;
@@ -73,5 +72,4 @@ class JobUtilsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse(JobUtils::isWildcard(['JobA', 'JobB']));
     }
-
 }

@@ -8,7 +8,6 @@
 
 namespace Chapi\Service\JobRepository;
 
-
 use Chapi\Entity\JobEntityInterface;
 use Psr\Log\LoggerInterface;
 
@@ -20,8 +19,7 @@ class DummyBridge implements BridgeInterface
 
     public function __construct(
         LoggerInterface $oLogger
-    )
-    {
+    ) {
         $this->oLogger = $oLogger;
     }
 

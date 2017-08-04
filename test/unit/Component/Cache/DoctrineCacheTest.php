@@ -10,7 +10,6 @@
 
 namespace unit\Component\Cache;
 
-
 use Chapi\Component\Cache\DoctrineCache;
 use Prophecy\Argument;
 

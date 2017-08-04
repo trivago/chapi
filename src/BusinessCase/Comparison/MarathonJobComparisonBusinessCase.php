@@ -10,7 +10,6 @@
 
 namespace Chapi\BusinessCase\Comparison;
 
-
 use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
@@ -28,8 +27,7 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
         JobRepositoryInterface $oLocalRepository,
         JobRepositoryInterface $oRemoteRepository,
         DiffCompareInterface $oDiffCompare
-    )
-    {
+    ) {
         $this->oRemoteRepository = $oRemoteRepository;
         $this->oLocalRepository = $oLocalRepository;
         $this->oDiffCompare = $oDiffCompare;
@@ -37,18 +35,15 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
 
     protected function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob)
     {
-        if (
-            !$oLocalJob instanceof MarathonAppEntity ||
+        if (!$oLocalJob instanceof MarathonAppEntity ||
             !$oRemoteJob instanceof MarathonAppEntity
-        )
-        {
+        ) {
             throw new \RuntimeException('Required MarathonAppEntity. Something else encountered.');
         }
         // marathon returns portDefinitions values for auto configured port as well
         // we want to only check if the port is defined in local file.
         // otherwise we ignore the remote values.
-        if (!$oLocalJob->portDefinitions)
-        {
+        if (!$oLocalJob->portDefinitions) {
             $oRemoteJob->portDefinitions = null;
         }
     }
@@ -81,11 +76,9 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
      */
     protected function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
     {
-        if (
-            !$oJobEntityA instanceof MarathonAppEntity ||
+        if (!$oJobEntityA instanceof MarathonAppEntity ||
             !$oJobEntityB instanceof MarathonAppEntity
-        )
-        {
+        ) {
             throw new \RuntimeException('Required MarathonAppEntity. Something else encountered.');
         }
 
@@ -99,16 +92,11 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
      */
     private function isEqual($mValueA, $mValueB)
     {
-        if (is_array($mValueA) && is_array($mValueB))
-        {
+        if (is_array($mValueA) && is_array($mValueB)) {
             return $this->isArrayEqual($mValueA, $mValueB);
-        }
-        elseif (is_object($mValueA) && is_object($mValueB))
-        {
+        } elseif (is_object($mValueA) && is_object($mValueB)) {
             return $this->isArrayEqual(get_object_vars($mValueA), get_object_vars($mValueB));
-        }
-        elseif ((is_scalar($mValueA) && is_scalar($mValueB)) || (is_null($mValueA) && is_null($mValueB)))
-        {
+        } elseif ((is_scalar($mValueA) && is_scalar($mValueB)) || (is_null($mValueA) && is_null($mValueB))) {
             return $mValueA == $mValueB;
         }
 
@@ -132,21 +120,14 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
      */
     private function isArrayHalfEqual(array $aValuesA, array $aValuesB)
     {
-        foreach ($aValuesA as $_mKeyA => $_mValueA)
-        {
-            if (is_string($_mKeyA))
-            {
-                if (!array_key_exists($_mKeyA, $aValuesB) || !$this->isEqual($_mValueA, $aValuesB[$_mKeyA]))
-                {
+        foreach ($aValuesA as $_mKeyA => $_mValueA) {
+            if (is_string($_mKeyA)) {
+                if (!array_key_exists($_mKeyA, $aValuesB) || !$this->isEqual($_mValueA, $aValuesB[$_mKeyA])) {
                     return false;
                 }
-            }
-            else
-            {
-                foreach ($aValuesB as $_mValueB)
-                {
-                    if ($this->isEqual($_mValueA, $_mValueB))
-                    {
+            } else {
+                foreach ($aValuesB as $_mValueB) {
+                    if ($this->isEqual($_mValueA, $_mValueB)) {
                         continue 2;
                     }
                 }

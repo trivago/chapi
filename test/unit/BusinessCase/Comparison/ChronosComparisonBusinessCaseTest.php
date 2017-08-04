@@ -9,7 +9,6 @@
 
 namespace ChapiTest\unit\BusinessCase\Comparison;
 
-
 use Chapi\BusinessCase\Comparison\ChronosJobComparisonBusinessCase;
 use Chapi\Component\DatePeriod\DatePeriodFactory;
 use ChapiTest\src\TestTraits\JobEntityTrait;

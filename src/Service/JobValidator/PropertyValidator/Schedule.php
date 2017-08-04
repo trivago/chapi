@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\Chronos\JobEntity;
@@ -53,25 +52,19 @@ class Schedule extends AbstractPropertyValidator implements PropertyValidatorInt
      */
     private function isSchedulePropertyValid(JobEntityInterface $oJobEntity)
     {
-        if (!$oJobEntity instanceof ChronosJobEntity)
-        {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
         }
 
-        if (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
-        {
+        if (empty($oJobEntity->schedule) && !empty($oJobEntity->parents)) {
             return true;
         }
 
-        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
-        {
-            try
-            {
+        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents)) {
+            try {
                 $_oDataPeriod = $this->oDatePeriodFactory->createDatePeriod($oJobEntity->schedule, $oJobEntity->scheduleTimeZone);
                 return (false !== $_oDataPeriod);
-            }
-            catch (\Exception $oException)
-            {
+            } catch (\Exception $oException) {
                 // invalid: Iso8601 is not valid and/or DatePeriodFactory is able to create a valid DatePeriod
             }
         }

@@ -8,7 +8,6 @@
 
 namespace Chapi\Service\JobRepository;
 
-
 use Chapi\Component\Cache\CacheInterface;
 use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
@@ -47,9 +46,7 @@ class BridgeMarathon implements BridgeInterface
         CacheInterface $oCache,
         JobValidatorServiceInterface $oJobEntityValidatorService,
         LoggerInterface $oLogger
-    )
-    {
-
+    ) {
         $this->oApiClient = $oApiClient;
         $this->oJobEntityValidatorService = $oJobEntityValidatorService;
         $this->oCache = $oCache;
@@ -58,8 +55,7 @@ class BridgeMarathon implements BridgeInterface
 
     public function __destruct()
     {
-        if ($this->bCacheHasToDelete)
-        {
+        if ($this->bCacheHasToDelete) {
             $this->oCache->delete(self::CACHE_KEY_APP_LIST);
         }
     }
@@ -72,10 +68,8 @@ class BridgeMarathon implements BridgeInterface
         $_aApps = [];
         $_aJobsList = $this->getJobList();
 
-        if (!empty($_aJobsList))
-        {
-            foreach ($_aJobsList as $_aJobData)
-            {
+        if (!empty($_aJobsList)) {
+            foreach ($_aJobsList as $_aJobData) {
                 $_aApps[] = new MarathonAppEntity($_aJobData);
             }
         }
@@ -88,8 +82,7 @@ class BridgeMarathon implements BridgeInterface
      */
     public function addJob(JobEntityInterface $oJobEntity)
     {
-        if ($this->oApiClient->addingJob($oJobEntity))
-        {
+        if ($this->oApiClient->addingJob($oJobEntity)) {
             $this->bCacheHasToDelete = true;
             return true;
         }
@@ -102,8 +95,7 @@ class BridgeMarathon implements BridgeInterface
      */
     public function updateJob(JobEntityInterface $oJobEntity)
     {
-        if ($this->oApiClient->updatingJob($oJobEntity))
-        {
+        if ($this->oApiClient->updatingJob($oJobEntity)) {
             $this->bCacheHasToDelete = true;
             return true;
         }
@@ -116,8 +108,7 @@ class BridgeMarathon implements BridgeInterface
      */
     public function removeJob(JobEntityInterface $oJobEntity)
     {
-        if ($this->oApiClient->removeJob($oJobEntity->getKey()))
-        {
+        if ($this->oApiClient->removeJob($oJobEntity->getKey())) {
             $this->bCacheHasToDelete = true;
             return true;
         }
@@ -131,20 +122,16 @@ class BridgeMarathon implements BridgeInterface
     {
         $_aResult = $this->oCache->get(self::CACHE_KEY_APP_LIST);
 
-        if (is_array($_aResult))
-        {
+        if (is_array($_aResult)) {
             return $_aResult;
         }
 
         $_aResult = $this->oApiClient->listingJobs();
 
-        if (!empty($_aResult['apps']))
-        {
+        if (!empty($_aResult['apps'])) {
             $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult['apps'], self::CACHE_TIME_JOB_LIST);
         }
 
         return $_aResult['apps'];
-
     }
-
 }

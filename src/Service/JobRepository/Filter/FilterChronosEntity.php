@@ -2,7 +2,6 @@
 
 namespace Chapi\Service\JobRepository\Filter;
 
-
 use Chapi\Entity\JobEntityInterface;
 
 class FilterChronosEntity implements JobFilterInterface

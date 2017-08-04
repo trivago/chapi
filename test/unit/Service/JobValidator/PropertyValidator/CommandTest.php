@@ -9,7 +9,6 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\Command;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 

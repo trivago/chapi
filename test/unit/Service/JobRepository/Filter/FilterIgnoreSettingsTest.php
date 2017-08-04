@@ -9,7 +9,6 @@
 
 namespace unit\Service\JobRepository\Filter;
 
-
 use Chapi\Service\JobRepository\Filter\FilterIgnoreSettings;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -59,5 +58,4 @@ class FilterIgnoreSettingsTest extends \PHPUnit_Framework_TestCase
         $_oEntity = $this->getValidMarathonAppEntity('/test/123/xyz');
         $this->assertFalse($_oFilter->isInteresting($_oEntity));
     }
-
 }

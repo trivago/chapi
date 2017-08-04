@@ -41,8 +41,7 @@ class HealthCheck implements \JsonSerializable
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
 
-        if (isset($aData['command']))
-        {
+        if (isset($aData['command'])) {
             $this->command = new HealthCheckCommand((array) $aData['command']);
         }
     }
@@ -53,8 +52,7 @@ class HealthCheck implements \JsonSerializable
     function jsonSerialize()
     {
         $_aRet = (array) $this;
-        if (is_null($this->port))
-        {
+        if (is_null($this->port)) {
             unset($_aRet["port"]);
         }
         return $_aRet;

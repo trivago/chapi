@@ -59,8 +59,7 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         // init and set up temp directory
         $_sTempTestDir = sys_get_temp_dir();
         $this->sTempTestDir = $_sTempTestDir . DIRECTORY_SEPARATOR . 'ChapiUnitTest';
-        if (!is_dir($this->sTempTestDir))
-        {
+        if (!is_dir($this->sTempTestDir)) {
             mkdir($this->sTempTestDir, 0755);
         }
     }
@@ -117,18 +116,15 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         $_iCountMarathon = 0;
         $_iCountChronos = 0;
         /** @var JobEntityInterface $_aEntity */
-        foreach ($_aEntities as $_aEntity)
-        {
+        foreach ($_aEntities as $_aEntity) {
             $this->assertInstanceOf(
                 'Chapi\Entity\JobEntityInterface',
                 $_aEntity,
-                'Expected to fulfill JobEntityInterface');
-            if ($_aEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE)
-            {
+                'Expected to fulfill JobEntityInterface'
+            );
+            if ($_aEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
                 $_iCountMarathon += 1;
-            }
-            else if ($_aEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE)
-            {
+            } elseif ($_aEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE) {
                 $_iCountChronos += 1;
             }
         }
@@ -168,8 +164,7 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
             'Expected "1" job after adding'
         );
 
-        foreach ($_aJobs as $_oJob)
-        {
+        foreach ($_aJobs as $_oJob) {
             $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $_oJob);
             $this->assertInstanceOf('Chapi\Entity\Chronos\ChronosJobEntity', $_oJob);
         }
@@ -233,8 +228,7 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
             'Expected "1" app after adding'
         );
 
-        foreach ($_aJobs as $_oJob)
-        {
+        foreach ($_aJobs as $_oJob) {
             $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $_oJob);
             $this->assertInstanceOf('Chapi\Entity\Marathon\MarathonAppEntity', $_oJob);
         }
@@ -297,10 +291,8 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         $_aAppsAfterModification = $_oFileSystemRepository->getJobs();
         $this->assertEquals(2, count($_aApps), "Expected 2 apps, got " . count($_aAppsAfterModification));
 
-        foreach ($_aAppsAfterModification as $_oApp)
-        {
-            if ($_oApp->getKey() == $_sUpdatedKey)
-            {
+        foreach ($_aAppsAfterModification as $_oApp) {
+            if ($_oApp->getKey() == $_sUpdatedKey) {
                 $this->assertEquals(
                     1024,
                     $_oApp->mem,
@@ -314,7 +306,6 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
                 );
             }
         }
-
     }
 
 

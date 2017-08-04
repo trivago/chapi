@@ -8,12 +8,12 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\IpAddress;
 
 class IpAddressTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAllKeysAreCorrect() {
+    public function testAllKeysAreCorrect()
+    {
         $_aKeys = ["groups", "labels", "networkName"];
         
         $oIpAddress = new IpAddress();
@@ -22,7 +22,8 @@ class IpAddressTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testIpAddressSetProperly() {
+    public function testIpAddressSetProperly()
+    {
         $aData = [
             "groups" => ["somegroup"],
             "labels" => (object)["label1" => "somelabel"],
@@ -37,5 +38,4 @@ class IpAddressTest extends \PHPUnit_Framework_TestCase
         $this->assertObjectHasAttribute("label1", $oIpAddress->labels);
         $this->assertEquals("somelabel", $oIpAddress->labels->label1);
     }
-
 }

@@ -8,7 +8,6 @@
  */
 namespace Chapi\Component\Comparison;
 
-
 interface DiffCompareInterface
 {
     const DIC_NAME = 'DiffCompareInterface';

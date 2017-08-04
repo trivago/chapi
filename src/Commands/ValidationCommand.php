@@ -47,12 +47,10 @@ class ValidationCommand extends AbstractCommand
             : $_aJobNames
         ;
 
-        if ($this->hasInvalidJobs($_aJobsToValidate))
-        {
+        if ($this->hasInvalidJobs($_aJobsToValidate)) {
             $this->oOutput->writeln("<comment>Found invalid jobs:</comment>\n");
 
-            foreach ($this->getInvalidJobsByJobNames($_aJobsToValidate) as $_sJobName => $_aInvalidProperties)
-            {
+            foreach ($this->getInvalidJobsByJobNames($_aJobsToValidate) as $_sJobName => $_aInvalidProperties) {
                 $this->printInvalidJobProperties($_sJobName, $_aInvalidProperties);
             }
 
@@ -82,8 +80,7 @@ class ValidationCommand extends AbstractCommand
     {
         $_sKey = md5(implode('.', $aJobs));
 
-        if (isset($this->aInvalidJobs[$_sKey]))
-        {
+        if (isset($this->aInvalidJobs[$_sKey])) {
             return $this->aInvalidJobs[$_sKey];
         }
 
@@ -95,12 +92,10 @@ class ValidationCommand extends AbstractCommand
         /** @var JobRepositoryInterface  $_oJobRepositoryLocale */
         $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
 
-        foreach ($aJobs as $_sJobName)
-        {
+        foreach ($aJobs as $_sJobName) {
             $_oJobEntity = $_oJobRepositoryLocale->getJob($_sJobName);
 
-            if (false === $_oJobEntityValidationService->isEntityValid($_oJobEntity))
-            {
+            if (false === $_oJobEntityValidationService->isEntityValid($_oJobEntity)) {
                 $_aInvalidJobs[$_sJobName] = $_oJobEntityValidationService->getInvalidProperties($_oJobEntity);
             }
         }
@@ -118,8 +113,7 @@ class ValidationCommand extends AbstractCommand
         $_sFormatErrMsg = "\t\t<fg=red>%s</>";
 
         $this->oOutput->writeln(sprintf($_sFormatJobName, $sJobName));
-        foreach ($aInvalidProperties as $_sErrorMessage)
-        {
+        foreach ($aInvalidProperties as $_sErrorMessage) {
             $this->oOutput->writeln(sprintf($_sFormatErrMsg, $_sErrorMessage));
         }
     }
@@ -135,8 +129,7 @@ class ValidationCommand extends AbstractCommand
         $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
 
         /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($_oJobRepositoryLocale->getJobs() as $_oJobEntity)
-        {
+        foreach ($_oJobRepositoryLocale->getJobs() as $_oJobEntity) {
             $_aJobNames[] = $_oJobEntity->name;
         }
 

@@ -9,7 +9,6 @@
 
 namespace ChapiTest\unit\BusinessCase\Comparison;
 
-
 use Chapi\BusinessCase\Comparison\CompositeJobComparisonBusinessCase;
 use Prophecy\Argument;
 

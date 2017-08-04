@@ -26,7 +26,8 @@ class ChapiConfigLoaderTest extends \PHPUnit_Framework_TestCase
         $this->oConfig = $this->prophesize('Chapi\Component\Config\ChapiConfigInterface');
     }
 
-    public function testLoadProfileParametersWithoutConfigSettings() {
+    public function testLoadProfileParametersWithoutConfigSettings()
+    {
         $_oChapiConfigLoader = new ChapiConfigLoader(
             $this->oContainer->reveal(),
             $this->oConfig->reveal()
@@ -35,7 +36,8 @@ class ChapiConfigLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($_oChapiConfigLoader->loadProfileParameters());
     }
 
-    public function testLoadProfileParametersWithConfigSettings() {
+    public function testLoadProfileParametersWithConfigSettings()
+    {
         $this->oConfig->getProfileConfig()->willReturn([
             'parameters' => [
                 'paramA' => 'A',
@@ -54,7 +56,8 @@ class ChapiConfigLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testLoadProfileParametersFailure() {
+    public function testLoadProfileParametersFailure()
+    {
         $this->oConfig->getProfileConfig()->willReturn([
             'parameters' => 'not_valid'
         ]);

@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobRepository;
 
-
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
@@ -39,8 +38,7 @@ class JobRepository implements JobRepositoryInterface
     public function __construct(
         BridgeInterface $oRepositoryBridge,
         JobFilterInterface $oJobFilter
-    )
-    {
+    ) {
         $this->oRepositoryBridge = $oRepositoryBridge;
         $this->oJobFilter = $oJobFilter;
     }
@@ -52,8 +50,7 @@ class JobRepository implements JobRepositoryInterface
     public function getJob($sJobName)
     {
         $_aJobs = $this->getJobs();
-        if (isset($_aJobs[$sJobName]))
-        {
+        if (isset($_aJobs[$sJobName])) {
             return $_aJobs[$sJobName];
         }
 
@@ -75,8 +72,7 @@ class JobRepository implements JobRepositoryInterface
      */
     public function getJobs()
     {
-        if (!is_null($this->oJobCollection))
-        {
+        if (!is_null($this->oJobCollection)) {
             return $this->oJobCollection;
         }
 
@@ -97,11 +93,9 @@ class JobRepository implements JobRepositoryInterface
      */
     public function addJob(JobEntityInterface $oJobEntity)
     {
-        if ($this->oRepositoryBridge->addJob($oJobEntity))
-        {
+        if ($this->oRepositoryBridge->addJob($oJobEntity)) {
             // if no collection inited the new job will init by chronos request
-            if (!is_null($this->oJobCollection))
-            {
+            if (!is_null($this->oJobCollection)) {
                 $this->oJobCollection->offsetSet($oJobEntity->getKey(), $oJobEntity);
             }
 
@@ -127,13 +121,11 @@ class JobRepository implements JobRepositoryInterface
     public function removeJob($sJobName)
     {
         $_oJobEntity = $this->getJob($sJobName);
-        if (!$_oJobEntity)
-        {
+        if (!$_oJobEntity) {
             throw new \InvalidArgumentException(sprintf('Can\'t remove unknown job "%s"', $sJobName));
         }
 
-        if ($this->oRepositoryBridge->removeJob($_oJobEntity))
-        {
+        if ($this->oRepositoryBridge->removeJob($_oJobEntity)) {
             $this->oJobCollection->offsetUnset($_oJobEntity->getKey());
             return true;
         }

@@ -9,7 +9,6 @@
 
 namespace ChapiTest\src\TestTraits;
 
-
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 
@@ -20,8 +19,7 @@ trait AppEntityTrait
     {
         $_aAppEntities = [];
 
-        foreach ($aAppNames as $_sAppName)
-        {
+        foreach ($aAppNames as $_sAppName) {
             $_aAppEntities[] = $this->getValidMarathonAppEntity($_sAppName);
         }
 

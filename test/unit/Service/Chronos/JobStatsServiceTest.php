@@ -111,7 +111,8 @@ class JobStatsServiceTest extends \PHPUnit_Framework_TestCase
         $this->oCache->get(Argument::exact($_sCacheKey))->shouldBeCalledTimes(1)->willReturn(null);
         $this->oCache->set(Argument::exact($_sCacheKey), Argument::exact($_aTestResult), Argument::type('int'))->shouldNotBeCalled();
 
-        $this->oApiClient->getJobStats(Argument::any())->shouldBeCalledTimes(1)->willReturn($_aTestResult);;
+        $this->oApiClient->getJobStats(Argument::any())->shouldBeCalledTimes(1)->willReturn($_aTestResult);
+        ;
 
         $_oJobStatsService = new JobStatsService($this->oApiClient->reveal(), $this->oCache->reveal());
         $_oResult = $_oJobStatsService->getJobStats('JobA');

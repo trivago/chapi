@@ -10,14 +10,13 @@
 
 namespace unit\Command;
 
-
 use Chapi\Commands\InfoCommand;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class InfoCommandTest  extends \PHPUnit_Framework_TestCase
+class InfoCommandTest extends \PHPUnit_Framework_TestCase
 {
     use CommandTestTrait;
     use JobEntityTrait;
@@ -52,8 +51,7 @@ class InfoCommandTest  extends \PHPUnit_Framework_TestCase
 
         // Spies
         $this->oOutput->writeln(Argument::containingString('JobA'))->shouldHaveBeenCalled();
-        foreach ($_oJobEntity as $_sKey => $_mValue)
-        {
+        foreach ($_oJobEntity as $_sKey => $_mValue) {
             $this->oOutput->writeln(Argument::containingString($_sKey))->shouldHaveBeenCalled();
         }
     }

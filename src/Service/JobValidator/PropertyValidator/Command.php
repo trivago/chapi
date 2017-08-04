@@ -38,13 +38,11 @@ class Command extends AbstractPropertyValidator implements PropertyValidatorInte
      */
     private function isCommandPropertyValid(JobEntityInterface $oJobEntity)
     {
-        if (!$oJobEntity instanceof ChronosJobEntity)
-        {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
         }
 
-        if (is_null($oJobEntity->container))
-        {
+        if (is_null($oJobEntity->container)) {
             return (!empty($oJobEntity->command) && is_string($oJobEntity->command));
         }
         

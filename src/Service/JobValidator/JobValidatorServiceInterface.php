@@ -10,7 +10,6 @@
 
 namespace Chapi\Service\JobValidator;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 

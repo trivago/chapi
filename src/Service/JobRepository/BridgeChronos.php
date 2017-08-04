@@ -62,8 +62,7 @@ class BridgeChronos implements BridgeInterface
         CacheInterface $oCache,
         JobValidatorServiceInterface $oJobEntityValidatorService,
         LoggerInterface $oLogger
-    )
-    {
+    ) {
         $this->oApiClient = $oApiClient;
         $this->oCache = $oCache;
         $this->oJobEntityValidatorService = $oJobEntityValidatorService;
@@ -75,8 +74,7 @@ class BridgeChronos implements BridgeInterface
      */
     public function __destruct()
     {
-        if ($this->bCacheHasToDelete)
-        {
+        if ($this->bCacheHasToDelete) {
             $this->oCache->delete(self::CACHE_KEY_JOB_LIST);
         }
     }
@@ -90,11 +88,9 @@ class BridgeChronos implements BridgeInterface
         $_aReturn = [];
         $_aJobList = $this->getJobList();
 
-        if (!empty($_aJobList))
-        {
+        if (!empty($_aJobList)) {
             // prepare return value
-            foreach ($_aJobList as $_aJobData)
-            {
+            foreach ($_aJobList as $_aJobData) {
                 $_aReturn[] = new ChronosJobEntity($_aJobData);
             }
         }
@@ -127,8 +123,7 @@ class BridgeChronos implements BridgeInterface
      */
     public function removeJob(JobEntityInterface $oJobEntity)
     {
-        if ($this->oApiClient->removeJob($oJobEntity->getKey()))
-        {
+        if ($this->oApiClient->removeJob($oJobEntity->getKey())) {
             $this->bCacheHasToDelete = true;
             return true;
         }
@@ -142,10 +137,8 @@ class BridgeChronos implements BridgeInterface
      */
     private function hasValidate(JobEntityInterface $oJobEntity)
     {
-
         $_aInvalidProperties = $this->oJobEntityValidatorService->getInvalidProperties($oJobEntity);
-        if (empty($_aInvalidProperties))
-        {
+        if (empty($_aInvalidProperties)) {
             return true;
         }
 
@@ -172,15 +165,13 @@ class BridgeChronos implements BridgeInterface
     {
         $_aResult = $this->oCache->get(self::CACHE_KEY_JOB_LIST);
 
-        if (is_array($_aResult))
-        {
+        if (is_array($_aResult)) {
             // return list from cache
             return $_aResult;
         }
 
         $_aResult = $this->oApiClient->listingJobs();
-        if (!empty($_aResult))
-        {
+        if (!empty($_aResult)) {
             // set result to cache
             $this->oCache->set(self::CACHE_KEY_JOB_LIST, $_aResult, self::CACHE_TIME_JOB_LIST);
         }
@@ -195,10 +186,8 @@ class BridgeChronos implements BridgeInterface
      */
     private function hasAddOrUpdateJob($sApiMethod, JobEntityInterface $oJobEntity)
     {
-        if ($this->hasValidate($oJobEntity))
-        {
-            if ($this->oApiClient->{$sApiMethod}($oJobEntity))
-            {
+        if ($this->hasValidate($oJobEntity)) {
+            if ($this->oApiClient->{$sApiMethod}($oJobEntity)) {
                 $this->bCacheHasToDelete = true;
                 return true;
             }

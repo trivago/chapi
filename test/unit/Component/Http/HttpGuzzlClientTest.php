@@ -10,7 +10,6 @@
 
 namespace unit\Component\Http;
 
-
 use Chapi\Component\Http\HttpGuzzlClient;
 use Chapi\Entity\Http\AuthEntity;
 use Prophecy\Argument;

@@ -10,7 +10,6 @@
 
 namespace Chapi\Component\RemoteClients;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 

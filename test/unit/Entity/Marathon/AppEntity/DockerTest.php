@@ -8,13 +8,13 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\Docker;
 use Chapi\Entity\Marathon\AppEntity\DockerParameters;
 
 class DockerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testDockerSetProperly() {
+    public function testDockerSetProperly()
+    {
         $aData = [
             "image" => "some/image",
             "network" => "BRIDGE",
@@ -37,7 +37,8 @@ class DockerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($oDocker->parameters));
     }
 
-    public function testAllKeysAreCorrect() {
+    public function testAllKeysAreCorrect()
+    {
         $aKeys = ["image", "network", "privileged", "portMappings", "parameters"];
 
         $oDocker = new Docker();
@@ -46,5 +47,4 @@ class DockerTest extends \PHPUnit_Framework_TestCase
             $this->assertObjectHasAttribute($sProperty, $oDocker);
         }
     }
-
 }

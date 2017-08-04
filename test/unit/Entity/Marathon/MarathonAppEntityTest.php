@@ -13,11 +13,11 @@ use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 
-
 class MarathonAppEntityTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testLiteralValuesSetWithArray() {
+    public function testLiteralValuesSetWithArray()
+    {
         $properties = [
             "id" => "/hello/world",
             "cmd" => "ls",
@@ -38,7 +38,8 @@ class MarathonAppEntityTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testAllKeysAreCorrect() {
+    public function testAllKeysAreCorrect()
+    {
 
         $_aProperties = ["id", "cmd", "cpus" , "mem", "args", "portDefinitions", "requirePorts", "instances",
                     "executor", "container", "env", "constraints", "acceptedResourceRoles", "labels", "uris",
@@ -47,7 +48,7 @@ class MarathonAppEntityTest extends \PHPUnit_Framework_TestCase
 
         $app = new MarathonAppEntity();
 
-        foreach($_aProperties as $sProperty) {
+        foreach ($_aProperties as $sProperty) {
             $this->assertObjectHasAttribute($sProperty, $app);
         }
     }

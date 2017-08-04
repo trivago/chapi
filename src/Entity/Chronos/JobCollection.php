@@ -10,7 +10,6 @@
 
 namespace Chapi\Entity\Chronos;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 
@@ -29,16 +28,13 @@ class JobCollection extends \ArrayObject
     {
         $_aJobs = [];
 
-        if (count($aJobEntities) > 0)
-        {
+        if (count($aJobEntities) > 0) {
             $_mCheck = current($aJobEntities);
-            if (!$_mCheck instanceof JobEntityInterface)
-            {
+            if (!$_mCheck instanceof JobEntityInterface) {
                 throw new \InvalidArgumentException('array has to contain JobEntity objects');
             }
 
-            foreach ($aJobEntities as $_oJobEntity)
-            {
+            foreach ($aJobEntities as $_oJobEntity) {
                 $_aJobs[$_oJobEntity->getKey()] = $_oJobEntity;
             }
         }

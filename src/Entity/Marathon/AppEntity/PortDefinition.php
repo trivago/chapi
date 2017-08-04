@@ -24,14 +24,11 @@ class PortDefinition implements \JsonSerializable
     public function __construct($aData = [])
     {
         MarathonEntityUtils::setAllPossibleProperties((array) $aData, $this);
-        if (isset($aData['labels']))
-        {
+        if (isset($aData['labels'])) {
             $this->labels = (object) $aData['labels'];
-        }
-        else {
+        } else {
             $this->labels = (object) [];
         }
-
     }
 
     /**
@@ -40,7 +37,7 @@ class PortDefinition implements \JsonSerializable
     function jsonSerialize()
     {
         $_aRet = (array) $this;
-        $_aRet = array_filter($_aRet, function($v, $k) {
+        $_aRet = array_filter($_aRet, function ($v, $k) {
             return !is_null($v);
         }, ARRAY_FILTER_USE_BOTH);
         return $_aRet;

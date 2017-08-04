@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobRepository;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepository;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -95,7 +94,6 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         $_oJobEntity = $_oJobRepository->getJob('JobA');
 
         $this->assertNull($_oJobEntity, "Expected null for non-interesting job");
-
     }
 
     public function testGetJobsSuccessWithFilterSuccess()

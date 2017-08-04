@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobRepository\Filter;
 
-
 use Chapi\Entity\JobEntityInterface;
 
 class JobFilterComposite implements JobFilterInterface
@@ -34,10 +33,8 @@ class JobFilterComposite implements JobFilterInterface
      */
     public function isInteresting(JobEntityInterface $oJobEntity)
     {
-        foreach ($this->aFilter as $oFilter)
-        {
-            if (!$oFilter->isInteresting($oJobEntity))
-            {
+        foreach ($this->aFilter as $oFilter) {
+            if (!$oFilter->isInteresting($oJobEntity)) {
                 return false;
             }
         }

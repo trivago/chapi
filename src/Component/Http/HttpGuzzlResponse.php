@@ -24,8 +24,7 @@ class HttpGuzzlResponse implements HttpClientResponseInterface
      */
     public function __construct(
         ResponseInterface $oGuzzlResponse
-    )
-    {
+    ) {
         $this->oGuzzlResponse = $oGuzzlResponse;
     }
 

@@ -46,12 +46,9 @@ class ResetCommand extends AbstractCommand
         /** @var JobIndexServiceInterface  $_oJobIndexService */
         $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
 
-        if (JobUtils::isWildcard($aJobNames))
-        {
+        if (JobUtils::isWildcard($aJobNames)) {
             $_oJobIndexService->resetJobIndex();
-        }
-        else
-        {
+        } else {
             $_oJobIndexService->removeJobs($aJobNames);
         }
     }

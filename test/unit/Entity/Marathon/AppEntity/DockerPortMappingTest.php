@@ -8,12 +8,12 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 
 class DockerPortMappingTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAllKeysAreCorrect() {
+    public function testAllKeysAreCorrect()
+    {
         $_aKeys = ["containerPort", "hostPort", "name", "protocol", "servicePort"];
 
         $oDockerPortMapping = new DockerPortMapping();
@@ -23,7 +23,8 @@ class DockerPortMappingTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testDockerPortMappingSetProperly() {
+    public function testDockerPortMappingSetProperly()
+    {
         $aData = [
             "hostPort" => 10010,
             "containerPort" => 10011,

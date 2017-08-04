@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
 
@@ -39,8 +38,7 @@ abstract class AbstractPropertyValidator implements PropertyValidatorInterface
      */
     protected function returnIsValidHelper($bIsValid, $sProperty, $sErrMsgTpl)
     {
-        if (!$bIsValid)
-        {
+        if (!$bIsValid) {
             $this->sLastErrMsg = sprintf($sErrMsgTpl, $sProperty);
             return false;
         }

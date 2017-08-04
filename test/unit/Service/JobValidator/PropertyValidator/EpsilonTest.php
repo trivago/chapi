@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Entity\DatePeriod\Iso8601Entity;
 use Chapi\Service\JobValidator\PropertyValidator\Epsilon;
 use ChapiTest\src\TestTraits\JobEntityTrait;

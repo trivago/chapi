@@ -78,5 +78,4 @@ trait JobEntityTrait
 
         return new JobCollection($_aJobEntities);
     }
-
 }

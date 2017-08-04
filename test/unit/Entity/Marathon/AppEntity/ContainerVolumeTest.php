@@ -8,12 +8,12 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\ContainerVolume;
 
 class ContainerVolumeTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAllKeysAreCorrect() {
+    public function testAllKeysAreCorrect()
+    {
         $_aKeys = ["containerPath", "hostPath", "mode"];
 
         $oContainerVolume = new ContainerVolume();
@@ -22,7 +22,8 @@ class ContainerVolumeTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testContainerVolumeIsSetCorectly() {
+    public function testContainerVolumeIsSetCorectly()
+    {
         $aData = [
             "containerPath" => "some/container/path",
             "hostPath" => "some/host/path",
@@ -34,5 +35,4 @@ class ContainerVolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("some/host/path", $oContainerVolume->hostPath);
         $this->assertEquals("RW", $oContainerVolume->mode);
     }
-
 }

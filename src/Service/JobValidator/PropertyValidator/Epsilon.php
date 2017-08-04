@@ -8,7 +8,6 @@
 
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\Chronos\JobEntity;
@@ -52,20 +51,16 @@ class Epsilon extends AbstractPropertyValidator implements PropertyValidatorInte
      */
     private function isEpsilonPropertyValid(JobEntityInterface $oJobEntity)
     {
-        if (!$oJobEntity instanceof ChronosJobEntity)
-        {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
         }
 
-        if ($oJobEntity->isSchedulingJob() && !empty($oJobEntity->epsilon))
-        {
-            try
-            {
+        if ($oJobEntity->isSchedulingJob() && !empty($oJobEntity->epsilon)) {
+            try {
                 $_oDateIntervalEpsilon = new \DateInterval($oJobEntity->epsilon);
                 $_iIntervalEpsilon = (int) $_oDateIntervalEpsilon->format('%Y%M%D%H%I%S');
 
-                if ($_iIntervalEpsilon > 30) // if epsilon > "PT30S"
-                {
+                if ($_iIntervalEpsilon > 30) { // if epsilon > "PT30S"
                     $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($oJobEntity->schedule);
 
                     $_oDateIntervalScheduling = new \DateInterval($_oIso8601Entity->sInterval);
@@ -76,9 +71,7 @@ class Epsilon extends AbstractPropertyValidator implements PropertyValidatorInte
 
                 // if epsilon is less or equal than 30sec the not empty check is enough
                 return true;
-            }
-            catch (\Exception $_oException)
-            {
+            } catch (\Exception $_oException) {
                 // can't init \DateInterval instance
                 return false;
             }

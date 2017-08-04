@@ -53,8 +53,7 @@ class DatePeriodFactoryTest extends \PHPUnit_Framework_TestCase
         /** @var \DatePeriod $_oDatePeriod */
         $_oDatePeriod = $_oDatePeriodFactory->createDatePeriod('R/' . $_sTestDate . 'T01:00:00Z/P1D');
 
-        foreach($_oDatePeriod as $_oDateTime)
-        {
+        foreach ($_oDatePeriod as $_oDateTime) {
             $_aDatesA[] = $_oDateTime->format("Y-m-dH:i");
         }
 
@@ -102,15 +101,13 @@ class DatePeriodFactoryTest extends \PHPUnit_Framework_TestCase
 
         /** @var \DatePeriod $_oDatePeriod */
         $_oDatePeriod = $_oDatePeriodFactory->createDatePeriod('R/' . $_sTestYear . '-01-30T23:00:00Z/P1M', 'UTC'); // winter time berlin (GMT+1)
-        foreach($_oDatePeriod as $_oDateTime)
-        {
+        foreach ($_oDatePeriod as $_oDateTime) {
             $_oDateA = $_oDateTime;
         }
 
         /** @var \DatePeriod $_oDatePeriod */
         $_oDatePeriod = $_oDatePeriodFactory->createDatePeriod('R/' . $_sTestYear . '-04-30T23:00:00Z/P1M', 'UTC'); // summer time berlin (GMT+2)
-        foreach($_oDatePeriod as $_oDateTime)
-        {
+        foreach ($_oDatePeriod as $_oDateTime) {
             $_oDateB = $_oDateTime;
         }
 

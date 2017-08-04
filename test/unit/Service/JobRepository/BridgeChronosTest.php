@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobRepository;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\BridgeChronos;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -99,9 +98,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
         );
 
         $_i = 0;
-        foreach ($_aJobs as $_sJobName => $_oJobEntity)
-        {
-
+        foreach ($_aJobs as $_sJobName => $_oJobEntity) {
             $this->assertEquals(
                 $this->aListingJobs[$_i]['name'],
                 $_oJobEntity->name
@@ -149,9 +146,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
         );
 
         $_i = 0;
-        foreach ($_aJobs as $_sJobName => $_oJobEntity)
-        {
-
+        foreach ($_aJobs as $_sJobName => $_oJobEntity) {
             $this->assertEquals(
                 $this->aListingJobs[$_i]['name'],
                 $_oJobEntity->name

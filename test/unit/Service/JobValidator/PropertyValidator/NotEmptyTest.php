@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\NotEmpty;
 
 class NotEmptyTest extends AbstractValidatorTest

@@ -9,7 +9,6 @@
 
 namespace unit\Command;
 
-
 use Chapi\Commands\ListCommand;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
@@ -66,7 +65,6 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         $this->oOutput->writeln(Argument::containingString('JobC'))->shouldHaveBeenCalled();
         $this->oOutput->writeln(Argument::containingString('/main/id1'))->shouldHaveBeenCalled();
         $this->oOutput->writeln(Argument::containingString('ok'))->shouldHaveBeenCalledTimes(4); // four jobs are all ok
-
     }
 
     public function testProcessWithFailingOption()

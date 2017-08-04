@@ -8,7 +8,6 @@
 
 namespace Chapi\Entity\Chronos\JobEntity;
 
-
 class ContainerEntity
 {
     /**
@@ -17,33 +16,22 @@ class ContainerEntity
      */
     public function __construct($mJobData = [])
     {
-        if (is_array($mJobData) || is_object($mJobData))
-        {
-            foreach ($mJobData as $_sKey => $_mValue)
-            {
-                if (property_exists($this, $_sKey))
-                {
-                    if ($_sKey == 'type')
-                    {
+        if (is_array($mJobData) || is_object($mJobData)) {
+            foreach ($mJobData as $_sKey => $_mValue) {
+                if (property_exists($this, $_sKey)) {
+                    if ($_sKey == 'type') {
                         $this->{$_sKey} = strtolower($_mValue);
-                    }
-                    elseif ($_sKey == 'volumes')
-                    {
-                        foreach ($_mValue as $_mValueVolume)
-                        {
+                    } elseif ($_sKey == 'volumes') {
+                        foreach ($_mValue as $_mValueVolume) {
                             $_oVolume = new ContainerVolumeEntity($_mValueVolume);
                             $this->volumes[] = $_oVolume;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         $this->{$_sKey} = $_mValue;
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an array or object', __METHOD__));
         }
     }
@@ -62,5 +50,4 @@ class ContainerEntity
     
     /** @var bool  */
     public $forcePullImage = false;
-    
 }

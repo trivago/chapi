@@ -8,12 +8,12 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\DockerParameters;
 
 class DockerParametersTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAllKeysAreCorrect() {
+    public function testAllKeysAreCorrect()
+    {
         $aKeys = ["key", "value"];
 
         $oDockerParameters = new DockerParameters();
@@ -23,14 +23,13 @@ class DockerParametersTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testDockerParameterIsSetCorrectly() {
+    public function testDockerParameterIsSetCorrectly()
+    {
         $aData = ["key" => "someKey", "value" => "somevalue"];
 
         $oDockerParameters = new DockerParameters($aData);
 
         $this->assertEquals("someKey", $oDockerParameters->key);
         $this->assertEquals("somevalue", $oDockerParameters->value);
-
     }
-
 }

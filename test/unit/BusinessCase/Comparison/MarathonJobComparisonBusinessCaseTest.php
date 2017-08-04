@@ -9,7 +9,6 @@
 
 namespace unit\BusinessCase\Comparision;
 
-
 use Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
@@ -161,7 +160,6 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $_aExpectedDiff = [];
         $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
-
     }
 
     public function testGetJobDiffWithChangesInRemoteSuccess()
@@ -242,7 +240,6 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $_aExpectedDiff = [];
         $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
-
     }
 
     public function testIsJobAvailableSuccess()

@@ -24,5 +24,4 @@ class ContainerVolume
     {
         MarathonEntityUtils::setAllPossibleProperties($aData, $this);
     }
-
 }

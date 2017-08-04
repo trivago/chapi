@@ -9,7 +9,6 @@
 
 namespace Chapi\Exception;
 
-
 class ApiClientException extends \Exception
 {
 

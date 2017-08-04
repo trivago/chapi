@@ -38,10 +38,8 @@ class HistogramEntity
      */
     public function __construct(array $aHistogram = [])
     {
-        foreach ($aHistogram as $_sKey => $_fValue)
-        {
-            switch ($_sKey)
-            {
+        foreach ($aHistogram as $_sKey => $_fValue) {
+            switch ($_sKey) {
                 case '75thPercentile':
                     $this->percentile75th = $_fValue;
                     break;
@@ -59,8 +57,7 @@ class HistogramEntity
                     break;
 
                 default:
-                    if (property_exists($this, $_sKey))
-                    {
+                    if (property_exists($this, $_sKey)) {
                         $this->{$_sKey} = $_fValue;
                     }
             }

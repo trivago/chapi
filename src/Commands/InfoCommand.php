@@ -36,8 +36,7 @@ class InfoCommand extends AbstractCommand
         $_oChronosJobEntity = $this->checkInChronos($_sJobName);
         $_oJobEntity = $_oChronosJobEntity == null ? $this->checkInMarathon($_sJobName) : $_oChronosJobEntity;
 
-        if (!$_oJobEntity)
-        {
+        if (!$_oJobEntity) {
             $this->oOutput->writeln(sprintf('<fg=red>%s</>', 'Could not find the job.'));
             return 1;
         }
@@ -47,18 +46,14 @@ class InfoCommand extends AbstractCommand
         $_oTable = new Table($this->oOutput);
         $_oTable->setHeaders(array('Property', 'Value'));
 
-        foreach ($_oJobEntity as $_sKey => $_mValue)
-        {
-            if (is_array($_mValue) || is_object($_mValue))
-            {
+        foreach ($_oJobEntity as $_sKey => $_mValue) {
+            if (is_array($_mValue) || is_object($_mValue)) {
                 $_sEmptyString = (is_object($_mValue)) ? '{ }' : '[ ]';
 
                 $_mValue = (!empty($_mValue))
                     ? json_encode($_mValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
                     : $_sEmptyString;
-            }
-            elseif (is_bool($_mValue))
-            {
+            } elseif (is_bool($_mValue)) {
                 $_mValue = (true === $_mValue)
                     ? 'true'
                     : 'false';

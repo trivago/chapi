@@ -29,8 +29,7 @@ class DoctrineCache implements CacheInterface
     public function __construct(
         Cache $oDoctrineCache,
         $sCachePrefix
-    )
-    {
+    ) {
         $this->oDoctrineCache = $oDoctrineCache;
         $this->sCachePrefix = substr(
             md5($sCachePrefix),

@@ -9,7 +9,6 @@
 
 namespace Chapi\Entity\JobValidator;
 
-
 class ValidationResult
 {
     /**
@@ -37,8 +36,7 @@ class ValidationResult
     {
         $this->sPropertyName = $sPropertyName;
         $this->bIsValid = $bIsValid;
-        if (!$bIsValid)
-        {
+        if (!$bIsValid) {
             $this->sErrorMessage = $sErrorMessage;
         }
     }

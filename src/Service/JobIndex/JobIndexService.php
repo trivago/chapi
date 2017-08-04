@@ -10,7 +10,6 @@
 
 namespace Chapi\Service\JobIndex;
 
-
 use Chapi\Component\Cache\CacheInterface;
 
 class JobIndexService implements JobIndexServiceInterface
@@ -32,8 +31,7 @@ class JobIndexService implements JobIndexServiceInterface
      */
     public function __construct(
         CacheInterface $oCache
-    )
-    {
+    ) {
         $this->oCache = $oCache;
         $this->aJobIndex = $this->getJobIndexFromStorage();
     }
@@ -62,8 +60,7 @@ class JobIndexService implements JobIndexServiceInterface
      */
     public function addJobs(array $aJobNames)
     {
-        foreach ($aJobNames as $_sJobName)
-        {
+        foreach ($aJobNames as $_sJobName) {
             $this->addJob($_sJobName);
         }
 
@@ -76,8 +73,7 @@ class JobIndexService implements JobIndexServiceInterface
      */
     public function removeJob($sJobName)
     {
-        if (isset($this->aJobIndex[$sJobName]))
-        {
+        if (isset($this->aJobIndex[$sJobName])) {
             unset($this->aJobIndex[$sJobName]);
         }
 
@@ -90,8 +86,7 @@ class JobIndexService implements JobIndexServiceInterface
      */
     public function removeJobs(array $aJobNames)
     {
-        foreach ($aJobNames as $_sJobName)
-        {
+        foreach ($aJobNames as $_sJobName) {
             $this->removeJob($_sJobName);
         }
 

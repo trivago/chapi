@@ -29,8 +29,7 @@ class JobUtils implements JobUtilsInterface
     {
         $_aJobNames = $oInput->getArgument(self::ARGUMENT_JOBNAMES);
 
-        if (empty($_aJobNames))
-        {
+        if (empty($_aJobNames)) {
             throw new \InvalidArgumentException(sprintf('Nothing specified, nothing %sed. Maybe you wanted to say "%s ."?', $oCommand->getName(), $oCommand->getName()));
         }
 

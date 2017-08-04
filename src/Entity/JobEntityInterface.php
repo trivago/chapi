@@ -9,7 +9,6 @@
 
 namespace Chapi\Entity;
 
-
 interface JobEntityInterface extends \JsonSerializable, \IteratorAggregate
 {
     const MARATHON_TYPE = 'marathon';

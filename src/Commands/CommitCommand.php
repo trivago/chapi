@@ -36,13 +36,10 @@ class CommitCommand extends AbstractCommand
         $_aStoreJobBusinessCase = $_oStoreJobBusinessCaseFactory->getAllStoreJobBusinessCase();
 
         /** @var StoreJobBusinessCaseInterface $_oStoreJobBusinessCase */
-        foreach ($_aStoreJobBusinessCase as $_oStoreJobBusinessCase)
-        {
+        foreach ($_aStoreJobBusinessCase as $_oStoreJobBusinessCase) {
             $_oStoreJobBusinessCase->storeIndexedJobs();
         }
 
         return 0;
     }
-
-
 }

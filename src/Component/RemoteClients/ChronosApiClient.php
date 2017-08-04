@@ -10,7 +10,6 @@
 
 namespace Chapi\Component\RemoteClients;
 
-
 use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Component\Http\HttpClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
@@ -31,8 +30,7 @@ class ChronosApiClient implements ApiClientInterface
      */
     public function __construct(
         HttpClientInterface $oHttpClient
-    )
-    {
+    ) {
         $this->oHttpClient = $oHttpClient;
     }
 
@@ -54,22 +52,17 @@ class ChronosApiClient implements ApiClientInterface
     {
         $_sTargetUrl = '';
 
-        if (!$oJobEntity instanceof ChronosJobEntity)
-        {
+        if (!$oJobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Expected ChronosJobEntity.');
         }
 
-        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents))
-        {
+        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents)) {
             $_sTargetUrl = '/scheduler/iso8601';
-        }
-        elseif (empty($oJobEntity->schedule) && !empty($oJobEntity->parents))
-        {
+        } elseif (empty($oJobEntity->schedule) && !empty($oJobEntity->parents)) {
             $_sTargetUrl = '/scheduler/dependency';
         }
 
-        if (empty($_sTargetUrl))
-        {
+        if (empty($_sTargetUrl)) {
             throw new ApiClientException('No scheduler or dependency found. Can\'t get right target url.');
         }
 
@@ -112,8 +105,7 @@ class ChronosApiClient implements ApiClientInterface
     private function sendGetJsonRequest($sUrl)
     {
         $_oResponse = $this->oHttpClient->get($sUrl);
-        if (200 == $_oResponse->getStatusCode())
-        {
+        if (200 == $_oResponse->getStatusCode()) {
             return $_oResponse->json();
         }
 
@@ -128,13 +120,10 @@ class ChronosApiClient implements ApiClientInterface
     {
         try {
             $this->oHttpClient->get('/scheduler/jobs');
-        } catch (HttpConnectionException $e)
-        {
-            if (
-                $e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
+        } catch (HttpConnectionException $e) {
+            if ($e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
                 $e->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
-            )
-            {
+            ) {
                 return false;
             }
         }
