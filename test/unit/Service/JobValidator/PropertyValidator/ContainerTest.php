@@ -19,44 +19,44 @@ class ContainerTest extends AbstractValidatorTest
     
     public function testIsValidSuccess()
     {
-        $_oPropertyValidator = new Container();
-        $_oJobEntity = $this->getValidContainerJobEntity();
+        $propertyValidator = new Container();
+        $jobEntity = $this->getValidContainerJobEntity();
         
-        $this->handleValidTestCase($_oPropertyValidator, 'container', null);
-        $this->handleValidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+        $this->handleValidTestCase($propertyValidator, 'container', null);
+        $this->handleValidTestCase($propertyValidator, 'container', $jobEntity->container);
 
-        $_oJobEntity->container->volumes[0]->mode = 'RO';
-        $this->handleValidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+        $jobEntity->container->volumes[0]->mode = 'RO';
+        $this->handleValidTestCase($propertyValidator, 'container', $jobEntity->container);
 
-        $_oJobEntity->container->volumes[0]->mode = 'RW';
-        $this->handleValidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+        $jobEntity->container->volumes[0]->mode = 'RW';
+        $this->handleValidTestCase($propertyValidator, 'container', $jobEntity->container);
 
-        $_oJobEntity->container->volumes = [];
-        $this->handleValidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+        $jobEntity->container->volumes = [];
+        $this->handleValidTestCase($propertyValidator, 'container', $jobEntity->container);
     }
 
     public function testIsValidFailure()
     {
-        $_oPropertyValidator = new Container();
-        $_oJobEntity = $this->getValidContainerJobEntity();
+        $propertyValidator = new Container();
+        $jobEntity = $this->getValidContainerJobEntity();
         
-        $this->handleInvalidTestCase($_oPropertyValidator, 'container', []);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'container', 1);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'container', 'foo');
+        $this->handleInvalidTestCase($propertyValidator, 'container', []);
+        $this->handleInvalidTestCase($propertyValidator, 'container', 1);
+        $this->handleInvalidTestCase($propertyValidator, 'container', 'foo');
 
-        $_oJobEntity->container->volumes[0]->mode = 'R';
-        $this->handleInvalidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+        $jobEntity->container->volumes[0]->mode = 'R';
+        $this->handleInvalidTestCase($propertyValidator, 'container', $jobEntity->container);
 
-        $_oJobEntity->container->volumes = new \stdClass();
-        $this->handleInvalidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+        $jobEntity->container->volumes = new \stdClass();
+        $this->handleInvalidTestCase($propertyValidator, 'container', $jobEntity->container);
 
-        $_oJobEntity->container->volumes = null;
-        $this->handleInvalidTestCase($_oPropertyValidator, 'container', $_oJobEntity->container);
+        $jobEntity->container->volumes = null;
+        $this->handleInvalidTestCase($propertyValidator, 'container', $jobEntity->container);
     }
 
     public function testGetLastErrorMessageMulti()
     {
-        $_oPropertyValidator = new Container();
-        $this->handleErrorMessageMultiTestCase($_oPropertyValidator, 'container', null, 1);
+        $propertyValidator = new Container();
+        $this->handleErrorMessageMultiTestCase($propertyValidator, 'container', null, 1);
     }
 }

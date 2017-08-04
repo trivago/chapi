@@ -18,68 +18,68 @@ use Prophecy\Argument;
 class EpsilonTest extends AbstractValidatorTest
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oDatePeriodFactory;
+    private $datePeriodFactory;
 
     use JobEntityTrait;
 
     public function setUp()
     {
-        $this->oDatePeriodFactory = $this->prophesize('Chapi\Component\DatePeriod\DatePeriodFactoryInterface');
+        $this->datePeriodFactory = $this->prophesize('Chapi\Component\DatePeriod\DatePeriodFactoryInterface');
     }
     
     public function testIsValidSuccess()
     {
-        $_oJobEntity= $this->setUpEntityByInterval('PT30M');
-        $_oPropertyValidator = new Epsilon($this->oDatePeriodFactory->reveal());
+        $jobEntity= $this->setUpEntityByInterval('PT30M');
+        $propertyValidator = new Epsilon($this->datePeriodFactory->reveal());
         
-        $this->handleValidTestCase($_oPropertyValidator, 'epsilon', 'PT5M', $_oJobEntity);
-        $this->handleValidTestCase($_oPropertyValidator, 'epsilon', 'PT15M', $_oJobEntity);
+        $this->handleValidTestCase($propertyValidator, 'epsilon', 'PT5M', $jobEntity);
+        $this->handleValidTestCase($propertyValidator, 'epsilon', 'PT15M', $jobEntity);
 
         // additional test case
-        $_oJobEntity= $this->setUpEntityByInterval('PT30S');
-        $_oPropertyValidator = new Epsilon($this->oDatePeriodFactory->reveal());
+        $jobEntity= $this->setUpEntityByInterval('PT30S');
+        $propertyValidator = new Epsilon($this->datePeriodFactory->reveal());
 
-        $this->handleValidTestCase($_oPropertyValidator, 'epsilon', 'PT30S', $_oJobEntity);
+        $this->handleValidTestCase($propertyValidator, 'epsilon', 'PT30S', $jobEntity);
 
         // spies
-        $this->oDatePeriodFactory
-            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
+        $this->datePeriodFactory
+            ->createIso8601Entity(Argument::exact($jobEntity->schedule))
             ->shouldNotHaveBeenCalled()
         ;
     }
 
     public function testIsValidFailure()
     {
-        $_oJobEntity= $this->setUpEntityByInterval('PT15M');
-        $_oPropertyValidator = new Epsilon($this->oDatePeriodFactory->reveal());
+        $jobEntity= $this->setUpEntityByInterval('PT15M');
+        $propertyValidator = new Epsilon($this->datePeriodFactory->reveal());
 
-        $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', 'PT15M', $_oJobEntity);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', 'PT60M', $_oJobEntity);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', null, $_oJobEntity);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', 'foo', $_oJobEntity);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'epsilon', 30, $_oJobEntity);
+        $this->handleInvalidTestCase($propertyValidator, 'epsilon', 'PT15M', $jobEntity);
+        $this->handleInvalidTestCase($propertyValidator, 'epsilon', 'PT60M', $jobEntity);
+        $this->handleInvalidTestCase($propertyValidator, 'epsilon', null, $jobEntity);
+        $this->handleInvalidTestCase($propertyValidator, 'epsilon', 'foo', $jobEntity);
+        $this->handleInvalidTestCase($propertyValidator, 'epsilon', 30, $jobEntity);
     }
 
     public function testGetLastErrorMessageMulti()
     {
-        $_oJobEntity= $this->setUpEntityByInterval('PT1H');
-        $_oPropertyValidator = new Epsilon($this->oDatePeriodFactory->reveal());
+        $jobEntity= $this->setUpEntityByInterval('PT1H');
+        $propertyValidator = new Epsilon($this->datePeriodFactory->reveal());
         
-        $this->handleErrorMessageMultiTestCase($_oPropertyValidator, 'epsilon', 'PT15M', 'PT120M', $_oJobEntity);
+        $this->handleErrorMessageMultiTestCase($propertyValidator, 'epsilon', 'PT15M', 'PT120M', $jobEntity);
     }
 
-    private function setUpEntityByInterval($sInterval)
+    private function setUpEntityByInterval($interval)
     {
-        $_oJobEntity = $this->getValidScheduledJobEntity();
-        $_oJobEntity->schedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/' . $sInterval;
+        $jobEntity = $this->getValidScheduledJobEntity();
+        $jobEntity->schedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/' . $interval;
 
-        $_oIso8601Entity = new Iso8601Entity($_oJobEntity->schedule);
+        $iso8601Entity = new Iso8601Entity($jobEntity->schedule);
 
-        $this->oDatePeriodFactory
-            ->createIso8601Entity(Argument::exact($_oJobEntity->schedule))
-            ->willReturn($_oIso8601Entity)
+        $this->datePeriodFactory
+            ->createIso8601Entity(Argument::exact($jobEntity->schedule))
+            ->willReturn($iso8601Entity)
         ;
 
-        return $_oJobEntity;
+        return $jobEntity;
     }
 }

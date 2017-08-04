@@ -12,11 +12,11 @@ use Chapi\Commands\ValidationCommand;
 
 class ValidationCommandDummy extends ValidationCommand
 {
-    public static $oContainerDummy;
+    public static $containerDummy;
 
     protected function getContainer()
     {
-        return self::$oContainerDummy;
+        return self::$containerDummy;
     }
 
     protected function isAppRunable()

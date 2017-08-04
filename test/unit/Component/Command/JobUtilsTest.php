@@ -19,33 +19,33 @@ class JobUtilsTest extends \PHPUnit_Framework_TestCase
 
     public function testConfigureJobNamesArgument()
     {
-        $_sDescription = 'testConfigureJobNamesArgument';
+        $description = 'testConfigureJobNamesArgument';
 
-        $_oCommand = $this->prophesize('Symfony\Component\Console\Command\Command');
-        $_oCommand->addArgument(
+        $command = $this->prophesize('Symfony\Component\Console\Command\Command');
+        $command->addArgument(
             Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES),
             Argument::exact(InputArgument::IS_ARRAY),
-            Argument::exact($_sDescription)
+            Argument::exact($description)
         )->shouldBeCalledTimes(1)
         ;
 
-        $this->assertNull(JobUtils::configureJobNamesArgument($_oCommand->reveal(), $_sDescription));
+        $this->assertNull(JobUtils::configureJobNamesArgument($command->reveal(), $description));
     }
 
     public function testGetJobNamesSuccess()
     {
-        $_aJobs = ['JobA', 'JobB'];
+        $jobs = ['JobA', 'JobB'];
 
-        $_oCommand = $this->prophesize('Symfony\Component\Console\Command\Command');
-        $_oCommand->getName()->shouldNotBeCalled();
+        $command = $this->prophesize('Symfony\Component\Console\Command\Command');
+        $command->getName()->shouldNotBeCalled();
 
-        $_oInput = $this->prophesize('Symfony\Component\Console\Input\InputInterface');
-        $_oInput->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))
-            ->willReturn($_aJobs)
+        $input = $this->prophesize('Symfony\Component\Console\Input\InputInterface');
+        $input->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))
+            ->willReturn($jobs)
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->assertEquals($_aJobs, JobUtils::getJobNames($_oInput->reveal(), $_oCommand->reveal()));
+        $this->assertEquals($jobs, JobUtils::getJobNames($input->reveal(), $command->reveal()));
     }
 
     /**
@@ -53,16 +53,16 @@ class JobUtilsTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetJobNamesFailure()
     {
-        $_oCommand = $this->prophesize('Symfony\Component\Console\Command\Command');
-        $_oCommand->getName()->willReturn('CommandName')->shouldBeCalledTimes(2);
+        $command = $this->prophesize('Symfony\Component\Console\Command\Command');
+        $command->getName()->willReturn('CommandName')->shouldBeCalledTimes(2);
 
-        $_oInput = $this->prophesize('Symfony\Component\Console\Input\InputInterface');
-        $_oInput->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))
+        $input = $this->prophesize('Symfony\Component\Console\Input\InputInterface');
+        $input->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))
             ->willReturn([])
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->assertNull(JobUtils::getJobNames($_oInput->reveal(), $_oCommand->reveal()));
+        $this->assertNull(JobUtils::getJobNames($input->reveal(), $command->reveal()));
     }
 
     public function testIsWildcard()

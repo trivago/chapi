@@ -21,37 +21,37 @@ class InfoCommandTest extends \PHPUnit_Framework_TestCase
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryChronos;
+    private $jobRepositoryChronos;
 
     public function setUp()
     {
         $this->setUpCommandDependencies();
 
-        $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oContainer->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))->shouldBeCalledTimes(1)->willReturn($this->oJobRepositoryChronos->reveal());
+        $this->jobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->container->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))->shouldBeCalledTimes(1)->willReturn($this->jobRepositoryChronos->reveal());
     }
 
     public function testProcessWithoutOptions()
     {
-        $_oJobEntity = $this->getValidScheduledJobEntity();
-        $this->oInput->getArgument(Argument::exact('jobName'))->shouldBeCalledTimes(1)->willReturn('JobA');
-        $this->oJobRepositoryChronos->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntity);
+        $jobEntity = $this->getValidScheduledJobEntity();
+        $this->input->getArgument(Argument::exact('jobName'))->shouldBeCalledTimes(1)->willReturn('JobA');
+        $this->jobRepositoryChronos->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($jobEntity);
 
-        $_oCommand = new InfoCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new InfoCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             0,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
 
         // Spies
-        $this->oOutput->writeln(Argument::containingString('JobA'))->shouldHaveBeenCalled();
-        foreach ($_oJobEntity as $_sKey => $_mValue) {
-            $this->oOutput->writeln(Argument::containingString($_sKey))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('JobA'))->shouldHaveBeenCalled();
+        foreach ($jobEntity as $_sKey => $_mValue) {
+            $this->output->writeln(Argument::containingString($_sKey))->shouldHaveBeenCalled();
         }
     }
 }

@@ -23,114 +23,114 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
     use AppEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryChronos;
+    private $jobRepositoryChronos;
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryMarathon;
+    private $jobRepositoryMarathon;
 
     public function setUp()
     {
         $this->setUpCommandDependencies();
 
-        $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oJobRepositoryMarathon = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oContainer->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))->shouldBeCalledTimes(1)->willReturn($this->oJobRepositoryChronos->reveal());
-        $this->oContainer->get(Argument::exact(JobRepositoryInterface::DIC_NAME_MARATHON))->shouldBeCalledTimes(1)->willReturn($this->oJobRepositoryMarathon->reveal());
+        $this->jobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->jobRepositoryMarathon = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->container->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))->shouldBeCalledTimes(1)->willReturn($this->jobRepositoryChronos->reveal());
+        $this->container->get(Argument::exact(JobRepositoryInterface::DIC_NAME_MARATHON))->shouldBeCalledTimes(1)->willReturn($this->jobRepositoryMarathon->reveal());
         // $this->oOutput->write(Argument::type('string'))->will(function($args){ var_dump($args); }); # Debug output
     }
 
     public function testProcessWithoutOptions()
     {
-        $this->oInput->getOption(Argument::exact('onlyFailed'))->willReturn(false)->shouldBeCalledTimes(1);
-        $this->oInput->getOption(Argument::exact('onlyDisabled'))->willReturn(false)->shouldBeCalledTimes(1);
+        $this->input->getOption(Argument::exact('onlyFailed'))->willReturn(false)->shouldBeCalledTimes(1);
+        $this->input->getOption(Argument::exact('onlyDisabled'))->willReturn(false)->shouldBeCalledTimes(1);
 
-        $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
-        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
+        $this->jobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
+        $this->jobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
 
-        $_oCommand = new ListCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new ListCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             0,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
 
         // Spies
-        $this->oOutput->writeln(Argument::containingString('JobA'))->shouldHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('JobB'))->shouldHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('JobC'))->shouldHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('/main/id1'))->shouldHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('ok'))->shouldHaveBeenCalledTimes(4); // four jobs are all ok
+        $this->output->writeln(Argument::containingString('JobA'))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('JobB'))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('JobC'))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('/main/id1'))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('ok'))->shouldHaveBeenCalledTimes(4); // four jobs are all ok
     }
 
     public function testProcessWithFailingOption()
     {
-        $this->oInput->getOption(Argument::exact('onlyFailed'))->willReturn(true)->shouldBeCalledTimes(1);
-        $this->oInput->getOption(Argument::exact('onlyDisabled'))->willReturn(false)->shouldBeCalledTimes(1);
+        $this->input->getOption(Argument::exact('onlyFailed'))->willReturn(true)->shouldBeCalledTimes(1);
+        $this->input->getOption(Argument::exact('onlyDisabled'))->willReturn(false)->shouldBeCalledTimes(1);
 
-        $_oCollection = $this->createJobCollection();
-        /** @var ChronosJobEntity $_oEntityB */
-        $_oEntityB = $_oCollection->offsetGet('JobB');
+        $collection = $this->createJobCollection();
+        /** @var ChronosJobEntity $entityB */
+        $entityB = $collection->offsetGet('JobB');
 
-        $_oEntityB->errorCount = 10;
-        $_oEntityB->successCount = 100;
-        $_oEntityB->errorsSinceLastSuccess = 5;
+        $entityB->errorCount = 10;
+        $entityB->successCount = 100;
+        $entityB->errorsSinceLastSuccess = 5;
 
-        $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($_oCollection);
-        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
+        $this->jobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($collection);
+        $this->jobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
 
-        $_oCommand = new ListCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new ListCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             0,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
 
         // Spies
-        $this->oOutput->writeln(Argument::containingString('JobA'))->shouldNotHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('JobB'))->shouldHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('JobC'))->shouldNotHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('/main/id1'))->shouldHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('errors rate: 10%'))->shouldHaveBeenCalledTimes(1);
-        $this->oOutput->writeln(Argument::containingString('errors since last success:5'))->shouldHaveBeenCalledTimes(1);
+        $this->output->writeln(Argument::containingString('JobA'))->shouldNotHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('JobB'))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('JobC'))->shouldNotHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('/main/id1'))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('errors rate: 10%'))->shouldHaveBeenCalledTimes(1);
+        $this->output->writeln(Argument::containingString('errors since last success:5'))->shouldHaveBeenCalledTimes(1);
     }
 
     public function testProcessWithDisabledOption()
     {
-        $this->oInput->getOption(Argument::exact('onlyFailed'))->willReturn(false)->shouldBeCalledTimes(1);
-        $this->oInput->getOption(Argument::exact('onlyDisabled'))->willReturn(true)->shouldBeCalledTimes(1);
+        $this->input->getOption(Argument::exact('onlyFailed'))->willReturn(false)->shouldBeCalledTimes(1);
+        $this->input->getOption(Argument::exact('onlyDisabled'))->willReturn(true)->shouldBeCalledTimes(1);
 
-        $_oCollection = $this->createJobCollection();
-        /** @var ChronosJobEntity $_oEntityB */
-        $_oEntityB = $_oCollection->offsetGet('JobC');
-        $_oEntityB->disabled = true;
+        $collection = $this->createJobCollection();
+        /** @var ChronosJobEntity $entityB */
+        $entityB = $collection->offsetGet('JobC');
+        $entityB->disabled = true;
 
-        $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($_oCollection);
-        $this->oJobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
+        $this->jobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($collection);
+        $this->jobRepositoryMarathon->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createAppCollection(['/main/id1']));
 
-        $_oCommand = new ListCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new ListCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             0,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
 
         // Spies
-        $this->oOutput->writeln(Argument::containingString('JobA'))->shouldNotHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('JobB'))->shouldNotHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('JobC'))->shouldHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('/main/id1'))->shouldHaveBeenCalled();
-        $this->oOutput->writeln(Argument::containingString('disabled'))->shouldHaveBeenCalledTimes(1);
+        $this->output->writeln(Argument::containingString('JobA'))->shouldNotHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('JobB'))->shouldNotHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('JobC'))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('/main/id1'))->shouldHaveBeenCalled();
+        $this->output->writeln(Argument::containingString('disabled'))->shouldHaveBeenCalledTimes(1);
     }
 }

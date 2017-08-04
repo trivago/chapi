@@ -12,15 +12,15 @@ use Chapi\Commands\ConfigureCommand;
 
 class ConfigureCommandDummy extends ConfigureCommand
 {
-    public static $oContainerDummy;
+    public static $containerDummy;
 
-    public static $sHomeDirDummy;
+    public static $homeDirDummy;
 
-    public static $oQustionHelperDummy;
+    public static $questionHelperDummy;
 
     protected function getContainer()
     {
-        return self::$oContainerDummy;
+        return self::$containerDummy;
     }
 
     protected function isAppRunable()
@@ -30,11 +30,11 @@ class ConfigureCommandDummy extends ConfigureCommand
 
     protected function getHomeDir()
     {
-        return self::$sHomeDirDummy;
+        return self::$homeDirDummy;
     }
 
-    public function getHelper($sHelper)
+    public function getHelper($helper)
     {
-        return ($sHelper == 'question') ? self::$oQustionHelperDummy : parent::getHelper($sHelper);
+        return ($helper == 'question') ? self::$questionHelperDummy : parent::getHelper($helper);
     }
 }

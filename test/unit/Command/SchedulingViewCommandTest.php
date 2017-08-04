@@ -27,71 +27,71 @@ class SchedulingViewCommandTest extends \PHPUnit_Framework_TestCase
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobStatsService;
+    private $jobStatsService;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobDependencyService;
+    private $jobDependencyService;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryChronos;
+    private $jobRepositoryChronos;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oDatePeriodFactory;
+    private $datePeriodFactory;
 
     public function setUp()
     {
         $this->setUpCommandDependencies();
 
-        $this->oJobStatsService = $this->prophesize('Chapi\Service\Chronos\JobStatsServiceInterface');
-        $this->oJobDependencyService = $this->prophesize('Chapi\Service\JobDependencies\JobDependencyServiceInterface');
-        $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oDatePeriodFactory = new DatePeriodFactory();
+        $this->jobStatsService = $this->prophesize('Chapi\Service\Chronos\JobStatsServiceInterface');
+        $this->jobDependencyService = $this->prophesize('Chapi\Service\JobDependencies\JobDependencyServiceInterface');
+        $this->jobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->datePeriodFactory = new DatePeriodFactory();
 
-        $this->oContainer->get(Argument::exact(JobStatsServiceInterface::DIC_NAME))->shouldBeCalledTimes(1)->willReturn($this->oJobStatsService->reveal());
-        $this->oContainer->get(Argument::exact(JobDependencyServiceInterface::DIC_NAME))->shouldBeCalledTimes(1)->willReturn($this->oJobDependencyService->reveal());
-        $this->oContainer->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))->shouldBeCalledTimes(1)->willReturn($this->oJobRepositoryChronos->reveal());
-        $this->oContainer->get(Argument::exact(DatePeriodFactoryInterface::DIC_NAME))->shouldBeCalledTimes(1)->willReturn($this->oDatePeriodFactory);
+        $this->container->get(Argument::exact(JobStatsServiceInterface::DIC_NAME))->shouldBeCalledTimes(1)->willReturn($this->jobStatsService->reveal());
+        $this->container->get(Argument::exact(JobDependencyServiceInterface::DIC_NAME))->shouldBeCalledTimes(1)->willReturn($this->jobDependencyService->reveal());
+        $this->container->get(Argument::exact(JobRepositoryInterface::DIC_NAME_CHRONOS))->shouldBeCalledTimes(1)->willReturn($this->jobRepositoryChronos->reveal());
+        $this->container->get(Argument::exact(DatePeriodFactoryInterface::DIC_NAME))->shouldBeCalledTimes(1)->willReturn($this->datePeriodFactory);
     }
 
     public function testProcessWithoutJobInput()
     {
-        $this->oInput->getOption(Argument::exact('starttime'))->shouldBeCalledTimes(1)->willReturn(null);
-        $this->oInput->getOption(Argument::exact('endtime'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->input->getOption(Argument::exact('starttime'))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->input->getOption(Argument::exact('endtime'))->shouldBeCalledTimes(1)->willReturn(null);
 
-        $this->oJobStatsService->getJobStats(Argument::type('string'))->willReturn($this->createValidJobStatsEntity());
-        $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
-        $this->oJobDependencyService->getChildJobs(Argument::exact('JobA'), JobDependencyServiceInterface::REPOSITORY_LOCAL)->shouldBeCalledTimes(1)->willReturn(['JobB']);
-        $this->oJobDependencyService->getChildJobs(Argument::type('string'), JobDependencyServiceInterface::REPOSITORY_LOCAL)->willReturn([]);
+        $this->jobStatsService->getJobStats(Argument::type('string'))->willReturn($this->createValidJobStatsEntity());
+        $this->jobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
+        $this->jobDependencyService->getChildJobs(Argument::exact('JobA'), JobDependencyServiceInterface::REPOSITORY_LOCAL)->shouldBeCalledTimes(1)->willReturn(['JobB']);
+        $this->jobDependencyService->getChildJobs(Argument::type('string'), JobDependencyServiceInterface::REPOSITORY_LOCAL)->willReturn([]);
 
-        $_oCommand = new SchedulingViewCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new SchedulingViewCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             0,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
     }
 
-    public function testProcessWithJobInput($sStartTime = '+2 hours', $sEndTime = '+4 hours')
+    public function testProcessWithJobInput($startTime = '+2 hours', $endTime = '+4 hours')
     {
-        $this->oInput->getOption(Argument::exact('starttime'))->shouldBeCalledTimes(1)->willReturn($sStartTime);
-        $this->oInput->getOption(Argument::exact('endtime'))->shouldBeCalledTimes(1)->willReturn($sEndTime);
+        $this->input->getOption(Argument::exact('starttime'))->shouldBeCalledTimes(1)->willReturn($startTime);
+        $this->input->getOption(Argument::exact('endtime'))->shouldBeCalledTimes(1)->willReturn($endTime);
 
-        $this->oJobStatsService->getJobStats(Argument::type('string'))->willReturn($this->createValidJobStatsEntity());
-        $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
-        $this->oJobDependencyService->getChildJobs(Argument::type('string'), JobDependencyServiceInterface::REPOSITORY_LOCAL)->willReturn([]);
+        $this->jobStatsService->getJobStats(Argument::type('string'))->willReturn($this->createValidJobStatsEntity());
+        $this->jobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
+        $this->jobDependencyService->getChildJobs(Argument::type('string'), JobDependencyServiceInterface::REPOSITORY_LOCAL)->willReturn([]);
 
-        $_oCommand = new SchedulingViewCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new SchedulingViewCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             0,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
     }

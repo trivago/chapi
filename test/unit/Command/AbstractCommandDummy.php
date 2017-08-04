@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class AbstractCommandDummy extends AbstractCommand
 {
 
-    public static $oContainerDummy;
+    public static $containerDummy;
 
     protected function configure()
     {
@@ -25,7 +25,7 @@ class AbstractCommandDummy extends AbstractCommand
 
     protected function getContainer()
     {
-        return self::$oContainerDummy;
+        return self::$containerDummy;
     }
 
     public function getCacheDir()
@@ -58,9 +58,9 @@ class AbstractCommandDummy extends AbstractCommand
         return parent::getHomeDir();
     }
 
-    public function initializePub(InputInterface $oInput, OutputInterface $oOutput)
+    public function initializePub(InputInterface $input, OutputInterface $output)
     {
-        parent::initialize($oInput, $oOutput);
+        parent::initialize($input, $output);
     }
 
     public function getParameterFileNamePub()

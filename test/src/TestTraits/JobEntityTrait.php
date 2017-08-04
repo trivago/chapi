@@ -17,65 +17,65 @@ use Chapi\Entity\Marathon\MarathonAppEntity;
 
 trait JobEntityTrait
 {
-    private function getValidScheduledJobEntity($sJobName = 'JobA')
+    private function getValidScheduledJobEntity($jobName = 'JobA')
     {
-        $_oJobEntity = new ChronosJobEntity();
+        $jobEntity = new ChronosJobEntity();
 
-        $_oJobEntity->name = $sJobName;
-        $_oJobEntity->command = 'echo test';
-        $_oJobEntity->description = 'description';
-        $_oJobEntity->owner = 'mail@address.com';
-        $_oJobEntity->ownerName = 'ownerName';
-        $_oJobEntity->schedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/PT30M';
-        $_oJobEntity->scheduleTimeZone = 'Europe/Berlin';
-        $_oJobEntity->epsilon = 'PT5M';
+        $jobEntity->name = $jobName;
+        $jobEntity->command = 'echo test';
+        $jobEntity->description = 'description';
+        $jobEntity->owner = 'mail@address.com';
+        $jobEntity->ownerName = 'ownerName';
+        $jobEntity->schedule = 'R/' . date('Y') . '-' . date('m') . '-01T02:00:00Z/PT30M';
+        $jobEntity->scheduleTimeZone = 'Europe/Berlin';
+        $jobEntity->epsilon = 'PT5M';
 
-        return $_oJobEntity;
+        return $jobEntity;
     }
 
-    private function getValidDependencyJobEntity($sJobName = 'JobA', $sParent = 'JobB')
+    private function getValidDependencyJobEntity($jobName = 'JobA', $parent = 'JobB')
     {
-        $_oJobEntity = new ChronosJobEntity();
+        $jobEntity = new ChronosJobEntity();
 
-        $_oJobEntity->name = $sJobName;
-        $_oJobEntity->command = 'echo test';
-        $_oJobEntity->description = 'description';
-        $_oJobEntity->owner = 'mail@address.com';
-        $_oJobEntity->ownerName = 'ownerName';
-        $_oJobEntity->parents = [$sParent];
-        $_oJobEntity->epsilon = 'PT5M';
+        $jobEntity->name = $jobName;
+        $jobEntity->command = 'echo test';
+        $jobEntity->description = 'description';
+        $jobEntity->owner = 'mail@address.com';
+        $jobEntity->ownerName = 'ownerName';
+        $jobEntity->parents = [$parent];
+        $jobEntity->epsilon = 'PT5M';
 
-        return $_oJobEntity;
+        return $jobEntity;
     }
 
-    private function getValidContainerJobEntity($sJobName = 'JobA')
+    private function getValidContainerJobEntity($jobName = 'JobA')
     {
-        $_oJobEntity = $this->getValidScheduledJobEntity($sJobName);
+        $jobEntity = $this->getValidScheduledJobEntity($jobName);
 
-        $_oContainer = new JobEntity\ContainerEntity();
-        $_oContainer->type = 'DOCKER';
-        $_oContainer->image = 'libmesos/ubuntu';
-        $_oContainer->network = 'BRIDGE';
+        $container = new JobEntity\ContainerEntity();
+        $container->type = 'DOCKER';
+        $container->image = 'libmesos/ubuntu';
+        $container->network = 'BRIDGE';
 
-        $_oVolume = new JobEntity\ContainerVolumeEntity();
-        $_oVolume->containerPath = '/var/log/';
-        $_oVolume->hostPath = '/logs/';
-        $_oVolume->mode = 'RW';
+        $volume = new JobEntity\ContainerVolumeEntity();
+        $volume->containerPath = '/var/log/';
+        $volume->hostPath = '/logs/';
+        $volume->mode = 'RW';
         
-        $_oContainer->volumes = [$_oVolume];
+        $container->volumes = [$volume];
 
-        $_oJobEntity->container = $_oContainer;
-        return $_oJobEntity;
+        $jobEntity->container = $container;
+        return $jobEntity;
     }
 
     private function createJobCollection()
     {
-        $_aJobEntities = [
+        $jobEntities = [
             $this->getValidScheduledJobEntity('JobA'),
             $this->getValidDependencyJobEntity('JobB', 'JobA'),
             $this->getValidScheduledJobEntity('JobC')
         ];
 
-        return new JobCollection($_aJobEntities);
+        return new JobCollection($jobEntities);
     }
 }

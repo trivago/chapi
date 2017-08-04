@@ -12,11 +12,11 @@ use Chapi\Commands\InfoCommand;
 
 class InfoCommandDummy extends InfoCommand
 {
-    public static $oContainerDummy;
+    public static $containerDummy;
 
     protected function getContainer()
     {
-        return self::$oContainerDummy;
+        return self::$containerDummy;
     }
 
     protected function isAppRunable()

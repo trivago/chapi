@@ -16,125 +16,125 @@ class CompositeJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 {
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
-    private $oMarathonCase;
+    private $marathonCase;
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
-    private $oChronosCase;
+    private $chronosCase;
 
     public function setUp()
     {
-        $this->oMarathonCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
-        $this->oChronosCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
+        $this->marathonCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
+        $this->chronosCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
     }
 
     public function testGetLocalMissingJobsSuccess()
     {
-        $this->oMarathonCase
+        $this->marathonCase
             ->getLocalMissingJobs()
             ->willReturn(["/local/missing1"])
             ->shouldBeCalled();
 
-        $this->oChronosCase
+        $this->chronosCase
             ->getLocalMissingJobs()
             ->willReturn(["LocalMissing1"])
             ->shouldBeCalled();
 
-        $oCompositeJobComparision = new CompositeJobComparisonBusinessCase();
-        $oCompositeJobComparision->addComparisonCases(
-            $this->oMarathonCase->reveal()
+        $compositeJobComparison = new CompositeJobComparisonBusinessCase();
+        $compositeJobComparison->addComparisonCases(
+            $this->marathonCase->reveal()
         );
 
-        $oCompositeJobComparision->addComparisonCases(
-            $this->oChronosCase->reveal()
+        $compositeJobComparison->addComparisonCases(
+            $this->chronosCase->reveal()
         );
 
 
-        $_aMissingJobs =  $oCompositeJobComparision->getLocalMissingJobs();
+        $missingJobs =  $compositeJobComparison->getLocalMissingJobs();
 
-        $this->assertEquals(2, count($_aMissingJobs), "Expected 2 elements, got only " . count($_aMissingJobs));
+        $this->assertEquals(2, count($missingJobs), "Expected 2 elements, got only " . count($missingJobs));
     }
 
     public function testGetRemoteMissingJobs()
     {
-        $this->oMarathonCase
+        $this->marathonCase
             ->getRemoteMissingJobs()
             ->willReturn(["/remote/missing1"])
             ->shouldBeCalled();
 
-        $this->oChronosCase
+        $this->chronosCase
             ->getRemoteMissingJobs()
             ->willReturn(["RemoteMissing1"])
             ->shouldBeCalled();
 
-        $oCompositeJobComparision = new CompositeJobComparisonBusinessCase();
-        $oCompositeJobComparision->addComparisonCases(
-            $this->oMarathonCase->reveal()
+        $compositeJobComparison = new CompositeJobComparisonBusinessCase();
+        $compositeJobComparison->addComparisonCases(
+            $this->marathonCase->reveal()
         );
 
-        $oCompositeJobComparision->addComparisonCases(
-            $this->oChronosCase->reveal()
+        $compositeJobComparison->addComparisonCases(
+            $this->chronosCase->reveal()
         );
 
-        $_aMissingJobs =  $oCompositeJobComparision->getRemoteMissingJobs();
+        $missingJobs =  $compositeJobComparison->getRemoteMissingJobs();
 
-        $this->assertEquals(2, count($_aMissingJobs), "Expected 2 elements, got only " . count($_aMissingJobs));
+        $this->assertEquals(2, count($missingJobs), "Expected 2 elements, got only " . count($missingJobs));
     }
 
     public function testGetLocalJobUpdates()
     {
-        $this->oMarathonCase
+        $this->marathonCase
             ->getLocalJobUpdates()
             ->willReturn(["/local/update"])
             ->shouldBeCalled();
 
-        $this->oChronosCase
+        $this->chronosCase
             ->getLocalJobUpdates()
             ->willReturn(["LocalUpdate1"])
             ->shouldBeCalled();
 
-        $oCompositeJobComparision = new CompositeJobComparisonBusinessCase();
-        $oCompositeJobComparision->addComparisonCases(
-            $this->oMarathonCase->reveal()
+        $compositeJobComparison = new CompositeJobComparisonBusinessCase();
+        $compositeJobComparison->addComparisonCases(
+            $this->marathonCase->reveal()
         );
 
-        $oCompositeJobComparision->addComparisonCases(
-            $this->oChronosCase->reveal()
+        $compositeJobComparison->addComparisonCases(
+            $this->chronosCase->reveal()
         );
 
-        $_aUpdatedJobs = $oCompositeJobComparision->getLocalJobUpdates();
+        $updatedJobs = $compositeJobComparison->getLocalJobUpdates();
 
-        $this->assertEquals(2, count($_aUpdatedJobs), "Expected 2 elements, got only " . count($_aUpdatedJobs));
+        $this->assertEquals(2, count($updatedJobs), "Expected 2 elements, got only " . count($updatedJobs));
     }
 
     public function testGetJobDiffForMarathonCaseSuccess()
     {
-        $this->oMarathonCase
+        $this->marathonCase
             ->isJobAvailable(Argument::exact('/marathon/app'))
             ->willReturn(true);
 
-        $this->oChronosCase
+        $this->chronosCase
             ->isJobAvailable(Argument::exact('/marathon/app'))
             ->willReturn(false);
 
-        $this->oMarathonCase
+        $this->marathonCase
             ->getJobDiff(Argument::exact('/marathon/app'))
             ->willReturn(["key" => "diff"]);
 
-        $this->oChronosCase
+        $this->chronosCase
             ->getJobDiff(Argument::any())
             ->shouldNotBeCalled();
 
 
-        $oCompositeJobComparision = new CompositeJobComparisonBusinessCase();
-        $oCompositeJobComparision->addComparisonCases(
-            $this->oMarathonCase->reveal()
+        $compositeJobComparison = new CompositeJobComparisonBusinessCase();
+        $compositeJobComparison->addComparisonCases(
+            $this->marathonCase->reveal()
         );
 
-        $oCompositeJobComparision->addComparisonCases(
-            $this->oChronosCase->reveal()
+        $compositeJobComparison->addComparisonCases(
+            $this->chronosCase->reveal()
         );
 
-        $_aDiff = $oCompositeJobComparision->getJobDiff('/marathon/app');
-        $this->assertEquals(["key" => "diff"], $_aDiff, "Expected diff doesn't match got diff");
+        $diff = $compositeJobComparison->getJobDiff('/marathon/app');
+        $this->assertEquals(["key" => "diff"], $diff, "Expected diff doesn't match got diff");
     }
 }

@@ -15,18 +15,18 @@ class HealthCheckTest extends \PHPUnit_Framework_TestCase
 
     public function testCheckAllKeysAreCorrect()
     {
-        $_aKeys = ["command", "gracePeriodSeconds", "intervalSeconds",
+        $keys = ["command", "gracePeriodSeconds", "intervalSeconds",
                     "maxConsecutiveFailures", "path", "port", "portIndex", "protocol" , "timeoutSeconds"];
 
-        $oHealthCheckTest = new HealthCheck();
-        foreach ($_aKeys as $sProperty) {
-            $this->assertObjectHasAttribute($sProperty, $oHealthCheckTest);
+        $healthCheckTest = new HealthCheck();
+        foreach ($keys as $property) {
+            $this->assertObjectHasAttribute($property, $healthCheckTest);
         }
     }
 
     public function testHealthCheckIsSetProperly()
     {
-        $aData = [
+        $data = [
             "protocol" => "HTTP",
             "path" => "/health",
             "gracePeriodSeconds" => 10,
@@ -38,24 +38,24 @@ class HealthCheckTest extends \PHPUnit_Framework_TestCase
             "command" => ["value" => "someCommand"]
         ];
 
-        $oHealthCheck = new HealthCheck($aData);
+        $healthCheck = new HealthCheck($data);
 
-        $this->assertEquals("HTTP", $oHealthCheck->protocol);
-        $this->assertEquals("/health", $oHealthCheck->path);
-        $this->assertEquals(10, $oHealthCheck->gracePeriodSeconds);
-        $this->assertEquals(10, $oHealthCheck->intervalSeconds);
-        $this->assertEquals(2, $oHealthCheck->portIndex);
-        $this->assertEquals(8081, $oHealthCheck->port);
-        $this->assertEquals(40, $oHealthCheck->timeoutSeconds);
-        $this->assertEquals(4, $oHealthCheck->maxConsecutiveFailures);
-        $this->assertTrue(isset($oHealthCheck->command));
+        $this->assertEquals("HTTP", $healthCheck->protocol);
+        $this->assertEquals("/health", $healthCheck->path);
+        $this->assertEquals(10, $healthCheck->gracePeriodSeconds);
+        $this->assertEquals(10, $healthCheck->intervalSeconds);
+        $this->assertEquals(2, $healthCheck->portIndex);
+        $this->assertEquals(8081, $healthCheck->port);
+        $this->assertEquals(40, $healthCheck->timeoutSeconds);
+        $this->assertEquals(4, $healthCheck->maxConsecutiveFailures);
+        $this->assertTrue(isset($healthCheck->command));
     }
 
     public function testHealthCheckGivesProperJson()
     {
-        $_sExpectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"port":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"command":{"value":"someCommand"}}';
+        $expectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"port":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"command":{"value":"someCommand"}}';
 
-        $aData = [
+        $data = [
             "protocol" => "HTTP",
             "path" => "/",
             "gracePeriodSeconds" => 10,
@@ -67,18 +67,18 @@ class HealthCheckTest extends \PHPUnit_Framework_TestCase
             "command" => ["value" => "someCommand"]
         ];
 
-        $oHealthCheck = new HealthCheck($aData);
+        $healthCheck = new HealthCheck($data);
 
-        $_sGotData = json_encode($oHealthCheck);
+        $gotData = json_encode($healthCheck);
 
-        $this->assertEquals($_sExpectedData, $_sGotData);
+        $this->assertEquals($expectedData, $gotData);
     }
 
     public function testHealthCheckHasPortUnsetWithNullValue()
     {
-        $_sExpectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"command":{"value":"someCommand"}}';
+        $expectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"command":{"value":"someCommand"}}';
 
-        $aData = [
+        $data = [
             "protocol" => "HTTP",
             "path" => "/",
             "gracePeriodSeconds" => 10,
@@ -89,10 +89,10 @@ class HealthCheckTest extends \PHPUnit_Framework_TestCase
             "command" => ["value" => "someCommand"]
         ];
 
-        $oHealthCheck = new HealthCheck($aData);
+        $healthCheck = new HealthCheck($data);
 
-        $_sGotData = json_encode($oHealthCheck);
+        $gotData = json_encode($healthCheck);
 
-        $this->assertEquals($_sExpectedData, $_sGotData);
+        $this->assertEquals($expectedData, $gotData);
     }
 }

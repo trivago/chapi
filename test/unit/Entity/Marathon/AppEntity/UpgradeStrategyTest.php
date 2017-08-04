@@ -14,24 +14,24 @@ class UpgradeStrategyTest extends \PHPUnit_Framework_TestCase
 {
     public function testAllKeysAreCorrect()
     {
-        $_aKeys = ["minimumHealthCapacity", "maximumOverCapacity"];
+        $keys = ["minimumHealthCapacity", "maximumOverCapacity"];
 
-        $oUpgradeStrategy = new UpgradeStrategy();
+        $upgradeStrategy = new UpgradeStrategy();
 
-        foreach ($_aKeys as $sProperty) {
-            $this->assertObjectHasAttribute($sProperty, $oUpgradeStrategy);
+        foreach ($keys as $property) {
+            $this->assertObjectHasAttribute($property, $upgradeStrategy);
         }
     }
 
     public function testUpgradeStrategySetCorrectly()
     {
-        $aData = [
+        $data = [
             "minimumHealthCapacity" => 2,
             "maximumOverCapacity" => 3
         ];
-        $oUpgradeStrategy = new UpgradeStrategy($aData);
+        $upgradeStrategy = new UpgradeStrategy($data);
 
-        $this->assertEquals(2, $oUpgradeStrategy->minimumHealthCapacity);
-        $this->assertEquals(3, $oUpgradeStrategy->maximumOverCapacity);
+        $this->assertEquals(2, $upgradeStrategy->minimumHealthCapacity);
+        $this->assertEquals(3, $upgradeStrategy->maximumOverCapacity);
     }
 }

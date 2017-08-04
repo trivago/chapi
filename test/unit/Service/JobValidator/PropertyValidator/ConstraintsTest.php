@@ -17,25 +17,25 @@ class ConstraintsTest extends AbstractValidatorTest
 {
     public function testIsValidSuccess()
     {
-        $_oValidator = new Constraints();
+        $validator = new Constraints();
         
-        $this->handleValidTestCase($_oValidator, 'constraints', []);
-        $this->handleValidTestCase($_oValidator, 'constraints', null);
-        $this->handleValidTestCase($_oValidator, 'constraints', [[1, 2, 3], ['a', 'b', 'c']]);
+        $this->handleValidTestCase($validator, 'constraints', []);
+        $this->handleValidTestCase($validator, 'constraints', null);
+        $this->handleValidTestCase($validator, 'constraints', [[1, 2, 3], ['a', 'b', 'c']]);
     }
 
     public function testIsValidFailure()
     {
-        $_oValidator = new Constraints();
+        $validator = new Constraints();
 
-        $this->handleInvalidTestCase($_oValidator, 'constraints', 'foo');
-        $this->handleInvalidTestCase($_oValidator, 'constraints', 1);
-        $this->handleInvalidTestCase($_oValidator, 'constraints', [[1, 2]]);
+        $this->handleInvalidTestCase($validator, 'constraints', 'foo');
+        $this->handleInvalidTestCase($validator, 'constraints', 1);
+        $this->handleInvalidTestCase($validator, 'constraints', [[1, 2]]);
     }
 
     public function testGetLastErrorMessageMulti()
     {
-        $_oValidator = new Constraints();
-        $this->handleErrorMessageMultiTestCase($_oValidator, 'constraints', [], 'foo');
+        $validator = new Constraints();
+        $this->handleErrorMessageMultiTestCase($validator, 'constraints', [], 'foo');
     }
 }

@@ -18,27 +18,27 @@ class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryLocalChronos;
+    private $jobRepositoryLocalChronos;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryChronos;
+    private $jobRepositoryChronos;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oDiffCompare;
+    private $diffCompare;
 
     /** @var DatePeriodFactory */
-    private $oDatePeriodFactory;
+    private $datePeriodFactory;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oLogger;
+    private $logger;
 
     public function setUp()
     {
-        $this->oJobRepositoryLocalChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oDiffCompare = $this->prophesize('Chapi\Component\Comparison\DiffCompareInterface');
-        $this->oDatePeriodFactory = new DatePeriodFactory();
-        $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
+        $this->jobRepositoryLocalChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->jobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->diffCompare = $this->prophesize('Chapi\Component\Comparison\DiffCompareInterface');
+        $this->datePeriodFactory = new DatePeriodFactory();
+        $this->logger = $this->prophesize('Psr\Log\LoggerInterface');
     }
 
     /**
@@ -46,293 +46,293 @@ class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetLocalJobUpdatesSuccess()
     {
-        $_JobEntityA1 = $this->getValidScheduledJobEntity();
-        $_JobEntityA2 = $this->getValidScheduledJobEntity();
-        $_JobEntityA2->scheduleTimeZone = 'Europe/London';
+        $jobEntityA1 = $this->getValidScheduledJobEntity();
+        $jobEntityA2 = $this->getValidScheduledJobEntity();
+        $jobEntityA2->scheduleTimeZone = 'Europe/London';
 
-        $_JobEntityB1 = $this->getValidScheduledJobEntity('JobB');
-        $_JobEntityB2 = $this->getValidScheduledJobEntity('JobB');
-        $_JobEntityB2->schedule = 'R0/2015-09-01T02:00:00Z/P1D';
+        $jobEntityB1 = $this->getValidScheduledJobEntity('JobB');
+        $jobEntityB2 = $this->getValidScheduledJobEntity('JobB');
+        $jobEntityB2->schedule = 'R0/2015-09-01T02:00:00Z/P1D';
 
-        $_JobEntityC1 = $this->getValidScheduledJobEntity('JobC');
-        $_JobEntityC2 = $this->getValidScheduledJobEntity('JobC');
+        $jobEntityC1 = $this->getValidScheduledJobEntity('JobC');
+        $jobEntityC2 = $this->getValidScheduledJobEntity('JobC');
 
-        $_JobEntityD1 = $this->getValidScheduledJobEntity('JobD');
-        $_JobEntityD2 = $this->getValidScheduledJobEntity('JobD');
-        $_iTime1 = strtotime('-1 day -2 hours');
-        $_iTime2 = strtotime('+45 min');
-        $_JobEntityD1->schedule = sprintf('R/%d-%s-%sT%s:00:00Z/PT1H', date('Y', $_iTime1), date('m', $_iTime1), date('d', $_iTime1), date('H', $_iTime1)); // 'R/2015-01-01T02:00:00Z/PT1H';
-        $_JobEntityD2->schedule = sprintf('R/%d-%s-%sT%s:00:00Z/PT1H', date('Y', $_iTime2), date('m', $_iTime2), date('d', $_iTime2), date('H', $_iTime2)); // 'R/2015-01-01T02:00:00Z/PT1H';
+        $jobEntityD1 = $this->getValidScheduledJobEntity('JobD');
+        $jobEntityD2 = $this->getValidScheduledJobEntity('JobD');
+        $time1 = strtotime('-1 day -2 hours');
+        $time2 = strtotime('+45 min');
+        $jobEntityD1->schedule = sprintf('R/%d-%s-%sT%s:00:00Z/PT1H', date('Y', $time1), date('m', $time1), date('d', $time1), date('H', $time1)); // 'R/2015-01-01T02:00:00Z/PT1H';
+        $jobEntityD2->schedule = sprintf('R/%d-%s-%sT%s:00:00Z/PT1H', date('Y', $time2), date('m', $time2), date('d', $time2), date('H', $time2)); // 'R/2015-01-01T02:00:00Z/PT1H';
 
 
-        $_JobEntityE1 = $this->getValidScheduledJobEntity('JobE');
-        $_JobEntityE2 = $this->getValidScheduledJobEntity('JobE');
-        $_sDate1 = date('Y-m-d', strtotime('-2 day'));
-        $_sDate2 = date('Y-m-d', strtotime('-1 day'));
-        $_JobEntityE1->schedule = 'R/' . $_sDate1 . 'T10:30:00Z/PT1M';
-        $_JobEntityE2->schedule = 'R/' . $_sDate2 . 'T13:14:00.000+02:00/PT1M';
+        $jobEntityE1 = $this->getValidScheduledJobEntity('JobE');
+        $jobEntityE2 = $this->getValidScheduledJobEntity('JobE');
+        $date1 = date('Y-m-d', strtotime('-2 day'));
+        $date2 = date('Y-m-d', strtotime('-1 day'));
+        $jobEntityE1->schedule = 'R/' . $date1 . 'T10:30:00Z/PT1M';
+        $jobEntityE2->schedule = 'R/' . $date2 . 'T13:14:00.000+02:00/PT1M';
 
-        $_JobEntityF1 = $this->getValidScheduledJobEntity('JobF');
-        $_JobEntityF2 = $this->getValidScheduledJobEntity('JobF');
-        $_JobEntityF1->schedule = 'R0/2015-09-01T02:00:00Z/P1M';
-        $_JobEntityF2->schedule = 'R0/2015-09-01T02:00:00Z/P1D';
+        $jobEntityF1 = $this->getValidScheduledJobEntity('JobF');
+        $jobEntityF2 = $this->getValidScheduledJobEntity('JobF');
+        $jobEntityF1->schedule = 'R0/2015-09-01T02:00:00Z/P1M';
+        $jobEntityF2->schedule = 'R0/2015-09-01T02:00:00Z/P1D';
 
-        $_JobEntityG1 = $this->getValidScheduledJobEntity('JobG');
-        $_JobEntityG2 = $this->getValidScheduledJobEntity('JobG');
-        $_JobEntityG1->schedule = 'R/' . $_sDate1 . 'T10:30:00Z/PT10M';
-        $_JobEntityG2->schedule = 'R/' . $_sDate2 . 'T13:14:00.000+02:00/PT10M';
-        $_JobEntityG2->scheduleTimeZone = '';
+        $jobEntityG1 = $this->getValidScheduledJobEntity('JobG');
+        $jobEntityG2 = $this->getValidScheduledJobEntity('JobG');
+        $jobEntityG1->schedule = 'R/' . $date1 . 'T10:30:00Z/PT10M';
+        $jobEntityG2->schedule = 'R/' . $date2 . 'T13:14:00.000+02:00/PT10M';
+        $jobEntityG2->scheduleTimeZone = '';
 
-        $_aJobCollection = [
-            $_JobEntityA1,
-            $_JobEntityB1,
-            $_JobEntityC1,
-            $_JobEntityD1,
-            $_JobEntityE1,
-            $_JobEntityF1,
-            $_JobEntityG1
+        $jobCollection = [
+            $jobEntityA1,
+            $jobEntityB1,
+            $jobEntityC1,
+            $jobEntityD1,
+            $jobEntityE1,
+            $jobEntityF1,
+            $jobEntityG1
         ];
 
-        $this->oJobRepositoryLocalChronos
+        $this->jobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
-            ->willReturn($_aJobCollection);
+            ->willReturn($jobCollection);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityA1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityA1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityA2);
+            ->willReturn($jobEntityA2);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityB1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityB1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityB2);
+            ->willReturn($jobEntityB2);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityC1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityC1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityC2);
+            ->willReturn($jobEntityC2);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityD1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityD1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityD2);
+            ->willReturn($jobEntityD2);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityE1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityE1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityE2);
+            ->willReturn($jobEntityE2);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityF1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityF1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityF2);
+            ->willReturn($jobEntityF2);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityG1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityG1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityG2);
+            ->willReturn($jobEntityG2);
 
-        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
-            $this->oJobRepositoryLocalChronos->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
-            $this->oDiffCompare->reveal(),
-            $this->oDatePeriodFactory,
-            $this->oLogger->reveal()
+        $jobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->jobRepositoryLocalChronos->reveal(),
+            $this->jobRepositoryChronos->reveal(),
+            $this->diffCompare->reveal(),
+            $this->datePeriodFactory,
+            $this->logger->reveal()
         );
 
-        $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
+        $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
 
         $this->assertEquals(
             ['JobA', 'JobB', 'JobF', 'JobG'],
-            $_aLocalJobUpdates
+            $localJobUpdates
         );
     }
 
     public function testGetLocalUpdatesForBooleanDifference()
     {
-        $_JobEntityA1 = $this->getValidScheduledJobEntity('JobA');
-        $_JobEntityA2 = $this->getValidScheduledJobEntity('JobA');
-        $_JobEntityA2->disabled = true;
+        $jobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA2 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA2->disabled = true;
 
         $_aJobCollection = [
-            $_JobEntityA1
+            $jobEntityA1
         ];
 
-        $this->oJobRepositoryLocalChronos
+        $this->jobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
             ->willReturn($_aJobCollection);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityA1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityA1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityA2);
+            ->willReturn($jobEntityA2);
 
-        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
-            $this->oJobRepositoryLocalChronos->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
-            $this->oDiffCompare->reveal(),
-            $this->oDatePeriodFactory,
-            $this->oLogger->reveal()
+        $jobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->jobRepositoryLocalChronos->reveal(),
+            $this->jobRepositoryChronos->reveal(),
+            $this->diffCompare->reveal(),
+            $this->datePeriodFactory,
+            $this->logger->reveal()
         );
 
-        $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
+        $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
 
         $this->assertEquals(
             ['JobA'],
-            $_aLocalJobUpdates
+            $localJobUpdates
         );
     }
 
     public function testHasSameJobTypeTrue()
     {
-        $_JobEntityA1 = $this->getValidScheduledJobEntity('JobA');
-        $_JobEntityA2 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA2 = $this->getValidScheduledJobEntity('JobA');
 
-        $_JobEntityB1 = $this->getValidDependencyJobEntity('JobB');
-        $_JobEntityB2 = $this->getValidDependencyJobEntity('JobB');
+        $jobEntityB1 = $this->getValidDependencyJobEntity('JobB');
+        $jobEntityB2 = $this->getValidDependencyJobEntity('JobB');
 
-        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
-            $this->oJobRepositoryLocalChronos->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
-            $this->oDiffCompare->reveal(),
-            $this->oDatePeriodFactory,
-            $this->oLogger->reveal()
+        $jobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->jobRepositoryLocalChronos->reveal(),
+            $this->jobRepositoryChronos->reveal(),
+            $this->diffCompare->reveal(),
+            $this->datePeriodFactory,
+            $this->logger->reveal()
         );
 
-        $this->assertTrue($_oJobComparisonBusinessCase->hasSameJobType($_JobEntityA1, $_JobEntityA2));
-        $this->assertTrue($_oJobComparisonBusinessCase->hasSameJobType($_JobEntityB1, $_JobEntityB2));
+        $this->assertTrue($jobComparisonBusinessCase->hasSameJobType($jobEntityA1, $jobEntityA2));
+        $this->assertTrue($jobComparisonBusinessCase->hasSameJobType($jobEntityB1, $jobEntityB2));
     }
 
     public function testHasSameJobTypeFalse()
     {
-        $_JobEntityA1 = $this->getValidScheduledJobEntity('JobA');
-        $_JobEntityA2 = $this->getValidDependencyJobEntity('JobA');
+        $jobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA2 = $this->getValidDependencyJobEntity('JobA');
 
-        $_JobEntityB1 = $this->getValidDependencyJobEntity('JobB');
-        $_JobEntityB2 = $this->getValidScheduledJobEntity('JobB');
+        $jobEntityB1 = $this->getValidDependencyJobEntity('JobB');
+        $jobEntityB2 = $this->getValidScheduledJobEntity('JobB');
 
-        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
-            $this->oJobRepositoryLocalChronos->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
-            $this->oDiffCompare->reveal(),
-            $this->oDatePeriodFactory,
-            $this->oLogger->reveal()
+        $jobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->jobRepositoryLocalChronos->reveal(),
+            $this->jobRepositoryChronos->reveal(),
+            $this->diffCompare->reveal(),
+            $this->datePeriodFactory,
+            $this->logger->reveal()
         );
 
-        $this->assertFalse($_oJobComparisonBusinessCase->hasSameJobType($_JobEntityA1, $_JobEntityA2));
-        $this->assertFalse($_oJobComparisonBusinessCase->hasSameJobType($_JobEntityB1, $_JobEntityB2));
+        $this->assertFalse($jobComparisonBusinessCase->hasSameJobType($jobEntityA1, $jobEntityA2));
+        $this->assertFalse($jobComparisonBusinessCase->hasSameJobType($jobEntityB1, $jobEntityB2));
     }
 
     public function testGetLocalUpdatesForEnvironmentVariablesDifference()
     {
-        $_JobEntityA1 = $this->getValidScheduledJobEntity('JobA');
-        $_JobEntityA2 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA2 = $this->getValidScheduledJobEntity('JobA');
 
-        $_oEnvironmentVariablesA = new \stdClass();
-        $_oEnvironmentVariablesA->FOO = 'bar';
-        $_oEnvironmentVariablesA->BAR = 'foo';
+        $environmentVariablesA = new \stdClass();
+        $environmentVariablesA->FOO = 'bar';
+        $environmentVariablesA->BAR = 'foo';
 
-        $_oEnvironmentVariablesB = new \stdClass();
-        $_oEnvironmentVariablesB->FOO = 'foo';
-        $_oEnvironmentVariablesB->BAR = 'bar';
+        $environmentVariablesB = new \stdClass();
+        $environmentVariablesB->FOO = 'foo';
+        $environmentVariablesB->BAR = 'bar';
 
-        $_JobEntityA1->environmentVariables = $_oEnvironmentVariablesA;
-        $_JobEntityA2->environmentVariables = $_oEnvironmentVariablesB;
+        $jobEntityA1->environmentVariables = $environmentVariablesA;
+        $jobEntityA2->environmentVariables = $environmentVariablesB;
 
-        $_aJobCollection = [
-            $_JobEntityA1
+        $jobCollection = [
+            $jobEntityA1
         ];
 
-        $this->oJobRepositoryLocalChronos
+        $this->jobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
-            ->willReturn($_aJobCollection);
+            ->willReturn($jobCollection);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityA1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityA1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityA2);
+            ->willReturn($jobEntityA2);
 
-        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
-            $this->oJobRepositoryLocalChronos->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
-            $this->oDiffCompare->reveal(),
-            $this->oDatePeriodFactory,
-            $this->oLogger->reveal()
+        $jobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->jobRepositoryLocalChronos->reveal(),
+            $this->jobRepositoryChronos->reveal(),
+            $this->diffCompare->reveal(),
+            $this->datePeriodFactory,
+            $this->logger->reveal()
         );
 
-        $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
+        $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
 
         $this->assertEquals(
             ['JobA'],
-            $_aLocalJobUpdates
+            $localJobUpdates
         );
     }
     
     public function testGetLocalUpdatesForConstraintsDifference()
     {
-        $_JobEntityA1 = $this->getValidScheduledJobEntity('JobA');
-        $_JobEntityA2 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA1 = $this->getValidScheduledJobEntity('JobA');
+        $jobEntityA2 = $this->getValidScheduledJobEntity('JobA');
 
-        $_aConstraintsA = ['a', 'like', 'b'];
-        $_aConstraintsB = ['b', 'like', 'c'];
+        $constraintsA = ['a', 'like', 'b'];
+        $constraintsB = ['b', 'like', 'c'];
 
-        $_JobEntityA1->constraints[] = $_aConstraintsA;
-        $_JobEntityA2->constraints[] = $_aConstraintsB;
+        $jobEntityA1->constraints[] = $constraintsA;
+        $jobEntityA2->constraints[] = $constraintsB;
 
-        $_aJobCollection = [
-            $_JobEntityA1
+        $jobCollection = [
+            $jobEntityA1
         ];
 
-        $this->oJobRepositoryLocalChronos
+        $this->jobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
-            ->willReturn($_aJobCollection);
+            ->willReturn($jobCollection);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityA1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityA1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityA2);
+            ->willReturn($jobEntityA2);
 
-        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
-            $this->oJobRepositoryLocalChronos->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
-            $this->oDiffCompare->reveal(),
-            $this->oDatePeriodFactory,
-            $this->oLogger->reveal()
+        $jobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->jobRepositoryLocalChronos->reveal(),
+            $this->jobRepositoryChronos->reveal(),
+            $this->diffCompare->reveal(),
+            $this->datePeriodFactory,
+            $this->logger->reveal()
         );
 
-        $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
+        $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
         
         $this->assertEquals(
             ['JobA'],
-            $_aLocalJobUpdates
+            $localJobUpdates
         );
     }
 
     public function testGetLocalUpdatesForContainerDifference()
     {
-        $_aLocalJobUpdates = $this->setupContainerDifference('image', 'foo/bar');
+        $localJobUpdates = $this->setupContainerDifference('image', 'foo/bar');
         $this->assertEquals(
             ['JobA'],
-            $_aLocalJobUpdates
+            $localJobUpdates
         );
 
-        $_aLocalJobUpdates = $this->setupContainerDifference('type', 'foo');
+        $localJobUpdates = $this->setupContainerDifference('type', 'foo');
         $this->assertEquals(
             ['JobA'],
-            $_aLocalJobUpdates
+            $localJobUpdates
         );
 
-        $_JobEntityDummy = $this->getValidContainerJobEntity('JobA');
-        $_oVolume = $_JobEntityDummy->container->volumes[0];
-        $_oVolume->containerPath = 'foo/bar';
-        $_aLocalJobUpdates = $this->setupContainerDifference('volumes', [$_oVolume]);
+        $jobEntityDummy = $this->getValidContainerJobEntity('JobA');
+        $volume = $jobEntityDummy->container->volumes[0];
+        $volume->containerPath = 'foo/bar';
+        $localJobUpdates = $this->setupContainerDifference('volumes', [$volume]);
         $this->assertEquals(
             ['JobA'],
-            $_aLocalJobUpdates
+            $localJobUpdates
         );
     }
     
@@ -340,33 +340,33 @@ class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     {
         $this->setUp();
         
-        $_JobEntityA1 = $this->getValidContainerJobEntity('JobA');
-        $_JobEntityA2 = $this->getValidContainerJobEntity('JobA');
+        $jobEntityA1 = $this->getValidContainerJobEntity('JobA');
+        $jobEntityA2 = $this->getValidContainerJobEntity('JobA');
 
-        $_JobEntityA2->container->{$sProperty} = $mValue;
+        $jobEntityA2->container->{$sProperty} = $mValue;
 
-        $_aJobCollection = [
-            $_JobEntityA1
+        $jobCollection = [
+            $jobEntityA1
         ];
 
-        $this->oJobRepositoryLocalChronos
+        $this->jobRepositoryLocalChronos
             ->getJobs()
             ->shouldBeCalledTimes(1)
-            ->willReturn($_aJobCollection);
+            ->willReturn($jobCollection);
 
-        $this->oJobRepositoryChronos
-            ->getJob($_JobEntityA1->name)
+        $this->jobRepositoryChronos
+            ->getJob($jobEntityA1->name)
             ->shouldBeCalledTimes(1)
-            ->willReturn($_JobEntityA2);
+            ->willReturn($jobEntityA2);
 
-        $_oJobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
-            $this->oJobRepositoryLocalChronos->reveal(),
-            $this->oJobRepositoryChronos->reveal(),
-            $this->oDiffCompare->reveal(),
-            $this->oDatePeriodFactory,
-            $this->oLogger->reveal()
+        $jobComparisonBusinessCase = new ChronosJobComparisonBusinessCase(
+            $this->jobRepositoryLocalChronos->reveal(),
+            $this->jobRepositoryChronos->reveal(),
+            $this->diffCompare->reveal(),
+            $this->datePeriodFactory,
+            $this->logger->reveal()
         );
 
-        return $_oJobComparisonBusinessCase->getLocalJobUpdates();
+        return $jobComparisonBusinessCase->getLocalJobUpdates();
     }
 }

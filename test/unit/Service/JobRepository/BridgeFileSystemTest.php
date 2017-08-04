@@ -23,27 +23,27 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
     use AppEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oFileSystemService;
+    private $fileSystemService;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oCache;
+    private $cache;
 
     /** @var string */
-    private $sRepositoryDir = 'BridgeFileSystemTestDir';
+    private $repositoryDir = 'BridgeFileSystemTestDir';
 
     /** @var  vfsStreamDirectory */
-    private $oVfsRoot;
+    private $vfsRoot;
 
     /** @var string  */
-    private $sTempTestDir = '';
+    private $tempTestDir = '';
 
     public function setUp()
     {
-        $this->oFileSystemService = $this->prophesize('Symfony\Component\Filesystem\Filesystem');
+        $this->fileSystemService = $this->prophesize('Symfony\Component\Filesystem\Filesystem');
 
-        $this->oCache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
+        $this->cache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
 
-        $_aStructure = array(
+        $structure = array(
             'directory' => array(
                 'subdirectory' => array(
                     'jobA.json' => json_encode($this->getValidScheduledJobEntity('JobA')),
@@ -54,209 +54,209 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
             'jobD.json' => json_encode($this->getValidScheduledJobEntity('JobD')),
         );
 
-        $this->oVfsRoot = vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
+        $this->vfsRoot = vfsStream::setup($this->repositoryDir, null, $structure);
 
         // init and set up temp directory
-        $_sTempTestDir = sys_get_temp_dir();
-        $this->sTempTestDir = $_sTempTestDir . DIRECTORY_SEPARATOR . 'ChapiUnitTest';
-        if (!is_dir($this->sTempTestDir)) {
-            mkdir($this->sTempTestDir, 0755);
+        $tempTestDir = sys_get_temp_dir();
+        $this->tempTestDir = $tempTestDir . DIRECTORY_SEPARATOR . 'ChapiUnitTest';
+        if (!is_dir($this->tempTestDir)) {
+            mkdir($this->tempTestDir, 0755);
         }
     }
 
     public function testCreateInstance()
     {
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $this->oFileSystemService->reveal(),
-            $this->oCache->reveal(),
-            vfsStream::url($this->sRepositoryDir)
+        $fileSystemRepository = new BridgeFileSystem(
+            $this->fileSystemService->reveal(),
+            $this->cache->reveal(),
+            vfsStream::url($this->repositoryDir)
         );
 
-        $this->assertInstanceOf('Chapi\Service\JobRepository\BridgeFileSystem', $_oFileSystemRepository);
+        $this->assertInstanceOf('Chapi\Service\JobRepository\BridgeFileSystem', $fileSystemRepository);
     }
 
     public function testGetJobsSuccess()
     {
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $this->oFileSystemService->reveal(),
-            $this->oCache->reveal(),
-            vfsStream::url($this->sRepositoryDir)
+        $fileSystemRepository = new BridgeFileSystem(
+            $this->fileSystemService->reveal(),
+            $this->cache->reveal(),
+            vfsStream::url($this->repositoryDir)
         );
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             4,
-            count($_aJobs)
+            count($jobs)
         );
 
-        $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $_aJobs[0]);
+        $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $jobs[0]);
     }
 
     public function testGetJobsSuccessWithBothMarathonAndChronosConfig()
     {
-        $_aStructure = array(
+        $structure = array(
             'jobD.json' => json_encode($this->getValidScheduledJobEntity('JobD')),
             'testapp.json' => json_encode($this->getValidMarathonAppEntity("/testgroup/testapp.json"))
         );
 
-        vfsStream::setup($this->sRepositoryDir . "Merged", null, $_aStructure);
+        vfsStream::setup($this->repositoryDir . "Merged", null, $structure);
 
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $this->oFileSystemService->reveal(),
-            $this->oCache->reveal(),
-            vfsStream::url($this->sRepositoryDir . "Merged")
+        $fileSystemRepository = new BridgeFileSystem(
+            $this->fileSystemService->reveal(),
+            $this->cache->reveal(),
+            vfsStream::url($this->repositoryDir . "Merged")
         );
 
-        $_aEntities = $_oFileSystemRepository->getJobs();
+        $entities = $fileSystemRepository->getJobs();
         $this->assertEquals(
             2,
-            count($_aEntities)
+            count($entities)
         );
 
-        $_iCountMarathon = 0;
-        $_iCountChronos = 0;
-        /** @var JobEntityInterface $_aEntity */
-        foreach ($_aEntities as $_aEntity) {
+        $countMarathon = 0;
+        $countChronos = 0;
+        /** @var JobEntityInterface $entity */
+        foreach ($entities as $entity) {
             $this->assertInstanceOf(
                 'Chapi\Entity\JobEntityInterface',
-                $_aEntity,
+                $entity,
                 'Expected to fulfill JobEntityInterface'
             );
-            if ($_aEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
-                $_iCountMarathon += 1;
-            } elseif ($_aEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE) {
-                $_iCountChronos += 1;
+            if ($entity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
+                $countMarathon += 1;
+            } elseif ($entity->getEntityType() == JobEntityInterface::CHRONOS_TYPE) {
+                $countChronos += 1;
             }
         }
 
-        $this->assertEquals(1, $_iCountChronos, "Expected 1 chronos job, got $_iCountChronos");
-        $this->assertEquals(1, $_iCountMarathon, "Expected 1 marathon app, got $_iCountMarathon");
+        $this->assertEquals(1, $countChronos, "Expected 1 chronos job, got $countChronos");
+        $this->assertEquals(1, $countMarathon, "Expected 1 marathon app, got $countMarathon");
     }
 
     public function testAddUpdateRemoveChronosJobSuccess()
     {
-        $_oFileSystemService = new \Symfony\Component\Filesystem\Filesystem();
+        $fileSystemService = new \Symfony\Component\Filesystem\Filesystem();
 
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $_oFileSystemService,
-            $this->oCache->reveal(),
-            $this->sTempTestDir
+        $fileSystemRepository = new BridgeFileSystem(
+            $fileSystemService,
+            $this->cache->reveal(),
+            $this->tempTestDir
         );
 
-        $_oEntity = $this->getValidScheduledJobEntity('JobX');
+        $entity = $this->getValidScheduledJobEntity('JobX');
 
         // first check and init
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             0,
-            count($_aJobs),
+            count($jobs),
             'Expected "0" jobs at first run'
         );
 
         // add job
-        $this->assertTrue($_oFileSystemRepository->addJob($_oEntity));
-        $this->assertTrue(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
+        $this->assertTrue($fileSystemRepository->addJob($entity));
+        $this->assertTrue(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             1,
-            count($_aJobs),
+            count($jobs),
             'Expected "1" job after adding'
         );
 
-        foreach ($_aJobs as $_oJob) {
-            $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $_oJob);
-            $this->assertInstanceOf('Chapi\Entity\Chronos\ChronosJobEntity', $_oJob);
+        foreach ($jobs as $job) {
+            $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $job);
+            $this->assertInstanceOf('Chapi\Entity\Chronos\ChronosJobEntity', $job);
         }
 
         // update job
-        $_oEntity->disabled = true;
-        $_oEntity->mem = 123;
+        $entity->disabled = true;
+        $entity->mem = 123;
 
-        $this->assertTrue($_oFileSystemRepository->updateJob($_oEntity));
+        $this->assertTrue($fileSystemRepository->updateJob($entity));
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             1,
-            count($_aJobs),
+            count($jobs),
             'Expected still "1" job after update'
         );
 
-        $this->assertEquals(123, $_aJobs[0]->mem);
-        $this->assertTrue($_aJobs[0]->disabled);
+        $this->assertEquals(123, $jobs[0]->mem);
+        $this->assertTrue($jobs[0]->disabled);
 
         // remove job
-        $this->assertTrue($_oFileSystemRepository->removeJob($_oEntity));
-        $this->assertFalse(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
+        $this->assertTrue($fileSystemRepository->removeJob($entity));
+        $this->assertFalse(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             0,
-            count($_aJobs),
+            count($jobs),
             'Expected "0" jobs after deletion'
         );
     }
 
     public function testAddUpdateRemoveMarathonAppEntitySuccess()
     {
-        $_oFileSystemService = new \Symfony\Component\Filesystem\Filesystem();
+        $fileSystemService = new \Symfony\Component\Filesystem\Filesystem();
 
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $_oFileSystemService,
-            $this->oCache->reveal(),
-            $this->sTempTestDir
+        $fileSystemRepository = new BridgeFileSystem(
+            $fileSystemService,
+            $this->cache->reveal(),
+            $this->tempTestDir
         );
 
-        $_oAppEntity = $this->getValidMarathonAppEntity('/testgroup/testapp');
+        $appEntity = $this->getValidMarathonAppEntity('/testgroup/testapp');
 
         // first check and init
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             0,
-            count($_aJobs),
+            count($jobs),
             'Expected "0" app at first run'
         );
 
         // add app
-        $this->assertTrue($_oFileSystemRepository->addJob($_oAppEntity));
-        $this->assertTrue(file_exists($this->sTempTestDir. DIRECTORY_SEPARATOR. 'testgroup'. DIRECTORY_SEPARATOR .'testapp.json'));
+        $this->assertTrue($fileSystemRepository->addJob($appEntity));
+        $this->assertTrue(file_exists($this->tempTestDir. DIRECTORY_SEPARATOR. 'testgroup'. DIRECTORY_SEPARATOR .'testapp.json'));
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             1,
-            count($_aJobs),
+            count($jobs),
             'Expected "1" app after adding'
         );
 
-        foreach ($_aJobs as $_oJob) {
-            $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $_oJob);
-            $this->assertInstanceOf('Chapi\Entity\Marathon\MarathonAppEntity', $_oJob);
+        foreach ($jobs as $job) {
+            $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $job);
+            $this->assertInstanceOf('Chapi\Entity\Marathon\MarathonAppEntity', $job);
         }
 
         // update app
-        $_oAppEntity->cpus = 2;
-        $_oAppEntity->mem = 1024;
+        $appEntity->cpus = 2;
+        $appEntity->mem = 1024;
 
-        $this->assertTrue($_oFileSystemRepository->updateJob($_oAppEntity));
+        $this->assertTrue($fileSystemRepository->updateJob($appEntity));
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             1,
-            count($_aJobs),
+            count($jobs),
             'Expected still "1" job after update'
         );
 
-        $this->assertEquals(2, $_aJobs[0]->cpus);
-        $this->assertEquals(1024, $_aJobs[0]->mem);
+        $this->assertEquals(2, $jobs[0]->cpus);
+        $this->assertEquals(1024, $jobs[0]->mem);
 
         // remove job
-        $this->assertTrue($_oFileSystemRepository->removeJob($_oAppEntity));
-        $this->assertFalse(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . 'testgroup'. DIRECTORY_SEPARATOR .'testapp.json'));
+        $this->assertTrue($fileSystemRepository->removeJob($appEntity));
+        $this->assertFalse(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . 'testgroup'. DIRECTORY_SEPARATOR .'testapp.json'));
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
+        $jobs = $fileSystemRepository->getJobs();
         $this->assertEquals(
             0,
-            count($_aJobs),
+            count($jobs),
             'Expected "0" jobs after deletion'
         );
     }
@@ -264,45 +264,45 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
     public function testUpdateMarathonAppEntityInGroupSuccess()
     {
 
-        $_aStructure = array(
+        $structure = array(
             'externalGroup' => array(
                 'testgroup.json' => json_encode($this->getValidMarathonAppEntityGroup("/externalGroup/testgroup"))
             )
         );
 
-        vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
-        $_oFileSystemService = new \Symfony\Component\Filesystem\Filesystem();
+        vfsStream::setup($this->repositoryDir, null, $structure);
+        $fileSystemService = new \Symfony\Component\Filesystem\Filesystem();
 
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $_oFileSystemService,
-            $this->oCache->reveal(),
-            vfsStream::url($this->sRepositoryDir)
+        $fileSystemRepository = new BridgeFileSystem(
+            $fileSystemService,
+            $this->cache->reveal(),
+            vfsStream::url($this->repositoryDir)
         );
 
-        $_aApps = $_oFileSystemRepository->getJobs();
-        $this->assertEquals(2, count($_aApps), "Expected 2 app, got ".count($_aApps));
+        $apps = $fileSystemRepository->getJobs();
+        $this->assertEquals(2, count($apps), "Expected 2 app, got ".count($apps));
 
-        $_sUpdatedKey = $_aApps[0]->getKey();
-        $_aApps[0]->mem = 1024;
-        $_aApps[0]->cpus = 2;
+        $updatedKey = $apps[0]->getKey();
+        $apps[0]->mem = 1024;
+        $apps[0]->cpus = 2;
 
-        $this->assertTrue($_oFileSystemRepository->updateJob($_aApps[0]), 'UpdateJob returned false, expected true');
+        $this->assertTrue($fileSystemRepository->updateJob($apps[0]), 'UpdateJob returned false, expected true');
 
-        $_aAppsAfterModification = $_oFileSystemRepository->getJobs();
-        $this->assertEquals(2, count($_aApps), "Expected 2 apps, got " . count($_aAppsAfterModification));
+        $appsAfterModification = $fileSystemRepository->getJobs();
+        $this->assertEquals(2, count($apps), "Expected 2 apps, got " . count($appsAfterModification));
 
-        foreach ($_aAppsAfterModification as $_oApp) {
-            if ($_oApp->getKey() == $_sUpdatedKey) {
+        foreach ($appsAfterModification as $app) {
+            if ($app->getKey() == $updatedKey) {
                 $this->assertEquals(
                     1024,
-                    $_oApp->mem,
-                    "Expected 1024, got $_oApp->mem"
+                    $app->mem,
+                    "Expected 1024, got $app->mem"
                 );
 
                 $this->assertEquals(
                     2,
-                    $_oApp->cpus,
-                    "Expected 2, got $_oApp->cpus"
+                    $app->cpus,
+                    "Expected 2, got $app->cpus"
                 );
             }
         }
@@ -311,30 +311,30 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
 
     public function testRemoveMarathonAppEntityInGroupSuccess()
     {
-        $_aGroupConfig = $this->getValidMarathonAppEntityGroup("/externalGroup/testgroup");
-        $_aStructure = array(
+        $groupConfig = $this->getValidMarathonAppEntityGroup("/externalGroup/testgroup");
+        $structure = array(
             'externalGroup' => array(
-                'testgroup.json' => json_encode($_aGroupConfig)
+                'testgroup.json' => json_encode($groupConfig)
             )
         );
 
-        vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
-        $_oFileSystemService = new \Symfony\Component\Filesystem\Filesystem();
+        vfsStream::setup($this->repositoryDir, null, $structure);
+        $fileSystemService = new \Symfony\Component\Filesystem\Filesystem();
 
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $_oFileSystemService,
-            $this->oCache->reveal(),
-            vfsStream::url($this->sRepositoryDir)
+        $fileSystemRepository = new BridgeFileSystem(
+            $fileSystemService,
+            $this->cache->reveal(),
+            vfsStream::url($this->repositoryDir)
         );
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
-        $this->assertEquals(2, count($_aJobs), 'Expected 2 app before removal, found '.count($_aJobs));
+        $jobs = $fileSystemRepository->getJobs();
+        $this->assertEquals(2, count($jobs), 'Expected 2 app before removal, found '.count($jobs));
 
-        $_oFileSystemRepository->removeJob($_aGroupConfig["apps"][0]);
+        $fileSystemRepository->removeJob($groupConfig["apps"][0]);
 
-        $_aRemainingApps = $_oFileSystemRepository->getJobs();
+        $remainingApps = $fileSystemRepository->getJobs();
 
-        $this->assertEquals(1, count($_aRemainingApps), 'Expected 1 app remaining after removal, found ' . count($_aRemainingApps));
+        $this->assertEquals(1, count($remainingApps), 'Expected 1 app remaining after removal, found ' . count($remainingApps));
     }
 
 
@@ -343,23 +343,23 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
      */
     public function testJobLoadException()
     {
-        $_aStructure = array(
+        $structure = array(
             'directory' => array(
                 'jobA.json' => 'no-json-string',
             ),
             'jobB.json' => '{invalid-json: true',
         );
 
-        $this->oVfsRoot = vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
+        $this->vfsRoot = vfsStream::setup($this->repositoryDir, null, $structure);
 
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $this->oFileSystemService->reveal(),
-            $this->oCache->reveal(),
-            vfsStream::url($this->sRepositoryDir)
+        $fileSystemRepository = new BridgeFileSystem(
+            $this->fileSystemService->reveal(),
+            $this->cache->reveal(),
+            vfsStream::url($this->repositoryDir)
         );
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
-        $this->assertNull($_aJobs);
+        $jobs = $fileSystemRepository->getJobs();
+        $this->assertNull($jobs);
     }
 
     /**
@@ -367,22 +367,22 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
      */
     public function testJobLoadExceptionForDuplicateJobNames()
     {
-        $_aStructure = array(
+        $structure = array(
             'directory' => array(
                 'jobA.json' => json_encode($this->getValidScheduledJobEntity('JobA')),
             ),
             'jobB.json' => json_encode($this->getValidScheduledJobEntity('JobA')),
         );
 
-        $this->oVfsRoot = vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
+        $this->vfsRoot = vfsStream::setup($this->repositoryDir, null, $structure);
 
-        $_oFileSystemRepository = new BridgeFileSystem(
-            $this->oFileSystemService->reveal(),
-            $this->oCache->reveal(),
-            vfsStream::url($this->sRepositoryDir)
+        $fileSystemRepository = new BridgeFileSystem(
+            $this->fileSystemService->reveal(),
+            $this->cache->reveal(),
+            vfsStream::url($this->repositoryDir)
         );
 
-        $_aJobs = $_oFileSystemRepository->getJobs();
-        $this->assertNull($_aJobs);
+        $jobs = $fileSystemRepository->getJobs();
+        $this->assertNull($jobs);
     }
 }

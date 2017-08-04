@@ -15,39 +15,39 @@ use Chapi\Entity\Marathon\MarathonAppEntity;
 trait AppEntityTrait
 {
 
-    private function createAppCollection($aAppNames)
+    private function createAppCollection($appNames)
     {
-        $_aAppEntities = [];
+        $appEntities = [];
 
-        foreach ($aAppNames as $_sAppName) {
-            $_aAppEntities[] = $this->getValidMarathonAppEntity($_sAppName);
+        foreach ($appNames as $appName) {
+            $appEntities[] = $this->getValidMarathonAppEntity($appName);
         }
 
-        return new JobCollection($_aAppEntities);
+        return new JobCollection($appEntities);
     }
 
-    private function getValidMarathonAppEntity($sId)
+    private function getValidMarathonAppEntity($id)
     {
-        /** @var MarathonAppEntity $_oEntity */
-        $_oEntity = new MarathonAppEntity();
-        $_oEntity->id = $sId;
-        return $_oEntity;
+        /** @var MarathonAppEntity $entity */
+        $entity = new MarathonAppEntity();
+        $entity->id = $id;
+        return $entity;
     }
 
 
-    private function getValidMarathonAppEntityGroup($sId)
+    private function getValidMarathonAppEntityGroup($id)
     {
-        $_oEntity1 = new MarathonAppEntity();
-        $_oEntity1->id = $sId . "/testapp1";
+        $entity1 = new MarathonAppEntity();
+        $entity1->id = $id . "/testapp1";
 
-        $_oEntity2 = new MarathonAppEntity();
-        $_oEntity2->id = $sId . "/testapp2";
+        $entity2 = new MarathonAppEntity();
+        $entity2->id = $id . "/testapp2";
 
-        $_aRet["id"] = $sId;
-        $_aRet["apps"] = [];
-        $_aRet["apps"][] = $_oEntity1;
-        $_aRet["apps"][] = $_oEntity2;
+        $return["id"] = $id;
+        $return["apps"] = [];
+        $return["apps"][] = $entity1;
+        $return["apps"][] = $entity2;
 
-        return $_aRet;
+        return $return;
     }
 }

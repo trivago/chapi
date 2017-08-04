@@ -14,30 +14,30 @@ class PortDefinitionTest extends \PHPUnit_Framework_TestCase
 {
     public function testPortDefinitionsSetProperly()
     {
-        $portDefinition = (array)[
+        $data = (array)[
                 "port" => 10000,
                 "labels" => (object)["key" => "somelabel"],
                 "name" => "myport",
                 "protocol" => "udp"
         ];
 
-        $recPortdef = new PortDefinition($portDefinition);
+        $portDefinition = new PortDefinition($data);
 
-        $this->assertEquals($recPortdef->port, 10000, "Port not set correctly for portDefinitions");
-        $this->assertEquals($recPortdef->name, "myport");
-        $this->assertEquals($recPortdef->protocol, "udp");
-        $this->assertObjectHasAttribute("key", $recPortdef->labels);
-        $this->assertEquals("somelabel", $recPortdef->labels->key);
+        $this->assertEquals($portDefinition->port, 10000, "Port not set correctly for portDefinitions");
+        $this->assertEquals($portDefinition->name, "myport");
+        $this->assertEquals($portDefinition->protocol, "udp");
+        $this->assertObjectHasAttribute("key", $portDefinition->labels);
+        $this->assertEquals("somelabel", $portDefinition->labels->key);
     }
 
     public function testAllKeysAreCorrect()
     {
-        $_aKeys = ["port", "labels", "name", "protocol"];
+        $keys = ["port", "labels", "name", "protocol"];
 
-        $oPortDefinition = new PortDefinition();
+        $portDefinition = new PortDefinition();
 
-        foreach ($_aKeys as $property) {
-            $this->assertObjectHasAttribute($property, $oPortDefinition);
+        foreach ($keys as $property) {
+            $this->assertObjectHasAttribute($property, $portDefinition);
         }
     }
 }

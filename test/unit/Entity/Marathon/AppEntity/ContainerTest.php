@@ -15,7 +15,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     public function testContainerSetProperly()
     {
-        $aData = [
+        $data = [
             "type" => "DOCKER",
             "docker" => [
                 "someDockerProperties" => "dockerValue"
@@ -25,7 +25,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $container = new Container($aData);
+        $container = new Container($data);
 
         $this->assertEquals("DOCKER", $container->type);
         $this->assertTrue(isset($container->docker));
@@ -34,11 +34,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testAllKeysAreCorrect()
     {
-        $aKeys = ["docker", "volumes", "type"];
+        $keys = ["docker", "volumes", "type"];
         $container = new Container();
 
-        foreach ($aKeys as $sProperty) {
-            $this->assertObjectHasAttribute($sProperty, $container);
+        foreach ($keys as $property) {
+            $this->assertObjectHasAttribute($property, $container);
         }
     }
 }

@@ -14,25 +14,25 @@ use Prophecy\Argument;
 class JobIndexServiceTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oCacheInterface;
+    private $cacheInterface;
 
     /** @var array  */
-    private $aTestJobIndex = ['JobA' => 'JobA', 'JobB' => 'JobB'];
+    private $testJobIndex = ['JobA' => 'JobA', 'JobB' => 'JobB'];
 
     public function setUp()
     {
-        $this->oCacheInterface = $this->prophesize('Chapi\Component\Cache\CacheInterface');
+        $this->cacheInterface = $this->prophesize('Chapi\Component\Cache\CacheInterface');
 
-        $this->oCacheInterface
+        $this->cacheInterface
             ->get(Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->aTestJobIndex)
+            ->willReturn($this->testJobIndex)
         ;
 
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
-                $this->aTestJobIndex
+                $this->testJobIndex
             )
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
@@ -41,69 +41,69 @@ class JobIndexServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testAddJobSuccess()
     {
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
-                $this->aTestJobIndex
+                $this->testJobIndex
             )
             ->shouldNotBeCalled()
         ;
 
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
-                array_merge($this->aTestJobIndex, ['JobC' => 'JobC'])
+                array_merge($this->testJobIndex, ['JobC' => 'JobC'])
             )
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
         ;
 
-        $_oJobIndexService = new JobIndexService($this->oCacheInterface->reveal());
+        $jobIndexService = new JobIndexService($this->cacheInterface->reveal());
 
         $this->assertInstanceOf(
             'Chapi\Service\JobIndex\JobIndexServiceInterface',
-            $_oJobIndexService->addJob('JobC')
+            $jobIndexService->addJob('JobC')
         );
     }
 
     public function testAddJobsSuccess()
     {
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
-                $this->aTestJobIndex
+                $this->testJobIndex
             )
             ->shouldNotBeCalled()
         ;
 
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
-                array_merge($this->aTestJobIndex, ['JobC' => 'JobC', 'JobD' => 'JobD'])
+                array_merge($this->testJobIndex, ['JobC' => 'JobC', 'JobD' => 'JobD'])
             )
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
         ;
 
-        $_oJobIndexService = new JobIndexService($this->oCacheInterface->reveal());
+        $jobIndexService = new JobIndexService($this->cacheInterface->reveal());
 
         $this->assertInstanceOf(
             'Chapi\Service\JobIndex\JobIndexServiceInterface',
-            $_oJobIndexService->addJobs(['JobC', 'JobD'])
+            $jobIndexService->addJobs(['JobC', 'JobD'])
         );
     }
 
     public function testRemoveJobSuccess()
     {
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
-                $this->aTestJobIndex
+                $this->testJobIndex
             )
             ->shouldNotBeCalled()
         ;
 
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
                 ['JobB' => 'JobB']
@@ -112,25 +112,25 @@ class JobIndexServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
         ;
 
-        $_oJobIndexService = new JobIndexService($this->oCacheInterface->reveal());
+        $jobIndexService = new JobIndexService($this->cacheInterface->reveal());
 
         $this->assertInstanceOf(
             'Chapi\Service\JobIndex\JobIndexServiceInterface',
-            $_oJobIndexService->removeJob('JobA')
+            $jobIndexService->removeJob('JobA')
         );
     }
 
     public function testRemoveJobsSuccess()
     {
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
-                $this->aTestJobIndex
+                $this->testJobIndex
             )
             ->shouldNotBeCalled()
         ;
 
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
                 []
@@ -139,25 +139,25 @@ class JobIndexServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
         ;
 
-        $_oJobIndexService = new JobIndexService($this->oCacheInterface->reveal());
+        $jobIndexService = new JobIndexService($this->cacheInterface->reveal());
 
         $this->assertInstanceOf(
             'Chapi\Service\JobIndex\JobIndexServiceInterface',
-            $_oJobIndexService->removeJobs(['JobA', 'JobB'])
+            $jobIndexService->removeJobs(['JobA', 'JobB'])
         );
     }
 
     public function testResetJobIndexSuccess()
     {
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
-                $this->aTestJobIndex
+                $this->testJobIndex
             )
             ->shouldNotBeCalled()
         ;
 
-        $this->oCacheInterface
+        $this->cacheInterface
             ->set(
                 Argument::exact(JobIndexService::JOB_INDEX_CACHE_KEY),
                 []
@@ -166,30 +166,30 @@ class JobIndexServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
         ;
 
-        $_oJobIndexService = new JobIndexService($this->oCacheInterface->reveal());
+        $jobIndexService = new JobIndexService($this->cacheInterface->reveal());
 
         $this->assertInstanceOf(
             'Chapi\Service\JobIndex\JobIndexServiceInterface',
-            $_oJobIndexService->resetJobIndex()
+            $jobIndexService->resetJobIndex()
         );
     }
 
     public function testGetJobIndexSuccess()
     {
-        $_oJobIndexService = new JobIndexService($this->oCacheInterface->reveal());
+        $jobIndexService = new JobIndexService($this->cacheInterface->reveal());
 
         $this->assertEquals(
-            $this->aTestJobIndex,
-            $_oJobIndexService->getJobIndex()
+            $this->testJobIndex,
+            $jobIndexService->getJobIndex()
         );
     }
 
     public function testIsJobInIndexSuccess()
     {
-        $_oJobIndexService = new JobIndexService($this->oCacheInterface->reveal());
+        $jobIndexService = new JobIndexService($this->cacheInterface->reveal());
 
         $this->assertTrue(
-            $_oJobIndexService->isJobInIndex('JobA')
+            $jobIndexService->isJobInIndex('JobA')
         );
     }
 }

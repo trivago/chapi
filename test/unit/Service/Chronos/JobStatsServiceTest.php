@@ -18,27 +18,27 @@ use Prophecy\Argument;
 class JobStatsServiceTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oApiClient;
+    private $apiClient;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oCache;
+    private $cache;
 
     public function setUp()
     {
-        $this->oApiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
-        $this->oCache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
+        $this->apiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
+        $this->cache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
     }
 
     public function testCreateInstance()
     {
-        $_oJobStatsService = new JobStatsService($this->oApiClient->reveal(), $this->oCache->reveal());
-        $this->assertInstanceOf('Chapi\Service\Chronos\JobStatsServiceInterface', $_oJobStatsService);
+        $jobStatsService = new JobStatsService($this->apiClient->reveal(), $this->cache->reveal());
+        $this->assertInstanceOf('Chapi\Service\Chronos\JobStatsServiceInterface', $jobStatsService);
     }
 
     public function testGetJobStatsSuccess()
     {
-        $_sCacheKey = sprintf(JobStatsService::CACHE_KEY_JOB_STATS, 'JobA');
-        $_aTestResult = [
+        $cacheKey = sprintf(JobStatsService::CACHE_KEY_JOB_STATS, 'JobA');
+        $testResult = [
             'histogram' => [
                 '75thPercentile' => 1.34,
                 '95thPercentile' => 2.23,
@@ -51,28 +51,28 @@ class JobStatsServiceTest extends \PHPUnit_Framework_TestCase
             'taskStatHistory' => []
         ];
 
-        $this->oCache->get(Argument::exact($_sCacheKey))->shouldBeCalledTimes(1)->willReturn(null);
-        $this->oCache->set(Argument::exact($_sCacheKey), Argument::exact($_aTestResult), Argument::type('int'))->shouldBeCalledTimes(1);
+        $this->cache->get(Argument::exact($cacheKey))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->cache->set(Argument::exact($cacheKey), Argument::exact($testResult), Argument::type('int'))->shouldBeCalledTimes(1);
 
-        $this->oApiClient->getJobStats(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_aTestResult);
+        $this->apiClient->getJobStats(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($testResult);
 
-        $_oJobStatsService = new JobStatsService($this->oApiClient->reveal(), $this->oCache->reveal());
-        $_oResult = $_oJobStatsService->getJobStats('JobA');
+        $jobStatsService = new JobStatsService($this->apiClient->reveal(), $this->cache->reveal());
+        $result = $jobStatsService->getJobStats('JobA');
 
-        $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $_oResult);
-        $this->assertEquals($_aTestResult['histogram']['75thPercentile'], $_oResult->histogram->percentile75th);
-        $this->assertEquals($_aTestResult['histogram']['95thPercentile'], $_oResult->histogram->percentile95th);
-        $this->assertEquals($_aTestResult['histogram']['98thPercentile'], $_oResult->histogram->percentile98th);
-        $this->assertEquals($_aTestResult['histogram']['99thPercentile'], $_oResult->histogram->percentile99th);
-        $this->assertEquals($_aTestResult['histogram']['median'], $_oResult->histogram->median);
-        $this->assertEquals($_aTestResult['histogram']['mean'], $_oResult->histogram->mean);
-        $this->assertEquals($_aTestResult['histogram']['count'], $_oResult->histogram->count);
+        $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $result);
+        $this->assertEquals($testResult['histogram']['75thPercentile'], $result->histogram->percentile75th);
+        $this->assertEquals($testResult['histogram']['95thPercentile'], $result->histogram->percentile95th);
+        $this->assertEquals($testResult['histogram']['98thPercentile'], $result->histogram->percentile98th);
+        $this->assertEquals($testResult['histogram']['99thPercentile'], $result->histogram->percentile99th);
+        $this->assertEquals($testResult['histogram']['median'], $result->histogram->median);
+        $this->assertEquals($testResult['histogram']['mean'], $result->histogram->mean);
+        $this->assertEquals($testResult['histogram']['count'], $result->histogram->count);
     }
 
     public function testGetJobStatsCacheSuccess()
     {
-        $_sCacheKey = sprintf(JobStatsService::CACHE_KEY_JOB_STATS, 'JobA');
-        $_aTestResult = [
+        $cacheKey = sprintf(JobStatsService::CACHE_KEY_JOB_STATS, 'JobA');
+        $testResult = [
             'histogram' => [
                 '75thPercentile' => 1.34,
                 '95thPercentile' => 2.23,
@@ -85,40 +85,40 @@ class JobStatsServiceTest extends \PHPUnit_Framework_TestCase
             'taskStatHistory' => []
         ];
 
-        $this->oCache->get(Argument::exact($_sCacheKey))->shouldBeCalledTimes(1)->willReturn($_aTestResult);
-        $this->oCache->set(Argument::exact($_sCacheKey), Argument::exact($_aTestResult), Argument::type('int'))->shouldNotBeCalled();
+        $this->cache->get(Argument::exact($cacheKey))->shouldBeCalledTimes(1)->willReturn($testResult);
+        $this->cache->set(Argument::exact($cacheKey), Argument::exact($testResult), Argument::type('int'))->shouldNotBeCalled();
 
-        $this->oApiClient->getJobStats(Argument::any())->shouldNotBeCalled();
+        $this->apiClient->getJobStats(Argument::any())->shouldNotBeCalled();
 
-        $_oJobStatsService = new JobStatsService($this->oApiClient->reveal(), $this->oCache->reveal());
-        $_oResult = $_oJobStatsService->getJobStats('JobA');
+        $jobStatsService = new JobStatsService($this->apiClient->reveal(), $this->cache->reveal());
+        $result = $jobStatsService->getJobStats('JobA');
 
-        $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $_oResult);
-        $this->assertEquals($_aTestResult['histogram']['75thPercentile'], $_oResult->histogram->percentile75th);
-        $this->assertEquals($_aTestResult['histogram']['95thPercentile'], $_oResult->histogram->percentile95th);
-        $this->assertEquals($_aTestResult['histogram']['98thPercentile'], $_oResult->histogram->percentile98th);
-        $this->assertEquals($_aTestResult['histogram']['99thPercentile'], $_oResult->histogram->percentile99th);
-        $this->assertEquals($_aTestResult['histogram']['median'], $_oResult->histogram->median);
-        $this->assertEquals($_aTestResult['histogram']['mean'], $_oResult->histogram->mean);
-        $this->assertEquals($_aTestResult['histogram']['count'], $_oResult->histogram->count);
+        $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $result);
+        $this->assertEquals($testResult['histogram']['75thPercentile'], $result->histogram->percentile75th);
+        $this->assertEquals($testResult['histogram']['95thPercentile'], $result->histogram->percentile95th);
+        $this->assertEquals($testResult['histogram']['98thPercentile'], $result->histogram->percentile98th);
+        $this->assertEquals($testResult['histogram']['99thPercentile'], $result->histogram->percentile99th);
+        $this->assertEquals($testResult['histogram']['median'], $result->histogram->median);
+        $this->assertEquals($testResult['histogram']['mean'], $result->histogram->mean);
+        $this->assertEquals($testResult['histogram']['count'], $result->histogram->count);
     }
 
     public function testDoNotCacheEmptyResults()
     {
-        $_sCacheKey = sprintf(JobStatsService::CACHE_KEY_JOB_STATS, 'JobA');
-        $_aTestResult = [];
+        $cacheKey = sprintf(JobStatsService::CACHE_KEY_JOB_STATS, 'JobA');
+        $testResult = [];
 
-        $this->oCache->get(Argument::exact($_sCacheKey))->shouldBeCalledTimes(1)->willReturn(null);
-        $this->oCache->set(Argument::exact($_sCacheKey), Argument::exact($_aTestResult), Argument::type('int'))->shouldNotBeCalled();
+        $this->cache->get(Argument::exact($cacheKey))->shouldBeCalledTimes(1)->willReturn(null);
+        $this->cache->set(Argument::exact($cacheKey), Argument::exact($testResult), Argument::type('int'))->shouldNotBeCalled();
 
-        $this->oApiClient->getJobStats(Argument::any())->shouldBeCalledTimes(1)->willReturn($_aTestResult);
+        $this->apiClient->getJobStats(Argument::any())->shouldBeCalledTimes(1)->willReturn($testResult);
         ;
 
-        $_oJobStatsService = new JobStatsService($this->oApiClient->reveal(), $this->oCache->reveal());
-        $_oResult = $_oJobStatsService->getJobStats('JobA');
+        $jobStatsService = new JobStatsService($this->apiClient->reveal(), $this->cache->reveal());
+        $result = $jobStatsService->getJobStats('JobA');
 
-        $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $_oResult);
-        $this->assertEquals(0.0, $_oResult->histogram->percentile75th);
-        $this->assertEquals(0, $_oResult->histogram->count);
+        $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $result);
+        $this->assertEquals(0.0, $result->histogram->percentile75th);
+        $this->assertEquals(0, $result->histogram->count);
     }
 }

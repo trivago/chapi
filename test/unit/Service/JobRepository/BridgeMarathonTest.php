@@ -18,187 +18,187 @@ class BridgeMarathonTest extends \PHPUnit_Framework_TestCase
     use AppEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oApiClient;
+    private $apiClient;
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
-    private $oCache;
+    private $cache;
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobValidatorService;
+    private $jobValidatorService;
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
-    private $oLogger;
+    private $logger;
 
-    private $sJsonApps = '{"apps":[{"id":"/bots/runner","cmd":"chmod +x run.sh && ./run.sh","args":null,"user":null,"env":{"APP_GROUP":"131441"},"instances":1,"cpus":0.5,"mem":128,"disk":30,"executor":"","constraints":[],"uris":["https://raw.githubusercontent.com/test/testrepo/master/run.sh"],"fetch":[{"uri":"https://raw.githubusercontent.com/test/testrepo/master/run.sh","extract":false,"executable":false,"cache":false}],"storeUrls":[],"ports":[10310],"portDefinitions":[{"port":10310,"protocol":"tcp","labels":{}}],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[{"path":"/health","protocol":"HTTP","portIndex":0,"gracePeriodSeconds":60,"intervalSeconds":10,"timeoutSeconds":10,"maxConsecutiveFailures":3,"ignoreHttp1xx":false}],"readinessChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1,"maximumOverCapacity":1},"labels":{"app_label":"operation"},"acceptedResourceRoles":null,"ipAddress":null,"version":"2016-08-02T08:15:37.666Z","residency":null,"versionInfo":{"lastScalingAt":"2016-08-02T08:15:37.666Z","lastConfigChangeAt":"2016-08-02T08:15:37.666Z"},"tasksStaged":0,"tasksRunning":1,"tasksHealthy":1,"tasksUnhealthy":0,"deployments":[]}]}';
+    private $jsonApps = '{"apps":[{"id":"/bots/runner","cmd":"chmod +x run.sh && ./run.sh","args":null,"user":null,"env":{"APP_GROUP":"131441"},"instances":1,"cpus":0.5,"mem":128,"disk":30,"executor":"","constraints":[],"uris":["https://raw.githubusercontent.com/test/testrepo/master/run.sh"],"fetch":[{"uri":"https://raw.githubusercontent.com/test/testrepo/master/run.sh","extract":false,"executable":false,"cache":false}],"storeUrls":[],"ports":[10310],"portDefinitions":[{"port":10310,"protocol":"tcp","labels":{}}],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[{"path":"/health","protocol":"HTTP","portIndex":0,"gracePeriodSeconds":60,"intervalSeconds":10,"timeoutSeconds":10,"maxConsecutiveFailures":3,"ignoreHttp1xx":false}],"readinessChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1,"maximumOverCapacity":1},"labels":{"app_label":"operation"},"acceptedResourceRoles":null,"ipAddress":null,"version":"2016-08-02T08:15:37.666Z","residency":null,"versionInfo":{"lastScalingAt":"2016-08-02T08:15:37.666Z","lastConfigChangeAt":"2016-08-02T08:15:37.666Z"},"tasksStaged":0,"tasksRunning":1,"tasksHealthy":1,"tasksUnhealthy":0,"deployments":[]}]}';
 
-    private $aListingJobs;
+    private $listingJobs;
     public function setup()
     {
-        $this->aListingJobs = json_decode($this->sJsonApps, true);
-        $this->oApiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
+        $this->listingJobs = json_decode($this->jsonApps, true);
+        $this->apiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
 
-        $this->oApiClient
+        $this->apiClient
             ->listingJobs()
-            ->willReturn($this->aListingJobs);
+            ->willReturn($this->listingJobs);
 
 
-        $this->oCache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
-        $this->oJobValidatorService = $this->prophesize('Chapi\Service\JobValidator\JobValidatorServiceInterface');
-        $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
+        $this->cache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
+        $this->jobValidatorService = $this->prophesize('Chapi\Service\JobValidator\JobValidatorServiceInterface');
+        $this->logger = $this->prophesize('Psr\Log\LoggerInterface');
     }
 
     public function testGetJobsSuccess()
     {
-        $this->oCache
+        $this->cache
             ->get(Argument::exact(BridgeMarathon::CACHE_KEY_APP_LIST))
             ->willReturn([]);
 
-        $this->oCache
-            ->set(BridgeMarathon::CACHE_KEY_APP_LIST, Argument::exact($this->aListingJobs["apps"]), BridgeMarathon::CACHE_TIME_JOB_LIST);
+        $this->cache
+            ->set(BridgeMarathon::CACHE_KEY_APP_LIST, Argument::exact($this->listingJobs["apps"]), BridgeMarathon::CACHE_TIME_JOB_LIST);
 
-        $_oMarathonBridge = new BridgeMarathon(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $marathonBridge = new BridgeMarathon(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_aApps = $_oMarathonBridge->getJobs();
+        $apps = $marathonBridge->getJobs();
 
-        foreach ($_aApps as $_gotApp) {
+        foreach ($apps as $gotApp) {
             $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', 'Entity expected to be fullfill of JobEntityInterface interface');
             $this->assertInstanceOf('Chapi\Entity\Marathon\MarathonAppEntity', 'Entity expected to be instance of MarathonAppEntity');
 
-            $_bFound = false;
-            foreach ($this->aListingJobs["apps"] as $_listedApp) {
-                if ($_gotApp->getKey() == $_listedApp["id"]) {
-                    $_bFound = true;
+            $found = false;
+            foreach ($this->listingJobs["apps"] as $listedApp) {
+                if ($gotApp->getKey() == $listedApp["id"]) {
+                    $found = true;
                     break;
                 }
             }
-            $this->assertTrue($_bFound, 'Expected job not found');
+            $this->assertTrue($found, 'Expected job not found');
         }
     }
 
 
     public function testAddJobSuccess()
     {
-        $_oApp = $this->getValidMarathonAppEntity("/mygroup/myapp");
+        $app = $this->getValidMarathonAppEntity("/mygroup/myapp");
 
-        $this->oApiClient
-            ->addingJob(Argument::exact($_oApp))
+        $this->apiClient
+            ->addingJob(Argument::exact($app))
             ->willReturn(true);
 
-        $_oMarathonBridge = new BridgeMarathon(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $marathonBridge = new BridgeMarathon(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_bSuccess = $_oMarathonBridge->addJob($_oApp);
+        $success = $marathonBridge->addJob($app);
 
-        $this->assertTrue($_bSuccess, "Expected addJob to return true, false returned");
+        $this->assertTrue($success, "Expected addJob to return true, false returned");
     }
 
     public function testAddJobSuccessFailure()
     {
-        $_oApp = $this->getValidMarathonAppEntity("/mygroup/myapp");
+        $app = $this->getValidMarathonAppEntity("/mygroup/myapp");
 
-        $this->oApiClient
-            ->addingJob(Argument::exact($_oApp))
+        $this->apiClient
+            ->addingJob(Argument::exact($app))
             ->willReturn(false);
 
-        $_oMarathonBridge = new BridgeMarathon(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $marathonBridge = new BridgeMarathon(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_bSuccess = $_oMarathonBridge->addJob($_oApp);
+        $success = $marathonBridge->addJob($app);
 
-        $this->assertFalse($_bSuccess, "Expected addJob to return false, true returned");
+        $this->assertFalse($success, "Expected addJob to return false, true returned");
     }
 
     public function updateJobSuccess()
     {
-        $_oApp = $this->getValidMarathonAppEntity("/mygroup/myapp");
+        $app = $this->getValidMarathonAppEntity("/mygroup/myapp");
 
-        $this->oApiClient
-            ->updatingJob(Argument::exact($_oApp))
+        $this->apiClient
+            ->updatingJob(Argument::exact($app))
             ->willReturn(true);
 
-        $_oMarathonBridge = new BridgeMarathon(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $marathonBridge = new BridgeMarathon(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_bSuccess = $_oMarathonBridge->updateJob($_oApp);
+        $success = $marathonBridge->updateJob($app);
 
-        $this->assertTrue($_bSuccess, "Expected addJob to return true, false returned");
+        $this->assertTrue($success, "Expected addJob to return true, false returned");
     }
 
     public function updateJobFailure()
     {
-        $_oApp = $this->getValidMarathonAppEntity("/mygroup/myapp");
+        $app = $this->getValidMarathonAppEntity("/mygroup/myapp");
 
-        $this->oApiClient
-            ->updatingJob(Argument::exact($_oApp))
+        $this->apiClient
+            ->updatingJob(Argument::exact($app))
             ->willReturn(false);
 
-        $_oMarathonBridge = new BridgeMarathon(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $marathonBridge = new BridgeMarathon(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_bSuccess = $_oMarathonBridge->updateJob($_oApp);
+        $success = $marathonBridge->updateJob($app);
 
-        $this->assertFalse($_bSuccess, "Expected updateJob to return false, true returned");
+        $this->assertFalse($success, "Expected updateJob to return false, true returned");
     }
 
 
     public function testRemoveJobSuccess()
     {
-        $_oAppKey = "/mygroup/myapp";
-        $_oApp = $this->getValidMarathonAppEntity($_oAppKey);
+        $appKey = "/mygroup/myapp";
+        $app = $this->getValidMarathonAppEntity($appKey);
 
-        $this->oApiClient
-            ->removeJob(Argument::exact($_oAppKey))
+        $this->apiClient
+            ->removeJob(Argument::exact($appKey))
             ->willReturn(true);
 
-        $_oMarathonBridge = new BridgeMarathon(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $marathonBridge = new BridgeMarathon(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_bSuccess = $_oMarathonBridge->removeJob($_oApp);
-        $this->assertTrue($_bSuccess, "Expected true, false returned");
+        $success = $marathonBridge->removeJob($app);
+        $this->assertTrue($success, "Expected true, false returned");
     }
 
     public function testRemoveJobFailure()
     {
-        $_oAppKey = "/mygroup/myapp";
-        $_oApp = $this->getValidMarathonAppEntity($_oAppKey);
+        $appKey = "/mygroup/myapp";
+        $app = $this->getValidMarathonAppEntity($appKey);
 
-        $this->oApiClient
-            ->removeJob(Argument::exact($_oAppKey))
+        $this->apiClient
+            ->removeJob(Argument::exact($appKey))
             ->willReturn(false);
 
-        $_oMarathonBridge = new BridgeMarathon(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $marathonBridge = new BridgeMarathon(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_bSuccess = $_oMarathonBridge->removeJob($_oApp);
-        $this->assertFalse($_bSuccess, "Expected false, true returned");
+        $success = $marathonBridge->removeJob($app);
+        $this->assertFalse($success, "Expected false, true returned");
     }
 }
