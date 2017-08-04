@@ -10,9 +10,7 @@
 
 namespace unit\Command;
 
-use Chapi\Commands\ValidationCommand;
 use Chapi\Component\Command\JobUtilsInterface;
-use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
@@ -144,20 +142,5 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
                 $this->oOutput->reveal()
             )
         );
-    }
-}
-
-class ValidationCommandDummy extends ValidationCommand
-{
-    public static $oContainerDummy;
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    protected function isAppRunable()
-    {
-        return true;
     }
 }

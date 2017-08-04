@@ -13,6 +13,8 @@ http://creativecommons.org/publicdomain/zero/1.0/legalcode
 
 */
 
+namespace Chapi\Vendor;
+
 /**
  * Class Diff
  * A class containing functions for computing diffs and formatting the output.

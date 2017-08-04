@@ -8,10 +8,12 @@
  */
 namespace Chapi\Component\Comparison;
 
+use Chapi\Vendor\Diff;
+
 class DiffCompare implements DiffCompareInterface
 {
     /**
-     * @var \Diff
+     * @var Diff
      */
     private static $oCompare;
 
@@ -46,12 +48,12 @@ class DiffCompare implements DiffCompareInterface
     }
 
     /**
-     * @return \Diff
+     * @return Diff
      */
     private static function getCompare()
     {
         if (is_null(self::$oCompare)) {
-            self::$oCompare = new \Diff();
+            self::$oCompare = new Diff();
         }
 
         return self::$oCompare;

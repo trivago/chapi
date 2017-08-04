@@ -42,6 +42,12 @@
       "src/vendor/class.Diff.php"
     ]
   },
+  "autoload-dev":
+  {
+    "psr-4": {
+      "unit\\": ["test/unit/"]
+    }
+  },
   "config": {
     "bin-dir": "bin"
   },

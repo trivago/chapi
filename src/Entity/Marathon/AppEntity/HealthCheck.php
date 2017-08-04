@@ -49,7 +49,7 @@ class HealthCheck implements \JsonSerializable
     /**
      * @inheritdoc
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $_aRet = (array) $this;
         if (is_null($this->port)) {

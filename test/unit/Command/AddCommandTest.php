@@ -10,7 +10,6 @@
 namespace unit\Command;
 
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
-use Chapi\Commands\AddCommand;
 use Chapi\Component\Command\JobUtilsInterface;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
@@ -85,20 +84,5 @@ class AddCommandTest extends \PHPUnit_Framework_TestCase
                 $this->oOutput->reveal()
             )
         );
-    }
-}
-
-class AddCommandDummy extends AddCommand
-{
-    public static $oContainerDummy;
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    protected function isAppRunable()
-    {
-        return true;
     }
 }

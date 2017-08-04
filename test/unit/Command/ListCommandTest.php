@@ -9,7 +9,6 @@
 
 namespace unit\Command;
 
-use Chapi\Commands\ListCommand;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use ChapiTest\src\TestTraits\AppEntityTrait;
@@ -133,20 +132,5 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
         $this->oOutput->writeln(Argument::containingString('JobC'))->shouldHaveBeenCalled();
         $this->oOutput->writeln(Argument::containingString('/main/id1'))->shouldHaveBeenCalled();
         $this->oOutput->writeln(Argument::containingString('disabled'))->shouldHaveBeenCalledTimes(1);
-    }
-}
-
-class ListCommandDummy extends ListCommand
-{
-    public static $oContainerDummy;
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    protected function isAppRunable()
-    {
-        return true;
     }
 }

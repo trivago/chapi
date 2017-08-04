@@ -12,7 +12,7 @@ use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
 
 class UpgradeStrategyTest extends \PHPUnit_Framework_TestCase
 {
-    function testAllKeysAreCorrect()
+    public function testAllKeysAreCorrect()
     {
         $_aKeys = ["minimumHealthCapacity", "maximumOverCapacity"];
 
@@ -23,7 +23,7 @@ class UpgradeStrategyTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    function testUpgradeStrategySetCorrectly()
+    public function testUpgradeStrategySetCorrectly()
     {
         $aData = [
             "minimumHealthCapacity" => 2,

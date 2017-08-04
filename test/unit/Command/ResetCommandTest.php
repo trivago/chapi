@@ -9,7 +9,6 @@
 
 namespace unit\Command;
 
-use Chapi\Commands\ResetCommand;
 use Chapi\Component\Command\JobUtilsInterface;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
@@ -74,20 +73,5 @@ class ResetCommandTest extends \PHPUnit_Framework_TestCase
                 $this->oOutput->reveal()
             )
         );
-    }
-}
-
-class ResetCommandDummy extends ResetCommand
-{
-    public static $oContainerDummy;
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    protected function isAppRunable()
-    {
-        return true;
     }
 }

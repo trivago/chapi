@@ -10,7 +10,6 @@
 
 namespace unit\Command;
 
-use Chapi\Commands\ConfigureCommand;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use Prophecy\Argument;
 
@@ -190,34 +189,5 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertFalse(file_exists($this->sTempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
-    }
-}
-
-class ConfigureCommandDummy extends ConfigureCommand
-{
-    public static $oContainerDummy;
-
-    public static $sHomeDirDummy;
-
-    public static $oQustionHelperDummy;
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    protected function isAppRunable()
-    {
-        return true;
-    }
-
-    protected function getHomeDir()
-    {
-        return self::$sHomeDirDummy;
-    }
-
-    public function getHelper($sHelper)
-    {
-        return ($sHelper == 'question') ? self::$oQustionHelperDummy : parent::getHelper($sHelper);
     }
 }

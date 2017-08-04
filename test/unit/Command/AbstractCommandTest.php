@@ -10,12 +10,9 @@
 
 namespace unit\Command;
 
-use Chapi\Commands\AbstractCommand;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use org\bovigo\vfs\vfsStream;
 use Prophecy\Argument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class AbstractCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -134,61 +131,5 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals('.chapiconfig', $_oCommand->getParameterFileNamePub());
-    }
-}
-
-class AbstractCommandDummy extends AbstractCommand
-{
-
-    public static $oContainerDummy;
-
-    protected function configure()
-    {
-        $this->setName('unitTestAbstractCommand');
-    }
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    public function getCacheDir()
-    {
-        return parent::getCacheDir();
-    }
-
-    protected function process()
-    {
-        return 0;
-    }
-
-    protected function getHomeDir()
-    {
-        return vfsStream::url('unitTestRoot/homeDir');
-    }
-
-    protected function getWorkingDir()
-    {
-        return vfsStream::url('unitTestRoot/workingDir');
-    }
-
-    public function isAppRunablePub()
-    {
-        return $this->isAppRunable();
-    }
-
-    public function getHomeDirPub()
-    {
-        return parent::getHomeDir();
-    }
-
-    public function initializePub(InputInterface $oInput, OutputInterface $oOutput)
-    {
-        parent::initialize($oInput, $oOutput);
-    }
-
-    public function getParameterFileNamePub()
-    {
-        return parent::getParameterFileName();
     }
 }

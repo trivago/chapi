@@ -34,7 +34,7 @@ class PortDefinition implements \JsonSerializable
     /**
      * @inheritdoc
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $_aRet = (array) $this;
         $_aRet = array_filter($_aRet, function ($v, $k) {

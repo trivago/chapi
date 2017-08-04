@@ -10,7 +10,6 @@
 
 namespace unit\Command;
 
-use Chapi\Commands\InfoCommand;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -54,20 +53,5 @@ class InfoCommandTest extends \PHPUnit_Framework_TestCase
         foreach ($_oJobEntity as $_sKey => $_mValue) {
             $this->oOutput->writeln(Argument::containingString($_sKey))->shouldHaveBeenCalled();
         }
-    }
-}
-
-class InfoCommandDummy extends InfoCommand
-{
-    public static $oContainerDummy;
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    protected function isAppRunable()
-    {
-        return true;
     }
 }

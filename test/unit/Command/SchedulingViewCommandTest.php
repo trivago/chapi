@@ -10,7 +10,6 @@
 
 namespace unit\Command;
 
-use Chapi\Commands\SchedulingViewCommand;
 use Chapi\Component\DatePeriod\DatePeriodFactory;
 use Chapi\Component\DatePeriod\DatePeriodFactoryInterface;
 use Chapi\Service\Chronos\JobStatsServiceInterface;
@@ -100,20 +99,5 @@ class SchedulingViewCommandTest extends \PHPUnit_Framework_TestCase
     public function testProcessWithJobInput2()
     {
         $this->testProcessWithJobInput('-1 hours', null);
-    }
-}
-
-class SchedulingViewCommandDummy extends SchedulingViewCommand
-{
-    public static $oContainerDummy;
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    protected function isAppRunable()
-    {
-        return true;
     }
 }
