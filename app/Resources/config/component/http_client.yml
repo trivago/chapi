@@ -1,6 +1,6 @@
 services:
   ChronosHttpClientGuzzle:
-    class: Chapi\Component\Http\HttpGuzzlClient
+    class: Chapi\Component\Http\HttpGuzzleClient
     arguments:
       - "@ExternalChronosGuzzleClient"
       - "@ChronosHttpAuthEntity"
@@ -17,7 +17,7 @@ services:
       - "%chronos_http_password%"
 
   MarathonHttpClientGuzzle:
-    class: Chapi\Component\Http\HttpGuzzlClient
+    class: Chapi\Component\Http\HttpGuzzleClient
     arguments:
       - "@ExternalMarathonGuzzleClient"
       - "@MarathonHttpAuthEntity"
