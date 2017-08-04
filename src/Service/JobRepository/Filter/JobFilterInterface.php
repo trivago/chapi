@@ -11,8 +11,8 @@ interface JobFilterInterface
 
     /**
      * Returns true if the job is of particular entity
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function isInteresting(JobEntityInterface $oJobEntity);
+    public function isInteresting(JobEntityInterface $jobEntity);
 }

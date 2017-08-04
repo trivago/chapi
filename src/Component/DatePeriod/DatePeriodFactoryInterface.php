@@ -17,16 +17,16 @@ interface DatePeriodFactoryInterface
     const DIC_NAME = 'DatePeriodFactoryInterface';
 
     /**
-     * @param string $sIso8601
+     * @param string $iso8601
      * @return Iso8601Entity
      * @throws DatePeriodException
      */
-    public function createIso8601Entity($sIso8601);
+    public function createIso8601Entity($iso8601);
 
     /**
-     * @param $sIso8601
-     * @param string $sTimeZone
+     * @param $iso8601
+     * @param string $timezone
      * @return \DatePeriod
      */
-    public function createDatePeriod($sIso8601, $sTimeZone = '');
+    public function createDatePeriod($iso8601, $timezone = '');
 }

@@ -17,52 +17,52 @@ class DatePeriodFactory implements DatePeriodFactoryInterface
     /**
      * @var Iso8601Entity[]
      */
-    private static $aIso8601Entity = [];
+    private static $iso8601Entity = [];
 
     /**
-     * @param string $sIso8601
+     * @param string $iso8601
      * @return Iso8601Entity
      * @throws DatePeriodException
      */
-    public function createIso8601Entity($sIso8601)
+    public function createIso8601Entity($iso8601)
     {
-        $_sKey = md5($sIso8601); // class cache key
+        $key = md5($iso8601); // class cache key
 
         // return instance
-        if (isset(self::$aIso8601Entity[$_sKey])) {
-            return self::$aIso8601Entity[$_sKey];
+        if (isset(self::$iso8601Entity[$key])) {
+            return self::$iso8601Entity[$key];
         }
 
         // init instance
         try {
-            return self::$aIso8601Entity[$_sKey] = new Iso8601Entity($sIso8601);
-        } catch (\InvalidArgumentException $_oException) {
-            throw new DatePeriodException(sprintf("Can't init Iso8601Entity for '%s' iso 8601 string.", $sIso8601), 1, $_oException);
+            return self::$iso8601Entity[$key] = new Iso8601Entity($iso8601);
+        } catch (\InvalidArgumentException $exception) {
+            throw new DatePeriodException(sprintf("Can't init Iso8601Entity for '%s' iso 8601 string.", $iso8601), 1, $exception);
         }
     }
 
     /**
-     * @param $sIso8601
-     * @param string $sTimeZone
+     * @param $iso8601
+     * @param string $timezone
      * @return \DatePeriod
      */
-    public function createDatePeriod($sIso8601, $sTimeZone = '')
+    public function createDatePeriod($iso8601, $timezone = '')
     {
-        $_oIso8601Entity = $this->createIso8601Entity($sIso8601);
+        $iso8601Entity = $this->createIso8601Entity($iso8601);
 
-        if (!empty($sTimeZone)) {
-            $_oDateStart = new \DateTime(str_replace('Z', '', $_oIso8601Entity->sStartTime), new \DateTimeZone($sTimeZone));
+        if (!empty($timezone)) {
+            $dateStart = new \DateTime(str_replace('Z', '', $iso8601Entity->startTime), new \DateTimeZone($timezone));
         } else {
             // todo: use a defined chronos time zone here?
-            $_oDateStart = new \DateTime($_oIso8601Entity->sStartTime);
+            $dateStart = new \DateTime($iso8601Entity->startTime);
         }
 
-        $_oDateInterval = new \DateInterval($_oIso8601Entity->sInterval);
-        $_oDataEnd = new \DateTime();
+        $dateInterval = new \DateInterval($iso8601Entity->interval);
+        $dateEnd = new \DateTime();
 
-        $_oDateStart->sub($_oDateInterval);
-        $_oDataEnd->add($_oDateInterval);
+        $dateStart->sub($dateInterval);
+        $dateEnd->add($dateInterval);
 
-        return new \DatePeriod($_oDateStart, $_oDateInterval, $_oDataEnd);
+        return new \DatePeriod($dateStart, $dateInterval, $dateEnd);
     }
 }

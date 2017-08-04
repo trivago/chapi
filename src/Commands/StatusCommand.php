@@ -20,7 +20,7 @@ class StatusCommand extends AbstractCommand
     const LABEL_MARATHON = 'marathon';
 
     /** @var JobIndexServiceInterface  */
-    private $oJobIndexService;
+    private $jobIndexService;
 
     /**
      * Configures the current command.
@@ -35,11 +35,11 @@ class StatusCommand extends AbstractCommand
     /**
      * @inheritdoc
      */
-    protected function initialize(InputInterface $oInput, OutputInterface $oOutput)
+    protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        parent::initialize($oInput, $oOutput);
+        parent::initialize($input, $output);
 
-        $this->oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
+        $this->jobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
     }
 
     /**
@@ -47,22 +47,22 @@ class StatusCommand extends AbstractCommand
      */
     protected function process()
     {
-        $_aChangedJobs = $this->getChangedAppJobs();
+        $changedJobs = $this->getChangedAppJobs();
 
         // tracked jobs
-        $this->oOutput->writeln("\nChanges to be committed");
-        $this->oOutput->writeln("  (use 'chapi reset <job>...' to unstage)");
-        $this->oOutput->writeln('');
+        $this->output->writeln("\nChanges to be committed");
+        $this->output->writeln("  (use 'chapi reset <job>...' to unstage)");
+        $this->output->writeln('');
 
-        $this->printStatusView($_aChangedJobs, true);
+        $this->printStatusView($changedJobs, true);
 
         // untracked jobs
-        $this->oOutput->writeln("\nChanges not staged for commit");
-        $this->oOutput->writeln("  (use 'chapi add <job>...' to update what will be committed)");
-        $this->oOutput->writeln("  (use 'chapi checkout <job>...' to discard changes in local repository)");
-        $this->oOutput->writeln('');
+        $this->output->writeln("\nChanges not staged for commit");
+        $this->output->writeln("  (use 'chapi add <job>...' to update what will be committed)");
+        $this->output->writeln("  (use 'chapi checkout <job>...' to discard changes in local repository)");
+        $this->output->writeln('');
 
-        $this->printStatusView($_aChangedJobs, false);
+        $this->printStatusView($changedJobs, false);
 
         return 0;
     }
@@ -72,86 +72,86 @@ class StatusCommand extends AbstractCommand
      */
     private function getChangedAppJobs()
     {
-        /** @var JobComparisonInterface $_oJobComparisonBusinessCaseChronos */
-        /** @var JobComparisonInterface $_oJobComparisonBusinessCaseMarathon */
-        $_oJobComparisonBusinessCaseChronos  = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_CHRONOS);
-        $_oJobComparisonBusinessCaseMarathon = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_MARATHON);
+        /** @var JobComparisonInterface $jobComparisonBusinessCaseChronos */
+        /** @var JobComparisonInterface $jobComparisonBusinessCaseMarathon */
+        $jobComparisonBusinessCaseChronos  = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_CHRONOS);
+        $jobComparisonBusinessCaseMarathon = $this->getContainer()->get(JobComparisonInterface::DIC_NAME_MARATHON);
 
-        $_aResult = [
+        $result = [
             'new' => [
-                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getRemoteMissingJobs(),
-                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getRemoteMissingJobs(),
+                self::LABEL_CHRONOS => $jobComparisonBusinessCaseChronos->getRemoteMissingJobs(),
+                self::LABEL_MARATHON => $jobComparisonBusinessCaseMarathon->getRemoteMissingJobs(),
             ],
             'missing' => [
-                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getLocalMissingJobs(),
-                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getLocalMissingJobs(),
+                self::LABEL_CHRONOS => $jobComparisonBusinessCaseChronos->getLocalMissingJobs(),
+                self::LABEL_MARATHON => $jobComparisonBusinessCaseMarathon->getLocalMissingJobs(),
             ],
             'updates' => [
-                self::LABEL_CHRONOS => $_oJobComparisonBusinessCaseChronos->getLocalJobUpdates(),
-                self::LABEL_MARATHON => $_oJobComparisonBusinessCaseMarathon->getLocalJobUpdates(),
+                self::LABEL_CHRONOS => $jobComparisonBusinessCaseChronos->getLocalJobUpdates(),
+                self::LABEL_MARATHON => $jobComparisonBusinessCaseMarathon->getLocalJobUpdates(),
             ],
         ];
 
-        return $_aResult;
+        return $result;
     }
 
     /**
-     * @param array $aChangedJobs
-     * @param bool $bFilterIsInIndex
+     * @param array $changedJobs
+     * @param bool $filterIsInIndex
      */
-    private function printStatusView($aChangedJobs, $bFilterIsInIndex)
+    private function printStatusView($changedJobs, $filterIsInIndex)
     {
-        $_aFormatMap = [
+        $formatMap = [
             'new' => ['title' => 'New jobs in local repository', 'format' => "\t<comment>new %s job:\t%s</comment>"],
             'missing' => ['title' => 'Missing jobs in local repository', 'format' => "\t<fg=red>delete %s job:\t%s</>"],
             'updates' => ['title' => 'Updated jobs in local repository', 'format' => "\t<info>modified %s job:\t%s</info>"]
         ];
 
-        foreach ($aChangedJobs as $_sJobStatus => $_aJobList) {
-            $_aFilteredJobList = $this->filterJobListWithIndex($_aJobList, $bFilterIsInIndex);
-            if (!empty($_aFilteredJobList)) {
-                $this->printJobList($_aFormatMap[$_sJobStatus]['title'], $_aFilteredJobList, $_aFormatMap[$_sJobStatus]['format']);
+        foreach ($changedJobs as $jobStatus => $jobList) {
+            $filteredJobList = $this->filterJobListWithIndex($jobList, $filterIsInIndex);
+            if (!empty($filteredJobList)) {
+                $this->printJobList($formatMap[$jobStatus]['title'], $filteredJobList, $formatMap[$jobStatus]['format']);
             }
         }
     }
 
     /**
-     * @param array $aJobLists
-     * @param bool $bFilterIsInIndex
+     * @param array $jobLists
+     * @param bool $filterIsInIndex
      * @return array
      */
-    private function filterJobListWithIndex($aJobLists, $bFilterIsInIndex)
+    private function filterJobListWithIndex($jobLists, $filterIsInIndex)
     {
-        $_aFilteredJobList = [];
+        $filteredJobList = [];
 
-        foreach ($aJobLists as $sAppLabel => $aJobList) {
-            foreach ($aJobList as $_sJobName) {
-                if ($bFilterIsInIndex == $this->oJobIndexService->isJobInIndex($_sJobName)) {
-                    $_aFilteredJobList[$sAppLabel][] = $_sJobName;
+        foreach ($jobLists as $appLabel => $jobList) {
+            foreach ($jobList as $jobName) {
+                if ($filterIsInIndex == $this->jobIndexService->isJobInIndex($jobName)) {
+                    $filteredJobList[$appLabel][] = $jobName;
                 }
             }
         }
 
-        return $_aFilteredJobList;
+        return $filteredJobList;
     }
 
     /**
-     * @param string $sTitle
-     * @param array $aJobLists
-     * @param string $sListFormat
+     * @param string $title
+     * @param array $jobLists
+     * @param string $listFormat
      */
-    private function printJobList($sTitle, $aJobLists, $sListFormat)
+    private function printJobList($title, $jobLists, $listFormat)
     {
-        $this->oOutput->writeln(sprintf('  %s:', $sTitle));
+        $this->output->writeln(sprintf('  %s:', $title));
 
-        foreach ($aJobLists as $sLabel => $aJobList) {
-            foreach ($aJobList as $_sJobName) {
-                $this->oOutput->writeln(
-                    sprintf($sListFormat, $sLabel, $_sJobName)
+        foreach ($jobLists as $label => $jobList) {
+            foreach ($jobList as $jobName) {
+                $this->output->writeln(
+                    sprintf($listFormat, $label, $jobName)
                 );
             }
         }
 
-        $this->oOutput->writeln("\n");
+        $this->output->writeln("\n");
     }
 }

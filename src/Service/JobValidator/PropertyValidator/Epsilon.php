@@ -22,62 +22,62 @@ class Epsilon extends AbstractPropertyValidator implements PropertyValidatorInte
     /**
      * @var DatePeriodFactoryInterface
      */
-    private $oDatePeriodFactory;
+    private $datePeriodFactory;
 
     /**
      * Epsilon constructor.
-     * @param DatePeriodFactoryInterface $oDatePeriodFactory
+     * @param DatePeriodFactoryInterface $datePeriodFactory
      */
-    public function __construct(DatePeriodFactoryInterface $oDatePeriodFactory)
+    public function __construct(DatePeriodFactoryInterface $datePeriodFactory)
     {
-        $this->oDatePeriodFactory = $oDatePeriodFactory;
+        $this->datePeriodFactory = $datePeriodFactory;
     }
 
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            $this->isEpsilonPropertyValid($oJobEntity),
-            $sProperty,
+            $this->isEpsilonPropertyValid($jobEntity),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    private function isEpsilonPropertyValid(JobEntityInterface $oJobEntity)
+    private function isEpsilonPropertyValid(JobEntityInterface $jobEntity)
     {
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$jobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
         }
 
-        if ($oJobEntity->isSchedulingJob() && !empty($oJobEntity->epsilon)) {
+        if ($jobEntity->isSchedulingJob() && !empty($jobEntity->epsilon)) {
             try {
-                $_oDateIntervalEpsilon = new \DateInterval($oJobEntity->epsilon);
-                $_iIntervalEpsilon = (int) $_oDateIntervalEpsilon->format('%Y%M%D%H%I%S');
+                $dateIntervalEpsilon = new \DateInterval($jobEntity->epsilon);
+                $intervalEpsilon = (int) $dateIntervalEpsilon->format('%Y%M%D%H%I%S');
 
-                if ($_iIntervalEpsilon > 30) { // if epsilon > "PT30S"
-                    $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($oJobEntity->schedule);
+                if ($intervalEpsilon > 30) { // if epsilon > "PT30S"
+                    $iso8601Entity = $this->datePeriodFactory->createIso8601Entity($jobEntity->schedule);
 
-                    $_oDateIntervalScheduling = new \DateInterval($_oIso8601Entity->sInterval);
-                    $_iIntervalScheduling = (int) $_oDateIntervalScheduling->format('%Y%M%D%H%I%S');
+                    $dateIntervalScheduling = new \DateInterval($iso8601Entity->interval);
+                    $intervalScheduling = (int) $dateIntervalScheduling->format('%Y%M%D%H%I%S');
 
-                    return ($_iIntervalScheduling > $_iIntervalEpsilon);
+                    return ($intervalScheduling > $intervalEpsilon);
                 }
 
                 // if epsilon is less or equal than 30sec the not empty check is enough
                 return true;
-            } catch (\Exception $_oException) {
+            } catch (\Exception $exception) {
                 // can't init \DateInterval instance
                 return false;
             }
         }
 
         // else
-        return (!empty($oJobEntity->epsilon));
+        return (!empty($jobEntity->epsilon));
     }
 }

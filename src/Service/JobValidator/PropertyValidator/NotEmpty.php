@@ -21,11 +21,11 @@ class NotEmpty extends AbstractPropertyValidator implements PropertyValidatorInt
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            !empty($oJobEntity->{$sProperty}),
-            $sProperty,
+            !empty($jobEntity->{$property}),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }

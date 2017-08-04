@@ -30,17 +30,17 @@ class DiffCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var JobComparisonInterface  $_oJobComparisonBusinessCase */
-        $_oJobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
-        $_sJobName = $this->oInput->getArgument('jobName');
+        /** @var JobComparisonInterface  $jobComparisonBusinessCase */
+        $jobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
+        $jobName = $this->input->getArgument('jobName');
 
-        if (!empty($_sJobName)) {
-            $this->printJobDiff($_sJobName);
+        if (!empty($jobName)) {
+            $this->printJobDiff($jobName);
         } else {
-            $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
-            if (!empty($_aLocalJobUpdates)) {
-                foreach ($_aLocalJobUpdates as $_sJobName) {
-                    $this->printJobDiff($_sJobName);
+            $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
+            if (!empty($localJobUpdates)) {
+                foreach ($localJobUpdates as $jobName) {
+                    $this->printJobDiff($jobName);
                 }
             }
         }
@@ -49,33 +49,33 @@ class DiffCommand extends AbstractCommand
     }
 
     /**
-     * @param $sJobName
+     * @param string $jobName
      */
-    private function printJobDiff($sJobName)
+    private function printJobDiff($jobName)
     {
-        /** @var JobComparisonInterface  $_oJobComparisonBusinessCase */
-        $_oJobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
+        /** @var JobComparisonInterface  $jobComparisonBusinessCase */
+        $jobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
 
-        $this->oOutput->writeln(sprintf("\n<comment>diff %s</comment>", $sJobName));
+        $this->output->writeln(sprintf("\n<comment>diff %s</comment>", $jobName));
 
-        $_aJobDiff = $_oJobComparisonBusinessCase->getJobDiff($sJobName);
+        $jobDiff = $jobComparisonBusinessCase->getJobDiff($jobName);
 
-        foreach ($_aJobDiff as $_sProperty => $_sDiff) {
-            $_aDiffLines = array_reverse(explode(PHP_EOL, $_sDiff));
+        foreach ($jobDiff as $property => $diff) {
+            $diffLines = array_reverse(explode(PHP_EOL, $diff));
 
-            foreach ($_aDiffLines as $_sDiffLine) {
-                $_sDiffSign = substr($_sDiffLine, 0, 1);
+            foreach ($diffLines as $diffLine) {
+                $diffSign = substr($diffLine, 0, 1);
 
-                if ($_sDiffSign == '+') {
-                    $this->oOutput->writeln(sprintf("<info>%s\t%s: %s</info>", $_sDiffSign, $_sProperty, substr($_sDiffLine, 1)));
-                } elseif ($_sDiffSign == '-') {
-                    $this->oOutput->writeln(sprintf("<fg=red>%s\t%s: %s</>", $_sDiffSign, $_sProperty, substr($_sDiffLine, 1)));
+                if ($diffSign == '+') {
+                    $this->output->writeln(sprintf("<info>%s\t%s: %s</info>", $diffSign, $property, substr($diffLine, 1)));
+                } elseif ($diffSign == '-') {
+                    $this->output->writeln(sprintf("<fg=red>%s\t%s: %s</>", $diffSign, $property, substr($diffLine, 1)));
                 } else {
-                    $this->oOutput->writeln(sprintf("\t%s: %s", $_sProperty, $_sDiffLine));
+                    $this->output->writeln(sprintf("\t%s: %s", $property, $diffLine));
                 }
             }
         }
 
-        $this->oOutput->writeln("\n");
+        $this->output->writeln("\n");
     }
 }

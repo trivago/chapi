@@ -23,10 +23,10 @@ class JobStatsEntity
     public $taskStatHistory;
 
     /**
-     * @param array $aStats
+     * @param array $stats
      */
-    public function __construct(array $aStats = [])
+    public function __construct(array $stats = [])
     {
-        $this->histogram = (isset($aStats['histogram'])) ? new HistogramEntity($aStats['histogram']) : new HistogramEntity();
+        $this->histogram = (isset($stats['histogram'])) ? new HistogramEntity($stats['histogram']) : new HistogramEntity();
     }
 }

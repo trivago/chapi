@@ -84,60 +84,60 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $ipAddress = null;
 
-    public function __construct($mData = null)
+    public function __construct($data = null)
     {
-        if (!$mData) {
+        if (!$data) {
             // initialized with default values
             return;
         }
 
         // make sure data is array
-        $aData = (array) $mData;
+        $dataArray = (array) $data;
 
-        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($dataArray, $this);
 
-        if (isset($aData['portDefinitions'])) {
-            foreach ($aData['portDefinitions'] as $portDefinition) {
+        if (isset($dataArray['portDefinitions'])) {
+            foreach ($dataArray['portDefinitions'] as $portDefinition) {
                 $this->portDefinitions[] = new PortDefinition((array) $portDefinition);
             }
         }
 
-        if (isset($aData['container'])) {
-            $this->container = new Container((array) $aData['container']);
+        if (isset($dataArray['container'])) {
+            $this->container = new Container((array) $dataArray['container']);
         }
 
-        if (isset($aData['healthChecks'])) {
-            foreach ($aData['healthChecks'] as $healthCheck) {
+        if (isset($dataArray['healthChecks'])) {
+            foreach ($dataArray['healthChecks'] as $healthCheck) {
                 $this->healthChecks[] = new HealthCheck((array) $healthCheck);
             }
         }
 
-        if (isset($aData['upgradeStrategy'])) {
-            $this->upgradeStrategy = new UpgradeStrategy((array) $aData['upgradeStrategy']);
+        if (isset($dataArray['upgradeStrategy'])) {
+            $this->upgradeStrategy = new UpgradeStrategy((array) $dataArray['upgradeStrategy']);
         } else {
             $this->upgradeStrategy = new UpgradeStrategy();
         }
 
-        if (isset($aData['ipAddress'])) {
-            $this->ipAddress = new IpAddress((array) $aData['ipAddress']);
+        if (isset($dataArray['ipAddress'])) {
+            $this->ipAddress = new IpAddress((array) $dataArray['ipAddress']);
         }
 
-        if (isset($aData['env'])) {
-            $this->env = (object) $aData['env'];
+        if (isset($dataArray['env'])) {
+            $this->env = (object) $dataArray['env'];
         } else {
             $this->env = (object) [];
         }
 
-        if (isset($aData['labels'])) {
-            $this->labels = (object) $aData['labels'];
+        if (isset($dataArray['labels'])) {
+            $this->labels = (object) $dataArray['labels'];
         } else {
             $this->labels = (object) [];
         }
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'constraints');
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'args');
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'uris');
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'acceptedResourceRoles');
-        MarathonEntityUtils::setPropertyIfExist($aData, $this, 'dependencies');
+        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'constraints');
+        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'args');
+        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'uris');
+        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'acceptedResourceRoles');
+        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'dependencies');
     }
 
     /**
@@ -146,15 +146,15 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public function jsonSerialize()
     {
-        $_aRet = (array) $this;
-        $_aRet = array_filter(
-            $_aRet,
-            function ($v, $k) {
-                return !is_null($v) || empty($v);
+        $return = (array) $this;
+        $return = array_filter(
+            $return,
+            function ($value, $key) {
+                return !is_null($value) || empty($value);
             },
             ARRAY_FILTER_USE_BOTH
         );
-        return $_aRet;
+        return $return;
     }
 
     /**

@@ -81,18 +81,18 @@ class ChronosJobEntity implements JobEntityInterface
 
 
     /**
-     * @param array|object $mJobData
+     * @param array|object $jobData
      * @throws \InvalidArgumentException
      */
-    public function __construct($mJobData = [])
+    public function __construct($jobData = [])
     {
-        if (is_array($mJobData) || is_object($mJobData)) {
-            foreach ($mJobData as $_sKey => $_mValue) {
-                if (property_exists($this, $_sKey)) {
-                    if ($_sKey == 'container') {
-                        $this->{$_sKey} = new ContainerEntity($_mValue);
+        if (is_array($jobData) || is_object($jobData)) {
+            foreach ($jobData as $key => $value) {
+                if (property_exists($this, $key)) {
+                    if ($key == 'container') {
+                        $this->{$key} = new ContainerEntity($value);
                     } else {
-                        $this->{$_sKey} = $_mValue;
+                        $this->{$key} = $value;
                     }
                 }
             }
@@ -108,13 +108,13 @@ class ChronosJobEntity implements JobEntityInterface
      */
     public function getSimpleArrayCopy()
     {
-        $_aReturn = [];
+        $return = [];
 
-        foreach ($this as $_sProperty => $mValue) {
-            $_aReturn[$_sProperty] = (is_array($mValue) || is_object($mValue)) ? json_encode($mValue) : $mValue;
+        foreach ($this as $property => $value) {
+            $return[$property] = (is_array($value) || is_object($value)) ? json_encode($value) : $value;
         }
 
-        return $_aReturn;
+        return $return;
     }
 
     /**
@@ -138,25 +138,25 @@ class ChronosJobEntity implements JobEntityInterface
      */
     public function jsonSerialize()
     {
-        $_aReturn = (array) $this;
+        $return = (array) $this;
         if (!empty($this->schedule)) {
-            unset($_aReturn['parents']);
+            unset($return['parents']);
         } else {
-            unset($_aReturn['schedule']);
-            unset($_aReturn['scheduleTimeZone']);
+            unset($return['schedule']);
+            unset($return['scheduleTimeZone']);
         }
 
         if (empty($this->container)) {
-            unset($_aReturn['container']);
+            unset($return['container']);
         }
 
-        unset($_aReturn['successCount']);
-        unset($_aReturn['errorCount']);
-        unset($_aReturn['errorsSinceLastSuccess']);
-        unset($_aReturn['lastSuccess']);
-        unset($_aReturn['lastError']);
+        unset($return['successCount']);
+        unset($return['errorCount']);
+        unset($return['errorsSinceLastSuccess']);
+        unset($return['lastSuccess']);
+        unset($return['lastError']);
 
-        return $_aReturn;
+        return $return;
     }
 
     /**

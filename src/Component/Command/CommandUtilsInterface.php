@@ -18,8 +18,8 @@ interface CommandUtilsInterface
     public static function getOsHomeDir();
 
     /**
-     * @param string $sDir
+     * @param string $dir
      * @return bool
      */
-    public static function hasCreateDirectoryIfNotExists($sDir);
+    public static function hasCreateDirectoryIfNotExists($dir);
 }

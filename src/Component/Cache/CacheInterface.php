@@ -14,22 +14,22 @@ interface CacheInterface
     const DIC_NAME = 'CacheInterface';
 
     /**
-     * @param string $sKey
-     * @param mixed $mValue
-     * @param int $iTTL = 0
+     * @param string $key
+     * @param mixed $value
+     * @param int $ttl = 0
      * @return bool
      */
-    public function set($sKey, $mValue, $iTTL = 0);
+    public function set($key, $value, $ttl = 0);
 
     /**
-     * @param string $sKey
+     * @param string $key
      * @return mixed
      */
-    public function get($sKey);
+    public function get($key);
 
     /**
-     * @param string $sKey
+     * @param string $key
      * @return bool
      */
-    public function delete($sKey);
+    public function delete($key);
 }

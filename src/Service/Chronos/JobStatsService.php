@@ -23,43 +23,43 @@ class JobStatsService implements JobStatsServiceInterface
     /**
      * @var \Chapi\Component\RemoteClients\ApiClientInterface
      */
-    private $oApiClient;
+    private $apiClient;
 
     /**
      * @var CacheInterface
      */
-    private $oCache;
+    private $cache;
 
     /**
-     * @param \Chapi\Component\RemoteClients\ApiClientInterface $oApiClient
-     * @param CacheInterface $oCache
+     * @param \Chapi\Component\RemoteClients\ApiClientInterface $apiClient
+     * @param CacheInterface $cache
      */
     public function __construct(
-        \Chapi\Component\RemoteClients\ApiClientInterface $oApiClient,
-        CacheInterface $oCache
+        \Chapi\Component\RemoteClients\ApiClientInterface $apiClient,
+        CacheInterface $cache
     ) {
-        $this->oApiClient = $oApiClient;
-        $this->oCache = $oCache;
+        $this->apiClient = $apiClient;
+        $this->cache = $cache;
     }
 
     /**
-     * @param $sJobName
+     * @param $jobName
      * @return JobStatsEntity
      */
-    public function getJobStats($sJobName)
+    public function getJobStats($jobName)
     {
-        $_sCacheKey = sprintf(self::CACHE_KEY_JOB_STATS, $sJobName);
-        $_aStats = $this->oCache->get($_sCacheKey);
+        $cacheKey = sprintf(self::CACHE_KEY_JOB_STATS, $jobName);
+        $stats = $this->cache->get($cacheKey);
 
-        if (empty($_aStats)) {
-            $_aStats = $this->oApiClient->getJobStats($sJobName);
+        if (empty($stats)) {
+            $stats = $this->apiClient->getJobStats($jobName);
 
             // set result to cache
-            if (!empty($_aStats)) {
-                $this->oCache->set($_sCacheKey, $_aStats, self::CACHE_TIME_JOB_STATS);
+            if (!empty($stats)) {
+                $this->cache->set($cacheKey, $stats, self::CACHE_TIME_JOB_STATS);
             }
         }
 
-        return new JobStatsEntity($_aStats);
+        return new JobStatsEntity($stats);
     }
 }

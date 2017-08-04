@@ -23,21 +23,21 @@ class JobName extends AbstractPropertyValidator implements PropertyValidatorInte
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            $this->isNamePropertyValid($oJobEntity->{$sProperty}),
-            $sProperty,
+            $this->isNamePropertyValid($jobEntity->{$property}),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }
 
     /**
-     * @param string $sName
+     * @param string $name
      * @return bool
      */
-    private function isNamePropertyValid($sName)
+    private function isNamePropertyValid($name)
     {
-        return (!empty($sName) && preg_match(self::REG_EX_VALID_NAME, $sName));
+        return (!empty($name) && preg_match(self::REG_EX_VALID_NAME, $name));
     }
 }

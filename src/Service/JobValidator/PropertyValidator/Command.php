@@ -23,29 +23,29 @@ class Command extends AbstractPropertyValidator implements PropertyValidatorInte
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            $this->isCommandPropertyValid($oJobEntity),
-            $sProperty,
+            $this->isCommandPropertyValid($jobEntity),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    private function isCommandPropertyValid(JobEntityInterface $oJobEntity)
+    private function isCommandPropertyValid(JobEntityInterface $jobEntity)
     {
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$jobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
         }
 
-        if (is_null($oJobEntity->container)) {
-            return (!empty($oJobEntity->command) && is_string($oJobEntity->command));
+        if (is_null($jobEntity->container)) {
+            return (!empty($jobEntity->command) && is_string($jobEntity->command));
         }
         
-        return (empty($oJobEntity->command) || is_string($oJobEntity->command));
+        return (empty($jobEntity->command) || is_string($jobEntity->command));
     }
 }

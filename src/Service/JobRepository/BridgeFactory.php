@@ -18,56 +18,56 @@ use Symfony\Component\Filesystem\Filesystem;
 class BridgeFactory
 {
     public static function getChronosBridge(
-        ApiClientInterface $oApiClient,
-        CacheInterface $oCache,
-        JobValidatorServiceInterface $oJobEntityValidatorService,
-        LoggerInterface $oLogger
+        ApiClientInterface $apiClient,
+        CacheInterface $cache,
+        JobValidatorServiceInterface $jobEntityValidatorService,
+        LoggerInterface $logger
     ) {
-        if ($oApiClient->ping()) {
+        if ($apiClient->ping()) {
             return new BridgeChronos(
-                $oApiClient,
-                $oCache,
-                $oJobEntityValidatorService,
-                $oLogger
+                $apiClient,
+                $cache,
+                $jobEntityValidatorService,
+                $logger
             );
         }
 
-        return new DummyBridge($oLogger);
+        return new DummyBridge($logger);
     }
 
     public static function getMarathonBridge(
-        ApiClientInterface $oApiClient,
-        CacheInterface $oCache,
-        JobValidatorServiceInterface $oJobEntityValidatorService,
-        LoggerInterface $oLogger
+        ApiClientInterface $apiClient,
+        CacheInterface $cache,
+        JobValidatorServiceInterface $jobEntityValidatorService,
+        LoggerInterface $logger
     ) {
-        if ($oApiClient->ping()) {
+        if ($apiClient->ping()) {
             return new BridgeMarathon(
-                $oApiClient,
-                $oCache,
-                $oJobEntityValidatorService,
-                $oLogger
+                $apiClient,
+                $cache,
+                $jobEntityValidatorService,
+                $logger
             );
         }
 
-        return new DummyBridge($oLogger);
+        return new DummyBridge($logger);
     }
 
 
     public static function getFilesystemBridge(
-        Filesystem $oFileSystemService,
-        CacheInterface $oCache,
-        $sRepositoryDir,
-        LoggerInterface $oLogger
+        Filesystem $fileSystemService,
+        CacheInterface $cache,
+        $repositoryDir,
+        LoggerInterface $logger
     ) {
-        if (empty($sRepositoryDir)) {
-            return new DummyBridge($oLogger);
+        if (empty($repositoryDir)) {
+            return new DummyBridge($logger);
         }
 
         return new BridgeFileSystem(
-            $oFileSystemService,
-            $oCache,
-            $sRepositoryDir
+            $fileSystemService,
+            $cache,
+            $repositoryDir
         );
     }
 }

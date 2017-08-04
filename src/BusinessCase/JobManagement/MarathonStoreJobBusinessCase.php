@@ -20,24 +20,24 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
 {
     /**
      * MarathonStoreJobBusinessCase constructor.
-     * @param JobIndexServiceInterface $oJobIndexService
-     * @param JobRepositoryInterface $oJobRepositoryRemote
-     * @param JobRepositoryInterface $oJobRepositoryLocal
-     * @param JobComparisonInterface $oJobComparisonBusinessCase
-     * @param LoggerInterface $oLogger
+     * @param JobIndexServiceInterface $jobIndexService
+     * @param JobRepositoryInterface $jobRepositoryRemote
+     * @param JobRepositoryInterface $jobRepositoryLocal
+     * @param JobComparisonInterface $jobComparisonBusinessCase
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        JobIndexServiceInterface $oJobIndexService,
-        JobRepositoryInterface $oJobRepositoryRemote,
-        JobRepositoryInterface $oJobRepositoryLocal,
-        JobComparisonInterface $oJobComparisonBusinessCase,
-        LoggerInterface $oLogger
+        JobIndexServiceInterface $jobIndexService,
+        JobRepositoryInterface $jobRepositoryRemote,
+        JobRepositoryInterface $jobRepositoryLocal,
+        JobComparisonInterface $jobComparisonBusinessCase,
+        LoggerInterface $logger
     ) {
-        $this->oJobIndexService = $oJobIndexService;
-        $this->oLogger = $oLogger;
-        $this->oJobComparisonBusinessCase = $oJobComparisonBusinessCase;
-        $this->oJobRepositoryRemote = $oJobRepositoryRemote;
-        $this->oJobRepositoryLocal = $oJobRepositoryLocal;
+        $this->jobIndexService = $jobIndexService;
+        $this->logger = $logger;
+        $this->jobComparisonBusinessCase = $jobComparisonBusinessCase;
+        $this->jobRepositoryRemote = $jobRepositoryRemote;
+        $this->jobRepositoryLocal = $jobRepositoryLocal;
     }
 
     /**
@@ -45,105 +45,105 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
      */
     public function storeIndexedJobs()
     {
-        $_aRemoteMissingApps = $this->oJobComparisonBusinessCase->getRemoteMissingJobs();
-        foreach ($_aRemoteMissingApps as $_sAppId) {
-            $this->addRemoteMissingApp($_sAppId);
+        $remoteMissingApps = $this->jobComparisonBusinessCase->getRemoteMissingJobs();
+        foreach ($remoteMissingApps as $appId) {
+            $this->addRemoteMissingApp($appId);
         }
 
-        $_aLocalMissingApps = $this->oJobComparisonBusinessCase->getLocalMissingJobs();
-        foreach ($_aLocalMissingApps as $_sAppId) {
-            $this->removeLocalMissingAppInRemote($_sAppId);
+        $localMissingApps = $this->jobComparisonBusinessCase->getLocalMissingJobs();
+        foreach ($localMissingApps as $appId) {
+            $this->removeLocalMissingAppInRemote($appId);
         }
-        $_aLocalUpdates = $this->oJobComparisonBusinessCase->getLocalJobUpdates();
-        foreach ($_aLocalUpdates as $_sAppId) {
-            $this->updateAppInRemote($_sAppId);
+        $localUpdates = $this->jobComparisonBusinessCase->getLocalJobUpdates();
+        foreach ($localUpdates as $appId) {
+            $this->updateAppInRemote($appId);
         }
     }
 
     /**
-     * @param string $sAppId
+     * @param string $appId
      * @return bool
      */
-    private function addRemoteMissingApp($sAppId)
+    private function addRemoteMissingApp($appId)
     {
-        if ($this->oJobIndexService->isJobInIndex($sAppId)) {
-            /** @var MarathonAppEntity $_oJobEntityLocal */
-            $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sAppId);
+        if ($this->jobIndexService->isJobInIndex($appId)) {
+            /** @var MarathonAppEntity $jobEntityLocal */
+            $jobEntityLocal = $this->jobRepositoryLocal->getJob($appId);
 
-            if (!$_oJobEntityLocal instanceof MarathonAppEntity) {
+            if (!$jobEntityLocal instanceof MarathonAppEntity) {
                 throw new \RuntimeException('Encountered entity that is not MarathonAppEntity');
             }
 
             // check if dependency is satisfied
-            if ($_oJobEntityLocal->isDependencyJob()) {
+            if ($jobEntityLocal->isDependencyJob()) {
                 try {
-                    $circular = $this->isDependencyCircular($_oJobEntityLocal, count($_oJobEntityLocal->dependencies));
+                    $circular = $this->isDependencyCircular($jobEntityLocal, count($jobEntityLocal->dependencies));
                     if ($circular) {
-                        $this->oLogger->error(sprintf(
+                        $this->logger->error(sprintf(
                             'The dependency for %s is circular. Please fix them.',
-                            $sAppId
+                            $appId
                         ));
                         return false;
                     }
-                } catch (\Exception $e) {
-                    $this->oLogger->error(sprintf(
+                } catch (\Exception $exception) {
+                    $this->logger->error(sprintf(
                         'Job %s cannot be added to remote : %s',
-                        $sAppId,
-                        $e->getMessage()
+                        $appId,
+                        $exception->getMessage()
                     ));
                     return false;
                 }
 
 
-                foreach ($_oJobEntityLocal->dependencies as $_sDependencyKey) {
-                    $_bAdded = $this->addRemoteMissingApp($_sDependencyKey);
+                foreach ($jobEntityLocal->dependencies as $dependencyKey) {
+                    $wasAdded = $this->addRemoteMissingApp($dependencyKey);
 
-                    if (!$_bAdded) {
-                        $this->oLogger->error(sprintf(
+                    if (!$wasAdded) {
+                        $this->logger->error(sprintf(
                             'Job "%s" is dependent on "%s" which is missing. Please add them and try again.',
-                            $sAppId,
-                            $_sDependencyKey
+                            $appId,
+                            $dependencyKey
                         ));
-                        $this->oJobIndexService->removeJob($_sDependencyKey);
+                        $this->jobIndexService->removeJob($dependencyKey);
                         return false;
                     }
                 }
             }
 
-            if ($this->oJobRepositoryRemote->addJob($_oJobEntityLocal)) {
-                $this->oJobIndexService->removeJob($_oJobEntityLocal->getKey());
-                $this->oLogger->notice(sprintf(
+            if ($this->jobRepositoryRemote->addJob($jobEntityLocal)) {
+                $this->jobIndexService->removeJob($jobEntityLocal->getKey());
+                $this->logger->notice(sprintf(
                     'Job "%s" successfully added to marathon',
-                    $_oJobEntityLocal->getKey()
+                    $jobEntityLocal->getKey()
                 ));
 
                 return true;
             }
-            $this->oLogger->error(sprintf(
+            $this->logger->error(sprintf(
                 'Failed to add job "%s" to marathon',
-                $_oJobEntityLocal->getKey()
+                $jobEntityLocal->getKey()
             ));
         }
         return false;
     }
 
     /**
-     * @param array $arr
+     * @param array $array
      * @return bool
      */
-    private function hasDuplicates($arr)
+    private function hasDuplicates($array)
     {
-        return !(count($arr) == count(array_unique($arr)));
+        return !(count($array) == count(array_unique($array)));
     }
 
     /**
-     * @param MarathonAppEntity $oEntity
-     * @param int $iImmediateChildren
+     * @param MarathonAppEntity $entity
+     * @param int $immediateChildren
      * @param array $path
      * @return bool
      * @throws \Exception
      */
-    private function isDependencyCircular(MarathonAppEntity $oEntity, $iImmediateChildren, &$path = [])
+    private function isDependencyCircular(MarathonAppEntity $entity, $immediateChildren, &$path = [])
     {
         // Invariant: path will not have duplicates for acyclic dependency tree
         if ($this->hasDuplicates($path)) {
@@ -157,29 +157,29 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
         //                      |-> C
         // When we reach node D, path will be [A, B, D]
         // so we pop off D so that the next append will properly show [A, B, C] (legit path)
-        if (empty($oEntity->dependencies)) {
+        if (empty($entity->dependencies)) {
             array_pop($path);
             return false;
         }
 
-        foreach ($oEntity->dependencies as $_sDependency) {
+        foreach ($entity->dependencies as $dependency) {
             // add this key in path as we will explore its child now
-            $path[] = $oEntity->getKey();
+            $path[] = $entity->getKey();
 
-            /** @var MarathonAppEntity $_oDependEntity */
-            $_oDependEntity = $this->oJobRepositoryLocal->getJob($_sDependency);
+            /** @var MarathonAppEntity $dependEntity */
+            $dependEntity = $this->jobRepositoryLocal->getJob($dependency);
 
-            if (!$_oDependEntity) {
-                throw new \Exception(sprintf('Dependency chain on non-existing app "%s"', $_sDependency));
+            if (!$dependEntity) {
+                throw new \Exception(sprintf('Dependency chain on non-existing app "%s"', $dependency));
             }
 
-            if (!$_oDependEntity instanceof MarathonAppEntity) {
+            if (!$dependEntity instanceof MarathonAppEntity) {
                 throw new \RuntimeException('Expected MarathonAppEntity. Found something else');
             }
 
 
             // check if dependency has cycle
-            if ($this->isDependencyCircular($_oDependEntity, count($_oDependEntity->dependencies), $path)) {
+            if ($this->isDependencyCircular($dependEntity, count($dependEntity->dependencies), $path)) {
                 return true;
             }
 
@@ -191,8 +191,8 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
             // for B intermediate Child will be 2.
             // when we process D, it will be reduced to 1 and with C to 0
             // then we will pop B to generate path [A, E] when we reach E.
-            $iImmediateChildren--;
-            if ($iImmediateChildren == 0) {
+            $immediateChildren--;
+            if ($immediateChildren == 0) {
                 array_pop($path);
             }
         }
@@ -201,53 +201,53 @@ class MarathonStoreJobBusinessCase extends AbstractStoreJobBusinessCase implemen
     }
 
     /**
-     * @param string $sAppId
+     * @param string $appId
      * @return bool
      */
-    private function removeLocalMissingAppInRemote($sAppId)
+    private function removeLocalMissingAppInRemote($appId)
     {
-        if ($this->oJobIndexService->isJobInIndex($sAppId)) {
-            if ($this->oJobRepositoryRemote->removeJob($sAppId)) {
-                $this->oJobIndexService->removeJob($sAppId);
-                $this->oLogger->notice(sprintf(
+        if ($this->jobIndexService->isJobInIndex($appId)) {
+            if ($this->jobRepositoryRemote->removeJob($appId)) {
+                $this->jobIndexService->removeJob($appId);
+                $this->logger->notice(sprintf(
                     'Job "%s" successfully removed from marathon',
-                    $sAppId
+                    $appId
                 ));
 
                 return true;
             }
-            $this->oLogger->error(sprintf(
+            $this->logger->error(sprintf(
                 'Failed to remove"%s" from marathon',
-                $sAppId
+                $appId
             ));
         }
         return false;
     }
 
     /**
-     * @param string $sAppId
+     * @param string $appId
      * @return bool
      */
-    private function updateAppInRemote($sAppId)
+    private function updateAppInRemote($appId)
     {
-        if ($this->oJobIndexService->isJobInIndex($sAppId)) {
-            $_oUpdatedConfig = $this->oJobRepositoryLocal->getJob($sAppId);
-            $_bAddedBack = $this->oJobRepositoryRemote->updateJob($_oUpdatedConfig);
+        if ($this->jobIndexService->isJobInIndex($appId)) {
+            $updatedConfig = $this->jobRepositoryLocal->getJob($appId);
+            $wasAddedBack = $this->jobRepositoryRemote->updateJob($updatedConfig);
 
             // updated
-            if ($_bAddedBack) {
-                $this->oJobIndexService->removeJob($sAppId);
-                $this->oLogger->notice(sprintf(
+            if ($wasAddedBack) {
+                $this->jobIndexService->removeJob($appId);
+                $this->logger->notice(sprintf(
                     'Job "%s" successfully updated in marathon',
-                    $sAppId
+                    $appId
                 ));
 
                 return true;
             }
 
-            $this->oLogger->error(sprintf(
+            $this->logger->error(sprintf(
                 'Failed to update job "%s" in marathon',
-                $sAppId
+                $appId
             ));
         }
 

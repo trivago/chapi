@@ -17,8 +17,8 @@ interface JobStatsServiceInterface
     const DIC_NAME = 'JobStatsServiceInterface';
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return JobStatsEntity
      */
-    public function getJobStats($sJobName);
+    public function getJobStats($jobName);
 }

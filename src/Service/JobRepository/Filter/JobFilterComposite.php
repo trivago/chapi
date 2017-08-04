@@ -16,25 +16,25 @@ class JobFilterComposite implements JobFilterInterface
     /**
      * @var JobFilterInterface[]
      */
-    private $aFilter = [];
+    private $filters = [];
 
     /**
      * JobFilterComposite constructor.
-     * @param JobFilterInterface[] $aFilter
+     * @param JobFilterInterface[] $filters
      */
-    public function __construct($aFilter)
+    public function __construct($filters)
     {
-        $this->aFilter = $aFilter;
+        $this->filters = $filters;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function isInteresting(JobEntityInterface $oJobEntity)
+    public function isInteresting(JobEntityInterface $jobEntity)
     {
-        foreach ($this->aFilter as $oFilter) {
-            if (!$oFilter->isInteresting($oJobEntity)) {
+        foreach ($this->filters as $filter) {
+            if (!$filter->isInteresting($jobEntity)) {
                 return false;
             }
         }

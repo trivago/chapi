@@ -15,36 +15,36 @@ class DiffCompare implements DiffCompareInterface
     /**
      * @var Diff
      */
-    private static $oCompare;
+    private static $compare;
 
     /**
-     * @param mixed $mValueA
-     * @param mixed $mValueB
+     * @param mixed $valueA
+     * @param mixed $valueB
      * @return string
      */
-    public function compare($mValueA, $mValueB)
+    public function compare($valueA, $valueB)
     {
-        $_oCompare = self::getCompare();
+        $compare = self::getCompare();
 
-        $_oDiff = $_oCompare::compare(
-            $this->valueToString($mValueA),
-            $this->valueToString($mValueB)
+        $diff = $compare::compare(
+            $this->valueToString($valueA),
+            $this->valueToString($valueB)
         );
 
-        return trim($_oCompare::toString($_oDiff));
+        return trim($compare::toString($diff));
     }
 
     /**
-     * @param mixed $mValue
+     * @param mixed $value
      * @return string
      */
-    private function valueToString($mValue)
+    private function valueToString($value)
     {
-        if (is_array($mValue) || is_object($mValue)) {
-            return trim(json_encode($mValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        if (is_array($value) || is_object($value)) {
+            return trim(json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
 
-        return trim((string) $mValue);
+        return trim((string) $value);
     }
 
     /**
@@ -52,10 +52,10 @@ class DiffCompare implements DiffCompareInterface
      */
     private static function getCompare()
     {
-        if (is_null(self::$oCompare)) {
-            self::$oCompare = new Diff();
+        if (is_null(self::$compare)) {
+            self::$compare = new Diff();
         }
 
-        return self::$oCompare;
+        return self::$compare;
     }
 }

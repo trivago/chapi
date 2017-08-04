@@ -21,10 +21,10 @@ interface JobRepositoryInterface
     const DIC_NAME_MARATHON = 'JobRepositoryMarathon';
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return JobEntityInterface
      */
-    public function getJob($sJobName);
+    public function getJob($jobName);
 
     /**
      * @return JobCollection
@@ -32,26 +32,26 @@ interface JobRepositoryInterface
     public function getJobs();
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    public function hasJob($sJobName);
+    public function hasJob($jobName);
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function addJob(JobEntityInterface $oJobEntity);
+    public function addJob(JobEntityInterface $jobEntity);
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function updateJob(JobEntityInterface $oJobEntity);
+    public function updateJob(JobEntityInterface $jobEntity);
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    public function removeJob($sJobName);
+    public function removeJob($jobName);
 }

@@ -15,11 +15,11 @@ use Chapi\Entity\JobEntityInterface;
 interface PropertyValidatorInterface
 {
     /**
-     * @param string $sProperty
-     * @param JobEntityInterface $oJobEntity
+     * @param string $property
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity);
+    public function isValid($property, JobEntityInterface $jobEntity);
 
     /**
      * @return string

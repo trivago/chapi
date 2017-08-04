@@ -26,7 +26,7 @@ class ValidatorFactory implements ValidatorFactoryInterface
     /**
      * @var string[]
      */
-    private static $aValidatorMap = [
+    private static $validatorMap = [
         self::NOT_EMPTY_VALIDATOR => NotEmpty::DIC_NAME,
         self::NAME_VALIDATOR => JobName::DIC_NAME,
         self::EPSILON_VALIDATOR => Epsilon::DIC_NAME,
@@ -42,7 +42,7 @@ class ValidatorFactory implements ValidatorFactoryInterface
     /**
      * @var ContainerInterface
      */
-    private $oServiceContainer;
+    private $serviceContainer;
 
     /**
      * ValidatorFactory constructor.
@@ -50,19 +50,19 @@ class ValidatorFactory implements ValidatorFactoryInterface
      */
     public function __construct(ContainerInterface $oServiceContainer)
     {
-        $this->oServiceContainer = $oServiceContainer;
+        $this->serviceContainer = $oServiceContainer;
     }
 
     /**
-     * @param int $iValidator
+     * @param int $validator
      * @return PropertyValidatorInterface
      */
-    public function getValidator($iValidator)
+    public function getValidator($validator)
     {
-        if (!isset(self::$aValidatorMap[$iValidator])) {
-            throw new \InvalidArgumentException(sprintf('Unknown validator type "%s"', $iValidator));
+        if (!isset(self::$validatorMap[$validator])) {
+            throw new \InvalidArgumentException(sprintf('Unknown validator type "%s"', $validator));
         }
         
-        return $this->oServiceContainer->get(self::$aValidatorMap[$iValidator]);
+        return $this->serviceContainer->get(self::$validatorMap[$validator]);
     }
 }

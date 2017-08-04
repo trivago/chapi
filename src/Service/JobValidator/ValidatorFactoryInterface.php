@@ -24,8 +24,8 @@ interface ValidatorFactoryInterface
     const COMMAND_VALIDATOR = 512;
 
     /**
-     * @param $iValidator
+     * @param $validator
      * @return PropertyValidatorInterface
      */
-    public function getValidator($iValidator);
+    public function getValidator($validator);
 }

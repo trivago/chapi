@@ -23,48 +23,48 @@ class Schedule extends AbstractPropertyValidator implements PropertyValidatorInt
     /**
      * @var DatePeriodFactoryInterface
      */
-    private $oDatePeriodFactory;
+    private $datePeriodFactory;
 
     /**
      * Epsilon constructor.
-     * @param DatePeriodFactoryInterface $oDatePeriodFactory
+     * @param DatePeriodFactoryInterface $datePeriodFactory
      */
-    public function __construct(DatePeriodFactoryInterface $oDatePeriodFactory)
+    public function __construct(DatePeriodFactoryInterface $datePeriodFactory)
     {
-        $this->oDatePeriodFactory = $oDatePeriodFactory;
+        $this->datePeriodFactory = $datePeriodFactory;
     }
     
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            $this->isSchedulePropertyValid($oJobEntity),
-            $sProperty,
+            $this->isSchedulePropertyValid($jobEntity),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    private function isSchedulePropertyValid(JobEntityInterface $oJobEntity)
+    private function isSchedulePropertyValid(JobEntityInterface $jobEntity)
     {
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$jobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Required ChronosJobEntity. Something else found.');
         }
 
-        if (empty($oJobEntity->schedule) && !empty($oJobEntity->parents)) {
+        if (empty($jobEntity->schedule) && !empty($jobEntity->parents)) {
             return true;
         }
 
-        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents)) {
+        if (!empty($jobEntity->schedule) && empty($jobEntity->parents)) {
             try {
-                $_oDataPeriod = $this->oDatePeriodFactory->createDatePeriod($oJobEntity->schedule, $oJobEntity->scheduleTimeZone);
-                return (false !== $_oDataPeriod);
-            } catch (\Exception $oException) {
+                $datePeriod = $this->datePeriodFactory->createDatePeriod($jobEntity->schedule, $jobEntity->scheduleTimeZone);
+                return (false !== $datePeriod);
+            } catch (\Exception $exception) {
                 // invalid: Iso8601 is not valid and/or DatePeriodFactory is able to create a valid DatePeriod
             }
         }

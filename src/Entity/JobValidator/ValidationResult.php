@@ -14,30 +14,30 @@ class ValidationResult
     /**
      * @var string
      */
-    public $sPropertyName = '';
+    public $propertyName = '';
 
     /**
      * @var bool
      */
-    public $bIsValid = false;
+    public $isValid = false;
 
     /**
      * @var string
      */
-    public $sErrorMessage = '';
+    public $errorMessage = '';
 
     /**
      * ValidationResult constructor.
-     * @param string $sPropertyName
-     * @param boolean $bIsValid
-     * @param string $sErrorMessage
+     * @param string $propertyName
+     * @param boolean $isValid
+     * @param string $errorMessage
      */
-    public function __construct($sPropertyName, $bIsValid, $sErrorMessage)
+    public function __construct($propertyName, $isValid, $errorMessage)
     {
-        $this->sPropertyName = $sPropertyName;
-        $this->bIsValid = $bIsValid;
-        if (!$bIsValid) {
-            $this->sErrorMessage = $sErrorMessage;
+        $this->propertyName = $propertyName;
+        $this->isValid = $isValid;
+        if (!$isValid) {
+            $this->errorMessage = $errorMessage;
         }
     }
 }

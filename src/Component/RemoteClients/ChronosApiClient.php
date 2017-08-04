@@ -23,15 +23,15 @@ class ChronosApiClient implements ApiClientInterface
     /**
      * @var HttpClientInterface
      */
-    private $oHttpClient;
+    private $httpClient;
 
     /**
-     * @param HttpClientInterface $oHttpClient
+     * @param HttpClientInterface $httpClient
      */
     public function __construct(
-        HttpClientInterface $oHttpClient
+        HttpClientInterface $httpClient
     ) {
-        $this->oHttpClient = $oHttpClient;
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -44,69 +44,69 @@ class ChronosApiClient implements ApiClientInterface
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      * @throws ApiClientException
      */
-    public function addingJob(JobEntityInterface $oJobEntity)
+    public function addingJob(JobEntityInterface $jobEntity)
     {
-        $_sTargetUrl = '';
+        $targetUrl = '';
 
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$jobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Expected ChronosJobEntity.');
         }
 
-        if (!empty($oJobEntity->schedule) && empty($oJobEntity->parents)) {
-            $_sTargetUrl = '/scheduler/iso8601';
-        } elseif (empty($oJobEntity->schedule) && !empty($oJobEntity->parents)) {
-            $_sTargetUrl = '/scheduler/dependency';
+        if (!empty($jobEntity->schedule) && empty($jobEntity->parents)) {
+            $targetUrl = '/scheduler/iso8601';
+        } elseif (empty($jobEntity->schedule) && !empty($jobEntity->parents)) {
+            $targetUrl = '/scheduler/dependency';
         }
 
-        if (empty($_sTargetUrl)) {
+        if (empty($targetUrl)) {
             throw new ApiClientException('No scheduler or dependency found. Can\'t get right target url.');
         }
 
-        $_oResponse = $this->oHttpClient->postJsonData($_sTargetUrl, $oJobEntity);
-        return ($_oResponse->getStatusCode() == 204);
+        $response = $this->httpClient->postJsonData($targetUrl, $jobEntity);
+        return ($response->getStatusCode() == 204);
     }
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $jobEntity
      * @return bool
      * @throws ApiClientException
      */
-    public function updatingJob(JobEntityInterface $oJobEntity)
+    public function updatingJob(JobEntityInterface $jobEntity)
     {
-        return $this->addingJob($oJobEntity);
+        return $this->addingJob($jobEntity);
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    public function removeJob($sJobName)
+    public function removeJob($jobName)
     {
-        $_oResponse = $this->oHttpClient->delete('/scheduler/job/' . $sJobName);
-        return ($_oResponse->getStatusCode() == 204);
+        $response = $this->httpClient->delete('/scheduler/job/' . $jobName);
+        return ($response->getStatusCode() == 204);
     }
 
     /**
      * @inheritdoc
      */
-    public function getJobStats($sJobName)
+    public function getJobStats($jobName)
     {
-        return $this->sendGetJsonRequest('/scheduler/job/stat/' . $sJobName);
+        return $this->sendGetJsonRequest('/scheduler/job/stat/' . $jobName);
     }
 
     /**
-     * @param string $sUrl
+     * @param string $url
      * @return array
      */
-    private function sendGetJsonRequest($sUrl)
+    private function sendGetJsonRequest($url)
     {
-        $_oResponse = $this->oHttpClient->get($sUrl);
-        if (200 == $_oResponse->getStatusCode()) {
-            return $_oResponse->json();
+        $response = $this->httpClient->get($url);
+        if (200 == $response->getStatusCode()) {
+            return $response->json();
         }
 
         return [];
@@ -119,10 +119,10 @@ class ChronosApiClient implements ApiClientInterface
     public function ping()
     {
         try {
-            $this->oHttpClient->get('/scheduler/jobs');
-        } catch (HttpConnectionException $e) {
-            if ($e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
-                $e->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
+            $this->httpClient->get('/scheduler/jobs');
+        } catch (HttpConnectionException $exception) {
+            if ($exception->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
+                $exception->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
             ) {
                 return false;
             }

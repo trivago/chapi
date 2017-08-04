@@ -16,57 +16,57 @@ class DoctrineCache implements CacheInterface
     /**
      * @var Cache
      */
-    private $oDoctrineCache;
+    private $doctrineCache;
 
     /**
      * @var string
      */
-    private $sCachePrefix = '';
+    private $cachePrefix = '';
 
     /**
-     * @param Cache $oDoctrineCache
+     * @param Cache $doctrineCache
      */
     public function __construct(
-        Cache $oDoctrineCache,
-        $sCachePrefix
+        Cache $doctrineCache,
+        $cachePrefix
     ) {
-        $this->oDoctrineCache = $oDoctrineCache;
-        $this->sCachePrefix = substr(
-            md5($sCachePrefix),
+        $this->doctrineCache = $doctrineCache;
+        $this->cachePrefix = substr(
+            md5($cachePrefix),
             0,
             6
         ) . '.';
     }
 
     /**
-     * @param string $sKey
-     * @param mixed $mValue
-     * @param int $iTTL
+     * @param string $key
+     * @param mixed $value
+     * @param int $ttl
      * @return bool
      */
-    public function set($sKey, $mValue, $iTTL = 0)
+    public function set($key, $value, $ttl = 0)
     {
-        return $this->oDoctrineCache->save($this->sCachePrefix . $sKey, $mValue, $iTTL);
+        return $this->doctrineCache->save($this->cachePrefix . $key, $value, $ttl);
     }
 
     /**
-     * @param string $sKey
+     * @param string $key
      * @return mixed|null
      */
-    public function get($sKey)
+    public function get($key)
     {
-        return ($this->oDoctrineCache->contains($this->sCachePrefix . $sKey))
-            ? $this->oDoctrineCache->fetch($this->sCachePrefix . $sKey)
+        return ($this->doctrineCache->contains($this->cachePrefix . $key))
+            ? $this->doctrineCache->fetch($this->cachePrefix . $key)
             : null
         ;
     }
 
     /**
-     * @param string $sKey
+     * @param string $key
      * @return bool
      */
-    public function delete($sKey)
+    public function delete($key)
     {
-        return $this->oDoctrineCache->delete($this->sCachePrefix . $sKey);
+        return $this->doctrineCache->delete($this->cachePrefix . $key);
     }
 }

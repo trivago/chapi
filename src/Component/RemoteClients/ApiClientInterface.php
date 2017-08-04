@@ -28,28 +28,28 @@ interface ApiClientInterface
     public function listingJobs();
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $jobEntity
      * @return bool
      */
-    public function addingJob(JobEntityInterface $oJobEntity);
+    public function addingJob(JobEntityInterface $jobEntity);
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $jobEntity
      * @return bool
      */
-    public function updatingJob(JobEntityInterface $oJobEntity);
+    public function updatingJob(JobEntityInterface $jobEntity);
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    public function removeJob($sJobName);
+    public function removeJob($jobName);
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return array
      */
-    public function getJobStats($sJobName);
+    public function getJobStats($jobName);
 
     /**
      * Returns true if the client can be connected to.

@@ -22,7 +22,7 @@ class ValidationCommand extends AbstractCommand
     /**
      * @var array[]
      */
-    private $aInvalidJobs = [];
+    private $invalidJobs = [];
 
     /**
      * Configures the current command.
@@ -41,80 +41,80 @@ class ValidationCommand extends AbstractCommand
      */
     protected function process()
     {
-        $_aJobNames = JobUtils::getJobNames($this->oInput, $this);
-        $_aJobsToValidate = (JobUtils::isWildcard($_aJobNames))
+        $jobNames = JobUtils::getJobNames($this->input, $this);
+        $jobsToValidate = (JobUtils::isWildcard($jobNames))
             ? $this->getLocalJobs()
-            : $_aJobNames
+            : $jobNames
         ;
 
-        if ($this->hasInvalidJobs($_aJobsToValidate)) {
-            $this->oOutput->writeln("<comment>Found invalid jobs:</comment>\n");
+        if ($this->hasInvalidJobs($jobsToValidate)) {
+            $this->output->writeln("<comment>Found invalid jobs:</comment>\n");
 
-            foreach ($this->getInvalidJobsByJobNames($_aJobsToValidate) as $_sJobName => $_aInvalidProperties) {
-                $this->printInvalidJobProperties($_sJobName, $_aInvalidProperties);
+            foreach ($this->getInvalidJobsByJobNames($jobsToValidate) as $jobName => $invalidProperties) {
+                $this->printInvalidJobProperties($jobName, $invalidProperties);
             }
 
             return 1;
         }
 
         //else
-        $this->oOutput->writeln('<info>All checked jobs look valid</info>');
+        $this->output->writeln('<info>All checked jobs look valid</info>');
         return 0;
     }
 
     /**
-     * @param string[] $aJobs
+     * @param string[] $jobs
      * @return bool
      */
-    private function hasInvalidJobs(array $aJobs)
+    private function hasInvalidJobs(array $jobs)
     {
-        $_aInvalidJobs = $this->getInvalidJobsByJobNames($aJobs);
-        return (count($_aInvalidJobs) > 0);
+        $invalidJobs = $this->getInvalidJobsByJobNames($jobs);
+        return (count($invalidJobs) > 0);
     }
 
     /**
-     * @param array $aJobs
+     * @param array $jobs
      * @return array
      */
-    private function getInvalidJobsByJobNames(array $aJobs)
+    private function getInvalidJobsByJobNames(array $jobs)
     {
-        $_sKey = md5(implode('.', $aJobs));
+        $key = md5(implode('.', $jobs));
 
-        if (isset($this->aInvalidJobs[$_sKey])) {
-            return $this->aInvalidJobs[$_sKey];
+        if (isset($this->invalidJobs[$key])) {
+            return $this->invalidJobs[$key];
         }
 
-        $_aInvalidJobs = [];
+        $invalidJobs = [];
 
-        /** @var JobValidatorServiceInterface $_oJobEntityValidationService */
-        $_oJobEntityValidationService = $this->getContainer()->get(JobValidatorServiceInterface::DIC_NAME);
+        /** @var JobValidatorServiceInterface $jobEntityValidationService */
+        $jobEntityValidationService = $this->getContainer()->get(JobValidatorServiceInterface::DIC_NAME);
 
-        /** @var JobRepositoryInterface  $_oJobRepositoryLocale */
-        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
+        /** @var JobRepositoryInterface  $jobRepositoryLocal */
+        $jobRepositoryLocal = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
 
-        foreach ($aJobs as $_sJobName) {
-            $_oJobEntity = $_oJobRepositoryLocale->getJob($_sJobName);
+        foreach ($jobs as $jobName) {
+            $jobEntity = $jobRepositoryLocal->getJob($jobName);
 
-            if (false === $_oJobEntityValidationService->isEntityValid($_oJobEntity)) {
-                $_aInvalidJobs[$_sJobName] = $_oJobEntityValidationService->getInvalidProperties($_oJobEntity);
+            if (false === $jobEntityValidationService->isEntityValid($jobEntity)) {
+                $invalidJobs[$jobName] = $jobEntityValidationService->getInvalidProperties($jobEntity);
             }
         }
 
-        return $this->aInvalidJobs[$_sKey] = $_aInvalidJobs;
+        return $this->invalidJobs[$key] = $invalidJobs;
     }
 
     /**
-     * @param string $sJobName
-     * @param string[] $aInvalidProperties
+     * @param string $jobName
+     * @param string[] $invalidProperties
      */
-    private function printInvalidJobProperties($sJobName, array $aInvalidProperties)
+    private function printInvalidJobProperties($jobName, array $invalidProperties)
     {
-        $_sFormatJobName = "\t<fg=red>%s:</>";
-        $_sFormatErrMsg = "\t\t<fg=red>%s</>";
+        $formatJobName = "\t<fg=red>%s:</>";
+        $formatErrorMessage = "\t\t<fg=red>%s</>";
 
-        $this->oOutput->writeln(sprintf($_sFormatJobName, $sJobName));
-        foreach ($aInvalidProperties as $_sErrorMessage) {
-            $this->oOutput->writeln(sprintf($_sFormatErrMsg, $_sErrorMessage));
+        $this->output->writeln(sprintf($formatJobName, $jobName));
+        foreach ($invalidProperties as $errorMessage) {
+            $this->output->writeln(sprintf($formatErrorMessage, $errorMessage));
         }
     }
 
@@ -123,16 +123,16 @@ class ValidationCommand extends AbstractCommand
      */
     private function getLocalJobs()
     {
-        $_aJobNames = [];
+        $jobNames = [];
 
-        /** @var JobRepositoryInterface  $_oJobRepositoryLocale */
-        $_oJobRepositoryLocale = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
+        /** @var JobRepositoryInterface  $jobRepositoryLocal */
+        $jobRepositoryLocal = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS);
 
-        /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($_oJobRepositoryLocale->getJobs() as $_oJobEntity) {
-            $_aJobNames[] = $_oJobEntity->name;
+        /** @var ChronosJobEntity $jobEntity */
+        foreach ($jobRepositoryLocal->getJobs() as $jobEntity) {
+            $jobNames[] = $jobEntity->name;
         }
 
-        return $_aJobNames;
+        return $jobNames;
     }
 }

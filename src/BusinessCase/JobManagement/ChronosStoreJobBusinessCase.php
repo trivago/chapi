@@ -22,23 +22,30 @@ class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implement
     /**
      * @var JobDependencyServiceInterface
      */
-    private $oJobDependencyService;
+    private $jobDependencyService;
 
-
+    /**
+     * @param JobIndexServiceInterface $jobIndexService
+     * @param JobRepositoryInterface $jobRepositoryRemote
+     * @param JobRepositoryInterface $jobRepositoryLocal
+     * @param JobComparisonInterface $jobComparisonBusinessCase
+     * @param JobDependencyServiceInterface $jobDependencyService
+     * @param LoggerInterface $logger
+     */
     public function __construct(
-        JobIndexServiceInterface $oJobIndexService,
-        JobRepositoryInterface $oJobRepositoryRemote,
-        JobRepositoryInterface $oJobRepositoryLocal,
-        JobComparisonInterface  $oJobComparisonBusinessCase,
-        JobDependencyServiceInterface $oJobDependencyService,
-        LoggerInterface $oLogger
+        JobIndexServiceInterface $jobIndexService,
+        JobRepositoryInterface $jobRepositoryRemote,
+        JobRepositoryInterface $jobRepositoryLocal,
+        JobComparisonInterface  $jobComparisonBusinessCase,
+        JobDependencyServiceInterface $jobDependencyService,
+        LoggerInterface $logger
     ) {
-        $this->oJobIndexService = $oJobIndexService;
-        $this->oJobRepositoryRemote = $oJobRepositoryRemote;
-        $this->oJobRepositoryLocal = $oJobRepositoryLocal;
-        $this->oJobComparisonBusinessCase = $oJobComparisonBusinessCase;
-        $this->oJobDependencyService = $oJobDependencyService;
-        $this->oLogger = $oLogger;
+        $this->jobIndexService = $jobIndexService;
+        $this->jobRepositoryRemote = $jobRepositoryRemote;
+        $this->jobRepositoryLocal = $jobRepositoryLocal;
+        $this->jobComparisonBusinessCase = $jobComparisonBusinessCase;
+        $this->jobDependencyService = $jobDependencyService;
+        $this->logger = $logger;
     }
 
     /**
@@ -47,50 +54,50 @@ class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implement
     public function storeIndexedJobs()
     {
         // add new jobs to chronos
-        $_aNewJobs = $this->oJobComparisonBusinessCase->getRemoteMissingJobs();
-        foreach ($_aNewJobs as $_sJobName) {
-            $this->hasAddedJob($_sJobName);
+        $newJobs = $this->jobComparisonBusinessCase->getRemoteMissingJobs();
+        foreach ($newJobs as $jobName) {
+            $this->hasAddedJob($jobName);
         }
 
         // delete missing jobs from chronos
-        $_aMissingJobs = $this->oJobComparisonBusinessCase->getLocalMissingJobs();
-        foreach ($_aMissingJobs as $_sJobName) {
-            $this->hasRemovedJob($_sJobName);
+        $missingJobs = $this->jobComparisonBusinessCase->getLocalMissingJobs();
+        foreach ($missingJobs as $jobName) {
+            $this->hasRemovedJob($jobName);
         }
 
         // update jobs on chronos
-        $_aLocalJobUpdates = $this->oJobComparisonBusinessCase->getLocalJobUpdates();
-        foreach ($_aLocalJobUpdates as $_sJobName) {
-            $this->hasUpdatedJob($_sJobName);
+        $localJobUpdates = $this->jobComparisonBusinessCase->getLocalJobUpdates();
+        foreach ($localJobUpdates as $jobName) {
+            $this->hasUpdatedJob($jobName);
         }
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    private function hasAddedJob($sJobName)
+    private function hasAddedJob($jobName)
     {
-        $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
+        $jobEntityLocal = $this->jobRepositoryLocal->getJob($jobName);
 
-        if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
+        if (!$jobEntityLocal instanceof ChronosJobEntity) {
             throw new \RuntimeException('Expected ChronosJobEntity. Received something else.');
         }
 
-        if ($this->isAbleToStoreEntity($_oJobEntityLocal)) {
-            if ($this->oJobRepositoryRemote->addJob($_oJobEntityLocal)) {
-                $this->oJobIndexService->removeJob($_oJobEntityLocal->getKey());
-                $this->oLogger->notice(sprintf(
+        if ($this->isAbleToStoreEntity($jobEntityLocal)) {
+            if ($this->jobRepositoryRemote->addJob($jobEntityLocal)) {
+                $this->jobIndexService->removeJob($jobEntityLocal->getKey());
+                $this->logger->notice(sprintf(
                     'Job "%s" successfully added to chronos',
-                    $_oJobEntityLocal->getKey()
+                    $jobEntityLocal->getKey()
                 ));
 
                 return true;
             }
 
-            $this->oLogger->error(sprintf(
+            $this->logger->error(sprintf(
                 'Failed to add job "%s" to chronos',
-                $_oJobEntityLocal->getKey()
+                $jobEntityLocal->getKey()
             ));
         }
 
@@ -98,25 +105,25 @@ class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implement
     }
 
     /**
-     * @param $sJobName
+     * @param $jobName
      * @return bool
      */
-    private function hasRemovedJob($sJobName)
+    private function hasRemovedJob($jobName)
     {
-        if ($this->isAbleToDeleteJob($sJobName)) {
-            if ($this->oJobRepositoryRemote->removeJob($sJobName)) {
-                $this->oJobIndexService->removeJob($sJobName);
-                $this->oLogger->notice(sprintf(
+        if ($this->isAbleToDeleteJob($jobName)) {
+            if ($this->jobRepositoryRemote->removeJob($jobName)) {
+                $this->jobIndexService->removeJob($jobName);
+                $this->logger->notice(sprintf(
                     'Job "%s" successfully removed from chronos',
-                    $sJobName
+                    $jobName
                 ));
 
                 return true;
             }
 
-            $this->oLogger->error(sprintf(
+            $this->logger->error(sprintf(
                 'Failed to remove job "%s" from chronos',
-                $sJobName
+                $jobName
             ));
         }
 
@@ -124,45 +131,45 @@ class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implement
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    private function hasUpdatedJob($sJobName)
+    private function hasUpdatedJob($jobName)
     {
-        $_oJobEntityLocal = $this->oJobRepositoryLocal->getJob($sJobName);
+        $jobEntityLocal = $this->jobRepositoryLocal->getJob($jobName);
 
-        if (!$_oJobEntityLocal instanceof ChronosJobEntity) {
+        if (!$jobEntityLocal instanceof ChronosJobEntity) {
             throw new \RuntimeException('Expected ChronosJobEntity. Received something else.');
         }
 
-        if ($this->isAbleToStoreEntity($_oJobEntityLocal)) {
-            $_oJobEntityChronos = $this->oJobRepositoryRemote->getJob($sJobName);
+        if ($this->isAbleToStoreEntity($jobEntityLocal)) {
+            $jobEntityChronos = $this->jobRepositoryRemote->getJob($jobName);
 
             // handle job update
-            if ($this->oJobComparisonBusinessCase->hasSameJobType($_oJobEntityLocal, $_oJobEntityChronos)) {
-                $_bHasUpdatedJob = $this->oJobRepositoryRemote->updateJob($_oJobEntityLocal);
+            if ($this->jobComparisonBusinessCase->hasSameJobType($jobEntityLocal, $jobEntityChronos)) {
+                $hasUpdatedJob = $this->jobRepositoryRemote->updateJob($jobEntityLocal);
             } else {
-                $_bHasUpdatedJob = (
-                    $this->oJobRepositoryRemote->removeJob($_oJobEntityChronos->getKey())
-                    && $this->oJobRepositoryRemote->addJob($_oJobEntityLocal)
+                $hasUpdatedJob = (
+                    $this->jobRepositoryRemote->removeJob($jobEntityChronos->getKey())
+                    && $this->jobRepositoryRemote->addJob($jobEntityLocal)
                 );
             }
 
             // handle update result
-            if ($_bHasUpdatedJob) {
-                $this->oJobIndexService->removeJob($_oJobEntityLocal->getKey());
-                $this->oLogger->notice(sprintf(
+            if ($hasUpdatedJob) {
+                $this->jobIndexService->removeJob($jobEntityLocal->getKey());
+                $this->logger->notice(sprintf(
                     'Job "%s" successfully updated in chronos',
-                    $_oJobEntityLocal->getKey()
+                    $jobEntityLocal->getKey()
                 ));
 
                 return true;
             }
 
             // in case of an error
-            $this->oLogger->error(sprintf(
+            $this->logger->error(sprintf(
                 'Failed to update job "%s" in chronos',
-                $_oJobEntityLocal->getKey()
+                $jobEntityLocal->getKey()
             ));
         }
 
@@ -170,23 +177,23 @@ class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implement
     }
 
     /**
-     * @param ChronosJobEntity $oEntity
+     * @param ChronosJobEntity $entity
      * @return bool
      */
-    private function isAbleToStoreEntity(ChronosJobEntity $oEntity)
+    private function isAbleToStoreEntity(ChronosJobEntity $entity)
     {
-        if ($this->oJobIndexService->isJobInIndex($oEntity->getKey())) {
-            if ($oEntity->isSchedulingJob()) {
+        if ($this->jobIndexService->isJobInIndex($entity->getKey())) {
+            if ($entity->isSchedulingJob()) {
                 return true;
             }
 
             //else :: are all parents available?
-            foreach ($oEntity->parents as $_sParentJobName) {
-                if (false === $this->oJobRepositoryRemote->hasJob($_sParentJobName)) {
-                    $this->oLogger->warning(sprintf(
+            foreach ($entity->parents as $parentJobName) {
+                if (false === $this->jobRepositoryRemote->hasJob($parentJobName)) {
+                    $this->logger->warning(sprintf(
                         'Parent job is not available for "%s" on chronos. Please add parent "%s" first.',
-                        $oEntity->name,
-                        $_sParentJobName
+                        $entity->name,
+                        $parentJobName
                     ));
 
                     return false;
@@ -200,24 +207,24 @@ class ChronosStoreJobBusinessCase extends AbstractStoreJobBusinessCase implement
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    private function isAbleToDeleteJob($sJobName)
+    private function isAbleToDeleteJob($jobName)
     {
-        if ($this->oJobIndexService->isJobInIndex($sJobName)) {
-            $_aChildJobs = $this->oJobDependencyService->getChildJobs($sJobName, JobDependencyServiceInterface::REPOSITORY_CHRONOS);
-            if (empty($_aChildJobs)) {
+        if ($this->jobIndexService->isJobInIndex($jobName)) {
+            $childJobs = $this->jobDependencyService->getChildJobs($jobName, JobDependencyServiceInterface::REPOSITORY_CHRONOS);
+            if (empty($childJobs)) {
                 return true;
             }
 
             // else :: are child also in index to delete?
-            foreach ($_aChildJobs as $_sChildJobName) {
-                if (false === $this->oJobIndexService->isJobInIndex($_sChildJobName)) {
-                    $this->oLogger->warning(sprintf(
+            foreach ($childJobs as $childJobName) {
+                if (false === $this->jobIndexService->isJobInIndex($childJobName)) {
+                    $this->logger->warning(sprintf(
                         'Child job is still available for "%s" on chronos. Please remove child "%s" first.',
-                        $sJobName,
-                        $_sChildJobName
+                        $jobName,
+                        $childJobName
                     ));
 
                     return false;

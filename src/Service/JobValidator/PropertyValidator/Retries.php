@@ -21,11 +21,11 @@ class Retries extends AbstractPropertyValidator implements PropertyValidatorInte
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            (is_numeric($oJobEntity->{$sProperty}) && $oJobEntity->{$sProperty} >= 0),
-            $sProperty,
+            (is_numeric($jobEntity->{$property}) && $jobEntity->{$property} >= 0),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }

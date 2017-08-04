@@ -25,38 +25,38 @@ class BridgeMarathon implements BridgeInterface
     /**
      * @var \Chapi\Component\RemoteClients\ApiClientInterface
      */
-    private $oApiClient;
+    private $apiClient;
     /**
      * @var JobValidatorServiceInterface
      */
-    private $oJobEntityValidatorService;
+    private $jobEntityValidatorService;
     /**
      * @var CacheInterface
      */
-    private $oCache;
+    private $cache;
     /**
      * @var LoggerInterface
      */
-    private $oLogger;
+    private $logger;
 
-    private $bCacheHasToDelete = false;
+    private $cacheHasToDelete = false;
 
     public function __construct(
-        ApiClientInterface $oApiClient,
-        CacheInterface $oCache,
-        JobValidatorServiceInterface $oJobEntityValidatorService,
-        LoggerInterface $oLogger
+        ApiClientInterface $apiClient,
+        CacheInterface $cache,
+        JobValidatorServiceInterface $jobEntityValidatorService,
+        LoggerInterface $logger
     ) {
-        $this->oApiClient = $oApiClient;
-        $this->oJobEntityValidatorService = $oJobEntityValidatorService;
-        $this->oCache = $oCache;
-        $this->oLogger = $oLogger;
+        $this->apiClient = $apiClient;
+        $this->jobEntityValidatorService = $jobEntityValidatorService;
+        $this->cache = $cache;
+        $this->logger = $logger;
     }
 
     public function __destruct()
     {
-        if ($this->bCacheHasToDelete) {
-            $this->oCache->delete(self::CACHE_KEY_APP_LIST);
+        if ($this->cacheHasToDelete) {
+            $this->cache->delete(self::CACHE_KEY_APP_LIST);
         }
     }
 
@@ -65,51 +65,51 @@ class BridgeMarathon implements BridgeInterface
      */
     public function getJobs()
     {
-        $_aApps = [];
-        $_aJobsList = $this->getJobList();
+        $apps = [];
+        $jobsList = $this->getJobList();
 
-        if (!empty($_aJobsList)) {
-            foreach ($_aJobsList as $_aJobData) {
-                $_aApps[] = new MarathonAppEntity($_aJobData);
+        if (!empty($jobsList)) {
+            foreach ($jobsList as $jobData) {
+                $apps[] = new MarathonAppEntity($jobData);
             }
         }
-        return $_aApps;
+        return $apps;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function addJob(JobEntityInterface $oJobEntity)
+    public function addJob(JobEntityInterface $jobEntity)
     {
-        if ($this->oApiClient->addingJob($oJobEntity)) {
-            $this->bCacheHasToDelete = true;
+        if ($this->apiClient->addingJob($jobEntity)) {
+            $this->cacheHasToDelete = true;
             return true;
         }
         return false;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function updateJob(JobEntityInterface $oJobEntity)
+    public function updateJob(JobEntityInterface $jobEntity)
     {
-        if ($this->oApiClient->updatingJob($oJobEntity)) {
-            $this->bCacheHasToDelete = true;
+        if ($this->apiClient->updatingJob($jobEntity)) {
+            $this->cacheHasToDelete = true;
             return true;
         }
         return false;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function removeJob(JobEntityInterface $oJobEntity)
+    public function removeJob(JobEntityInterface $jobEntity)
     {
-        if ($this->oApiClient->removeJob($oJobEntity->getKey())) {
-            $this->bCacheHasToDelete = true;
+        if ($this->apiClient->removeJob($jobEntity->getKey())) {
+            $this->cacheHasToDelete = true;
             return true;
         }
         return false;
@@ -120,18 +120,18 @@ class BridgeMarathon implements BridgeInterface
      */
     private function getJobList()
     {
-        $_aResult = $this->oCache->get(self::CACHE_KEY_APP_LIST);
+        $result = $this->cache->get(self::CACHE_KEY_APP_LIST);
 
-        if (is_array($_aResult)) {
-            return $_aResult;
+        if (is_array($result)) {
+            return $result;
         }
 
-        $_aResult = $this->oApiClient->listingJobs();
+        $result = $this->apiClient->listingJobs();
 
-        if (!empty($_aResult['apps'])) {
-            $this->oCache->set(self::CACHE_KEY_APP_LIST, $_aResult['apps'], self::CACHE_TIME_JOB_LIST);
+        if (!empty($result['apps'])) {
+            $this->cache->set(self::CACHE_KEY_APP_LIST, $result['apps'], self::CACHE_TIME_JOB_LIST);
         }
 
-        return $_aResult['apps'];
+        return $result['apps'];
     }
 }

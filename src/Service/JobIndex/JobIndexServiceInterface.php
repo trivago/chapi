@@ -15,28 +15,28 @@ interface JobIndexServiceInterface
     const DIC_NAME = 'JobIndexServiceInterface';
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return JobIndexServiceInterface
      */
-    public function addJob($sJobName);
+    public function addJob($jobName);
 
     /**
-     * @param array $aJobNames
+     * @param array $jobNames
      * @return JobIndexServiceInterface
      */
-    public function addJobs(array $aJobNames);
+    public function addJobs(array $jobNames);
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return JobIndexServiceInterface
      */
-    public function removeJob($sJobName);
+    public function removeJob($jobName);
 
     /**
-     * @param array $aJobNames
+     * @param array $jobNames
      * @return JobIndexServiceInterface
      */
-    public function removeJobs(array $aJobNames);
+    public function removeJobs(array $jobNames);
 
     /**
      * @return JobIndexServiceInterface
@@ -49,8 +49,8 @@ interface JobIndexServiceInterface
     public function getJobIndex();
 
     /**
-     * @param $sJobName
+     * @param $jobName
      * @return bool
      */
-    public function isJobInIndex($sJobName);
+    public function isJobInIndex($jobName);
 }

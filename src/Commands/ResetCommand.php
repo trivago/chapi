@@ -32,24 +32,24 @@ class ResetCommand extends AbstractCommand
     protected function process()
     {
         $this->updateJobIndex(
-            JobUtils::getJobNames($this->oInput, $this)
+            JobUtils::getJobNames($this->input, $this)
         );
 
         return 0;
     }
 
     /**
-     * @param string[] $aJobNames
+     * @param string[] $jobNames
      */
-    private function updateJobIndex($aJobNames)
+    private function updateJobIndex($jobNames)
     {
-        /** @var JobIndexServiceInterface  $_oJobIndexService */
-        $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
+        /** @var JobIndexServiceInterface  $jobIndexService */
+        $jobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
 
-        if (JobUtils::isWildcard($aJobNames)) {
-            $_oJobIndexService->resetJobIndex();
+        if (JobUtils::isWildcard($jobNames)) {
+            $jobIndexService->resetJobIndex();
         } else {
-            $_oJobIndexService->removeJobs($aJobNames);
+            $jobIndexService->removeJobs($jobNames);
         }
     }
 }

@@ -23,11 +23,11 @@ class IsArray extends AbstractPropertyValidator implements PropertyValidatorInte
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            is_array($oJobEntity->{$sProperty}),
-            $sProperty,
+            is_array($jobEntity->{$property}),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }

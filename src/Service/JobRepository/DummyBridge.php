@@ -15,12 +15,12 @@ class DummyBridge implements BridgeInterface
 {
 
     /** @var LoggerInterface  */
-    private $oLogger;
+    private $logger;
 
     public function __construct(
-        LoggerInterface $oLogger
+        LoggerInterface $logger
     ) {
-        $this->oLogger = $oLogger;
+        $this->logger = $logger;
     }
 
     /**
@@ -32,32 +32,32 @@ class DummyBridge implements BridgeInterface
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function addJob(JobEntityInterface $oJobEntity)
+    public function addJob(JobEntityInterface $jobEntity)
     {
-        $this->oLogger->warning('Adding a job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
+        $this->logger->warning('Adding a job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
         return false;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function updateJob(JobEntityInterface $oJobEntity)
+    public function updateJob(JobEntityInterface $jobEntity)
     {
-        $this->oLogger->warning('Updating job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
+        $this->logger->warning('Updating job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
         return false;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function removeJob(JobEntityInterface $oJobEntity)
+    public function removeJob(JobEntityInterface $jobEntity)
     {
-        $this->oLogger->warning('Removing job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
+        $this->logger->warning('Removing job cannot be done. Required parameters missing or not configured properly in .chapiconfig');
         return false;
     }
 }

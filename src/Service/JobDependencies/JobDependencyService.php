@@ -18,54 +18,54 @@ class JobDependencyService implements JobDependencyServiceInterface
     /**
      * @var JobRepositoryInterface
      */
-    private $oJobRepositoryLocal;
+    private $jobRepositoryLocal;
 
     /**
      * @var JobRepositoryInterface
      */
-    private $oJobRepositoryChronos;
+    private $jobRepositoryChronos;
 
     /**
      * @var array
      */
-    private $aJobTreeLocal = [];
+    private $jobTreeLocal = [];
 
     /**
      * @var array
      */
-    private $aJobTreeChronos = [];
+    private $jobTreeChronos = [];
 
     /**
-     * @param JobRepositoryInterface $oJobRepositoryLocal
-     * @param JobRepositoryInterface $oJobRepositoryChronos
+     * @param JobRepositoryInterface $jobRepositoryLocal
+     * @param JobRepositoryInterface $jobRepositoryChronos
      */
     public function __construct(
-        JobRepositoryInterface $oJobRepositoryLocal,
-        JobRepositoryInterface $oJobRepositoryChronos
+        JobRepositoryInterface $jobRepositoryLocal,
+        JobRepositoryInterface $jobRepositoryChronos
     ) {
-        $this->oJobRepositoryLocal = $oJobRepositoryLocal;
-        $this->oJobRepositoryChronos = $oJobRepositoryChronos;
+        $this->jobRepositoryLocal = $jobRepositoryLocal;
+        $this->jobRepositoryChronos = $jobRepositoryChronos;
     }
 
     /**
-     * @param $sJobName
-     * @param $iRepository
+     * @param string $jobName
+     * @param int $repository
      * @return string[]
      */
-    public function getChildJobs($sJobName, $iRepository)
+    public function getChildJobs($jobName, $repository)
     {
-        $_aJobTree = ($iRepository == self::REPOSITORY_LOCAL) ? $this->getJobTreeLocal() : $this->getJobTreeChronos();
-        return (isset($_aJobTree[$sJobName])) ? $_aJobTree[$sJobName] : [];
+        $jobTree = ($repository == self::REPOSITORY_LOCAL) ? $this->getJobTreeLocal() : $this->getJobTreeChronos();
+        return (isset($jobTree[$jobName])) ? $jobTree[$jobName] : [];
     }
 
     /**
-     * @param $sJobName
-     * @param $iRepository
+     * @param string $jobName
+     * @param int $repository
      * @return bool
      */
-    public function hasChildJobs($sJobName, $iRepository)
+    public function hasChildJobs($jobName, $repository)
     {
-        $_aJobs = $this->getChildJobs($sJobName, $iRepository);
+        $_aJobs = $this->getChildJobs($jobName, $repository);
         return (!empty($_aJobs));
     }
 
@@ -74,11 +74,11 @@ class JobDependencyService implements JobDependencyServiceInterface
      */
     private function getJobTreeLocal()
     {
-        if (empty($this->aJobTreeLocal)) {
-            $this->initJobTree($this->aJobTreeLocal, $this->oJobRepositoryLocal);
+        if (empty($this->jobTreeLocal)) {
+            $this->initJobTree($this->jobTreeLocal, $this->jobRepositoryLocal);
         }
 
-        return $this->aJobTreeLocal;
+        return $this->jobTreeLocal;
     }
 
     /**
@@ -86,33 +86,33 @@ class JobDependencyService implements JobDependencyServiceInterface
      */
     private function getJobTreeChronos()
     {
-        if (empty($this->aJobTreeChronos)) {
-            $this->initJobTree($this->aJobTreeChronos, $this->oJobRepositoryChronos);
+        if (empty($this->jobTreeChronos)) {
+            $this->initJobTree($this->jobTreeChronos, $this->jobRepositoryChronos);
         }
 
-        return $this->aJobTreeChronos;
+        return $this->jobTreeChronos;
     }
 
     /**
-     * @param array $aJobTree
-     * @param JobRepositoryInterface $oJobRepository
+     * @param array $jobTree
+     * @param JobRepositoryInterface $jobRepository
      * @return void
      */
-    private function initJobTree(&$aJobTree, JobRepositoryInterface $oJobRepository)
+    private function initJobTree(&$jobTree, JobRepositoryInterface $jobRepository)
     {
         // reset job tree in case of reloading
-        $aJobTree = [];
+        $jobTree = [];
 
-        /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($oJobRepository->getJobs() as $_oJobEntity) {
-            if ($_oJobEntity->isDependencyJob()) {
-                foreach ($_oJobEntity->parents as $_sParentJobName) {
+        /** @var ChronosJobEntity $jobEntity */
+        foreach ($jobRepository->getJobs() as $jobEntity) {
+            if ($jobEntity->isDependencyJob()) {
+                foreach ($jobEntity->parents as $parentJobName) {
                     // init parent in tree
-                    if (!isset($aJobTree[$_sParentJobName])) {
-                        $aJobTree[$_sParentJobName] = [];
+                    if (!isset($jobTree[$parentJobName])) {
+                        $jobTree[$parentJobName] = [];
                     }
                     // set job as children to parent
-                    $aJobTree[$_sParentJobName][] = $_oJobEntity->name;
+                    $jobTree[$parentJobName][] = $jobEntity->name;
                 }
             }
         }

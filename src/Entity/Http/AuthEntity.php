@@ -22,12 +22,12 @@ class AuthEntity
     public $password = '';
 
     /**
-     * @param string $sUsername
-     * @param string $sPassword
+     * @param string $username
+     * @param string $password
      */
-    public function __construct($sUsername, $sPassword)
+    public function __construct($username, $password)
     {
-        $this->username = $sUsername;
-        $this->password = $sPassword;
+        $this->username = $username;
+        $this->password = $password;
     }
 }

@@ -30,22 +30,22 @@ abstract class AbstractCommand extends Command
     /**
      * @var InputInterface
      */
-    protected $oInput;
+    protected $input;
 
     /**
      * @var OutputInterface
      */
-    protected $oOutput;
+    protected $output;
 
     /**
      * @var ContainerBuilder
      */
-    private $oContainer;
+    private $container;
 
     /**
      * @var string
      */
-    private static $sHomeDir = '';
+    private static $homeDir = '';
 
     /**
      * @inheritdoc
@@ -67,12 +67,12 @@ abstract class AbstractCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function initialize(InputInterface $oInput, OutputInterface $oOutput)
+    protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->oInput = $oInput;
-        $this->oOutput = $oOutput;
+        $this->input = $input;
+        $this->output = $output;
 
-        parent::initialize($oInput, $oOutput);
+        parent::initialize($input, $output);
     }
 
     /**
@@ -83,8 +83,8 @@ abstract class AbstractCommand extends Command
      * execute() method, you set the code to execute by passing
      * a Closure to the setCode() method.
      *
-     * @param InputInterface $oInput An InputInterface instance
-     * @param OutputInterface $oOutput An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      *
      * @return integer null or 0 if everything went fine, or an error code
      *
@@ -92,16 +92,16 @@ abstract class AbstractCommand extends Command
      *
      * @see setCode()
      */
-    protected function execute(InputInterface $oInput, OutputInterface $oOutput)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->isAppRunable()) {
             return 1;
         }
 
         // set output for verbosity handling
-        /** @var \Symfony\Bridge\Monolog\Handler\ConsoleHandler $_oConsoleHandler */
-        $_oConsoleHandler = $this->getContainer()->get('ConsoleHandler');
-        $_oConsoleHandler->setOutput($this->oOutput);
+        /** @var \Symfony\Bridge\Monolog\Handler\ConsoleHandler $consoleHandler */
+        $consoleHandler = $this->getContainer()->get('ConsoleHandler');
+        $consoleHandler->setOutput($this->output);
 
         return $this->process();
     }
@@ -116,17 +116,17 @@ abstract class AbstractCommand extends Command
      */
     protected function getContainer()
     {
-        if (is_null($this->oContainer)) {
-            $_oContainer = $this->loadContainer();
+        if (is_null($this->container)) {
+            $container = $this->loadContainer();
 
             // load services
-            $_oLoader = new YamlFileLoader($_oContainer, new FileLocator(__DIR__ . self::FOLDER_RESOURCES));
-            $_oLoader->load('services.yml');
+            $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . self::FOLDER_RESOURCES));
+            $loader->load('services.yml');
 
-            $this->oContainer = $_oContainer;
+            $this->container = $container;
         }
 
-        return $this->oContainer;
+        return $this->container;
     }
 
     /**
@@ -146,7 +146,7 @@ abstract class AbstractCommand extends Command
         if (!file_exists($this->getHomeDir() . DIRECTORY_SEPARATOR . ChapiConfigInterface::CONFIG_FILE_NAME)
             && !file_exists($this->getWorkingDir() . DIRECTORY_SEPARATOR . ChapiConfigInterface::CONFIG_FILE_NAME)
         ) {
-            $this->oOutput->writeln(sprintf(
+            $this->output->writeln(sprintf(
                 '<error>%s</error>',
                 'No parameter file found. Please run "configure" command for initial setup or add a local `.chapiconfig` to your working directory.'
             ));
@@ -161,18 +161,18 @@ abstract class AbstractCommand extends Command
      */
     protected function getHomeDir()
     {
-        if (!empty(self::$sHomeDir)) {
-            return self::$sHomeDir;
+        if (!empty(self::$homeDir)) {
+            return self::$homeDir;
         }
 
-        $_sHomeDir = getenv('CHAPI_HOME');
-        if (!$_sHomeDir) {
-            $_sHomeDir = CommandUtils::getOsHomeDir() . DIRECTORY_SEPARATOR . '.chapi';
+        $homeDir = getenv('CHAPI_HOME');
+        if (!$homeDir) {
+            $homeDir = CommandUtils::getOsHomeDir() . DIRECTORY_SEPARATOR . '.chapi';
         }
 
-        CommandUtils::hasCreateDirectoryIfNotExists($_sHomeDir);
+        CommandUtils::hasCreateDirectoryIfNotExists($homeDir);
 
-        return self::$sHomeDir = $_sHomeDir;
+        return self::$homeDir = $homeDir;
     }
 
     /**
@@ -180,10 +180,10 @@ abstract class AbstractCommand extends Command
      */
     protected function getCacheDir()
     {
-        $_sCacheDir = $this->getHomeDir() . DIRECTORY_SEPARATOR . 'cache';
-        CommandUtils::hasCreateDirectoryIfNotExists($_sCacheDir);
+        $cacheDir = $this->getHomeDir() . DIRECTORY_SEPARATOR . 'cache';
+        CommandUtils::hasCreateDirectoryIfNotExists($cacheDir);
 
-        return $_sCacheDir;
+        return $cacheDir;
     }
 
     /**
@@ -199,7 +199,7 @@ abstract class AbstractCommand extends Command
      */
     protected function getProfileName()
     {
-        return $this->oInput->getOption('profile');
+        return $this->input->getOption('profile');
     }
 
     /**
@@ -207,21 +207,21 @@ abstract class AbstractCommand extends Command
      */
     private function loadContainer()
     {
-        $_oContainer = new ContainerBuilder();
-        $_oChapiConfig = new ChapiConfig(
+        $container = new ContainerBuilder();
+        $chapiConfig = new ChapiConfig(
             [$this->getHomeDir(), $this->getWorkingDir()],
             new Parser(),
             $this->getProfileName()
         );
 
-        $_oChapiConfigLoader = new ChapiConfigLoader($_oContainer, $_oChapiConfig);
-        $_oChapiConfigLoader->loadProfileParameters();
+        $chapiConfigLoader = new ChapiConfigLoader($container, $chapiConfig);
+        $chapiConfigLoader->loadProfileParameters();
 
         // load basic parameters
-        $_oContainer->setParameter('chapi_home', $this->getHomeDir());
-        $_oContainer->setParameter('chapi_work_dir', $this->getWorkingDir());
-        $_oContainer->setParameter('chapi_profile', $this->getProfileName());
+        $container->setParameter('chapi_home', $this->getHomeDir());
+        $container->setParameter('chapi_work_dir', $this->getWorkingDir());
+        $container->setParameter('chapi_profile', $this->getProfileName());
 
-        return $_oContainer;
+        return $container;
     }
 }

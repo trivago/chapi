@@ -22,11 +22,11 @@ class IsBoolean extends AbstractPropertyValidator implements PropertyValidatorIn
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            is_bool($oJobEntity->{$sProperty}),
-            $sProperty,
+            is_bool($jobEntity->{$property}),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }

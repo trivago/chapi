@@ -11,23 +11,23 @@ namespace Chapi\Entity\Chronos\JobEntity;
 class ContainerEntity
 {
     /**
-     * @param array|object $mJobData
+     * @param array|object $jobData
      * @throws \InvalidArgumentException
      */
-    public function __construct($mJobData = [])
+    public function __construct($jobData = [])
     {
-        if (is_array($mJobData) || is_object($mJobData)) {
-            foreach ($mJobData as $_sKey => $_mValue) {
-                if (property_exists($this, $_sKey)) {
-                    if ($_sKey == 'type') {
-                        $this->{$_sKey} = strtolower($_mValue);
-                    } elseif ($_sKey == 'volumes') {
-                        foreach ($_mValue as $_mValueVolume) {
-                            $_oVolume = new ContainerVolumeEntity($_mValueVolume);
-                            $this->volumes[] = $_oVolume;
+        if (is_array($jobData) || is_object($jobData)) {
+            foreach ($jobData as $key => $value) {
+                if (property_exists($this, $key)) {
+                    if ($key == 'type') {
+                        $this->{$key} = strtolower($value);
+                    } elseif ($key == 'volumes') {
+                        foreach ($value as $valueVolume) {
+                            $volume = new ContainerVolumeEntity($valueVolume);
+                            $this->volumes[] = $volume;
                         }
                     } else {
-                        $this->{$_sKey} = $_mValue;
+                        $this->{$key} = $value;
                     }
                 }
             }

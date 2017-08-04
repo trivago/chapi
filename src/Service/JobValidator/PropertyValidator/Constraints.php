@@ -22,28 +22,28 @@ class Constraints extends AbstractPropertyValidator implements PropertyValidator
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            $this->isConstraintsPropertyValid($oJobEntity->{$sProperty}),
-            $sProperty,
+            $this->isConstraintsPropertyValid($jobEntity->{$property}),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }
 
     /**
-     * @param array $aConstraints
+     * @param array $constraints
      * @return bool
      */
-    private function isConstraintsPropertyValid($aConstraints)
+    private function isConstraintsPropertyValid($constraints)
     {
-        if (!is_array($aConstraints) && !is_null($aConstraints)) {
+        if (!is_array($constraints) && !is_null($constraints)) {
             return false;
         }
         
-        if (!empty($aConstraints)) {
-            foreach ($aConstraints as $_aConstraint) {
-                if (!is_array($_aConstraint) || count($_aConstraint) != 3) {
+        if (!empty($constraints)) {
+            foreach ($constraints as $constraint) {
+                if (!is_array($constraint) || count($constraint) != 3) {
                     return false;
                 }
             }

@@ -38,152 +38,152 @@ class ListCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
-        $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
-        /** @var  JobRepositoryInterface $_oJobRepositoryMarathon */
-        $_oJobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
+        /** @var JobRepositoryInterface  $jobRepositoryChronos */
+        $jobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
+        /** @var  JobRepositoryInterface $jobRepositoryMarathon */
+        $jobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
 
-        $_bOnlyFailed = (bool) $this->oInput->getOption('onlyFailed');
-        $_bOnlyDisabled = (bool) $this->oInput->getOption('onlyDisabled');
+        $onlyPrintFailed = (bool) $this->input->getOption('onlyFailed');
+        $onlyPrintDisabled = (bool) $this->input->getOption('onlyDisabled');
 
-        $_oTable = new Table($this->oOutput);
-        $_oTable->setHeaders(array(
+        $table = new Table($this->output);
+        $table->setHeaders(array(
             'Job',
             'Info',
             'Type'
         ));
 
-        $_aAllEntities = array_merge(
-            $_oJobRepositoryChronos->getJobs()->getArrayCopy(),
-            $_oJobRepositoryMarathon->getJobs()->getArrayCopy()
+        $allEntities = array_merge(
+            $jobRepositoryChronos->getJobs()->getArrayCopy(),
+            $jobRepositoryMarathon->getJobs()->getArrayCopy()
         );
 
-        /** @var ChronosJobEntity $_oJobEntity */
-        foreach ($_aAllEntities as $_oJobEntity) {
-            if ($this->hasJobToPrint($_oJobEntity, $_bOnlyFailed, $_bOnlyDisabled)) {
-                $this->printJobTableRow($_oTable, $_oJobEntity);
+        /** @var ChronosJobEntity $jobEntity */
+        foreach ($allEntities as $jobEntity) {
+            if ($this->hasJobToPrint($jobEntity, $onlyPrintFailed, $onlyPrintDisabled)) {
+                $this->printJobTableRow($table, $jobEntity);
             }
         }
 
-        $_oTable->render();
+        $table->render();
 
         return 0;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
-     * @param bool $bOnlyFailed
-     * @param bool $bOnlyDisabled
+     * @param JobEntityInterface $jobEntity
+     * @param bool $onlyPrintFailed
+     * @param bool $onlyPrintDisabled
      * @return bool
      */
-    private function hasJobToPrint(JobEntityInterface $oJobEntity, $bOnlyFailed, $bOnlyDisabled)
+    private function hasJobToPrint(JobEntityInterface $jobEntity, $onlyPrintFailed, $onlyPrintDisabled)
     {
-        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
+        if ($jobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
             return true;
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$jobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
-        $_bPrintAllJobs = (false === $bOnlyFailed && false === $bOnlyDisabled);
-        if ($_bPrintAllJobs) {
+        $printAllJobs = (false === $onlyPrintFailed && false === $onlyPrintDisabled);
+        if ($printAllJobs) {
             return true;
         }
 
-        $_bHasToPrint = false;
+        $hasToPrint = false;
 
-        if (true === $bOnlyFailed && $oJobEntity->errorsSinceLastSuccess > 0) {
-            $_bHasToPrint = true;
+        if (true === $onlyPrintFailed && $jobEntity->errorsSinceLastSuccess > 0) {
+            $hasToPrint = true;
         }
 
-        if (true === $bOnlyDisabled && true === $oJobEntity->disabled) {
-            $_bHasToPrint = true;
+        if (true === $onlyPrintDisabled && true === $jobEntity->disabled) {
+            $hasToPrint = true;
         }
 
-        return $_bHasToPrint;
+        return $hasToPrint;
     }
 
     /**
-     * @param Table $oTable
-     * @param JobEntityInterface $oJobEntity
+     * @param Table $table
+     * @param JobEntityInterface $jobEntity
      */
-    private function printJobTableRow(Table $oTable, JobEntityInterface $oJobEntity)
+    private function printJobTableRow(Table $table, JobEntityInterface $jobEntity)
     {
-        $oTable->addRow([
+        $table->addRow([
             sprintf(
-                $this->getOutputFormat($oJobEntity),
-                $oJobEntity->getKey()
+                $this->getOutputFormat($jobEntity),
+                $jobEntity->getKey()
             ),
 
             sprintf(
-                $this->getOutputFormat($oJobEntity),
-                $this->getOutputLabel($oJobEntity)
+                $this->getOutputFormat($jobEntity),
+                $this->getOutputLabel($jobEntity)
             ),
             sprintf(
-                $this->getOutputFormat($oJobEntity),
-                $oJobEntity->getEntityType()
+                $this->getOutputFormat($jobEntity),
+                $jobEntity->getEntityType()
             )
         ]);
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return string
      */
-    private function getOutputLabel(JobEntityInterface $oJobEntity)
+    private function getOutputLabel(JobEntityInterface $jobEntity)
     {
 
-        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
+        if ($jobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
             return 'ok';
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$jobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
-        $_aJobInfoText = [];
+        $jobInfoText = [];
 
-        if ($oJobEntity->disabled) {
-            $_aJobInfoText[] = 'disabled';
+        if ($jobEntity->disabled) {
+            $jobInfoText[] = 'disabled';
         }
 
-        if ($oJobEntity->errorCount > 0) {
-            $_fErrorRate = ($oJobEntity->successCount > 0)
-                ? 100 / $oJobEntity->successCount * $oJobEntity->errorCount
+        if ($jobEntity->errorCount > 0) {
+            $errorRate = ($jobEntity->successCount > 0)
+                ? 100 / $jobEntity->successCount * $jobEntity->errorCount
                 : 100;
 
-            $_aJobInfoText[] = 'errors rate: ' . round($_fErrorRate, 2) . '%';
+            $jobInfoText[] = 'errors rate: ' . round($errorRate, 2) . '%';
         }
 
-        if ($oJobEntity->errorsSinceLastSuccess > 0) {
-            $_aJobInfoText[] = 'errors since last success:' . $oJobEntity->errorsSinceLastSuccess;
+        if ($jobEntity->errorsSinceLastSuccess > 0) {
+            $jobInfoText[] = 'errors since last success:' . $jobEntity->errorsSinceLastSuccess;
         }
 
-        return (!empty($_aJobInfoText))
-            ? implode(' | ', $_aJobInfoText)
+        return (!empty($jobInfoText))
+            ? implode(' | ', $jobInfoText)
             : 'ok';
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return string
      */
-    private function getOutputFormat(JobEntityInterface $oJobEntity)
+    private function getOutputFormat(JobEntityInterface $jobEntity)
     {
-        if ($oJobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
+        if ($jobEntity->getEntityType() == JobEntityInterface::MARATHON_TYPE) {
             return '<info>%s</info>';
         }
 
-        if (!$oJobEntity instanceof ChronosJobEntity) {
+        if (!$jobEntity instanceof ChronosJobEntity) {
             throw new \RuntimeException('Entity not of type ChronosJobEntity');
         }
 
-        if ($oJobEntity->errorsSinceLastSuccess > 0) {
+        if ($jobEntity->errorsSinceLastSuccess > 0) {
             return '<fg=red>%s</>';
         }
 
-        if ($oJobEntity->errorCount > 0 || true === $oJobEntity->disabled) {
+        if ($jobEntity->errorCount > 0 || true === $jobEntity->disabled) {
             return '<comment>%s</comment>';
         }
 

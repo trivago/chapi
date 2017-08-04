@@ -8,7 +8,7 @@
 
 namespace unit\Component\Http;
 
-use Chapi\Component\Http\HttpGuzzlResponse;
+use Chapi\Component\Http\HttpGuzzleResponse;
 
 class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,7 +27,7 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn(200);
 
-        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+        $_oHttpGuzzleResponse = new HttpGuzzleResponse($this->oResponseInterface->reveal());
 
         $this->assertEquals(200, $_oHttpGuzzleResponse->getStatusCode());
     }
@@ -39,7 +39,7 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn('string');
 
-        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+        $_oHttpGuzzleResponse = new HttpGuzzleResponse($this->oResponseInterface->reveal());
 
         $this->assertEquals('string', $_oHttpGuzzleResponse->getBody());
     }
@@ -51,7 +51,7 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn(json_encode([1,2,3]));
 
-        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+        $_oHttpGuzzleResponse = new HttpGuzzleResponse($this->oResponseInterface->reveal());
 
         $this->assertEquals([1,2,3], $_oHttpGuzzleResponse->json());
     }
@@ -74,7 +74,7 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1)
             ->willReturn(json_encode($dummyBody));
 
-        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+        $_oHttpGuzzleResponse = new HttpGuzzleResponse($this->oResponseInterface->reveal());
 
         $result = $_oHttpGuzzleResponse->json();
         $this->assertInternalType('array', $result);

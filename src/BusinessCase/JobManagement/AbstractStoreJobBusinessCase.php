@@ -19,112 +19,110 @@ abstract class AbstractStoreJobBusinessCase implements StoreJobBusinessCaseInter
     /**
      * @var JobIndexServiceInterface
      */
-    protected $oJobIndexService;
+    protected $jobIndexService;
 
 
     /**
      * @var JobComparisonInterface
      */
-    protected $oJobComparisonBusinessCase;
+    protected $jobComparisonBusinessCase;
 
     /**
      * @var LoggerInterface
      */
-    protected $oLogger;
-
-
-    /**
-     * @var JobRepositoryInterface
-     */
-    protected $oJobRepositoryRemote;
+    protected $logger;
 
     /**
      * @var JobRepositoryInterface
      */
-    protected $oJobRepositoryLocal;
+    protected $jobRepositoryRemote;
 
+    /**
+     * @var JobRepositoryInterface
+     */
+    protected $jobRepositoryLocal;
 
     /**
      * @inheritdoc
      */
-    public function storeJobsToLocalRepository(array $aEntityNames = [], $bForceOverwrite = false)
+    public function storeJobsToLocalRepository(array $entityNames = [], $forceOverwrite = false)
     {
-        if (empty($aEntityNames)) {
-            $_aRemoteEntities = $this->oJobRepositoryRemote->getJobs();
+        if (empty($entityNames)) {
+            $remoteEntities = $this->jobRepositoryRemote->getJobs();
         } else {
-            $_aRemoteEntities = [];
-            foreach ($aEntityNames as $_sJobName) {
-                $_aRemoteEntities[] = $this->oJobRepositoryRemote->getJob($_sJobName);
+            $remoteEntities = [];
+            foreach ($entityNames as $jobName) {
+                $remoteEntities[] = $this->jobRepositoryRemote->getJob($jobName);
             }
         }
 
-        /** @var JobEntityInterface $_oRemoteEntity */
-        foreach ($_aRemoteEntities as $_oRemoteEntity) {
-            $_oLocalEntity = $this->oJobRepositoryLocal->getJob($_oRemoteEntity->getKey());
+        /** @var JobEntityInterface $remoteEntity */
+        foreach ($remoteEntities as $remoteEntity) {
+            $localEntity = $this->jobRepositoryLocal->getJob($remoteEntity->getKey());
             // new job
-            if (null == $_oLocalEntity) {
-                $this->addJobInLocalRepository($_oRemoteEntity);
+            if (null == $localEntity) {
+                $this->addJobInLocalRepository($remoteEntity);
             } else {
                 //update
-                $this->updateJobInLocalRepository($_oRemoteEntity, $bForceOverwrite);
+                $this->updateJobInLocalRepository($remoteEntity, $forceOverwrite);
             }
         }
     }
 
-    protected function addJobInLocalRepository(JobEntityInterface $oAppRemote)
+    protected function addJobInLocalRepository(JobEntityInterface $appRemote)
     {
-        if ($this->oJobRepositoryLocal->addJob($oAppRemote)) {
-            $this->oLogger->notice(sprintf(
+        if ($this->jobRepositoryLocal->addJob($appRemote)) {
+            $this->logger->notice(sprintf(
                 'Entity %s stored in local repository',
-                $oAppRemote->getKey()
+                $appRemote->getKey()
             ));
         } else {
-            $this->oLogger->error(sprintf(
+            $this->logger->error(sprintf(
                 'Failed to store %s in local repository',
-                $oAppRemote->getKey()
+                $appRemote->getKey()
             ));
         }
     }
 
 
-    protected function updateJobInLocalRepository(JobEntityInterface $oAppRemote, $bForceOverwrite)
+    protected function updateJobInLocalRepository(JobEntityInterface $appRemote, $forceOverwrite)
     {
-        $_aDiff = $this->oJobComparisonBusinessCase->getJobDiff($oAppRemote->getKey());
-        if (!empty($_aDiff)) {
-            if (!$bForceOverwrite) {
+        $diff = $this->jobComparisonBusinessCase->getJobDiff($appRemote->getKey());
+        if (!empty($diff)) {
+            if (!$forceOverwrite) {
                 throw new \InvalidArgumentException(
                     sprintf(
                         'The entity "%s" already exist in your local repository. Use the "force" option to overwrite the job',
-                        $oAppRemote->getKey()
+                        $appRemote->getKey()
                     )
                 );
             }
 
-            if ($this->oJobRepositoryLocal->updateJob($oAppRemote)) {
-                $this->oLogger->notice(sprintf(
+            if ($this->jobRepositoryLocal->updateJob($appRemote)) {
+                $this->logger->notice(sprintf(
                     'Entity %s is updated in local repository',
-                    $oAppRemote->getKey()
+                    $appRemote->getKey()
                 ));
             } else {
-                $this->oLogger->error(sprintf(
+                $this->logger->error(sprintf(
                     'Failed to update app %s in local repository',
-                    $oAppRemote->getKey()
+                    $appRemote->getKey()
                 ));
             }
 
             // remove job from index in case off added in the past
-            $this->oJobIndexService->removeJob($oAppRemote->getKey());
+            $this->jobIndexService->removeJob($appRemote->getKey());
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function isJobAvailable($sJobName)
+    public function isJobAvailable($jobName)
     {
-        $_bLocallyAvailable = $this->oJobRepositoryLocal->getJob($sJobName) ? true : false;
-        $_bRemotelyAvailable = $this->oJobRepositoryRemote->getJob($sJobName) ? true : false;
-        return $_bLocallyAvailable || $_bRemotelyAvailable;
+        $locallyAvailable = $this->jobRepositoryLocal->getJob($jobName) ? true : false;
+        $remotelyAvailable = $this->jobRepositoryRemote->getJob($jobName) ? true : false;
+        return $locallyAvailable || $remotelyAvailable;
     }
 
 

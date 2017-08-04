@@ -16,37 +16,37 @@ class ChapiConfig implements ChapiConfigInterface
     /**
      * @var string[]
      */
-    private $aDirectoryPaths = [];
+    private $directoryPaths = [];
 
     /**
      * @var YamlParser
      */
-    private $oParser;
+    private $parser;
 
     /**
      * @var string
      */
-    private $sActiveProfile = '';
+    private $activeProfile = '';
 
     /**
      * @var array
      */
-    private $aConfig = null;
+    private $config = null;
 
     /**
      * ChapiConfig constructor.
-     * @param string[] $aDirectoryPaths
-     * @param YamlParser $oParser
-     * @param string $sActiveProfile
+     * @param string[] $directoryPaths
+     * @param YamlParser $parser
+     * @param string $activeProfile
      */
     public function __construct(
-        $aDirectoryPaths,
-        YamlParser $oParser,
-        $sActiveProfile
+        $directoryPaths,
+        YamlParser $parser,
+        $activeProfile
     ) {
-        $this->aDirectoryPaths = $aDirectoryPaths;
-        $this->oParser = $oParser;
-        $this->sActiveProfile = $sActiveProfile;
+        $this->directoryPaths = $directoryPaths;
+        $this->parser = $parser;
+        $this->activeProfile = $activeProfile;
     }
 
     /**
@@ -54,8 +54,8 @@ class ChapiConfig implements ChapiConfigInterface
      */
     public function getProfileConfig()
     {
-        $_aConfig = $this->getConfig();
-        return $_aConfig['profiles'][$this->sActiveProfile];
+        $config = $this->getConfig();
+        return $config['profiles'][$this->activeProfile];
     }
 
     /**
@@ -63,11 +63,11 @@ class ChapiConfig implements ChapiConfigInterface
      */
     public function getConfig()
     {
-        if (is_null($this->aConfig)) {
-            $this->aConfig = $this->loadConfigs();
+        if (is_null($this->config)) {
+            $this->config = $this->loadConfigs();
         }
 
-        return $this->aConfig;
+        return $this->config;
     }
 
     /**
@@ -75,34 +75,34 @@ class ChapiConfig implements ChapiConfigInterface
      */
     private function loadConfigs()
     {
-        $_aConfig = [];
+        $config = [];
 
-        foreach ($this->aDirectoryPaths as $_sDirectoryPath) {
-            if (!is_dir($_sDirectoryPath)) {
-                throw new \InvalidArgumentException(sprintf('Path "%s" is not valid', $_sDirectoryPath));
+        foreach ($this->directoryPaths as $directoryPath) {
+            if (!is_dir($directoryPath)) {
+                throw new \InvalidArgumentException(sprintf('Path "%s" is not valid', $directoryPath));
             }
 
-            $_aConfigPart = $this->loadConfig($_sDirectoryPath);
-            $_aConfig = self::arrayMergeRecursiveDistinct($_aConfig, $_aConfigPart);
+            $configPart = $this->loadConfig($directoryPath);
+            $config = self::arrayMergeRecursiveDistinct($config, $configPart);
         }
 
-        return $_aConfig;
+        return $config;
     }
 
     /**
-     * @param string $sPath
+     * @param string $path
      * @return array
      */
-    private function loadConfig($sPath)
+    private function loadConfig($path)
     {
-        $_sFilePath = $sPath . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME;
+        $filePath = $path . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME;
 
-        if (is_file($_sFilePath)) {
-            $_aConfig = $this->oParser->parse(
-                file_get_contents($_sFilePath)
+        if (is_file($filePath)) {
+            $config = $this->parser->parse(
+                file_get_contents($filePath)
             );
 
-            return $_aConfig;
+            return $config;
         }
 
         return [];

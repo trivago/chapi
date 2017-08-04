@@ -11,21 +11,21 @@ namespace Chapi\Component\Http;
 
 use Psr\Http\Message\ResponseInterface;
 
-class HttpGuzzlResponse implements HttpClientResponseInterface
+class HttpGuzzleResponse implements HttpClientResponseInterface
 {
 
     /**
-     * @var
+     * @var ResponseInterface
      */
-    private $oGuzzlResponse;
+    private $guzzleResponse;
 
     /**
-     * @param  $oGuzzlResponse
+     * @param ResponseInterface $guzzleResponse
      */
     public function __construct(
-        ResponseInterface $oGuzzlResponse
+        ResponseInterface $guzzleResponse
     ) {
-        $this->oGuzzlResponse = $oGuzzlResponse;
+        $this->guzzleResponse = $guzzleResponse;
     }
 
     /**
@@ -33,7 +33,7 @@ class HttpGuzzlResponse implements HttpClientResponseInterface
      */
     public function getStatusCode()
     {
-        return $this->oGuzzlResponse->getStatusCode();
+        return $this->guzzleResponse->getStatusCode();
     }
 
     /**
@@ -41,7 +41,7 @@ class HttpGuzzlResponse implements HttpClientResponseInterface
      */
     public function getBody()
     {
-        return (string) $this->oGuzzlResponse->getBody();
+        return (string) $this->guzzleResponse->getBody();
     }
 
     /**
