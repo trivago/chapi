@@ -61,7 +61,7 @@ class DiffCommand extends AbstractCommand
         $jobDiff = $jobComparisonBusinessCase->getJobDiff($jobName);
 
         foreach ($jobDiff as $property => $diff) {
-            $diffLines = array_reverse(explode(PHP_EOL, $diff));
+            $diffLines = explode(PHP_EOL, $diff);
 
             foreach ($diffLines as $diffLine) {
                 $diffSign = substr($diffLine, 0, 1);
