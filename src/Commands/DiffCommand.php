@@ -63,6 +63,17 @@ class DiffCommand extends AbstractCommand
         foreach ($jobDiff as $property => $diff) {
             $diffLines = explode(PHP_EOL, $diff);
 
+            // the first line might be missing some leading whitespace
+            if (count($diffLines) > 1) {
+                $lastLine = $diffLines[count($diffLines) - 1];
+
+                if (strpos($lastLine, ' ') === 0) {
+                    $length = strspn($lastLine, ' ');
+
+                    $diffLines[0] = substr($lastLine, 0, $length) . $diffLines[0];
+                }
+            }
+
             foreach ($diffLines as $diffLine) {
                 $diffSign = substr($diffLine, 0, 1);
 
