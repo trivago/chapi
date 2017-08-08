@@ -503,6 +503,50 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
+    public function testEqualEnvsWithDifferentlyOrderedArraysAreEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
+            ),
+            [
+                'env',
+                new MarathonAppEntity([ 'id' => 'A', 'env' => [ 'AK' => 'AV', 'BK' => 'BV' ] ]),
+                new MarathonAppEntity([ 'id' => 'B', 'env' => [ 'BK' => 'BV', 'AK' => 'AV' ] ])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testEqualEnvsWithDifferentlyOrderedObjectsAreEqual()
+    {
+        $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
+        $method = $class->getMethod('isEntityEqual');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs(
+            new MarathonJobComparisonBusinessCase(
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
+            ),
+            [
+                'env',
+                new MarathonAppEntity([ 'id' => 'A', 'env' => (object) [ 'AK' => 'AV', 'BK' => 'BV' ] ]),
+                new MarathonAppEntity([ 'id' => 'B', 'env' => (object) [ 'BK' => 'BV', 'AK' => 'AV' ] ])
+            ]
+        );
+
+        $this->assertTrue($result);
+    }
+
     public function testEquallyComplexDependenciesAreEqual()
     {
         $class = new \ReflectionClass(MarathonJobComparisonBusinessCase::class);
