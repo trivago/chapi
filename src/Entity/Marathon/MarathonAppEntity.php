@@ -123,7 +123,12 @@ class MarathonAppEntity implements JobEntityInterface
         }
 
         if (isset($dataArray['env'])) {
-            $this->env = (object) $dataArray['env'];
+            $env = (array) $dataArray['env'];
+
+            // sorting this makes the diff output a whole lot more readable
+            ksort($env);
+
+            $this->env = (object) $env;
         } else {
             $this->env = (object) [];
         }
