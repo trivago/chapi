@@ -9,7 +9,6 @@
 
 namespace Chapi\Component\DependencyInjection\Loader;
 
-
 use Chapi\Component\Config\ChapiConfigInterface;
 use \InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,22 +18,22 @@ class ChapiConfigLoader implements ChapiConfigLoaderInterface
     /**
      * @var ContainerBuilder
      */
-    private $oContainer;
+    private $container;
 
     /**
      * @var ChapiConfigInterface
      */
-    private $oConfig;
+    private $config;
 
     /**
      * ChapiConfigLoader constructor.
-     * @param ContainerBuilder $oContainer
-     * @param ChapiConfigInterface $oConfig
+     * @param ContainerBuilder $container
+     * @param ChapiConfigInterface $config
      */
-    public function __construct(ContainerBuilder $oContainer, ChapiConfigInterface $oConfig)
+    public function __construct(ContainerBuilder $container, ChapiConfigInterface $config)
     {
-        $this->oContainer = $oContainer;
-        $this->oConfig = $oConfig;
+        $this->container = $container;
+        $this->config = $config;
     }
 
     /**
@@ -42,41 +41,41 @@ class ChapiConfigLoader implements ChapiConfigLoaderInterface
      */
     public function loadProfileParameters()
     {
-        $_aContent = $this->oConfig->getProfileConfig();
+        $content = $this->config->getProfileConfig();
 
-        $this->oContainer->addObjectResource($this->oConfig);
+        $this->container->addObjectResource($this->config);
 
         // empty config
-        if (empty($_aContent)) {
+        if (empty($content)) {
             return;
         }
 
         // parameters
-        if (isset($_aContent['parameters'])) {
-            $this->validate($_aContent);
-            $this->setParameters($_aContent['parameters']);
+        if (isset($content['parameters'])) {
+            $this->validate($content);
+            $this->setParameters($content['parameters']);
         }
     }
 
     /**
-     * @param array $aContent
+     * @param array $content
      * @throws InvalidArgumentException
      * @return void
      */
-    private function validate(array &$aContent)
+    private function validate(array &$content)
     {
-        if (isset($aContent['parameters']) && !is_array($aContent['parameters'])) {
+        if (isset($content['parameters']) && !is_array($content['parameters'])) {
             throw new InvalidArgumentException('The "parameters" key should contain an array. Please check your configuration files.');
         }
     }
 
     /**
-     * @param array $aParameters
+     * @param array $parameters
      */
-    private function setParameters(array &$aParameters)
+    private function setParameters(array &$parameters)
     {
-        foreach ($aParameters as $key => $value) {
-            $this->oContainer->setParameter($key, $value);
+        foreach ($parameters as $key => $value) {
+            $this->container->setParameter($key, $value);
         }
     }
 }

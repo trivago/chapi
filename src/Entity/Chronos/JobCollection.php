@@ -10,7 +10,6 @@
 
 namespace Chapi\Entity\Chronos;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 
@@ -22,26 +21,23 @@ class JobCollection extends \ArrayObject
      * Construct a new array object
      * @link http://php.net/manual/en/arrayobject.construct.php
      *
-     * @param ChronosJobEntity[] $aJobEntities The input parameter accepts an array of \Chapi\Entity\Chronos\JobEntity.
+     * @param ChronosJobEntity[] $jobEntities The input parameter accepts an array of \Chapi\Entity\Chronos\JobEntity.
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $aJobEntities)
+    public function __construct(array $jobEntities)
     {
-        $_aJobs = [];
+        $jobs = [];
 
-        if (count($aJobEntities) > 0)
-        {
-            $_mCheck = current($aJobEntities);
-            if (!$_mCheck instanceof JobEntityInterface)
-            {
+        if (count($jobEntities) > 0) {
+            $check = current($jobEntities);
+            if (!$check instanceof JobEntityInterface) {
                 throw new \InvalidArgumentException('array has to contain JobEntity objects');
             }
 
-            foreach ($aJobEntities as $_oJobEntity)
-            {
-                $_aJobs[$_oJobEntity->getKey()] = $_oJobEntity;
+            foreach ($jobEntities as $jobEntity) {
+                $jobs[$jobEntity->getKey()] = $jobEntity;
             }
         }
-        parent::__construct($_aJobs);
+        parent::__construct($jobs);
     }
 }

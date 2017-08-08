@@ -8,15 +8,14 @@
  */
 namespace Chapi\Component\Comparison;
 
-
 interface DiffCompareInterface
 {
     const DIC_NAME = 'DiffCompareInterface';
 
     /**
-     * @param mixed $mValueA
-     * @param mixed $mValueB
+     * @param mixed $valueA
+     * @param mixed $valueB
      * @return string
      */
-    public function compare($mValueA, $mValueB);
+    public function compare($valueA, $valueB);
 }

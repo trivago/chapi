@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobRepository;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\BridgeChronos;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -21,313 +20,309 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oApiClient;
+    private $apiClient;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oCache;
+    private $cache;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobEntityValidatorService;
+    private $jobEntityValidatorService;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oLogger;
+    private $logger;
 
-    private $sJsonListingJobs = '[{"name":"job-a","command":"echo job","shell":true,"epsilon":"PT1M","executor":"","executorFlags":"","retries":0,"owner":"mail@address.com","ownerName":"Foo","description":"Generates something","async":false,"successCount":10918,"errorCount":16,"lastSuccess":"2015-08-10T07:35:04.529Z","lastError":"2015-08-03T12:15:06.183Z","cpus":0.1,"disk":24.0,"mem":128.0,"disabled":false,"softError":false,"dataProcessingJobType":false,"errorsSinceLastSuccess":0,"uris":[],"environmentVariables":[],"arguments":[],"highPriority":false,"runAsUser":"root","schedule":"R/2015-08-10T09:40:00.000+02:00/PT5M","scheduleTimeZone":"Europe/Berlin"},{"name":"job-b","command":"echo jobb","shell":true,"epsilon":"PT60S","executor":"","executorFlags":"","retries":0,"owner":"mail@address.com","ownerName":"Bar","description":"Do another thing","async":false,"successCount":1145,"errorCount":3,"lastSuccess":"2015-08-10T07:15:11.275Z","lastError":"2015-08-03T12:15:06.146Z","cpus":0.1,"disk":24.0,"mem":64.0,"disabled":false,"softError":false,"dataProcessingJobType":false,"errorsSinceLastSuccess":0,"uris":[],"environmentVariables":[],"arguments":[],"highPriority":false,"runAsUser":"root","schedule":"R/2015-08-10T09:45:00.000+02:00/PT30M","scheduleTimeZone":"Europe/Berlin"}]';
+    private $jsonListingJobs = '[{"name":"job-a","command":"echo job","shell":true,"epsilon":"PT1M","executor":"","executorFlags":"","retries":0,"owner":"mail@address.com","ownerName":"Foo","description":"Generates something","async":false,"successCount":10918,"errorCount":16,"lastSuccess":"2015-08-10T07:35:04.529Z","lastError":"2015-08-03T12:15:06.183Z","cpus":0.1,"disk":24.0,"mem":128.0,"disabled":false,"softError":false,"dataProcessingJobType":false,"errorsSinceLastSuccess":0,"uris":[],"environmentVariables":[],"arguments":[],"highPriority":false,"runAsUser":"root","schedule":"R/2015-08-10T09:40:00.000+02:00/PT5M","scheduleTimeZone":"Europe/Berlin"},{"name":"job-b","command":"echo jobb","shell":true,"epsilon":"PT60S","executor":"","executorFlags":"","retries":0,"owner":"mail@address.com","ownerName":"Bar","description":"Do another thing","async":false,"successCount":1145,"errorCount":3,"lastSuccess":"2015-08-10T07:15:11.275Z","lastError":"2015-08-03T12:15:06.146Z","cpus":0.1,"disk":24.0,"mem":64.0,"disabled":false,"softError":false,"dataProcessingJobType":false,"errorsSinceLastSuccess":0,"uris":[],"environmentVariables":[],"arguments":[],"highPriority":false,"runAsUser":"root","schedule":"R/2015-08-10T09:45:00.000+02:00/PT30M","scheduleTimeZone":"Europe/Berlin"}]';
 
-    private $aListingJobs = [];
+    private $listingJobs = [];
 
     public function setUp()
     {
-        $this->aListingJobs = json_decode($this->sJsonListingJobs, true);
+        $this->listingJobs = json_decode($this->jsonListingJobs, true);
 
-        $this->oApiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
-        $this->oApiClient
+        $this->apiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
+        $this->apiClient
             ->listingJobs()
-            ->willReturn($this->aListingJobs)
+            ->willReturn($this->listingJobs)
         ;
 
-        $this->oCache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
-        $this->oCache
+        $this->cache = $this->prophesize('Chapi\Component\Cache\CacheInterface');
+        $this->cache
             ->get(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->willReturn(null)
         ;
 
-        $this->oCache
-            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
+        $this->cache
+            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->listingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
             ->willReturn(true)
         ;
 
-        $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobValidator\ChronosJobValidatorService');
+        $this->jobEntityValidatorService = $this->prophesize('Chapi\Service\JobValidator\ChronosJobValidatorService');
 
-        $this->oLogger = $this->prophesize('Psr\Log\LoggerInterface');
+        $this->logger = $this->prophesize('Psr\Log\LoggerInterface');
     }
 
     public function testGetJobsSuccess()
     {
-        $this->oApiClient
+        $this->apiClient
             ->listingJobs()
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oCache
+        $this->cache
             ->get(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oCache
-            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
+        $this->cache
+            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->listingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
             ->shouldBeCalledTimes(1)
         ;
 
-        $_oJobRepositoryChronos = new BridgeChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $jobRepositoryChronos = new BridgeChronos(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobEntityValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_aJobs = $_oJobRepositoryChronos->getJobs();
+        $jobs = $jobRepositoryChronos->getJobs();
 
         $this->assertInternalType(
             'array',
-            $_aJobs
+            $jobs
         );
 
         $this->assertInstanceOf(
             'Chapi\Entity\Chronos\ChronosJobEntity',
-            $_aJobs[0]
+            $jobs[0]
         );
 
-        $_i = 0;
-        foreach ($_aJobs as $_sJobName => $_oJobEntity)
-        {
-
+        $i = 0;
+        foreach ($jobs as $jobName => $jobEntity) {
             $this->assertEquals(
-                $this->aListingJobs[$_i]['name'],
-                $_oJobEntity->name
+                $this->listingJobs[$i]['name'],
+                $jobEntity->name
             );
 
-            ++$_i;
+            ++$i;
         }
     }
 
     public function testGetJobsWithCacheSuccess()
     {
-        $this->oApiClient
+        $this->apiClient
             ->listingJobs()
             ->shouldNotBeCalled()
         ;
 
-        $this->oCache
+        $this->cache
             ->get(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->aListingJobs)
+            ->willReturn($this->listingJobs)
         ;
 
-        $this->oCache
-            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->aListingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
+        $this->cache
+            ->set(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST), Argument::exact($this->listingJobs), BridgeChronos::CACHE_TIME_JOB_LIST)
             ->shouldNotBeCalled()
         ;
 
-        $_oJobRepositoryChronos = new BridgeChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $jobRepositoryChronos = new BridgeChronos(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobEntityValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $_aJobs = $_oJobRepositoryChronos->getJobs();
+        $jobs = $jobRepositoryChronos->getJobs();
 
         $this->assertInternalType(
             'array',
-            $_aJobs
+            $jobs
         );
 
         $this->assertInstanceOf(
             'Chapi\Entity\Chronos\ChronosJobEntity',
-            $_aJobs[0]
+            $jobs[0]
         );
 
-        $_i = 0;
-        foreach ($_aJobs as $_sJobName => $_oJobEntity)
-        {
-
+        $i = 0;
+        foreach ($jobs as $jobName => $jobEntity) {
             $this->assertEquals(
-                $this->aListingJobs[$_i]['name'],
-                $_oJobEntity->name
+                $this->listingJobs[$i]['name'],
+                $jobEntity->name
             );
 
-            ++$_i;
+            ++$i;
         }
     }
 
     public function testAddJobSuccess()
     {
-        $this->oJobEntityValidatorService
+        $this->jobEntityValidatorService
             ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn([])
         ;
 
-        $this->oApiClient
+        $this->apiClient
             ->addingJob(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
         ;
 
-        $this->oCache
+        $this->cache
             ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
             ->willReturn(null)
         ;
 
-        $_oJobRepositoryChronos = new BridgeChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $jobRepositoryChronos = new BridgeChronos(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobEntityValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $this->assertTrue($_oJobRepositoryChronos->addJob(new ChronosJobEntity()));
+        $this->assertTrue($jobRepositoryChronos->addJob(new ChronosJobEntity()));
     }
 
     public function testAddJobFailed()
     {
-        $this->oJobEntityValidatorService
+        $this->jobEntityValidatorService
             ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn(['sProperty'])
         ;
 
-        $this->oApiClient
+        $this->apiClient
             ->addingJob(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldNotBeCalled()
         ;
 
-        $this->oCache
+        $this->cache
             ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldNotBeCalled()
         ;
 
-        $_oJobRepositoryChronos = new BridgeChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $jobRepositoryChronos = new BridgeChronos(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobEntityValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $this->assertFalse($_oJobRepositoryChronos->addJob(new ChronosJobEntity()));
+        $this->assertFalse($jobRepositoryChronos->addJob(new ChronosJobEntity()));
     }
 
     public function testUpdateJobSuccess()
     {
-        $this->oJobEntityValidatorService
+        $this->jobEntityValidatorService
             ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn([])
         ;
 
-        $this->oApiClient
+        $this->apiClient
             ->updatingJob(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
         ;
 
-        $this->oCache
+        $this->cache
             ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
             ->willReturn(null)
         ;
 
-        $_oJobRepositoryChronos = new BridgeChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $jobRepositoryChronos = new BridgeChronos(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobEntityValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $this->assertTrue($_oJobRepositoryChronos->updateJob(new ChronosJobEntity()));
+        $this->assertTrue($jobRepositoryChronos->updateJob(new ChronosJobEntity()));
     }
 
     public function testUpdateJobFailure()
     {
-        $this->oJobEntityValidatorService
+        $this->jobEntityValidatorService
             ->getInvalidProperties(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldBeCalledTimes(1)
             ->willReturn(['sProperty'])
         ;
 
-        $this->oApiClient
+        $this->apiClient
             ->updatingJob(Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))
             ->shouldNotBeCalled()
         ;
 
-        $this->oCache
+        $this->cache
             ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldNotBeCalled()
         ;
 
-        $_oJobRepositoryChronos = new BridgeChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $jobRepositoryChronos = new BridgeChronos(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobEntityValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $this->assertFalse($_oJobRepositoryChronos->updateJob(new ChronosJobEntity()));
+        $this->assertFalse($jobRepositoryChronos->updateJob(new ChronosJobEntity()));
     }
 
     public function testRemoveJobSuccess()
     {
-        $this->oApiClient
+        $this->apiClient
             ->removeJob(Argument::exact('JobA'))
             ->shouldBeCalledTimes(1)
             ->willReturn(true)
         ;
 
-        $this->oApiClient
+        $this->apiClient
             ->removeJob(Argument::exact(''))
             ->shouldBeCalledTimes(1)
             ->willReturn(false)
         ;
 
-        $this->oCache
+        $this->cache
             ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldBeCalledTimes(1)
             ->willReturn(null)
         ;
 
-        $_oJobRepositoryChronos = new BridgeChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $jobRepositoryChronos = new BridgeChronos(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobEntityValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $this->assertTrue($_oJobRepositoryChronos->removeJob($this->getValidScheduledJobEntity('JobA')));
-        $this->assertFalse($_oJobRepositoryChronos->removeJob(new ChronosJobEntity()));
+        $this->assertTrue($jobRepositoryChronos->removeJob($this->getValidScheduledJobEntity('JobA')));
+        $this->assertFalse($jobRepositoryChronos->removeJob(new ChronosJobEntity()));
     }
 
     public function testRemoveJobFailure()
     {
-        $this->oApiClient
+        $this->apiClient
             ->removeJob(Argument::exact('JobA'))
             ->shouldBeCalledTimes(1)
             ->willReturn(false)
         ;
 
-        $this->oCache
+        $this->cache
             ->delete(Argument::exact(BridgeChronos::CACHE_KEY_JOB_LIST))
             ->shouldNotBeCalled()
         ;
 
-        $_oJobRepositoryChronos = new BridgeChronos(
-            $this->oApiClient->reveal(),
-            $this->oCache->reveal(),
-            $this->oJobEntityValidatorService->reveal(),
-            $this->oLogger->reveal()
+        $jobRepositoryChronos = new BridgeChronos(
+            $this->apiClient->reveal(),
+            $this->cache->reveal(),
+            $this->jobEntityValidatorService->reveal(),
+            $this->logger->reveal()
         );
 
-        $this->assertFalse($_oJobRepositoryChronos->removeJob($this->getValidScheduledJobEntity('JobA')));
+        $this->assertFalse($jobRepositoryChronos->removeJob($this->getValidScheduledJobEntity('JobA')));
     }
 }

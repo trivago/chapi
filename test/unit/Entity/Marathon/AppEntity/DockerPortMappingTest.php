@@ -8,34 +8,35 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 
 class DockerPortMappingTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAllKeysAreCorrect() {
-        $_aKeys = ["containerPort", "hostPort", "name", "protocol", "servicePort"];
+    public function testAllKeysAreCorrect()
+    {
+        $keys = ["containerPort", "hostPort", "name", "protocol", "servicePort"];
 
-        $oDockerPortMapping = new DockerPortMapping();
+        $dockerPortMapping = new DockerPortMapping();
 
-        foreach ($_aKeys as $sProperty) {
-            $this->assertObjectHasAttribute($sProperty, $oDockerPortMapping);
+        foreach ($keys as $property) {
+            $this->assertObjectHasAttribute($property, $dockerPortMapping);
         }
     }
 
-    public function testDockerPortMappingSetProperly() {
-        $aData = [
+    public function testDockerPortMappingSetProperly()
+    {
+        $data = [
             "hostPort" => 10010,
             "containerPort" => 10011,
             "servicePort" => 10211,
             "protocol" => "udp" // tcp is default
         ];
 
-        $oDockerPortMapping = new DockerPortMapping($aData);
+        $dockerPortMapping = new DockerPortMapping($data);
 
-        $this->assertEquals(10010, $oDockerPortMapping->hostPort);
-        $this->assertEquals(10011, $oDockerPortMapping->containerPort);
-        $this->assertEquals(10211, $oDockerPortMapping->servicePort);
-        $this->assertEquals("udp", $oDockerPortMapping->protocol);
+        $this->assertEquals(10010, $dockerPortMapping->hostPort);
+        $this->assertEquals(10011, $dockerPortMapping->containerPort);
+        $this->assertEquals(10211, $dockerPortMapping->servicePort);
+        $this->assertEquals("udp", $dockerPortMapping->protocol);
     }
 }

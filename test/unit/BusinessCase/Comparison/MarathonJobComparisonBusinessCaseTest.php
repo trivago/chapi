@@ -9,7 +9,6 @@
 
 namespace unit\BusinessCase\Comparision;
 
-
 use Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
@@ -23,245 +22,243 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     use AppEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oRemoteRepository;
+    private $remoteRepository;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oLocalRepository;
+    private $localRepository;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oDiffCompare;
+    private $diffCompare;
 
     public function setUp()
     {
-        $this->oRemoteRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oLocalRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oDiffCompare = $this->prophesize('Chapi\Component\Comparison\DiffCompareInterface');
+        $this->remoteRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->localRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->diffCompare = $this->prophesize('Chapi\Component\Comparison\DiffCompareInterface');
     }
 
 
     public function testGetLocalMissingJobsSuccess()
     {
-        $_aRemoteEntities = $this->createAppCollection(['/main/id1', '/main/id2']);
-        $_aLocalEntities = $this->createAppCollection(['/main/id2']);
+        $remoteEntities = $this->createAppCollection(['/main/id1', '/main/id2']);
+        $localEntities = $this->createAppCollection(['/main/id2']);
 
-        $this->oRemoteRepository
+        $this->remoteRepository
             ->getJobs()
-            ->willReturn($_aRemoteEntities);
+            ->willReturn($remoteEntities);
 
-        $this->oLocalRepository
+        $this->localRepository
             ->getJobs()
-            ->willReturn($_aLocalEntities);
+            ->willReturn($localEntities);
 
-        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
-            $this->oLocalRepository->reveal(),
-            $this->oRemoteRepository->reveal(),
-            $this->oDiffCompare->reveal()
+        $marathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->localRepository->reveal(),
+            $this->remoteRepository->reveal(),
+            $this->diffCompare->reveal()
         );
 
-        $_aLocalMissingJobs = $oMarathonJobCompare->getLocalMissingJobs();
+        $localMissingJobs = $marathonJobCompare->getLocalMissingJobs();
 
-        $this->assertEquals(1, count($_aLocalMissingJobs), 'Expected 1 job, got ' . count($_aLocalMissingJobs));
+        $this->assertEquals(1, count($localMissingJobs), 'Expected 1 job, got ' . count($localMissingJobs));
 
-        $_sGotKey = $_aLocalMissingJobs[0];
-        $this->assertEquals("/main/id1", $_sGotKey, 'Expected ”/main/id1", received ' . $_sGotKey);
+        $gotKey = $localMissingJobs[0];
+        $this->assertEquals("/main/id1", $gotKey, 'Expected ”/main/id1", received ' . $gotKey);
     }
 
     public function testGetRemoteMissingJobsSuccess()
     {
-        $_aRemoteEntities = $this->createAppCollection(['/main/id2']);
-        $_aLocalEntities = $this->createAppCollection(['/main/id1', '/main/id2']);
+        $remoteEntities = $this->createAppCollection(['/main/id2']);
+        $localEntities = $this->createAppCollection(['/main/id1', '/main/id2']);
 
 
-        $this->oRemoteRepository
+        $this->remoteRepository
             ->getJobs()
-            ->willReturn($_aRemoteEntities);
+            ->willReturn($remoteEntities);
 
-        $this->oLocalRepository
+        $this->localRepository
             ->getJobs()
-            ->willReturn($_aLocalEntities);
+            ->willReturn($localEntities);
 
-        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
-            $this->oLocalRepository->reveal(),
-            $this->oRemoteRepository->reveal(),
-            $this->oDiffCompare->reveal()
+        $marathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->localRepository->reveal(),
+            $this->remoteRepository->reveal(),
+            $this->diffCompare->reveal()
         );
 
-        $_aRemoteMissingJobs = $oMarathonJobCompare->getRemoteMissingJobs();
+        $remoteMissingJobs = $marathonJobCompare->getRemoteMissingJobs();
 
-        $this->assertEquals(1, count($_aRemoteMissingJobs), 'Expected 1 job, got ' . count($_aRemoteMissingJobs));
+        $this->assertEquals(1, count($remoteMissingJobs), 'Expected 1 job, got ' . count($remoteMissingJobs));
 
-        $_sGotKey = $_aRemoteMissingJobs[0];
-        $this->assertEquals("/main/id1", $_sGotKey, 'Expected ”/main/id1", received ' . $_sGotKey);
+        $gotKey = $remoteMissingJobs[0];
+        $this->assertEquals("/main/id1", $gotKey, 'Expected ”/main/id1", received ' . $gotKey);
     }
 
     public function testGetLocalJobUpdatesSuccess()
     {
-        $_aLocalEntities = $this->createAppCollection(['/main/id2']);
-        $this->oLocalRepository
+        $localEntities = $this->createAppCollection(['/main/id2']);
+        $this->localRepository
             ->getJobs()
-            ->willReturn($_aLocalEntities);
+            ->willReturn($localEntities);
 
 
-        $this->oLocalRepository
+        $this->localRepository
             ->getJob(Argument::exact('/main/id2'))
-            ->willReturn($_aLocalEntities['/main/id2']);
+            ->willReturn($localEntities['/main/id2']);
 
-        $_oUpdatedApp = clone $_aLocalEntities['/main/id2'];
-        $_oUpdatedApp->cpus = 4;
+        $updatedApp = clone $localEntities['/main/id2'];
+        $updatedApp->cpus = 4;
 
-        $this->oRemoteRepository
+        $this->remoteRepository
             ->getJobs()
-            ->willReturn([$_oUpdatedApp]);
+            ->willReturn([$updatedApp]);
 
-        $this->oRemoteRepository
+        $this->remoteRepository
             ->getJob(Argument::exact('/main/id2'))
-            ->willReturn($_oUpdatedApp);
+            ->willReturn($updatedApp);
 
-        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
-            $this->oLocalRepository->reveal(),
-            $this->oRemoteRepository->reveal(),
-            $this->oDiffCompare->reveal()
+        $marathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->localRepository->reveal(),
+            $this->remoteRepository->reveal(),
+            $this->diffCompare->reveal()
         );
 
-        $_aUpdatedApps = $oMarathonJobCompare->getLocalJobUpdates();
+        $updatedApps = $marathonJobCompare->getLocalJobUpdates();
 
-        $this->assertEquals(1, count($_aUpdatedApps), 'Expected 1 job, got ' . count($_aUpdatedApps));
+        $this->assertEquals(1, count($updatedApps), 'Expected 1 job, got ' . count($updatedApps));
 
-        $this->assertEquals('/main/id2', $_aUpdatedApps[0], 'Expected "/main/id2", received ' . $_aUpdatedApps[0]);
+        $this->assertEquals('/main/id2', $updatedApps[0], 'Expected "/main/id2", received ' . $updatedApps[0]);
     }
 
     public function testGetLocalUpdatesCallsPreCompareModification()
     {
-        $_oLocalEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $localEntity = $this->getValidMarathonAppEntity('/main/id1');
 
-        $_oRemoteEntity = $this->getValidMarathonAppEntity('/main/id1');
-        $_oRemoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
+        $remoteEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $remoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
 
 
-        $this->oLocalRepository
+        $this->localRepository
             ->getJobs()
-            ->willReturn([$_oLocalEntity]);
+            ->willReturn([$localEntity]);
 
-        $this->oRemoteRepository
+        $this->remoteRepository
             ->getJobs()
-            ->willReturn([$_oRemoteEntity]);
+            ->willReturn([$remoteEntity]);
 
-        $this->oRemoteRepository
-            ->getJob(Argument::exact($_oRemoteEntity->getKey()))
-            ->willReturn($_oRemoteEntity);
+        $this->remoteRepository
+            ->getJob(Argument::exact($remoteEntity->getKey()))
+            ->willReturn($remoteEntity);
 
 
-        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
-            $this->oLocalRepository->reveal(),
-            $this->oRemoteRepository->reveal(),
-            $this->oDiffCompare->reveal()
+        $marathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->localRepository->reveal(),
+            $this->remoteRepository->reveal(),
+            $this->diffCompare->reveal()
         );
 
-        $_aGotDiff = $oMarathonJobCompare->getLocalJobUpdates('/main/id1');
+        $gotDiff = $marathonJobCompare->getLocalJobUpdates('/main/id1');
 
-        $_aExpectedDiff = [];
-        $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
-
+        $expectedDiff = [];
+        $this->assertEquals($expectedDiff, $gotDiff, "Expected diff doesn't matched recieved diff");
     }
 
     public function testGetJobDiffWithChangesInRemoteSuccess()
     {
-        $_oLocalEntity = $this->getValidMarathonAppEntity('/main/id1');
-        $_oLocalEntity->dependencies = ["/some/local/dep"];
+        $localEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $localEntity->dependencies = ["/some/local/dep"];
 
-        $_oRemoteEntity = $this->getValidMarathonAppEntity('/main/id1');
-        $_oRemoteEntity->cpus = 4;
-        $_oRemoteEntity->env = new \stdClass();
-        $_oRemoteEntity->env->path = "/test/path";
-        $_oRemoteEntity->dependencies = ["/some/local/dep", "/some/dep"];
+        $remoteEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $remoteEntity->cpus = 4;
+        $remoteEntity->env = new \stdClass();
+        $remoteEntity->env->path = "/test/path";
+        $remoteEntity->dependencies = ["/some/local/dep", "/some/dep"];
 
-        $this->oLocalRepository
-            ->getJob(Argument::exact($_oLocalEntity->getKey()))
-            ->willReturn($_oLocalEntity);
+        $this->localRepository
+            ->getJob(Argument::exact($localEntity->getKey()))
+            ->willReturn($localEntity);
 
-        $this->oRemoteRepository
-            ->getJob(Argument::exact($_oRemoteEntity->getKey()))
-            ->willReturn($_oRemoteEntity);
+        $this->remoteRepository
+            ->getJob(Argument::exact($remoteEntity->getKey()))
+            ->willReturn($remoteEntity);
 
 
-        $this->oDiffCompare
-            ->compare(Argument::exact($_oRemoteEntity->cpus), Argument::exact($_oLocalEntity->cpus))
+        $this->diffCompare
+            ->compare(Argument::exact($remoteEntity->cpus), Argument::exact($localEntity->cpus))
             ->willReturn("- 4\n+ 1")
             ->shouldBeCalledTimes(1);
 
-        $this->oDiffCompare
-            ->compare(Argument::exact($_oRemoteEntity->env), Argument::exact($_oLocalEntity->env))
+        $this->diffCompare
+            ->compare(Argument::exact($remoteEntity->env), Argument::exact($localEntity->env))
             ->willReturn('{- "path" : "/test/path"}')
             ->shouldBeCalled();
 
-        $this->oDiffCompare
-            ->compare(Argument::exact($_oRemoteEntity->dependencies), Argument::exact($_oLocalEntity->dependencies))
+        $this->diffCompare
+            ->compare(Argument::exact($remoteEntity->dependencies), Argument::exact($localEntity->dependencies))
             ->willReturn('- []\n+ [\n+ "/some/dep"\n+ ]')
             ->shouldBeCalled();
 
-        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
-            $this->oLocalRepository->reveal(),
-            $this->oRemoteRepository->reveal(),
-            $this->oDiffCompare->reveal()
+        $marathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->localRepository->reveal(),
+            $this->remoteRepository->reveal(),
+            $this->diffCompare->reveal()
         );
 
-        $_aGotDiff = $oMarathonJobCompare->getJobDiff('/main/id1');
+        $gotDiff = $marathonJobCompare->getJobDiff('/main/id1');
 
-        $_aExpectedDiff = [
+        $expectedDiff = [
             "cpus" => "- 4\n+ 1",
             "env" => '{- "path" : "/test/path"}',
             "dependencies" => '- []\n+ [\n+ "/some/dep"\n+ ]'
         ];
-        $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
+        $this->assertEquals($expectedDiff, $gotDiff, "Expected diff doesn't matched recieved diff");
     }
 
     public function testGetJobDiffCallsPreCompareModification()
     {
-        $_oLocalEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $localEntity = $this->getValidMarathonAppEntity('/main/id1');
 
-        $_oRemoteEntity = $this->getValidMarathonAppEntity('/main/id1');
-        $_oRemoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
-
-
-        $this->oLocalRepository
-            ->getJob(Argument::exact($_oLocalEntity->getKey()))
-            ->willReturn($_oLocalEntity);
-
-        $this->oRemoteRepository
-            ->getJob(Argument::exact($_oRemoteEntity->getKey()))
-            ->willReturn($_oRemoteEntity);
+        $remoteEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $remoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
 
 
-        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
-            $this->oLocalRepository->reveal(),
-            $this->oRemoteRepository->reveal(),
-            $this->oDiffCompare->reveal()
+        $this->localRepository
+            ->getJob(Argument::exact($localEntity->getKey()))
+            ->willReturn($localEntity);
+
+        $this->remoteRepository
+            ->getJob(Argument::exact($remoteEntity->getKey()))
+            ->willReturn($remoteEntity);
+
+
+        $marathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->localRepository->reveal(),
+            $this->remoteRepository->reveal(),
+            $this->diffCompare->reveal()
         );
 
-        $_aGotDiff = $oMarathonJobCompare->getJobDiff('/main/id1');
+        $gotDiff = $marathonJobCompare->getJobDiff('/main/id1');
 
-        $_aExpectedDiff = [];
-        $this->assertEquals($_aExpectedDiff, $_aGotDiff, "Expected diff doesn't matched recieved diff");
-
+        $expectedDiff = [];
+        $this->assertEquals($expectedDiff, $gotDiff, "Expected diff doesn't matched recieved diff");
     }
 
     public function testIsJobAvailableSuccess()
     {
-        $this->oLocalRepository
+        $this->localRepository
             ->getJob("/main/id1")
             ->willReturn(new MarathonAppEntity());
 
-        $this->oRemoteRepository
+        $this->remoteRepository
             ->getJob("/main/id1")
             ->willReturn(new MarathonAppEntity());
 
-        $oMarathonJobCompare = new MarathonJobComparisonBusinessCase(
-            $this->oLocalRepository->reveal(),
-            $this->oRemoteRepository->reveal(),
-            $this->oDiffCompare->reveal()
+        $marathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->localRepository->reveal(),
+            $this->remoteRepository->reveal(),
+            $this->diffCompare->reveal()
         );
 
-        $this->assertTrue($oMarathonJobCompare->isJobAvailable('/main/id1'));
+        $this->assertTrue($marathonJobCompare->isJobAvailable('/main/id1'));
     }
 
     public function testDifferentIdsAreNotEqual()
@@ -272,9 +269,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'id',
@@ -294,9 +291,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'labels',
@@ -316,9 +313,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'labels',
@@ -338,9 +335,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'labels',
@@ -360,9 +357,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'labels',
@@ -382,9 +379,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'labels',
@@ -404,9 +401,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'labels',
@@ -426,9 +423,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'dependencies',
@@ -448,9 +445,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'dependencies',
@@ -470,9 +467,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'dependencies',
@@ -492,9 +489,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'dependencies',
@@ -514,9 +511,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'dependencies',
@@ -536,9 +533,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'dependencies',
@@ -558,9 +555,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'dependencies',
@@ -585,9 +582,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
 
         $result = $method->invokeArgs(
             new MarathonJobComparisonBusinessCase(
-                $this->oLocalRepository->reveal(),
-                $this->oRemoteRepository->reveal(),
-                $this->oDiffCompare->reveal()
+                $this->localRepository->reveal(),
+                $this->remoteRepository->reveal(),
+                $this->diffCompare->reveal()
             ),
             [
                 'dependencies',

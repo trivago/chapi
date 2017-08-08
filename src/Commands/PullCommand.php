@@ -10,7 +10,6 @@
 
 namespace Chapi\Commands;
 
-
 use Chapi\BusinessCase\JobManagement\StoreJobBusinessCaseFactoryInterface;
 use Chapi\BusinessCase\JobManagement\StoreJobBusinessCaseInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -35,41 +34,36 @@ class PullCommand extends AbstractCommand
      */
     protected function process()
     {
-        $_bForce = (bool) $this->oInput->getOption('force');
-        $_aJobNames = $this->oInput->getArgument('jobnames');
+        $force = (bool) $this->input->getOption('force');
+        $jobNames = $this->input->getArgument('jobnames');
 
-        /** @var StoreJobBusinessCaseFactoryInterface $_oStoreJobBusinessCaseFactory */
-        $_oStoreJobBusinessCaseFactory = $this->getContainer()->get(StoreJobBusinessCaseFactoryInterface::DIC_NAME);
+        /** @var StoreJobBusinessCaseFactoryInterface $storeJobBusinessCaseFactory */
+        $storeJobBusinessCaseFactory = $this->getContainer()->get(StoreJobBusinessCaseFactoryInterface::DIC_NAME);
 
-        if (count($_aJobNames) == 0)
-        {
-            $_aStoreJobBusinessCases = $_oStoreJobBusinessCaseFactory->getAllStoreJobBusinessCase();
-            /** @var StoreJobBusinessCaseInterface $_oStoreJobBusinessCase */
-            foreach ($_aStoreJobBusinessCases as $_oStoreJobBusinessCase)
-            {
-                $_oStoreJobBusinessCase->storeJobsToLocalRepository($_aJobNames, $_bForce);
+        if (count($jobNames) == 0) {
+            $storeJobBusinessCases = $storeJobBusinessCaseFactory->getAllStoreJobBusinessCase();
+            /** @var StoreJobBusinessCaseInterface $storeJobBusinessCase */
+            foreach ($storeJobBusinessCases as $storeJobBusinessCase) {
+                $storeJobBusinessCase->storeJobsToLocalRepository($jobNames, $force);
             }
             return 0;
         }
 
 
-        foreach ($_aJobNames as $_sJobName)
-        {
+        foreach ($jobNames as $jobName) {
             // since the job can be of any underlying system
             // we get teh businesscase for the system
             // and the update it there.
 
             /** @var StoreJobBusinessCaseInterface  $_oStoreJobBusinessCase */
-            $_oStoreJobBusinessCase = $_oStoreJobBusinessCaseFactory->getBusinessCaseWithJob($_sJobName);
-            if (null == $_oStoreJobBusinessCase)
-            {
+            $storeJobBusinessCase = $storeJobBusinessCaseFactory->getBusinessCaseWithJob($jobName);
+            if (null == $storeJobBusinessCase) {
                 // not found but process the rest of the jobs
                 continue;
             }
 
             // TODO: add method for single job to LocalRepository update
-            $_oStoreJobBusinessCase->storeJobsToLocalRepository(array($_sJobName), $_bForce);
-
+            $storeJobBusinessCase->storeJobsToLocalRepository(array($jobName), $force);
         }
 
         return 0;

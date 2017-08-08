@@ -16,22 +16,22 @@ interface JobUtilsInterface
     const ARGUMENT_JOBNAMES = 'jobmames';
 
     /**
-     * @param Command $oCommand
-     * @param string $sDescription
+     * @param Command $command
+     * @param string $description
      * @return void
      */
-    public static function configureJobNamesArgument(Command $oCommand, $sDescription);
+    public static function configureJobNamesArgument(Command $command, $description);
 
     /**
-     * @param InputInterface $oInput
-     * @param Command $oCommand
+     * @param InputInterface $input
+     * @param Command $command
      * @return string[]
      */
-    public static function getJobNames(InputInterface $oInput, Command $oCommand);
+    public static function getJobNames(InputInterface $input, Command $command);
 
     /**
-     * @param string[] $aJobNames
+     * @param string[] $jobNames
      * @return bool
      */
-    public static function isWildcard(array $aJobNames);
+    public static function isWildcard(array $jobNames);
 }

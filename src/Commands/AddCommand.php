@@ -32,13 +32,13 @@ class AddCommand extends AbstractCommand
      */
     protected function process()
     {
-        $_aJobNames = JobUtils::getJobNames($this->oInput, $this);
-        $_aJobsToAdd = (JobUtils::isWildcard($_aJobNames))
+        $jobNames = JobUtils::getJobNames($this->input, $this);
+        $jobsToAdd = (JobUtils::isWildcard($jobNames))
             ? $this->getChangedJobs()
-            : $_aJobNames
+            : $jobNames
         ;
 
-        $this->addJobs($_aJobsToAdd);
+        $this->addJobs($jobsToAdd);
 
         return 0;
     }
@@ -49,23 +49,23 @@ class AddCommand extends AbstractCommand
     private function getChangedJobs()
     {
         // job data
-        /** @var JobComparisonInterface  $_oJobComparisonBusinessCase */
-        $_oJobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
+        /** @var JobComparisonInterface  $jobComparisonBusinessCase */
+        $jobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
 
-        $_aNewJobs = $_oJobComparisonBusinessCase->getRemoteMissingJobs();
-        $_aMissingJobs = $_oJobComparisonBusinessCase->getLocalMissingJobs();
-        $_aLocalJobUpdates = $_oJobComparisonBusinessCase->getLocalJobUpdates();
+        $newJobs = $jobComparisonBusinessCase->getRemoteMissingJobs();
+        $missingJobs = $jobComparisonBusinessCase->getLocalMissingJobs();
+        $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
 
-        return array_merge($_aNewJobs, $_aMissingJobs, $_aLocalJobUpdates);
+        return array_merge($newJobs, $missingJobs, $localJobUpdates);
     }
 
     /**
-     * @param string[] $aJobsToAdd
+     * @param string[] $jobsToAdd
      */
-    private function addJobs($aJobsToAdd)
+    private function addJobs($jobsToAdd)
     {
-        /** @var JobIndexServiceInterface  $_oJobIndexService */
-        $_oJobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
-        $_oJobIndexService->addJobs($aJobsToAdd);
+        /** @var JobIndexServiceInterface  $jobIndexService */
+        $jobIndexService = $this->getContainer()->get(JobIndexServiceInterface::DIC_NAME);
+        $jobIndexService->addJobs($jobsToAdd);
     }
 }

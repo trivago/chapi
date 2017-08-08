@@ -2,7 +2,6 @@
 
 namespace Chapi\Component\RemoteClients;
 
-
 use Chapi\Component\Http\HttpClientInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
@@ -13,13 +12,12 @@ class MarathonApiClient implements ApiClientInterface
 {
 
     /** @var HttpClientInterface  */
-    private $oHttpClient;
+    private $httpClient;
 
     public function __construct(
-        HttpClientInterface $oHttpClient
-    )
-    {
-        $this->oHttpClient = $oHttpClient;
+        HttpClientInterface $httpClient
+    ) {
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -28,57 +26,56 @@ class MarathonApiClient implements ApiClientInterface
      */
     public function listingJobs()
     {
-        $oResponse = $this->oHttpClient->get('/v2/apps');
-        if (200 == $oResponse->getStatusCode())
-        {
-            return $oResponse->json();
+        $response = $this->httpClient->get('/v2/apps');
+        if (200 == $response->getStatusCode()) {
+            return $response->json();
         }
 
         return [];
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function addingJob(JobEntityInterface $oJobEntity)
+    public function addingJob(JobEntityInterface $jobEntity)
     {
-        $_sTargetEndpoint = '/v2/apps';
+        $targetEndpoint = '/v2/apps';
 
-        $_oResponse = $this->oHttpClient->postJsonData($_sTargetEndpoint, $oJobEntity);
-        return ($_oResponse->getStatusCode() == 201);
+        $response = $this->httpClient->postJsonData($targetEndpoint, $jobEntity);
+        return ($response->getStatusCode() == 201);
     }
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntity
+     * @param JobEntityInterface|ChronosJobEntity $jobEntity
      * @return bool
      */
-    public function updatingJob(JobEntityInterface $oJobEntity)
+    public function updatingJob(JobEntityInterface $jobEntity)
     {
-        $_sJobName = $oJobEntity->getKey();
-        $_sTargetEndpoint = '/v2/apps/' . $_sJobName;
+        $jobName = $jobEntity->getKey();
+        $targetEndpoint = '/v2/apps/' . $jobName;
 
-        $_oResponse = $this->oHttpClient->putJsonData($_sTargetEndpoint, $oJobEntity);
-        return ($_oResponse->getStatusCode() == 200);
+        $response = $this->httpClient->putJsonData($targetEndpoint, $jobEntity);
+        return ($response->getStatusCode() == 200);
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    public function removeJob($sJobName)
+    public function removeJob($jobName)
     {
-        $_sTargetEndpoint = '/v2/apps/' . $sJobName;
+        $targetEndpoint = '/v2/apps/' . $jobName;
 
-        $_oResponse = $this->oHttpClient->delete($_sTargetEndpoint);
-        return ($_oResponse->getStatusCode() == 200);
+        $response = $this->httpClient->delete($targetEndpoint);
+        return ($response->getStatusCode() == 200);
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return array
      */
-    public function getJobStats($sJobName)
+    public function getJobStats($jobName)
     {
         return [];
     }
@@ -90,14 +87,11 @@ class MarathonApiClient implements ApiClientInterface
     public function ping()
     {
         try {
-            $this->oHttpClient->get('/v2/info');
-        } catch (HttpConnectionException $e)
-        {
-            if (
-                $e->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
-                $e->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
-            )
-            {
+            $this->httpClient->get('/v2/info');
+        } catch (HttpConnectionException $exception) {
+            if ($exception->getCode() == HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION ||
+                $exception->getCode() == HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION
+            ) {
                 return false;
             }
         }

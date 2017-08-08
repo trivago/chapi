@@ -10,31 +10,30 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\NotEmpty;
 
 class NotEmptyTest extends AbstractValidatorTest
 {
     public function testIsValidSuccess()
     {
-        $_oPropertyValidator = new NotEmpty();
+        $propertyValidator = new NotEmpty();
 
-        $this->handleValidTestCase($_oPropertyValidator, 'ownerName', 'owner');
-        $this->handleValidTestCase($_oPropertyValidator, 'description', 'foo bar');
+        $this->handleValidTestCase($propertyValidator, 'ownerName', 'owner');
+        $this->handleValidTestCase($propertyValidator, 'description', 'foo bar');
     }
 
     public function testIsValidFailure()
     {
-        $_oPropertyValidator = new NotEmpty();
+        $propertyValidator = new NotEmpty();
 
-        $this->handleInvalidTestCase($_oPropertyValidator, 'ownerName', '');
-        $this->handleInvalidTestCase($_oPropertyValidator, 'description', null);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'ownerName', []);
+        $this->handleInvalidTestCase($propertyValidator, 'ownerName', '');
+        $this->handleInvalidTestCase($propertyValidator, 'description', null);
+        $this->handleInvalidTestCase($propertyValidator, 'ownerName', []);
     }
 
     public function testGetLastErrorMessageMulti()
     {
-        $_oPropertyValidator = new NotEmpty();
-        $this->handleErrorMessageMultiTestCase($_oPropertyValidator, 'ownerName', 'owner', '');
+        $propertyValidator = new NotEmpty();
+        $this->handleErrorMessageMultiTestCase($propertyValidator, 'ownerName', 'owner', '');
     }
 }

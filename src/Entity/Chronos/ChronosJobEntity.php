@@ -9,7 +9,6 @@
 
 namespace Chapi\Entity\Chronos;
 
-
 use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
 use Chapi\Entity\JobEntityInterface;
 
@@ -82,30 +81,22 @@ class ChronosJobEntity implements JobEntityInterface
 
 
     /**
-     * @param array|object $mJobData
+     * @param array|object $jobData
      * @throws \InvalidArgumentException
      */
-    public function __construct($mJobData = [])
+    public function __construct($jobData = [])
     {
-        if (is_array($mJobData) || is_object($mJobData))
-        {
-            foreach ($mJobData as $_sKey => $_mValue)
-            {
-                if (property_exists($this, $_sKey))
-                {
-                    if ($_sKey == 'container')
-                    {
-                        $this->{$_sKey} = new ContainerEntity($_mValue);
-                    }
-                    else
-                    {
-                        $this->{$_sKey} = $_mValue;    
+        if (is_array($jobData) || is_object($jobData)) {
+            foreach ($jobData as $key => $value) {
+                if (property_exists($this, $key)) {
+                    if ($key == 'container') {
+                        $this->{$key} = new ContainerEntity($value);
+                    } else {
+                        $this->{$key} = $value;
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an array or object', __METHOD__));
         }
     }
@@ -117,14 +108,13 @@ class ChronosJobEntity implements JobEntityInterface
      */
     public function getSimpleArrayCopy()
     {
-        $_aReturn = [];
+        $return = [];
 
-        foreach ($this as $_sProperty => $mValue)
-        {
-            $_aReturn[$_sProperty] = (is_array($mValue) || is_object($mValue)) ? json_encode($mValue) : $mValue;
+        foreach ($this as $property => $value) {
+            $return[$property] = (is_array($value) || is_object($value)) ? json_encode($value) : $value;
         }
 
-        return $_aReturn;
+        return $return;
     }
 
     /**
@@ -148,29 +138,25 @@ class ChronosJobEntity implements JobEntityInterface
      */
     public function jsonSerialize()
     {
-        $_aReturn = (array) $this;
-        if (!empty($this->schedule))
-        {
-            unset($_aReturn['parents']);
-        }
-        else
-        {
-            unset($_aReturn['schedule']);
-            unset($_aReturn['scheduleTimeZone']);
+        $return = (array) $this;
+        if (!empty($this->schedule)) {
+            unset($return['parents']);
+        } else {
+            unset($return['schedule']);
+            unset($return['scheduleTimeZone']);
         }
 
-        if (empty($this->container))
-        {
-            unset($_aReturn['container']);
+        if (empty($this->container)) {
+            unset($return['container']);
         }
 
-        unset($_aReturn['successCount']);
-        unset($_aReturn['errorCount']);
-        unset($_aReturn['errorsSinceLastSuccess']);
-        unset($_aReturn['lastSuccess']);
-        unset($_aReturn['lastError']);
+        unset($return['successCount']);
+        unset($return['errorCount']);
+        unset($return['errorsSinceLastSuccess']);
+        unset($return['lastSuccess']);
+        unset($return['lastError']);
 
-        return $_aReturn;
+        return $return;
     }
 
     /**

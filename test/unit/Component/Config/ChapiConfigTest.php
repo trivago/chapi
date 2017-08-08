@@ -18,35 +18,35 @@ use Symfony\Component\Yaml\Parser;
 class ChapiConfigTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  vfsStreamDirectory */
-    private $oVfsRoot;
+    private $vfsRoot;
 
     /** @var string  */
-    private $sTempTestDir = '';
+    private $tempTestDir = '';
 
     /** @var string */
-    private $sRepositoryDir = 'FilterIgnoreSettingsTestDir';
+    private $repositoryDir = 'FilterIgnoreSettingsTestDir';
 
     /**
      * @var Parser
      */
-    private $oParser;
+    private $parser;
 
     /**
      * @var Dumper
      */
-    private $oDumper;
+    private $dumper;
 
     /**
      * @var array
      */
-    private $aTestConfigA;
+    private $testConfigA;
 
     public function setUp()
     {
-        $this->oParser = new Parser();
-        $this->oDumper = new Dumper();
+        $this->parser = new Parser();
+        $this->dumper = new Dumper();
 
-        $this->aTestConfigA = [
+        $this->testConfigA = [
             'profiles' => [
                 'default' => [
                     'parameters' => [
@@ -65,46 +65,46 @@ class ChapiConfigTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $_sConfig = $this->oDumper->dump($this->aTestConfigA);
+        $config = $this->dumper->dump($this->testConfigA);
 
-        $_aStructure = array(
-            '.chapiconfig' => $_sConfig
+        $structure = array(
+            '.chapiconfig' => $config
         );
-        $this->oVfsRoot = vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
+        $this->vfsRoot = vfsStream::setup($this->repositoryDir, null, $structure);
     }
 
     public function testGetConfig()
     {
-        $_oChapiConfig = new ChapiConfig(
-            [vfsStream::url($this->sRepositoryDir)],
-            $this->oParser,
+        $chapiConfig = new ChapiConfig(
+            [vfsStream::url($this->repositoryDir)],
+            $this->parser,
             'default'
         );
 
-        $_aConfig = $_oChapiConfig->getConfig();
+        $config = $chapiConfig->getConfig();
 
-        $this->assertArrayHasKey('profiles', $_aConfig);
-        $this->assertEquals($this->aTestConfigA, $_aConfig);
+        $this->assertArrayHasKey('profiles', $config);
+        $this->assertEquals($this->testConfigA, $config);
     }
 
     public function testGetProfileConfig()
     {
-        $_oChapiConfig = new ChapiConfig(
-            [vfsStream::url($this->sRepositoryDir)],
-            $this->oParser,
+        $chapiConfig = new ChapiConfig(
+            [vfsStream::url($this->repositoryDir)],
+            $this->parser,
             'default'
         );
 
-        $_aProfileConfig = $_oChapiConfig->getProfileConfig();
+        $profileConfig = $chapiConfig->getProfileConfig();
 
-        $this->assertArrayNotHasKey('profiles', $_aProfileConfig);
-        $this->assertArrayHasKey('parameters', $_aProfileConfig);
-        $this->assertEquals($this->aTestConfigA['profiles']['default'], $_aProfileConfig);
+        $this->assertArrayNotHasKey('profiles', $profileConfig);
+        $this->assertArrayHasKey('parameters', $profileConfig);
+        $this->assertEquals($this->testConfigA['profiles']['default'], $profileConfig);
     }
 
     public function testConfigMerge()
     {
-        $_aTestConfigB = [
+        $testConfigB = [
             'profiles' => [
                 'default' => [
                     'parameters' => [
@@ -114,42 +114,42 @@ class ChapiConfigTest extends \PHPUnit_Framework_TestCase
                     ],
                     'ignore' => ['new-entry']
                 ],
-                'second_profile' => $this->aTestConfigA['profiles']['default']
+                'second_profile' => $this->testConfigA['profiles']['default']
             ]
         ];
 
-        $_aStructure = array(
+        $structure = array(
             'directory' => array(
-                '.chapiconfig' => $this->oDumper->dump($_aTestConfigB)
+                '.chapiconfig' => $this->dumper->dump($testConfigB)
             ),
-            '.chapiconfig' => $this->oDumper->dump($this->aTestConfigA)
+            '.chapiconfig' => $this->dumper->dump($this->testConfigA)
 
         );
 
-        $this->oVfsRoot = vfsStream::setup($this->sRepositoryDir, null, $_aStructure);
+        $this->vfsRoot = vfsStream::setup($this->repositoryDir, null, $structure);
 
-        $_oChapiConfig = new ChapiConfig(
+        $chapiConfig = new ChapiConfig(
             [
-                vfsStream::url($this->sRepositoryDir),
-                vfsStream::url($this->sRepositoryDir) . DIRECTORY_SEPARATOR . 'directory'
+                vfsStream::url($this->repositoryDir),
+                vfsStream::url($this->repositoryDir) . DIRECTORY_SEPARATOR . 'directory'
             ],
-            $this->oParser,
+            $this->parser,
             'default'
         );
 
-        $_aConfig = $_oChapiConfig->getConfig();
+        $config = $chapiConfig->getConfig();
 
-        $this->assertArrayHasKey('profiles', $_aConfig);
-        $this->assertArrayHasKey('default', $_aConfig['profiles']);
-        $this->assertArrayHasKey('second_profile', $_aConfig['profiles']);
-        $this->assertNotEquals($this->aTestConfigA, $_aConfig);
+        $this->assertArrayHasKey('profiles', $config);
+        $this->assertArrayHasKey('default', $config['profiles']);
+        $this->assertArrayHasKey('second_profile', $config['profiles']);
+        $this->assertNotEquals($this->testConfigA, $config);
 
-        $_aProfileConfig = $_oChapiConfig->getProfileConfig();
+        $profileConfig = $chapiConfig->getProfileConfig();
 
-        $this->assertEquals('/tmp/cache/update', $_aProfileConfig['parameters']['cache_dir']);
-        $this->assertEquals('update_user', $_aProfileConfig['parameters']['chronos_http_username']);
-        $this->assertEquals('new_user', $_aProfileConfig['parameters']['marathon_http_username']);
+        $this->assertEquals('/tmp/cache/update', $profileConfig['parameters']['cache_dir']);
+        $this->assertEquals('update_user', $profileConfig['parameters']['chronos_http_username']);
+        $this->assertEquals('new_user', $profileConfig['parameters']['marathon_http_username']);
 
-        $this->assertArraySubset(['*-stage', 'new-entry'], $_aProfileConfig['ignore']);
+        $this->assertArraySubset(['*-stage', 'new-entry'], $profileConfig['ignore']);
     }
 }

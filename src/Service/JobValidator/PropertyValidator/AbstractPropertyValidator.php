@@ -9,43 +9,41 @@
 
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
 
 abstract class AbstractPropertyValidator implements PropertyValidatorInterface
 {
     /** @var string  */
-    protected $sLastErrMsg = '';
+    protected $lastErrorMessage = '';
 
     /**
      * @inheritDoc
      */
-    abstract public function isValid($sProperty, JobEntityInterface $oJobEntity);
+    abstract public function isValid($property, JobEntityInterface $jobEntity);
     
     /**
      * @inheritDoc
      */
     public function getLastErrorMessage()
     {
-        return $this->sLastErrMsg;
+        return $this->lastErrorMessage;
     }
 
     /**
-     * @param boolean $bIsValid
-     * @param string $sProperty
-     * @param string $sErrMsgTpl
+     * @param boolean $isValid
+     * @param string $property
+     * @param string $errorMessageTemplate
      * @return bool
      */
-    protected function returnIsValidHelper($bIsValid, $sProperty, $sErrMsgTpl)
+    protected function returnIsValidHelper($isValid, $property, $errorMessageTemplate)
     {
-        if (!$bIsValid)
-        {
-            $this->sLastErrMsg = sprintf($sErrMsgTpl, $sProperty);
+        if (!$isValid) {
+            $this->lastErrorMessage = sprintf($errorMessageTemplate, $property);
             return false;
         }
 
-        $this->sLastErrMsg = '';
+        $this->lastErrorMessage = '';
         return true;
     }
 }

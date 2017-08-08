@@ -10,7 +10,6 @@
 
 namespace Chapi\BusinessCase\JobManagement;
 
-
 interface StoreJobBusinessCaseInterface
 {
     const DIC_NAME = 'StoreJobBusinessCaseInterface';
@@ -21,15 +20,15 @@ interface StoreJobBusinessCaseInterface
     public function storeIndexedJobs();
 
     /**
-     * @param array $aJobNames
-     * @param bool|false $bForceOverwrite
+     * @param array $jobNames
+     * @param bool|false $forceOverwrite
      * @return void
      */
-    public function storeJobsToLocalRepository(array $aJobNames = [], $bForceOverwrite = false);
+    public function storeJobsToLocalRepository(array $jobNames = [], $forceOverwrite = false);
 
     /**
-     * @param $sJobName
+     * @param $jobName
      * @return bool
      */
-    public function isJobAvailable($sJobName);
+    public function isJobAvailable($jobName);
 }

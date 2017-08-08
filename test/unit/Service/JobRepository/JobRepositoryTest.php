@@ -10,7 +10,6 @@
 
 namespace unit\Service\JobRepository;
 
-
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepository;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -21,318 +20,317 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oRepositoryBridge;
+    private $repositoryBridge;
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
-    private $oEntityFilter;
+    private $entityFilter;
 
     public function setUp()
     {
-        $this->oRepositoryBridge = $this->prophesize('Chapi\Service\JobRepository\BridgeInterface');
-        $this->oEntityFilter = $this->prophesize('Chapi\Service\JobRepository\Filter\JobFilterInterface');
+        $this->repositoryBridge = $this->prophesize('Chapi\Service\JobRepository\BridgeInterface');
+        $this->entityFilter = $this->prophesize('Chapi\Service\JobRepository\Filter\JobFilterInterface');
     }
 
     public function testGetJobSuccess()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
-        $this->oRepositoryBridge
+        $entity = $this->getValidScheduledJobEntity('JobA');
+        $this->repositoryBridge
             ->getJobs()
             ->willReturn([
-                $_oEntity
+                $entity
             ])
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntity))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entity))
             ->willReturn(true);
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
-        $_oJobEntity = $_oJobRepository->getJob('JobA');
+        $jobEntity = $jobRepository->getJob('JobA');
 
         // known job
         $this->assertInstanceOf(
             'Chapi\Entity\JobEntityInterface',
-            $_oJobEntity
+            $jobEntity
         );
 
         $this->assertEquals(
             'JobA',
-            $_oJobEntity->name
+            $jobEntity->name
         );
 
         // empty job
-        $_oJobEntity = $_oJobRepository->getJob('JobZ');
+        $jobEntity = $jobRepository->getJob('JobZ');
 
-        $this->assertNull($_oJobEntity, "Expected null for non existing job");
+        $this->assertNull($jobEntity, "Expected null for non existing job");
     }
 
     public function testGetJobSuccessWithFilterFailure()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
-        $this->oRepositoryBridge
+        $entity = $this->getValidScheduledJobEntity('JobA');
+        $this->repositoryBridge
             ->getJobs()
             ->willReturn([
-                $_oEntity
+                $entity
             ])
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntity))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entity))
             ->willReturn(false);
 
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
-        $_oJobEntity = $_oJobRepository->getJob('JobA');
+        $jobEntity = $jobRepository->getJob('JobA');
 
-        $this->assertNull($_oJobEntity, "Expected null for non-interesting job");
-
+        $this->assertNull($jobEntity, "Expected null for non-interesting job");
     }
 
     public function testGetJobsSuccessWithFilterSuccess()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
-        $this->oRepositoryBridge
+        $entity = $this->getValidScheduledJobEntity('JobA');
+        $this->repositoryBridge
             ->getJobs()
             ->willReturn([
-                $_oEntity
+                $entity
             ])
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntity))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entity))
             ->willReturn(true);
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
-        $_oJobCollection = $_oJobRepository->getJobs();
+        $jobCollection = $jobRepository->getJobs();
 
         $this->assertInstanceOf(
             'Chapi\Entity\Chronos\JobCollection',
-            $_oJobCollection
+            $jobCollection
         );
 
         $this->assertInstanceOf(
             'Chapi\Entity\JobEntityInterface',
-            $_oJobCollection['JobA']
+            $jobCollection['JobA']
         );
     }
 
     public function testGetJobsSuccessWithFilterFailure()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
-        $this->oRepositoryBridge
+        $entity = $this->getValidScheduledJobEntity('JobA');
+        $this->repositoryBridge
             ->getJobs()
             ->willReturn([
-                $_oEntity
+                $entity
             ])
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntity))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entity))
             ->willReturn(false);
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
-        $_oJobCollection = $_oJobRepository->getJobs();
+        $jobCollection = $jobRepository->getJobs();
 
         $this->assertInstanceOf(
             'Chapi\Entity\Chronos\JobCollection',
-            $_oJobCollection
+            $jobCollection
         );
 
-        $this->assertEmpty($_oJobCollection, "Expected empty job collection with no interestesting jobs");
+        $this->assertEmpty($jobCollection, "Expected empty job collection with no interestesting jobs");
     }
 
 
     public function testAddJobSuccess()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
+        $entity = $this->getValidScheduledJobEntity('JobA');
 
-        $this->oRepositoryBridge
-            ->addJob(Argument::exact($_oEntity))
+        $this->repositoryBridge
+            ->addJob(Argument::exact($entity))
             ->willReturn(true)
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntity))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entity))
             ->willReturn(true);
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
         $this->assertTrue(
-            $_oJobRepository->addJob($_oEntity)
+            $jobRepository->addJob($entity)
         );
     }
 
     public function testAddJobSuccessWithInitialisedJobCollection()
     {
-        $_oEntityA = $this->getValidScheduledJobEntity('JobA');
-        $_oEntityB = $this->getValidScheduledJobEntity('JobB');
+        $entityA = $this->getValidScheduledJobEntity('JobA');
+        $entityB = $this->getValidScheduledJobEntity('JobB');
 
-        $this->oRepositoryBridge
+        $this->repositoryBridge
             ->getJobs()
-            ->willReturn([$_oEntityA])
+            ->willReturn([$entityA])
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oRepositoryBridge
-            ->addJob(Argument::exact($_oEntityB))
+        $this->repositoryBridge
+            ->addJob(Argument::exact($entityB))
             ->willReturn(true)
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntityA))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entityA))
             ->willReturn(true);
 
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
-        $_oJobEntityResult = $_oJobRepository->getJob('JobA');
+        $jobEntityResult = $jobRepository->getJob('JobA');
 
         // known job
         $this->assertEquals(
             'JobA',
-            $_oJobEntityResult->name
+            $jobEntityResult->name
         );
 
         $this->assertTrue(
-            $_oJobRepository->addJob($_oEntityB)
+            $jobRepository->addJob($entityB)
         );
     }
 
     public function testAddJobFailure()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
+        $entity = $this->getValidScheduledJobEntity('JobA');
 
-        $this->oRepositoryBridge
-            ->addJob(Argument::exact($_oEntity))
+        $this->repositoryBridge
+            ->addJob(Argument::exact($entity))
             ->willReturn(false)
             ->shouldBeCalledTimes(1)
         ;
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
         $this->assertFalse(
-            $_oJobRepository->addJob($_oEntity)
+            $jobRepository->addJob($entity)
         );
     }
 
     public function testUpdateJobSuccess()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
+        $entity = $this->getValidScheduledJobEntity('JobA');
 
-        $this->oRepositoryBridge
-            ->updateJob(Argument::exact($_oEntity))
+        $this->repositoryBridge
+            ->updateJob(Argument::exact($entity))
             ->willReturn(true)
             ->shouldBeCalledTimes(1)
         ;
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
         $this->assertTrue(
-            $_oJobRepository->updateJob($_oEntity)
+            $jobRepository->updateJob($entity)
         );
     }
 
     public function testRemoveJobSuccess()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
+        $entity = $this->getValidScheduledJobEntity('JobA');
 
-        $this->oRepositoryBridge
-            ->removeJob(Argument::exact($_oEntity))
+        $this->repositoryBridge
+            ->removeJob(Argument::exact($entity))
             ->willReturn(true)
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oRepositoryBridge
+        $this->repositoryBridge
             ->getJobs()
-            ->willReturn([$_oEntity])
+            ->willReturn([$entity])
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntity))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entity))
             ->willReturn(true);
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
         $this->assertTrue(
-            $_oJobRepository->removeJob($_oEntity->name)
+            $jobRepository->removeJob($entity->name)
         );
 
         $this->assertNull(
-            $_oJobRepository->getJob('JobA')
+            $jobRepository->getJob('JobA')
         );
     }
 
     public function testRemoveJobFailure()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
+        $entity = $this->getValidScheduledJobEntity('JobA');
 
-        $this->oRepositoryBridge
-            ->removeJob(Argument::exact($_oEntity))
+        $this->repositoryBridge
+            ->removeJob(Argument::exact($entity))
             ->willReturn(false)
             ->shouldBeCalledTimes(1)
         ;
 
-        $this->oRepositoryBridge
+        $this->repositoryBridge
             ->getJobs()
-            ->willReturn([$_oEntity])
+            ->willReturn([$entity])
             ->shouldBeCalledTimes(1)
         ;
 
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntity))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entity))
             ->willReturn(true);
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
         $this->assertFalse(
-            $_oJobRepository->removeJob($_oEntity->name)
+            $jobRepository->removeJob($entity->name)
         );
 
         $this->assertEquals(
-            $_oEntity,
-            $_oJobRepository->getJob('JobA')
+            $entity,
+            $jobRepository->getJob('JobA')
         );
     }
 
@@ -341,55 +339,55 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveJobFailureException()
     {
-        $this->oRepositoryBridge
+        $this->repositoryBridge
             ->removeJob(Argument::any())
             ->shouldNotBeCalled()
         ;
 
-        $this->oRepositoryBridge
+        $this->repositoryBridge
             ->getJobs()
             ->willReturn([])
             ->shouldBeCalledTimes(1)
         ;
 
 
-        $this->oEntityFilter
+        $this->entityFilter
             ->isInteresting(Argument::any())
             ->willReturn(true)
             ->shouldBeCalledTimes(0);
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
         $this->assertFalse(
-            $_oJobRepository->removeJob('JobA')
+            $jobRepository->removeJob('JobA')
         );
     }
 
     public function testHasJobSuccess()
     {
-        $_oEntity = $this->getValidScheduledJobEntity('JobA');
-        $this->oRepositoryBridge
+        $entity = $this->getValidScheduledJobEntity('JobA');
+        $this->repositoryBridge
             ->getJobs()
             ->willReturn([
-                $_oEntity
+                $entity
             ])
             ->shouldBeCalledTimes(1)
         ;
 
 
-        $this->oEntityFilter
-            ->isInteresting(Argument::exact($_oEntity))
+        $this->entityFilter
+            ->isInteresting(Argument::exact($entity))
             ->willReturn(true);
 
-        $_oJobRepository = new JobRepository(
-            $this->oRepositoryBridge->reveal(),
-            $this->oEntityFilter->reveal()
+        $jobRepository = new JobRepository(
+            $this->repositoryBridge->reveal(),
+            $this->entityFilter->reveal()
         );
 
-        $this->assertTrue($_oJobRepository->hasJob('JobA'));
-        $this->assertFalse($_oJobRepository->hasJob('JobB'));
+        $this->assertTrue($jobRepository->hasJob('JobA'));
+        $this->assertFalse($jobRepository->hasJob('JobB'));
     }
 }

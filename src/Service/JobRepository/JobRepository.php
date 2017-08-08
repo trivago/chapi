@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobRepository;
 
-
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
@@ -21,53 +20,52 @@ class JobRepository implements JobRepositoryInterface
     /**
      * @var JobCollection
      */
-    private $oJobCollection;
+    private $jobCollection;
 
     /**
      * @var BridgeInterface
      */
-    private $oRepositoryBridge;
+    private $repositoryBridge;
 
     /**
      * @var JobFilterInterface
      */
-    private $oJobFilter;
+    private $jobFilter;
 
     /**
-     * @param BridgeInterface $oRepositoryBridge
+     * @param BridgeInterface $repositoryBridge
+     * @param JobFilterInterface $jobFilter
      */
     public function __construct(
-        BridgeInterface $oRepositoryBridge,
-        JobFilterInterface $oJobFilter
-    )
-    {
-        $this->oRepositoryBridge = $oRepositoryBridge;
-        $this->oJobFilter = $oJobFilter;
+        BridgeInterface $repositoryBridge,
+        JobFilterInterface $jobFilter
+    ) {
+        $this->repositoryBridge = $repositoryBridge;
+        $this->jobFilter = $jobFilter;
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return ChronosJobEntity
      */
-    public function getJob($sJobName)
+    public function getJob($jobName)
     {
-        $_aJobs = $this->getJobs();
-        if (isset($_aJobs[$sJobName]))
-        {
-            return $_aJobs[$sJobName];
+        $jobs = $this->getJobs();
+        if (isset($jobs[$jobName])) {
+            return $jobs[$jobName];
         }
 
         return null;
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    public function hasJob($sJobName)
+    public function hasJob($jobName)
     {
-        $_aJobs = $this->getJobs();
-        return (isset($_aJobs[$sJobName]));
+        $jobs = $this->getJobs();
+        return (isset($jobs[$jobName]));
     }
 
     /**
@@ -75,34 +73,31 @@ class JobRepository implements JobRepositoryInterface
      */
     public function getJobs()
     {
-        if (!is_null($this->oJobCollection))
-        {
-            return $this->oJobCollection;
+        if (!is_null($this->jobCollection)) {
+            return $this->jobCollection;
         }
 
         // apply filter
-        $aJobs = array_filter(
-            $this->oRepositoryBridge->getJobs(),
-            array($this->oJobFilter, 'isInteresting')
+        $jobs = array_filter(
+            $this->repositoryBridge->getJobs(),
+            array($this->jobFilter, 'isInteresting')
         );
 
-        return $this->oJobCollection = new JobCollection(
-            $aJobs
+        return $this->jobCollection = new JobCollection(
+            $jobs
         );
     }
 
     /**
-     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $jobEntity
      * @return bool
      */
-    public function addJob(JobEntityInterface $oJobEntity)
+    public function addJob(JobEntityInterface $jobEntity)
     {
-        if ($this->oRepositoryBridge->addJob($oJobEntity))
-        {
+        if ($this->repositoryBridge->addJob($jobEntity)) {
             // if no collection inited the new job will init by chronos request
-            if (!is_null($this->oJobCollection))
-            {
-                $this->oJobCollection->offsetSet($oJobEntity->getKey(), $oJobEntity);
+            if (!is_null($this->jobCollection)) {
+                $this->jobCollection->offsetSet($jobEntity->getKey(), $jobEntity);
             }
 
             return true;
@@ -112,29 +107,27 @@ class JobRepository implements JobRepositoryInterface
     }
 
     /**
-     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $jobEntity
      * @return bool
      */
-    public function updateJob(JobEntityInterface $oJobEntity)
+    public function updateJob(JobEntityInterface $jobEntity)
     {
-        return $this->oRepositoryBridge->updateJob($oJobEntity);
+        return $this->repositoryBridge->updateJob($jobEntity);
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return bool
      */
-    public function removeJob($sJobName)
+    public function removeJob($jobName)
     {
-        $_oJobEntity = $this->getJob($sJobName);
-        if (!$_oJobEntity)
-        {
-            throw new \InvalidArgumentException(sprintf('Can\'t remove unknown job "%s"', $sJobName));
+        $jobEntity = $this->getJob($jobName);
+        if (!$jobEntity) {
+            throw new \InvalidArgumentException(sprintf('Can\'t remove unknown job "%s"', $jobName));
         }
 
-        if ($this->oRepositoryBridge->removeJob($_oJobEntity))
-        {
-            $this->oJobCollection->offsetUnset($_oJobEntity->getKey());
+        if ($this->repositoryBridge->removeJob($jobEntity)) {
+            $this->jobCollection->offsetUnset($jobEntity->getKey());
             return true;
         }
 

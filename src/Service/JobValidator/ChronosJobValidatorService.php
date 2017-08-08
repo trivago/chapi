@@ -19,12 +19,12 @@ class ChronosJobValidatorService implements JobValidatorServiceInterface
     /**
      * @var ValidatorFactoryInterface
      */
-    private $oValidatorFactory;
+    private $validatorFactory;
 
     /**
      * @var array
      */
-    private static $aValidationMap = [
+    private static $validationMap = [
         'name' => ValidatorFactoryInterface::NAME_VALIDATOR,
         'command' => ValidatorFactoryInterface::COMMAND_VALIDATOR,
         'description' => ValidatorFactoryInterface::NOT_EMPTY_VALIDATOR,
@@ -44,25 +44,22 @@ class ChronosJobValidatorService implements JobValidatorServiceInterface
 
     /**
      * ChronosJobValidatorService constructor.
-     * @param ValidatorFactoryInterface $oValidatorFactory
+     * @param ValidatorFactoryInterface $validatorFactory
      */
     public function __construct(
-        ValidatorFactoryInterface $oValidatorFactory
-    )
-    {
-        $this->oValidatorFactory = $oValidatorFactory;
+        ValidatorFactoryInterface $validatorFactory
+    ) {
+        $this->validatorFactory = $validatorFactory;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function isEntityValid(JobEntityInterface $oJobEntity)
+    public function isEntityValid(JobEntityInterface $jobEntity)
     {
-        foreach ($this->validateJobEntity($oJobEntity) as $_oValidatorResult)
-        {
-            if (!$_oValidatorResult->bIsValid)
-            {
+        foreach ($this->validateJobEntity($jobEntity) as $validatorResult) {
+            if (!$validatorResult->isValid) {
                 return false;
             }
         }
@@ -71,54 +68,51 @@ class ChronosJobValidatorService implements JobValidatorServiceInterface
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return array
      */
-    public function getInvalidProperties(JobEntityInterface $oJobEntity)
+    public function getInvalidProperties(JobEntityInterface $jobEntity)
     {
-        $_aValidationFields = $this->validateJobEntity($oJobEntity);
+        $validationFields = $this->validateJobEntity($jobEntity);
 
-        $_aInvalidFields = [];
-        foreach ($_aValidationFields as $_sProperty => $_oValidationResult)
-        {
-            if (false == $_oValidationResult->bIsValid)
-            {
-                $_aInvalidFields[$_sProperty] = $_oValidationResult->sErrorMessage;
+        $invalidFields = [];
+        foreach ($validationFields as $property => $validationResult) {
+            if (false == $validationResult->isValid) {
+                $invalidFields[$property] = $validationResult->errorMessage;
             }
         }
 
-        return $_aInvalidFields;
+        return $invalidFields;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return array
      */
-    private function validateJobEntity(JobEntityInterface $oJobEntity)
+    private function validateJobEntity(JobEntityInterface $jobEntity)
     {
-        $_aValidProperties = [];
+        $validProperties = [];
 
-        foreach (self::$aValidationMap as $_sProperty => $_iValidator)
-        {
-            $_aValidProperties[$_sProperty] = $this->getValidationResult($_iValidator, $_sProperty, $oJobEntity);
+        foreach (self::$validationMap as $property => $validator) {
+            $validProperties[$property] = $this->getValidationResult($validator, $property, $jobEntity);
         }
 
-        return $_aValidProperties;
+        return $validProperties;
     }
 
     /**
-     * @param int $iValidator
-     * @param string $sProperty
-     * @param JobEntityInterface $oJobEntity
+     * @param int $validator
+     * @param string $property
+     * @param JobEntityInterface $oJobEntityjobEntity
      * @return ValidationResult
      */
-    private function getValidationResult($iValidator, $sProperty, JobEntityInterface $oJobEntity)
+    private function getValidationResult($validator, $property, JobEntityInterface $oJobEntityjobEntity)
     {
-        $_oValidator = $this->oValidatorFactory->getValidator($iValidator);
+        $validator = $this->validatorFactory->getValidator($validator);
         return new ValidationResult(
-            $sProperty,
-            $_oValidator->isValid($sProperty, $oJobEntity),
-            $_oValidator->getLastErrorMessage()
+            $property,
+            $validator->isValid($property, $oJobEntityjobEntity),
+            $validator->getLastErrorMessage()
         );
     }
 }

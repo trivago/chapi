@@ -8,7 +8,6 @@
 
 namespace unit\Component\RemoteClients;
 
-
 use Chapi\Component\RemoteClients\MarathonApiClient;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Exception\HttpConnectionException;
@@ -19,144 +18,141 @@ class MarathonApiClientTest extends \PHPUnit_Framework_TestCase
 {
     use AppEntityTrait;
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oHttpClient;
+    private $httpClient;
 
     /**  @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oHttpResponse;
+    private $httpResponse;
 
     public function setUp()
     {
-        $this->oHttpClient = $this->prophesize('Chapi\Component\Http\HttpClientInterface');
-        $this->oHttpResponse = $this->prophesize('Chapi\Component\Http\HttpClientResponseInterface');
+        $this->httpClient = $this->prophesize('Chapi\Component\Http\HttpClientInterface');
+        $this->httpResponse = $this->prophesize('Chapi\Component\Http\HttpClientResponseInterface');
     }
 
     public function testListingJobsSuccess()
     {
-        $this->oHttpResponse
+        $this->httpResponse
             ->getStatusCode()
             ->willReturn(200);
 
-        $this->oHttpResponse
+        $this->httpResponse
             ->json()
             ->willReturn(["id" => "/someid"]);
 
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/v2/apps'))
-            ->willReturn($this->oHttpResponse->reveal());
+            ->willReturn($this->httpResponse->reveal());
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
-        $aData = $oMarathonApiClient->listingJobs();
+        $data = $marathonApiClient->listingJobs();
 
-        $this->assertEquals(["id" => "/someid"], $aData);
+        $this->assertEquals(["id" => "/someid"], $data);
     }
 
     public function testAddingJobSuccess()
     {
-        $oAppEntity = $this->getValidMarathonAppEntity('/some/id');
+        $appEntity = $this->getValidMarathonAppEntity('/some/id');
 
-        $this->oHttpResponse
+        $this->httpResponse
             ->getStatusCode()
             ->willReturn(201);
 
-        $this->oHttpClient
-            ->postJsonData(Argument::exact('/v2/apps'), Argument::exact($oAppEntity))
-            ->willReturn($this->oHttpResponse->reveal());
+        $this->httpClient
+            ->postJsonData(Argument::exact('/v2/apps'), Argument::exact($appEntity))
+            ->willReturn($this->httpResponse->reveal());
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
 
-        $this->assertTrue($oMarathonApiClient->addingJob($oAppEntity));
+        $this->assertTrue($marathonApiClient->addingJob($appEntity));
     }
 
     public function testUpdatingJobSuccess()
     {
-        $oAppEntity = $this->getValidMarathonAppEntity('/some/id');
+        $appEntity = $this->getValidMarathonAppEntity('/some/id');
 
-        $this->oHttpResponse
+        $this->httpResponse
             ->getStatusCode()
             ->willReturn(200);
 
-        $this->oHttpClient
-            ->putJsonData(Argument::exact('/v2/apps//some/id'), Argument::exact($oAppEntity))
-            ->willReturn($this->oHttpResponse->reveal());
+        $this->httpClient
+            ->putJsonData(Argument::exact('/v2/apps//some/id'), Argument::exact($appEntity))
+            ->willReturn($this->httpResponse->reveal());
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($oMarathonApiClient->updatingJob($oAppEntity));
+        $this->assertTrue($marathonApiClient->updatingJob($appEntity));
     }
 
     public function testRemoveJobSuccess()
     {
-        $this->oHttpResponse
+        $this->httpResponse
             ->getStatusCode()
             ->willReturn(200);
 
-        $this->oHttpClient
+        $this->httpClient
             ->delete(Argument::exact('/v2/apps/someid'))
-            ->willReturn($this->oHttpResponse->reveal());
+            ->willReturn($this->httpResponse->reveal());
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($oMarathonApiClient->removeJob('someid'));
+        $this->assertTrue($marathonApiClient->removeJob('someid'));
     }
 
 
     public function testPingSuccess()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/v2/info'))
-            ->willReturn($this->oHttpResponse);
+            ->willReturn($this->httpResponse);
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($oMarathonApiClient->ping());
+        $this->assertTrue($marathonApiClient->ping());
     }
 
     public function testPingFailureForConnectError()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/v2/info'))
             ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION));
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($oMarathonApiClient->ping());
+        $this->assertFalse($marathonApiClient->ping());
     }
 
     public function testPingFailureForRequestError()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/v2/info'))
             ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION));
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($oMarathonApiClient->ping());
+        $this->assertFalse($marathonApiClient->ping());
     }
 
     public function testPingSucessFor4xxErrors()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/v2/info'))
             ->willThrow(new HttpConnectionException("somemessage", 403));
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($oMarathonApiClient->ping());
+        $this->assertTrue($marathonApiClient->ping());
     }
 
     public function testPingSuccessFor5xxErrors()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/v2/info'))
             ->willThrow(new HttpConnectionException("somemessage", 501));
 
-        $oMarathonApiClient = new MarathonApiClient($this->oHttpClient->reveal());
+        $marathonApiClient = new MarathonApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($oMarathonApiClient->ping());
-
+        $this->assertTrue($marathonApiClient->ping());
     }
-
-
 }

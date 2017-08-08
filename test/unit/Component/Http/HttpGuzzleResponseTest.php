@@ -8,52 +8,52 @@
 
 namespace unit\Component\Http;
 
-use Chapi\Component\Http\HttpGuzzlResponse;
+use Chapi\Component\Http\HttpGuzzleResponse;
 
 class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oResponseInterface;
+    private $responseInterface;
 
     public function setUp()
     {
-        $this->oResponseInterface = $this->prophesize('Psr\Http\Message\ResponseInterface');
+        $this->responseInterface = $this->prophesize('Psr\Http\Message\ResponseInterface');
     }
 
     public function testGetStatusCodeSuccess()
     {
-        $this->oResponseInterface
+        $this->responseInterface
             ->getStatusCode()
             ->shouldBeCalledTimes(1)
             ->willReturn(200);
 
-        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+        $httpGuzzleResponse = new HttpGuzzleResponse($this->responseInterface->reveal());
 
-        $this->assertEquals(200, $_oHttpGuzzleResponse->getStatusCode());
+        $this->assertEquals(200, $httpGuzzleResponse->getStatusCode());
     }
 
     public function testGetBodySuccess()
     {
-        $this->oResponseInterface
+        $this->responseInterface
             ->getBody()
             ->shouldBeCalledTimes(1)
             ->willReturn('string');
 
-        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+        $httpGuzzleResponse = new HttpGuzzleResponse($this->responseInterface->reveal());
 
-        $this->assertEquals('string', $_oHttpGuzzleResponse->getBody());
+        $this->assertEquals('string', $httpGuzzleResponse->getBody());
     }
 
     public function testJsonSuccess()
     {
-        $this->oResponseInterface
+        $this->responseInterface
             ->getBody()
             ->shouldBeCalledTimes(1)
             ->willReturn(json_encode([1,2,3]));
 
-        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+        $httpGuzzleResponse = new HttpGuzzleResponse($this->responseInterface->reveal());
 
-        $this->assertEquals([1,2,3], $_oHttpGuzzleResponse->json());
+        $this->assertEquals([1,2,3], $httpGuzzleResponse->json());
     }
 
     public function testJsonReturnAssocArray()
@@ -69,14 +69,14 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
             ],
             'taskStatHistory' => []
         ];
-        $this->oResponseInterface
+        $this->responseInterface
             ->getBody()
             ->shouldBeCalledTimes(1)
             ->willReturn(json_encode($dummyBody));
 
-        $_oHttpGuzzleResponse = new HttpGuzzlResponse($this->oResponseInterface->reveal());
+        $httpGuzzleResponse = new HttpGuzzleResponse($this->responseInterface->reveal());
 
-        $result = $_oHttpGuzzleResponse->json();
+        $result = $httpGuzzleResponse->json();
         $this->assertInternalType('array', $result);
         $this->assertEquals($dummyBody, $result);
     }

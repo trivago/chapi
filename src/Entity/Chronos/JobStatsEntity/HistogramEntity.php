@@ -34,34 +34,31 @@ class HistogramEntity
     public $count = 0;
 
     /**
-     * @param array $aHistogram
+     * @param array $histogram
      */
-    public function __construct(array $aHistogram = [])
+    public function __construct(array $histogram = [])
     {
-        foreach ($aHistogram as $_sKey => $_fValue)
-        {
-            switch ($_sKey)
-            {
+        foreach ($histogram as $key => $value) {
+            switch ($key) {
                 case '75thPercentile':
-                    $this->percentile75th = $_fValue;
+                    $this->percentile75th = $value;
                     break;
 
                 case '95thPercentile':
-                    $this->percentile95th = $_fValue;
+                    $this->percentile95th = $value;
                     break;
 
                 case '98thPercentile':
-                    $this->percentile98th = $_fValue;
+                    $this->percentile98th = $value;
                     break;
 
                 case '99thPercentile':
-                    $this->percentile99th = $_fValue;
+                    $this->percentile99th = $value;
                     break;
 
                 default:
-                    if (property_exists($this, $_sKey))
-                    {
-                        $this->{$_sKey} = $_fValue;
+                    if (property_exists($this, $key)) {
+                        $this->{$key} = $value;
                     }
             }
         }

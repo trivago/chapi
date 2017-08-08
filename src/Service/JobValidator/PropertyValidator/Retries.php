@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
@@ -22,11 +21,11 @@ class Retries extends AbstractPropertyValidator implements PropertyValidatorInte
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            (is_numeric($oJobEntity->{$sProperty}) && $oJobEntity->{$sProperty} >= 0),
-            $sProperty,
+            (is_numeric($jobEntity->{$property}) && $jobEntity->{$property} >= 0),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }

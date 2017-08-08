@@ -14,56 +14,59 @@ use Chapi\Component\DependencyInjection\Loader\ChapiConfigLoader;
 class ChapiConfigLoaderTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oContainer;
+    private $container;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oConfig;
+    private $config;
 
     public function setUp()
     {
         // Symfony\Component\DependencyInjection\ContainerInterface
-        $this->oContainer = $this->prophesize('Symfony\Component\DependencyInjection\ContainerBuilder');
-        $this->oConfig = $this->prophesize('Chapi\Component\Config\ChapiConfigInterface');
+        $this->container = $this->prophesize('Symfony\Component\DependencyInjection\ContainerBuilder');
+        $this->config = $this->prophesize('Chapi\Component\Config\ChapiConfigInterface');
     }
 
-    public function testLoadProfileParametersWithoutConfigSettings() {
-        $_oChapiConfigLoader = new ChapiConfigLoader(
-            $this->oContainer->reveal(),
-            $this->oConfig->reveal()
+    public function testLoadProfileParametersWithoutConfigSettings()
+    {
+        $chapiConfigLoader = new ChapiConfigLoader(
+            $this->container->reveal(),
+            $this->config->reveal()
         );
 
-        $this->assertNull($_oChapiConfigLoader->loadProfileParameters());
+        $this->assertNull($chapiConfigLoader->loadProfileParameters());
     }
 
-    public function testLoadProfileParametersWithConfigSettings() {
-        $this->oConfig->getProfileConfig()->willReturn([
+    public function testLoadProfileParametersWithConfigSettings()
+    {
+        $this->config->getProfileConfig()->willReturn([
             'parameters' => [
                 'paramA' => 'A',
                 'paramB' => 'B'
             ]
         ]);
 
-        $_oChapiConfigLoader = new ChapiConfigLoader(
-            $this->oContainer->reveal(),
-            $this->oConfig->reveal()
+        $chapiConfigLoader = new ChapiConfigLoader(
+            $this->container->reveal(),
+            $this->config->reveal()
         );
 
-        $this->assertNull($_oChapiConfigLoader->loadProfileParameters());
+        $this->assertNull($chapiConfigLoader->loadProfileParameters());
     }
 
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testLoadProfileParametersFailure() {
-        $this->oConfig->getProfileConfig()->willReturn([
+    public function testLoadProfileParametersFailure()
+    {
+        $this->config->getProfileConfig()->willReturn([
             'parameters' => 'not_valid'
         ]);
 
-        $_oChapiConfigLoader = new ChapiConfigLoader(
-            $this->oContainer->reveal(),
-            $this->oConfig->reveal()
+        $chapiConfigLoader = new ChapiConfigLoader(
+            $this->container->reveal(),
+            $this->config->reveal()
         );
 
-        $_oChapiConfigLoader->loadProfileParameters();
+        $chapiConfigLoader->loadProfileParameters();
     }
 }

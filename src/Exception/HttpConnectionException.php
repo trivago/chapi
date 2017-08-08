@@ -10,7 +10,6 @@
 
 namespace Chapi\Exception;
 
-
 class HttpConnectionException extends \Exception
 {
     const ERROR_CODE_REQUEST_EXCEPTION = 1;

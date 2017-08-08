@@ -12,14 +12,13 @@ use Symfony\Component\Console\Application;
 
 class ChapiApplication extends Application
 {
-    public function __construct($sName = 'Chapi', $sVersion = '@package_version@')
+    public function __construct($name = 'Chapi', $version = '@package_version@')
     {
-        if ('@package_version@' !== $sVersion)
-        {
-            $sVersion = ltrim($sVersion, 'v');
+        if ('@package_version@' !== $version) {
+            $version = ltrim($version, 'v');
         }
 
-        parent::__construct($sName, $sVersion);
+        parent::__construct($name, $version);
 
         $this->setDefaultCommand('help.commands');
         $this->addCommands($this->getCommands());

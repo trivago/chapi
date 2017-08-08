@@ -9,15 +9,14 @@
 
 namespace Chapi\BusinessCase\JobManagement;
 
-
 interface StoreJobBusinessCaseFactoryInterface
 {
     const DIC_NAME = 'StoreJobBusinessCaseFactoryInterface';
     /**
-     * @param StoreJobBusinessCaseInterface $oStoreJob
+     * @param StoreJobBusinessCaseInterface $storeJob
      * @return void
      */
-    public function addBusinesCase(StoreJobBusinessCaseInterface $oStoreJob);
+    public function addBusinesCase(StoreJobBusinessCaseInterface $storeJob);
 
     /**
      * @return StoreJobBusinessCaseInterface[]
@@ -25,8 +24,8 @@ interface StoreJobBusinessCaseFactoryInterface
     public function getAllStoreJobBusinessCase();
 
     /**
-     * @param $sJobName
+     * @param $jobName
      * @return StoreJobBusinessCaseInterface
      */
-    public function getBusinessCaseWithJob($sJobName);
+    public function getBusinessCaseWithJob($jobName);
 }

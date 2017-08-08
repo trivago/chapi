@@ -14,28 +14,28 @@ interface HttpClientInterface
     const DIC_NAME_GUZZLE = 'HttpClientGuzzle';
 
     /**
-     * @param string $sUrl
+     * @param string $url
      * @return HttpClientResponseInterface
      */
-    public function get($sUrl);
+    public function get($url);
 
     /**
-     * @param string $sUrl
-     * @param mixed $mPostData
+     * @param string $url
+     * @param mixed $postData
      * @return HttpClientResponseInterface
      */
-    public function postJsonData($sUrl, $mPostData);
+    public function postJsonData($url, $postData);
 
     /**
-     * @param string $sUrl
+     * @param string $url
      * @return HttpClientResponseInterface
      */
-    public function delete($sUrl);
+    public function delete($url);
 
     /**
-     * @param string $sUrl
-     * @param mixed $mPostData
+     * @param string $url
+     * @param mixed $postData
      * @return HttpClientResponseInterface
      */
-    public function putJsonData($sUrl, $mPostData);
+    public function putJsonData($url, $postData);
 }

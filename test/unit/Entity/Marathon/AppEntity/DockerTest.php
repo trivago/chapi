@@ -8,14 +8,14 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\Docker;
 use Chapi\Entity\Marathon\AppEntity\DockerParameters;
 
 class DockerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testDockerSetProperly() {
-        $aData = [
+    public function testDockerSetProperly()
+    {
+        $data = [
             "image" => "some/image",
             "network" => "BRIDGE",
             "privileged" => true,
@@ -27,24 +27,24 @@ class DockerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $oDocker = new Docker($aData);
+        $docker = new Docker($data);
 
-        $this->assertEquals("some/image", $oDocker->image);
-        $this->assertEquals("BRIDGE", $oDocker->network);
-        $this->assertEquals(true, $oDocker->privileged);
+        $this->assertEquals("some/image", $docker->image);
+        $this->assertEquals("BRIDGE", $docker->network);
+        $this->assertEquals(true, $docker->privileged);
 
-        $this->assertTrue(isset($oDocker->portMappings));
-        $this->assertTrue(isset($oDocker->parameters));
+        $this->assertTrue(isset($docker->portMappings));
+        $this->assertTrue(isset($docker->parameters));
     }
 
-    public function testAllKeysAreCorrect() {
-        $aKeys = ["image", "network", "privileged", "portMappings", "parameters"];
+    public function testAllKeysAreCorrect()
+    {
+        $keys = ["image", "network", "privileged", "portMappings", "parameters"];
 
-        $oDocker = new Docker();
+        $docker = new Docker();
 
-        foreach ($aKeys as $sProperty) {
-            $this->assertObjectHasAttribute($sProperty, $oDocker);
+        foreach ($keys as $property) {
+            $this->assertObjectHasAttribute($property, $docker);
         }
     }
-
 }

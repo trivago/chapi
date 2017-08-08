@@ -8,7 +8,6 @@
 
 namespace Chapi\Exception;
 
-
 class JobLoadException extends \Exception
 {
     const ERROR_CODE_NO_VALID_JSON = 1;

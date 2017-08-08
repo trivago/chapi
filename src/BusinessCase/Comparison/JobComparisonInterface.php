@@ -33,21 +33,21 @@ interface JobComparisonInterface
     public function getLocalJobUpdates();
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return array
      */
-    public function getJobDiff($sJobName);
+    public function getJobDiff($jobName);
 
     /**
-     * @param JobEntityInterface $oJobEntityA
-     * @param JobEntityInterface $oJobEntityB
+     * @param JobEntityInterface $jobEntityA
+     * @param JobEntityInterface $jobEntityB
      * @return bool
      */
-    public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
+    public function hasSameJobType(JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB);
 
     /**
-     * @param $sJobName
+     * @param $jobName
      * @return bool
      */
-    public function isJobAvailable($sJobName);
+    public function isJobAvailable($jobName);
 }

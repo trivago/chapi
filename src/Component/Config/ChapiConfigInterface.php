@@ -9,7 +9,6 @@
 
 namespace Chapi\Component\Config;
 
-
 interface ChapiConfigInterface
 {
     const CONFIG_FILE_NAME = '.chapiconfig';

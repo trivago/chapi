@@ -10,7 +10,6 @@
 
 namespace Chapi\BusinessCase\Comparison;
 
-
 use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
@@ -20,36 +19,32 @@ use Chapi\Service\JobRepository\JobRepositoryInterface;
 class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCase
 {
     /**
-     * @param JobRepositoryInterface $oLocalRepository
-     * @param JobRepositoryInterface $oRemoteRepository
-     * @param DiffCompareInterface $oDiffCompare
+     * @param JobRepositoryInterface $localRepository
+     * @param JobRepositoryInterface $remoteRepository
+     * @param DiffCompareInterface $diffCompare
      */
     public function __construct(
-        JobRepositoryInterface $oLocalRepository,
-        JobRepositoryInterface $oRemoteRepository,
-        DiffCompareInterface $oDiffCompare
-    )
-    {
-        $this->oRemoteRepository = $oRemoteRepository;
-        $this->oLocalRepository = $oLocalRepository;
-        $this->oDiffCompare = $oDiffCompare;
+        JobRepositoryInterface $localRepository,
+        JobRepositoryInterface $remoteRepository,
+        DiffCompareInterface $diffCompare
+    ) {
+        $this->remoteRepository = $remoteRepository;
+        $this->localRepository = $localRepository;
+        $this->diffCompare = $diffCompare;
     }
 
-    protected function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob)
+    protected function preCompareModifications(JobEntityInterface &$localJob, JobEntityInterface &$remoteJob)
     {
-        if (
-            !$oLocalJob instanceof MarathonAppEntity ||
-            !$oRemoteJob instanceof MarathonAppEntity
-        )
-        {
+        if (!$localJob instanceof MarathonAppEntity ||
+            !$remoteJob instanceof MarathonAppEntity
+        ) {
             throw new \RuntimeException('Required MarathonAppEntity. Something else encountered.');
         }
         // marathon returns portDefinitions values for auto configured port as well
         // we want to only check if the port is defined in local file.
         // otherwise we ignore the remote values.
-        if (!$oLocalJob->portDefinitions)
-        {
-            $oRemoteJob->portDefinitions = null;
+        if (!$localJob->portDefinitions) {
+            $remoteJob->portDefinitions = null;
         }
     }
 
@@ -62,11 +57,11 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
     }
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntityA
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntityB
+     * @param JobEntityInterface|ChronosJobEntity $jobEntityA
+     * @param JobEntityInterface|ChronosJobEntity $jobEntityB
      * @return bool
      */
-    public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
+    public function hasSameJobType(JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB)
     {
         // for now we don't have a concrete seperation
         // of types for marathon.
@@ -74,79 +69,65 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
     }
 
     /**
-     * @param $sProperty
-     * @param $oJobEntityA
-     * @param $oJobEntityB
+     * @param $property
+     * @param $jobEntityA
+     * @param $jobEntityB
      * @return bool
      */
-    protected function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
+    protected function isEntityEqual($property, JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB)
     {
-        if (
-            !$oJobEntityA instanceof MarathonAppEntity ||
-            !$oJobEntityB instanceof MarathonAppEntity
-        )
-        {
+        if (!$jobEntityA instanceof MarathonAppEntity ||
+            !$jobEntityB instanceof MarathonAppEntity
+        ) {
             throw new \RuntimeException('Required MarathonAppEntity. Something else encountered.');
         }
 
-        return $this->isEqual($oJobEntityA->{$sProperty}, $oJobEntityB->{$sProperty});
+        return $this->isEqual($jobEntityA->{$property}, $jobEntityB->{$property});
     }
 
     /**
-     * @param mixed $mValueA
-     * @param mixed $mValueB
+     * @param mixed $valueA
+     * @param mixed $valueB
      * @return bool
      */
-    private function isEqual($mValueA, $mValueB)
+    private function isEqual($valueA, $valueB)
     {
-        if (is_array($mValueA) && is_array($mValueB))
-        {
-            return $this->isArrayEqual($mValueA, $mValueB);
-        }
-        elseif (is_object($mValueA) && is_object($mValueB))
-        {
-            return $this->isArrayEqual(get_object_vars($mValueA), get_object_vars($mValueB));
-        }
-        elseif ((is_scalar($mValueA) && is_scalar($mValueB)) || (is_null($mValueA) && is_null($mValueB)))
-        {
-            return $mValueA == $mValueB;
+        if (is_array($valueA) && is_array($valueB)) {
+            return $this->isArrayEqual($valueA, $valueB);
+        } elseif (is_object($valueA) && is_object($valueB)) {
+            return $this->isArrayEqual(get_object_vars($valueA), get_object_vars($valueB));
+        } elseif ((is_scalar($valueA) && is_scalar($valueB)) || (is_null($valueA) && is_null($valueB))) {
+            return $valueA == $valueB;
         }
 
         return false;
     }
 
     /**
-     * @param array $aValuesA
-     * @param array $aValuesB
+     * @param array $valuesA
+     * @param array $valuesB
      * @return bool
      */
-    private function isArrayEqual(array $aValuesA, array $aValuesB)
+    private function isArrayEqual(array $valuesA, array $valuesB)
     {
-        return $this->isArrayHalfEqual($aValuesA, $aValuesB) && $this->isArrayHalfEqual($aValuesB, $aValuesA);
+        return $this->isArrayHalfEqual($valuesA, $valuesB) && $this->isArrayHalfEqual($valuesB, $valuesA);
     }
 
     /**
-     * @param array $aValuesA
-     * @param array $aValuesB
+     * @param array $valuesA
+     * @param array $valuesB
      * @return bool
      */
-    private function isArrayHalfEqual(array $aValuesA, array $aValuesB)
+    private function isArrayHalfEqual(array $valuesA, array $valuesB)
     {
-        foreach ($aValuesA as $_mKeyA => $_mValueA)
-        {
-            if (is_string($_mKeyA))
-            {
-                if (!array_key_exists($_mKeyA, $aValuesB) || !$this->isEqual($_mValueA, $aValuesB[$_mKeyA]))
-                {
+        foreach ($valuesA as $keyA => $valueA) {
+            if (is_string($keyA)) {
+                if (!array_key_exists($keyA, $valuesB) || !$this->isEqual($valueA, $valuesB[$keyA])) {
                     return false;
                 }
-            }
-            else
-            {
-                foreach ($aValuesB as $_mValueB)
-                {
-                    if ($this->isEqual($_mValueA, $_mValueB))
-                    {
+            } else {
+                foreach ($valuesB as $valueB) {
+                    if ($this->isEqual($valueA, $valueB)) {
                         continue 2;
                     }
                 }

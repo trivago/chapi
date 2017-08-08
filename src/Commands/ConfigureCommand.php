@@ -41,14 +41,14 @@ class ConfigureCommand extends AbstractCommand
     }
 
     /**
-     * @param InputInterface $oInput
-     * @param OutputInterface $oOutput
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $oInput, OutputInterface $oOutput)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->oInput = $oInput;
-        $this->oOutput = $oOutput;
+        $this->input = $input;
+        $this->output = $output;
 
         return $this->process();
     }
@@ -58,11 +58,10 @@ class ConfigureCommand extends AbstractCommand
      */
     protected function process()
     {
-        $_aParams = $this->getInputValues();
+        $parameters = $this->getInputValues();
 
-        if ($this->hasValidateUserInput($_aParams))
-        {
-            $this->saveParameters($_aParams);
+        if ($this->hasValidateUserInput($parameters)) {
+            $this->saveParameters($parameters);
             return 0;
         }
 
@@ -74,71 +73,70 @@ class ConfigureCommand extends AbstractCommand
      */
     private function getInputValues()
     {
-        $_aResult = [];
+        $result = [];
 
-        $_aResult['cache_dir'] = [
+        $result['cache_dir'] = [
             'value' => $this->getInputValue('cache_dir', '[GLOBAL] Please enter a cache directory'),
             'required' => true
         ];
 
-        $_aResult['chronos_url'] = [
+        $result['chronos_url'] = [
             'value' => $this->getInputValue('chronos_url', '[CHRONOS] Please enter the chronos url (inclusive port)'),
             'required' => false
         ];
 
-        $_aResult['chronos_http_username'] = [
+        $result['chronos_http_username'] = [
             'value' => $this->getInputValue('chronos_http_username', '[CHRONOS] Please enter the username to access your chronos instance'),
             'required' => false
         ];
 
-        $_aResult['chronos_http_password'] = [
+        $result['chronos_http_password'] = [
             'value' => $this->getInputValue('chronos_http_password', '[CHRONOS] Please enter the password to access your chronos instance', true),
             'required' => false
         ];
 
-        $_aResult['repository_dir'] = [
+        $result['repository_dir'] = [
             'value' => $this->getInputValue('repository_dir', '[CHRONOS] Please enter absolute path to your local chronos jobs configurations'),
             'required' => false
         ];
 
-        $_aResult['marathon_url'] = [
+        $result['marathon_url'] = [
             'value' => $this->getInputValue('marathon_url', '[MARATHON] Please enter the marathon url (inclusive port)'),
             'required' => false
         ];
 
-        $_aResult['marathon_http_username'] = [
+        $result['marathon_http_username'] = [
             'value' => $this->getInputValue('marathon_http_username', '[MARATHON] Please enter the username to access marathon instance'),
             'required' => false
         ];
 
-        $_aResult['marathon_http_password'] = [
+        $result['marathon_http_password'] = [
             'value' => $this->getInputValue('marathon_http_password', '[MARATHON] Please enter the password to access marathon instance', true),
             'required' => false
         ];
 
-        $_aResult['repository_dir_marathon'] = [
+        $result['repository_dir_marathon'] = [
             'value' => $this->getInputValue('repository_dir_marathon', '[MARATHON] Please enter absolute path to your local marathon tasks configurations'),
             'required' => false
         ];
 
-        return $_aResult;
+        return $result;
     }
 
     /**
-     * @param string $sValueKey
-     * @param string $sQuestion
-     * @param boolean $bHiddenAnswer
+     * @param string $valueKey
+     * @param string $question
+     * @param boolean $hideAnswer
      * @return string
      */
-    private function getInputValue($sValueKey, $sQuestion, $bHiddenAnswer = false)
+    private function getInputValue($valueKey, $question, $hideAnswer = false)
     {
-        $_sValue = $this->oInput->getOption($sValueKey);
-        if (empty($_sValue))
-        {
+        $_sValue = $this->input->getOption($valueKey);
+        if (empty($_sValue)) {
             $_sValue = $this->printQuestion(
-                $sQuestion,
-                $this->getParameterValue($sValueKey),
-                $bHiddenAnswer
+                $question,
+                $this->getParameterValue($valueKey),
+                $hideAnswer
             );
         }
 
@@ -146,9 +144,9 @@ class ConfigureCommand extends AbstractCommand
     }
 
     /**
-     * @param array $aUserInput
+     * @param array $userInput
      */
-    private function saveParameters(array $aUserInput)
+    private function saveParameters(array $userInput)
     {
         // We implemented an additional level of information
         // into the user input array: Is this field required or not?
@@ -156,50 +154,47 @@ class ConfigureCommand extends AbstractCommand
         // the question in the dump file.
         // With this loop we get rid of the "required" information
         // from getInputValues().
-        $aToStore = [];
-        foreach ($aUserInput as $key => $value)
-        {
-            $aToStore[$key] = ('null' === $value['value']) ? null : $value['value'];
+        $toStore = [];
+        foreach ($userInput as $key => $value) {
+            $toStore[$key] = ('null' === $value['value']) ? null : $value['value'];
         }
 
-        $_aConfigToSave = [
+        $configToSave = [
             $this->getProfileName() => [
-                'parameters' => $aToStore
+                'parameters' => $toStore
             ]
         ];
 
-        $_sPath = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
+        $path = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
 
         // load exiting config to merge
-        $_aConfig = $this->loadConfigFile(['profiles' => []]);
+        $config = $this->loadConfigFile(['profiles' => []]);
 
-        $_aFinalConfig = [
-            'profiles' => array_merge($_aConfig['profiles'], $_aConfigToSave)
+        $finalConfig = [
+            'profiles' => array_merge($config['profiles'], $configToSave)
         ];
 
 
         // dump final config
-        $_oDumper = new Dumper();
-        $_sYaml = $_oDumper->dump($_aFinalConfig, 4);
+        $dumper = new Dumper();
+        $yaml = $dumper->dump($finalConfig, 4);
 
-        $_oFileSystem = new Filesystem();
-        $_oFileSystem->dumpFile(
-            $_sPath,
-            $_sYaml
+        $fileSystem = new Filesystem();
+        $fileSystem->dumpFile(
+            $path,
+            $yaml
         );
     }
 
     /**
-     * @param array $aUserInput
+     * @param array $userInput
      * @return bool
      */
-    private function hasValidateUserInput(array $aUserInput)
+    private function hasValidateUserInput(array $userInput)
     {
-        foreach ($aUserInput as $_sKey => $_sValue)
-        {
-            if ($_sValue['required'] == true && empty($_sValue['value']))
-            {
-                $this->oOutput->writeln(sprintf('<error>Please add a valid value for parameter "%s"</error>', $_sKey));
+        foreach ($userInput as $key => $value) {
+            if ($value['required'] == true && empty($value['value'])) {
+                $this->output->writeln(sprintf('<error>Please add a valid value for parameter "%s"</error>', $key));
                 return false;
             }
         }
@@ -208,20 +203,19 @@ class ConfigureCommand extends AbstractCommand
     }
 
     /**
-     * @param string $sKey
-     * @param mixed $mDefaultValue
+     * @param string $key
+     * @param mixed $defaultValue
      * @return mixed
      */
-    private function getParameterValue($sKey, $mDefaultValue = null)
+    private function getParameterValue($key, $defaultValue = null)
     {
-        $_aParameters = $this->getParameters();
+        $parameters = $this->getParameters();
 
-        if (isset($_aParameters['parameters']) && isset($_aParameters['parameters'][$sKey]))
-        {
-            return $_aParameters['parameters'][$sKey];
+        if (isset($parameters['parameters']) && isset($parameters['parameters'][$key])) {
+            return $parameters['parameters'][$key];
         }
 
-        return $mDefaultValue;
+        return $defaultValue;
     }
 
     /**
@@ -229,45 +223,45 @@ class ConfigureCommand extends AbstractCommand
      */
     private function getParameters()
     {
-        $_sProfile = $this->getProfileName();
-        $_aParameters = $this->loadConfigFile();
+        $profile = $this->getProfileName();
+        $parameters = $this->loadConfigFile();
 
-        return (isset($_aParameters['profiles']) && isset($_aParameters['profiles'][$_sProfile]))
-            ? $_aParameters['profiles'][$_sProfile]
+        return (isset($parameters['profiles']) && isset($parameters['profiles'][$profile]))
+            ? $parameters['profiles'][$profile]
             : ['profiles' => []];
     }
 
     /**
-     * @param mixed $mDefaultValue
+     * @param mixed $defaultValue
      * @return mixed
      */
-    private function loadConfigFile($mDefaultValue = [])
+    private function loadConfigFile($defaultValue = [])
     {
-        $_sParameterFile = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
+        $parameterFile = $this->getHomeDir() . DIRECTORY_SEPARATOR . $this->getParameterFileName();
 
-        if (!file_exists($_sParameterFile)) {
-            return $mDefaultValue;
+        if (!file_exists($parameterFile)) {
+            return $defaultValue;
         }
 
-        $_oParser = new Parser();
+        $parser = new Parser();
 
-        $_aParameters = $_oParser->parse(
-            file_get_contents($_sParameterFile)
+        $parameters = $parser->parse(
+            file_get_contents($parameterFile)
         );
 
-        return $_aParameters;
+        return $parameters;
     }
 
 
     /**
-     * @param string $sQuestion
-     * @param null|mixed $mDefaultValue
-     * @param boolean $bHiddenAnswer
+     * @param string $question
+     * @param null|mixed $defaultValue
+     * @param boolean $hideAnswer
      * @return mixed
      */
-    private function printQuestion($sQuestion, $mDefaultValue = null, $bHiddenAnswer = false)
+    private function printQuestion($question, $defaultValue = null, $hideAnswer = false)
     {
-        $_oHelper = $this->getHelper('question');
+        $helper = $this->getHelper('question');
 
         // If we have a hidden answer and the default value is not empty
         // the we will set it as empty, because we don`t want to show
@@ -275,22 +269,20 @@ class ConfigureCommand extends AbstractCommand
         // We know that the user has to enter the password again
         // if he / she want to reconfigure something. But this
         // is an acceptable tradeoff.
-        if ($bHiddenAnswer === true && !empty($mDefaultValue))
-        {
-            $mDefaultValue = null;
+        if ($hideAnswer === true && !empty($defaultValue)) {
+            $defaultValue = null;
         }
 
-        $_sFormat = (!empty($mDefaultValue)) ? '<comment>%s (default: %s):</comment>' : '<comment>%s:</comment>';
-        $_oQuestion = new Question(sprintf($_sFormat, $sQuestion, $mDefaultValue), $mDefaultValue);
+        $format = (!empty($defaultValue)) ? '<comment>%s (default: %s):</comment>' : '<comment>%s:</comment>';
+        $question = new Question(sprintf($format, $question, $defaultValue), $defaultValue);
 
         // Sensitive information (like passwords) should not be
         // visible during the configuration wizard
-        if ($bHiddenAnswer === true)
-        {
-            $_oQuestion->setHidden(true);
-            $_oQuestion->setHiddenFallback(false);
+        if ($hideAnswer === true) {
+            $question->setHidden(true);
+            $question->setHiddenFallback(false);
         }
 
-        return $_oHelper->ask($this->oInput, $this->oOutput, $_oQuestion);
+        return $helper->ask($this->input, $this->output, $question);
     }
 }

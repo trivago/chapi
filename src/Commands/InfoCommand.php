@@ -31,58 +31,53 @@ class InfoCommand extends AbstractCommand
      */
     protected function process()
     {
-        $_sJobName = $this->oInput->getArgument('jobName');
+        $jobName = $this->input->getArgument('jobName');
 
-        $_oChronosJobEntity = $this->checkInChronos($_sJobName);
-        $_oJobEntity = $_oChronosJobEntity == null ? $this->checkInMarathon($_sJobName) : $_oChronosJobEntity;
+        $chronosJobEntity = $this->checkInChronos($jobName);
+        $jobEntity = $chronosJobEntity == null ? $this->checkInMarathon($jobName) : $chronosJobEntity;
 
-        if (!$_oJobEntity)
-        {
-            $this->oOutput->writeln(sprintf('<fg=red>%s</>', 'Could not find the job.'));
+        if (!$jobEntity) {
+            $this->output->writeln(sprintf('<fg=red>%s</>', 'Could not find the job.'));
             return 1;
         }
 
-        $this->oOutput->writeln(sprintf("\n<comment>info '%s'</comment>\n", $_oJobEntity->getKey()));
+        $this->output->writeln(sprintf("\n<comment>info '%s'</comment>\n", $jobEntity->getKey()));
 
-        $_oTable = new Table($this->oOutput);
-        $_oTable->setHeaders(array('Property', 'Value'));
+        $table = new Table($this->output);
+        $table->setHeaders(array('Property', 'Value'));
 
-        foreach ($_oJobEntity as $_sKey => $_mValue)
-        {
-            if (is_array($_mValue) || is_object($_mValue))
-            {
-                $_sEmptyString = (is_object($_mValue)) ? '{ }' : '[ ]';
+        foreach ($jobEntity as $key => $value) {
+            if (is_array($value) || is_object($value)) {
+                $emptyString = (is_object($value)) ? '{ }' : '[ ]';
 
-                $_mValue = (!empty($_mValue))
-                    ? json_encode($_mValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-                    : $_sEmptyString;
-            }
-            elseif (is_bool($_mValue))
-            {
-                $_mValue = (true === $_mValue)
+                $value = (!empty($value))
+                    ? json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+                    : $emptyString;
+            } elseif (is_bool($value)) {
+                $value = (true === $value)
                     ? 'true'
                     : 'false';
             }
 
-            $_oTable->addRow(array($_sKey, $_mValue));
+            $table->addRow(array($key, $value));
         }
 
-        $_oTable->render();
+        $table->render();
 
         return 0;
     }
 
-    private function checkInChronos($sJobName)
+    private function checkInChronos($jobName)
     {
-        /** @var JobRepositoryInterface  $_oJobRepositoryChronos */
-        $_oJobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
-        return $_oJobRepositoryChronos->getJob($sJobName);
+        /** @var JobRepositoryInterface  $jobRepositoryChronos */
+        $jobRepositoryChronos = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_CHRONOS);
+        return $jobRepositoryChronos->getJob($jobName);
     }
 
-    private function checkInMarathon($sJobName)
+    private function checkInMarathon($jobName)
     {
-        /** @var JobRepositoryInterface  $_oJobRepositoryMarathon */
-        $_oJobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
-        return $_oJobRepositoryMarathon->getJob($sJobName);
+        /** @var JobRepositoryInterface  $jobRepositoryMarathon */
+        $jobRepositoryMarathon = $this->getContainer()->get(JobRepositoryInterface::DIC_NAME_MARATHON);
+        return $jobRepositoryMarathon->getJob($jobName);
     }
 }

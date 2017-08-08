@@ -23,38 +23,37 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
     /**
      * @var DatePeriodFactoryInterface
      */
-    private $oDatePeriodFactory;
+    private $datePeriodFactory;
 
     /**
      * @var LoggerInterface
      */
-    private $oLogger;
+    private $logger;
 
 
     /**
-     * @param JobRepositoryInterface $oJobRepositoryLocalChronos
-     * @param JobRepositoryInterface $oJobRepositoryChronos
-     * @param DiffCompareInterface $oDiffCompare
-     * @param DatePeriodFactoryInterface $oDatePeriodFactory
-     * @param LoggerInterface $oLogger
+     * @param JobRepositoryInterface $jobRepositoryLocalChronos
+     * @param JobRepositoryInterface $jobRepositoryChronos
+     * @param DiffCompareInterface $diffCompare
+     * @param DatePeriodFactoryInterface $datePeriodFactory
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        JobRepositoryInterface $oJobRepositoryLocalChronos,
-        JobRepositoryInterface $oJobRepositoryChronos,
-        DiffCompareInterface $oDiffCompare,
-        DatePeriodFactoryInterface $oDatePeriodFactory,
-        LoggerInterface $oLogger
-    )
-    {
-        $this->oLocalRepository = $oJobRepositoryLocalChronos;
-        $this->oRemoteRepository = $oJobRepositoryChronos;
-        $this->oDiffCompare = $oDiffCompare;
-        $this->oDatePeriodFactory = $oDatePeriodFactory;
-        $this->oLogger = $oLogger;
+        JobRepositoryInterface $jobRepositoryLocalChronos,
+        JobRepositoryInterface $jobRepositoryChronos,
+        DiffCompareInterface $diffCompare,
+        DatePeriodFactoryInterface $datePeriodFactory,
+        LoggerInterface $logger
+    ) {
+        $this->localRepository = $jobRepositoryLocalChronos;
+        $this->remoteRepository = $jobRepositoryChronos;
+        $this->diffCompare = $diffCompare;
+        $this->datePeriodFactory = $datePeriodFactory;
+        $this->logger = $logger;
     }
 
 
-    protected function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob)
+    protected function preCompareModifications(JobEntityInterface &$localJob, JobEntityInterface &$remoteJob)
     {
         // no modification needed
         return;
@@ -67,51 +66,48 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
     }
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntityA
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntityB
+     * @param JobEntityInterface|ChronosJobEntity $jobEntityA
+     * @param JobEntityInterface|ChronosJobEntity $jobEntityB
      * @return bool
      */
-    public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
+    public function hasSameJobType(JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB)
     {
         return (
-            ($oJobEntityA->isSchedulingJob() && $oJobEntityB->isSchedulingJob())
-            || ($oJobEntityA->isDependencyJob() && $oJobEntityB->isDependencyJob())
+            ($jobEntityA->isSchedulingJob() && $jobEntityB->isSchedulingJob())
+            || ($jobEntityA->isDependencyJob() && $jobEntityB->isDependencyJob())
         );
     }
 
     /**
-     * @param string $sProperty
-     * @param JobEntityInterface $oJobEntityA
-     * @param JobEntityInterface $oJobEntityB
+     * @param string $property
+     * @param JobEntityInterface $jobEntityA
+     * @param JobEntityInterface $jobEntityB
      * @return bool
      */
-    protected function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
+    protected function isEntityEqual($property, JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB)
     {
-        if (
-            !$oJobEntityA instanceof ChronosJobEntity ||
-            !$oJobEntityB instanceof ChronosJobEntity
-        )
-        {
+        if (!$jobEntityA instanceof ChronosJobEntity ||
+            !$jobEntityB instanceof ChronosJobEntity
+        ) {
             throw new \RuntimeException('Required ChronosJobEntity. Something else encountered');
         }
 
-        $mValueA = $oJobEntityA->{$sProperty};
-        $mValueB = $oJobEntityB->{$sProperty};
+        $valueA = $jobEntityA->{$property};
+        $valueB = $jobEntityB->{$property};
 
-        switch ($sProperty)
-        {
+        switch ($property) {
             case 'schedule':
-                return $this->isSchedulePropertyIdentical($oJobEntityA, $oJobEntityB);
+                return $this->isSchedulePropertyIdentical($jobEntityA, $jobEntityB);
 
             case 'scheduleTimeZone':
-                return $this->isScheduleTimeZonePropertyIdentical($oJobEntityA, $oJobEntityB);
+                return $this->isScheduleTimeZonePropertyIdentical($jobEntityA, $jobEntityB);
 
             case 'parents':
                 return (
-                    is_array($mValueA)
-                    && is_array($mValueB)
-                    && count(array_diff($mValueA, $mValueB)) == 0
-                    && count(array_diff($mValueB, $mValueA)) == 0
+                    is_array($valueA)
+                    && is_array($valueB)
+                    && count(array_diff($valueA, $valueB)) == 0
+                    && count(array_diff($valueB, $valueA)) == 0
                 );
 
             case 'successCount':
@@ -122,123 +118,111 @@ class ChronosJobComparisonBusinessCase extends AbstractJobComparisionBusinessCas
                 return true;
 
             default:
-                return ($mValueA == $mValueB);
+                return ($valueA == $valueB);
         }
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntityA
-     * @param ChronosJobEntity $oJobEntityB
+     * @param ChronosJobEntity $jobEntityA
+     * @param ChronosJobEntity $jobEntityB
      * @return bool
      */
-    private function isScheduleTimeZonePropertyIdentical(ChronosJobEntity $oJobEntityA, ChronosJobEntity $oJobEntityB)
+    private function isScheduleTimeZonePropertyIdentical(ChronosJobEntity $jobEntityA, ChronosJobEntity $jobEntityB)
     {
-        if ($oJobEntityA->scheduleTimeZone == $oJobEntityB->scheduleTimeZone)
-        {
+        if ($jobEntityA->scheduleTimeZone == $jobEntityB->scheduleTimeZone) {
             return true;
         }
 
-        if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule))
-        {
-            $_oDateA = $this->createDateTimeObj($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
-            $_oDateB = $this->createDateTimeObj($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
+        if (!empty($jobEntityA->schedule) && !empty($jobEntityB->schedule)) {
+            $dateA = $this->createDateTimeObj($jobEntityA->schedule, $jobEntityA->scheduleTimeZone);
+            $dateB = $this->createDateTimeObj($jobEntityB->schedule, $jobEntityB->scheduleTimeZone);
 
-            return ($_oDateA->getOffset() == $_oDateB->getOffset());
+            return ($dateA->getOffset() == $dateB->getOffset());
         }
 
         return false;
     }
 
     /**
-     * @param ChronosJobEntity $oJobEntityA
-     * @param ChronosJobEntity $oJobEntityB
+     * @param ChronosJobEntity $jobEntityA
+     * @param ChronosJobEntity $jobEntityB
      * @return bool
      */
-    private function isSchedulePropertyIdentical(ChronosJobEntity $oJobEntityA, ChronosJobEntity $oJobEntityB)
+    private function isSchedulePropertyIdentical(ChronosJobEntity $jobEntityA, ChronosJobEntity $jobEntityB)
     {
         // if values are exact the same
-        if ($oJobEntityA->schedule === $oJobEntityB->schedule)
-        {
-            $this->oLogger->debug(sprintf('%s::EXCACT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+        if ($jobEntityA->schedule === $jobEntityB->schedule) {
+            $this->logger->debug(sprintf('%s::EXCACT INTERVAL FOR "%s"', 'ScheduleComparison', $jobEntityA->name));
             return true;
         }
 
         // if one value is empty and not both, compare the time periods
-        if (!empty($oJobEntityA->schedule) && !empty($oJobEntityB->schedule))
-        {
-            $_oIso8601EntityA = $this->oDatePeriodFactory->createIso8601Entity($oJobEntityA->schedule);
-            $_oIso8601EntityB = $this->oDatePeriodFactory->createIso8601Entity($oJobEntityB->schedule);
+        if (!empty($jobEntityA->schedule) && !empty($jobEntityB->schedule)) {
+            $iso8601EntityA = $this->datePeriodFactory->createIso8601Entity($jobEntityA->schedule);
+            $iso8601EntityB = $this->datePeriodFactory->createIso8601Entity($jobEntityB->schedule);
 
             // if the clean interval is different return directly false (P1D != P1M)
-            if ($_oIso8601EntityA->sInterval != $_oIso8601EntityB->sInterval)
-            {
-                $this->oLogger->debug(sprintf('%s::DIFFERENT INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+            if ($iso8601EntityA->interval != $iso8601EntityB->interval) {
+                $this->logger->debug(sprintf('%s::DIFFERENT INTERVAL FOR "%s"', 'ScheduleComparison', $jobEntityA->name));
                 return false;
             }
 
             // else if the interval is <= 1Min return directly true (performance)
-            if ($_oIso8601EntityA->sInterval == 'PT1M' || $_oIso8601EntityA->sInterval == 'PT1S')
-            {
-                $this->oLogger->debug(sprintf('%s::PT1M|PT1S INTERVAL FOR "%s" - Job execution should be equal', 'ScheduleComparison', $oJobEntityA->name));
+            if ($iso8601EntityA->interval == 'PT1M' || $iso8601EntityA->interval == 'PT1S') {
+                $this->logger->debug(sprintf('%s::PT1M|PT1S INTERVAL FOR "%s" - Job execution should be equal', 'ScheduleComparison', $jobEntityA->name));
                 return true;
             }
 
             // start to check by DatePeriods
-            $_oLastDateTimeA = null;
-            $_oLastDateTimeB = null;
+            $lastDateTimeA = null;
+            $lastDateTimeB = null;
 
-            /** @var \DatePeriod $_oPeriodB */
-            $_oPeriodA = $this->oDatePeriodFactory->createDatePeriod($oJobEntityA->schedule, $oJobEntityA->scheduleTimeZone);
+            /** @var \DatePeriod $periodB */
+            $periodA = $this->datePeriodFactory->createDatePeriod($jobEntityA->schedule, $jobEntityA->scheduleTimeZone);
 
-            /** @var \DateTime $_oDateTime */
-            foreach ($_oPeriodA as $_oDateTime)
-            {
-                $_oLastDateTimeA = $_oDateTime;
+            /** @var \DateTime $dateTime */
+            foreach ($periodA as $dateTime) {
+                $lastDateTimeA = $dateTime;
             }
 
-            /** @var \DatePeriod $_oPeriodB */
-            $_oPeriodB = $this->oDatePeriodFactory->createDatePeriod($oJobEntityB->schedule, $oJobEntityB->scheduleTimeZone);
+            /** @var \DatePeriod $periodB */
+            $periodB = $this->datePeriodFactory->createDatePeriod($jobEntityB->schedule, $jobEntityB->scheduleTimeZone);
 
-            /** @var \DateTime $_oDateTime */
-            foreach ($_oPeriodB as $_oDateTime)
-            {
-                $_oLastDateTimeB = $_oDateTime;
+            /** @var \DateTime $dateTime */
+            foreach ($periodB as $dateTime) {
+                $lastDateTimeB = $dateTime;
             }
 
-            // $_oLastDateTimeA !== false happen if no dates are in the period
-            if ($_oLastDateTimeA !== null && $_oLastDateTimeB !== null)
-            {
-                $_oDiffInterval = $_oLastDateTimeA->diff($_oLastDateTimeB);
-                $_iDiffInterval = (int) $_oDiffInterval->format('%Y%M%D%H%I');
+            // $lastDateTimeA !== false happen if no dates are in the period
+            if ($lastDateTimeA !== null && $lastDateTimeB !== null) {
+                $diffInterval = $lastDateTimeA->diff($lastDateTimeB);
+                $formattedDiffInterval = (int) $diffInterval->format('%Y%M%D%H%I');
 
-                $this->oLogger->debug(sprintf('%s::INTERVAL DIFF OF "%d" FOR "%s"', 'ScheduleComparison', $_iDiffInterval, $oJobEntityA->name));
-                return ($_iDiffInterval == 0);
+                $this->logger->debug(sprintf('%s::INTERVAL DIFF OF "%d" FOR "%s"', 'ScheduleComparison', $formattedDiffInterval, $jobEntityA->name));
+                return ($formattedDiffInterval == 0);
             }
         }
 
-        $this->oLogger->warning(sprintf('%s::CAN\'T COMPARE INTERVAL FOR "%s"', 'ScheduleComparison', $oJobEntityA->name));
+        $this->logger->warning(sprintf('%s::CAN\'T COMPARE INTERVAL FOR "%s"', 'ScheduleComparison', $jobEntityA->name));
         return false;
     }
 
     /**
-     * @param string $sIso8601String
-     * @param string $sTimeZone
+     * @param string $iso8601String
+     * @param string $timeZone
      * @return \DateTime
      */
-    private function createDateTimeObj($sIso8601String, $sTimeZone = '')
+    private function createDateTimeObj($iso8601String, $timeZone = '')
     {
-        $_oIso8601Entity = $this->oDatePeriodFactory->createIso8601Entity($sIso8601String);
+        $iso8601Entity = $this->datePeriodFactory->createIso8601Entity($iso8601String);
 
-        if (!empty($sTimeZone))
-        {
-            $_oDateTime = new \DateTime(str_replace('Z', '', $_oIso8601Entity->sStartTime));
-            $_oDateTime->setTimezone(new \DateTimeZone($sTimeZone));
-        }
-        else
-        {
-            $_oDateTime = new \DateTime($_oIso8601Entity->sStartTime);
+        if (!empty($timeZone)) {
+            $dateTime = new \DateTime(str_replace('Z', '', $iso8601Entity->startTime));
+            $dateTime->setTimezone(new \DateTimeZone($timeZone));
+        } else {
+            $dateTime = new \DateTime($iso8601Entity->startTime);
         }
 
-        return $_oDateTime;
+        return $dateTime;
     }
 }

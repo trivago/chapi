@@ -11,7 +11,6 @@
 
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
@@ -24,11 +23,11 @@ class IsArray extends AbstractPropertyValidator implements PropertyValidatorInte
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            is_array($oJobEntity->{$sProperty}),
-            $sProperty,
+            is_array($jobEntity->{$property}),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }

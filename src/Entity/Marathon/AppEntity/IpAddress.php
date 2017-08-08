@@ -8,7 +8,6 @@
  */
 namespace Chapi\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\MarathonEntityUtils;
 
 class IpAddress
@@ -21,17 +20,15 @@ class IpAddress
 
     public $networkName = '';
 
-    public function __construct($aData = [])
+    public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($data, $this);
 
-        if (isset($aData['groups']))
-        {
-            $this->groups = $aData['groups'];
+        if (isset($data['groups'])) {
+            $this->groups = $data['groups'];
         }
-        if (isset($aData['labels']))
-        {
-            $this->labels = (object) $aData['labels'];
+        if (isset($data['labels'])) {
+            $this->labels = (object) $data['labels'];
         }
     }
 }

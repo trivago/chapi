@@ -21,11 +21,14 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 class CompositeJobComparisonBusinessCase implements JobComparisonInterface
 {
     /** @var JobComparisonInterface[] */
-    private $aComposites = [];
+    private $composites = [];
 
+    /**
+     * @param JobComparisonInterface $comparer
+     */
     public function addComparisonCases(JobComparisonInterface $comparer)
     {
-        $this->aComposites[] = $comparer;
+        $this->composites[] = $comparer;
     }
 
     /**
@@ -33,13 +36,12 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getLocalMissingJobs()
     {
-        $_aMissingJobs = array();
-        foreach ($this->aComposites as $jobComparers)
-        {
+        $missingJobs = array();
+        foreach ($this->composites as $jobComparers) {
             $missing = $jobComparers->getLocalMissingJobs();
-            $_aMissingJobs = array_merge($_aMissingJobs, $missing);
+            $missingJobs = array_merge($missingJobs, $missing);
         }
-        return $_aMissingJobs;
+        return $missingJobs;
     }
 
     /**
@@ -47,12 +49,11 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getRemoteMissingJobs()
     {
-        $_aChronosMissingJobs = array();
-        foreach ($this->aComposites as $jobComparers)
-        {
-            $_aChronosMissingJobs = array_merge($_aChronosMissingJobs, $jobComparers->getRemoteMissingJobs());
+        $chronosMissingJobs = array();
+        foreach ($this->composites as $jobComparers) {
+            $chronosMissingJobs = array_merge($chronosMissingJobs, $jobComparers->getRemoteMissingJobs());
         }
-        return $_aChronosMissingJobs;
+        return $chronosMissingJobs;
     }
 
     /**
@@ -60,75 +61,66 @@ class CompositeJobComparisonBusinessCase implements JobComparisonInterface
      */
     public function getLocalJobUpdates()
     {
-        $_aLocalJobUpdates = array();
-        foreach ($this->aComposites as $jobComparers)
-        {
-            $_aLocalJobUpdates = array_merge($_aLocalJobUpdates, $jobComparers->getLocalJobUpdates());
+        $localJobUpdates = array();
+        foreach ($this->composites as $jobComparers) {
+            $localJobUpdates = array_merge($localJobUpdates, $jobComparers->getLocalJobUpdates());
         }
-        return $_aLocalJobUpdates;
+        return $localJobUpdates;
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return array
      */
-    public function getJobDiff($sJobName)
+    public function getJobDiff($jobName)
     {
-        $_aJobDiffs = array();
-        foreach ($this->aComposites as $jobComparers)
-        {
+        $jobDiffs = array();
+        foreach ($this->composites as $jobComparers) {
             // assuming same name won't be in all subsystems.
             // TODO: add support to handle the duplicate names in different subsystems
-            if ($jobComparers->isJobAvailable($sJobName))
-            {
-                $_aJobDiffs = $jobComparers->getJobDiff($sJobName);
+            if ($jobComparers->isJobAvailable($jobName)) {
+                $jobDiffs = $jobComparers->getJobDiff($jobName);
                 break;
             }
         }
-        return $_aJobDiffs;
+        return $jobDiffs;
     }
 
     /**
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntityA
-     * @param JobEntityInterface|ChronosJobEntity $oJobEntityB
+     * @param JobEntityInterface|ChronosJobEntity $jobEntityA
+     * @param JobEntityInterface|ChronosJobEntity $jobEntityB
      * @return bool
      */
-    public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
+    public function hasSameJobType(JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB)
     {
-        if ($oJobEntityA->getEntityType() != $oJobEntityB->getEntityType())
-        {
+        if ($jobEntityA->getEntityType() != $jobEntityB->getEntityType()) {
             throw new Exception('type compared for different entity types.');
         }
         /** @var JobComparisonInterface $comparer */
         $comparer = null;
-        foreach ($this->aComposites as $child)
-        {
-            if ($child->isJobAvailable($oJobEntityA->getKey()))
-            {
+        foreach ($this->composites as $child) {
+            if ($child->isJobAvailable($jobEntityA->getKey())) {
                 $comparer = $child;
                 break;
             }
         }
 
-        if ($comparer == null)
-        {
-            throw new Exception(sprintf('could not find appropriate comparision businesscase to operate', $oJobEntityA->getKey()));
+        if ($comparer == null) {
+            throw new Exception(sprintf('could not find appropriate comparision businesscase to operate', $jobEntityA->getKey()));
         }
 
-        return $comparer->hasSameJobType($oJobEntityA, $oJobEntityB);
+        return $comparer->hasSameJobType($jobEntityA, $jobEntityB);
     }
 
 
     /**
-     * @param $sJobName
+     * @param $jobName
      * @return bool
      */
-    public function isJobAvailable($sJobName)
+    public function isJobAvailable($jobName)
     {
-        foreach ($this->aComposites as $child)
-        {
-            if ($child->isJobAvailable($sJobName))
-            {
+        foreach ($this->composites as $child) {
+            if ($child->isJobAvailable($jobName)) {
                 return true;
             }
         }

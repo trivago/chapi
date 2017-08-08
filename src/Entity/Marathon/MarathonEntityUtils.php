@@ -8,34 +8,30 @@
  */
 namespace Chapi\Entity\Marathon;
 
-
 class MarathonEntityUtils
 {
-    public static function setPropertyIfExist($oSource, $oTarget, $sProperty)
+    public static function setPropertyIfExist($source, $target, $property)
     {
-        if (isset($oSource[$sProperty]) &&
-            property_exists($oTarget, $sProperty))
-        {
-            $oTarget->{$sProperty} = $oSource[$sProperty];
+        if (isset($source[$property]) &&
+            property_exists($target, $property)) {
+            $target->{$property} = $source[$property];
         }
     }
 
     /**
      * Sets all possible properties in the class from oData.
      * If the type is array or object, then it is ignored.
-     * @param $oData
+     * @param $data
      */
-    public static function setAllPossibleProperties($oData, $oTarget)
+    public static function setAllPossibleProperties($data, $target)
     {
-        foreach ($oData as $attrName => $attrValue)
-        {
+        foreach ($data as $attributeName => $attributeValue) {
             // dont set array or objects.
             // Because this would need further type information to properly set.
-            if (is_array($attrValue) || is_object($attrValue))
-            {
+            if (is_array($attributeValue) || is_object($attributeValue)) {
                 continue;
             }
-            self::setPropertyIfExist($oData, $oTarget, $attrName);
+            self::setPropertyIfExist($data, $target, $attributeName);
         }
     }
 }

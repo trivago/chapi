@@ -21,17 +21,17 @@ class Container extends AbstractPropertyValidator implements PropertyValidatorIn
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            $this->isContainerPropertyValid($oJobEntity->{$sProperty}),
-            $sProperty,
+            $this->isContainerPropertyValid($jobEntity->{$property}),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }
 
     /**
-     * @param JobEntity\ContainerEntity $oContainer
+     * @param JobEntity\ContainerEntity $container
      * @return bool
      *
      * @see http://mesos.github.io/chronos/docs/api.html#adding-a-docker-job
@@ -39,27 +39,22 @@ class Container extends AbstractPropertyValidator implements PropertyValidatorIn
      *  type (required), image (required), forcePullImage (optional), network (optional),
      *  and volumes (optional)
      */
-    private function isContainerPropertyValid($oContainer)
+    private function isContainerPropertyValid($container)
     {
-        if (is_null($oContainer))
-        {
+        if (is_null($container)) {
             return true;
         }
 
-        if (empty($oContainer->type) || empty($oContainer->image))
-        {
+        if (empty($container->type) || empty($container->image)) {
             return false;
         }
 
-        if (!is_array($oContainer->volumes))
-        {
+        if (!is_array($container->volumes)) {
             return false;
         }
 
-        foreach ($oContainer->volumes as $_oVolume)
-        {
-            if (!in_array($_oVolume->mode, ['RO', 'RW']))
-            {
+        foreach ($container->volumes as $volume) {
+            if (!in_array($volume->mode, ['RO', 'RW'])) {
                 return false;
             }
         }

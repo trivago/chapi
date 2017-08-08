@@ -9,7 +9,6 @@
 
 namespace unit\Component\Command;
 
-
 use Chapi\Component\Command\CommandUtils;
 use org\bovigo\vfs\vfsStream;
 

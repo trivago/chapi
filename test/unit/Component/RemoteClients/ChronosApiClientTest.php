@@ -17,18 +17,18 @@ use Prophecy\Argument;
 class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oHttpClient;
+    private $httpClient;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oHttpResponse;
+    private $httpResponse;
 
     /**
      *
      */
     public function setUp()
     {
-        $this->oHttpClient = $this->prophesize('Chapi\Component\Http\HttpClientInterface');
-        $this->oHttpResponse = $this->prophesize('Chapi\Component\Http\HttpClientResponseInterface');
+        $this->httpClient = $this->prophesize('Chapi\Component\Http\HttpClientInterface');
+        $this->httpResponse = $this->prophesize('Chapi\Component\Http\HttpClientResponseInterface');
     }
 
     // --------------------
@@ -36,34 +36,34 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
     // --------------------
     public function testListingJobsSuccess()
     {
-        $_aTestResult = ['entity1', 'entity2'];
+        $testResult = ['entity1', 'entity2'];
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(200);
-        $this->oHttpResponse->json()->shouldBeCalledTimes(1)->willReturn($_aTestResult);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(200);
+        $this->httpResponse->json()->shouldBeCalledTimes(1)->willReturn($testResult);
 
-        $this->oHttpClient->get(Argument::exact('/scheduler/jobs'))
+        $this->httpClient->get(Argument::exact('/scheduler/jobs'))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertEquals($_aTestResult, $_oApiClient->listingJobs());
+        $this->assertEquals($testResult, $apiClient->listingJobs());
     }
 
     public function testListingJobsFailure()
     {
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
-        $this->oHttpResponse->json()->shouldNotBeCalled();
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
+        $this->httpResponse->json()->shouldNotBeCalled();
 
-        $this->oHttpClient->get(Argument::exact('/scheduler/jobs'))
+        $this->httpClient->get(Argument::exact('/scheduler/jobs'))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertEquals([], $_oApiClient->listingJobs());
+        $this->assertEquals([], $apiClient->listingJobs());
     }
 
     // --------------------
@@ -71,70 +71,70 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
     // --------------------
     public function testAddingScheduleJobSuccess()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
-        $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
+        $testJobEntity = new ChronosJobEntity();
+        $testJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
 
-        $this->oHttpClient->postJsonData(Argument::exact('/scheduler/iso8601'), Argument::exact($_oTestJobEntity))
+        $this->httpClient->postJsonData(Argument::exact('/scheduler/iso8601'), Argument::exact($testJobEntity))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($_oApiClient->addingJob($_oTestJobEntity));
+        $this->assertTrue($apiClient->addingJob($testJobEntity));
     }
 
     public function testAddingDependencyJobSuccess()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
-        $_oTestJobEntity->parents = ['jobA', 'jobB'];
+        $testJobEntity = new ChronosJobEntity();
+        $testJobEntity->parents = ['jobA', 'jobB'];
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
 
-        $this->oHttpClient->postJsonData(Argument::exact('/scheduler/dependency'), Argument::exact($_oTestJobEntity))
+        $this->httpClient->postJsonData(Argument::exact('/scheduler/dependency'), Argument::exact($testJobEntity))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($_oApiClient->addingJob($_oTestJobEntity));
+        $this->assertTrue($apiClient->addingJob($testJobEntity));
     }
 
     public function testAddingScheduleJobFailure()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
-        $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
+        $testJobEntity = new ChronosJobEntity();
+        $testJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
 
-        $this->oHttpClient->postJsonData(Argument::exact('/scheduler/iso8601'), Argument::exact($_oTestJobEntity))
+        $this->httpClient->postJsonData(Argument::exact('/scheduler/iso8601'), Argument::exact($testJobEntity))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($_oApiClient->addingJob($_oTestJobEntity));
+        $this->assertFalse($apiClient->addingJob($testJobEntity));
     }
 
     public function testAddingDependencyJobFailure()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
-        $_oTestJobEntity->parents = ['jobA', 'jobB'];
+        $testJobEntity = new ChronosJobEntity();
+        $testJobEntity->parents = ['jobA', 'jobB'];
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
 
-        $this->oHttpClient->postJsonData(Argument::exact('/scheduler/dependency'), Argument::exact($_oTestJobEntity))
+        $this->httpClient->postJsonData(Argument::exact('/scheduler/dependency'), Argument::exact($testJobEntity))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($_oApiClient->addingJob($_oTestJobEntity));
+        $this->assertFalse($apiClient->addingJob($testJobEntity));
     }
 
     /**
@@ -142,15 +142,15 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddingJobFailure()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
+        $testJobEntity = new ChronosJobEntity();
 
-        $this->oHttpClient->postJsonData()
+        $this->httpClient->postJsonData()
             ->shouldNotBeCalled()
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertNull($_oApiClient->addingJob($_oTestJobEntity));
+        $this->assertNull($apiClient->addingJob($testJobEntity));
     }
 
     // --------------------
@@ -158,70 +158,70 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
     // --------------------
     public function testUpdatingScheduleJobSuccess()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
-        $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
+        $testJobEntity = new ChronosJobEntity();
+        $testJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
 
-        $this->oHttpClient->postJsonData(Argument::exact('/scheduler/iso8601'), Argument::exact($_oTestJobEntity))
+        $this->httpClient->postJsonData(Argument::exact('/scheduler/iso8601'), Argument::exact($testJobEntity))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($_oApiClient->updatingJob($_oTestJobEntity));
+        $this->assertTrue($apiClient->updatingJob($testJobEntity));
     }
 
     public function testUpdatingDependencyJobSuccess()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
-        $_oTestJobEntity->parents = ['jobA', 'jobB'];
+        $testJobEntity = new ChronosJobEntity();
+        $testJobEntity->parents = ['jobA', 'jobB'];
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
 
-        $this->oHttpClient->postJsonData(Argument::exact('/scheduler/dependency'), Argument::exact($_oTestJobEntity))
+        $this->httpClient->postJsonData(Argument::exact('/scheduler/dependency'), Argument::exact($testJobEntity))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($_oApiClient->updatingJob($_oTestJobEntity));
+        $this->assertTrue($apiClient->updatingJob($testJobEntity));
     }
 
     public function testUpdatingScheduleJobFailure()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
-        $_oTestJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
+        $testJobEntity = new ChronosJobEntity();
+        $testJobEntity->schedule = 'R/2015-07-07T01:00:00Z/P1D';
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
 
-        $this->oHttpClient->postJsonData(Argument::exact('/scheduler/iso8601'), Argument::exact($_oTestJobEntity))
+        $this->httpClient->postJsonData(Argument::exact('/scheduler/iso8601'), Argument::exact($testJobEntity))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($_oApiClient->updatingJob($_oTestJobEntity));
+        $this->assertFalse($apiClient->updatingJob($testJobEntity));
     }
 
     public function testUpdatingDependencyJobFailure()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
-        $_oTestJobEntity->parents = ['jobA', 'jobB'];
+        $testJobEntity = new ChronosJobEntity();
+        $testJobEntity->parents = ['jobA', 'jobB'];
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
 
-        $this->oHttpClient->postJsonData(Argument::exact('/scheduler/dependency'), Argument::exact($_oTestJobEntity))
+        $this->httpClient->postJsonData(Argument::exact('/scheduler/dependency'), Argument::exact($testJobEntity))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($_oApiClient->updatingJob($_oTestJobEntity));
+        $this->assertFalse($apiClient->updatingJob($testJobEntity));
     }
 
     /**
@@ -229,15 +229,15 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdatingJobFailure()
     {
-        $_oTestJobEntity = new ChronosJobEntity();
+        $testJobEntity = new ChronosJobEntity();
 
-        $this->oHttpClient->postJsonData()
+        $this->httpClient->postJsonData()
             ->shouldNotBeCalled()
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertNull($_oApiClient->updatingJob($_oTestJobEntity));
+        $this->assertNull($apiClient->updatingJob($testJobEntity));
     }
 
     // --------------------
@@ -245,35 +245,35 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
     // --------------------
     public function testRemoveJobSuccess()
     {
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(204);
 
-        $this->oHttpClient->delete(Argument::exact('/scheduler/job/jobName'))
+        $this->httpClient->delete(Argument::exact('/scheduler/job/jobName'))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($_oApiClient->removeJob('jobName'));
+        $this->assertTrue($apiClient->removeJob('jobName'));
     }
 
     public function testRemoveJobFailure()
     {
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
 
-        $this->oHttpClient->delete(Argument::exact('/scheduler/job/jobName'))
+        $this->httpClient->delete(Argument::exact('/scheduler/job/jobName'))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($_oApiClient->removeJob('jobName'));
+        $this->assertFalse($apiClient->removeJob('jobName'));
     }
 
     public function testGetJobStatsSuccess()
     {
-        $_aTestResult = [
+        $testResult = [
             'histogram' => [
                 '75thPercentile' => 2.34,
                 '95thPercentile' => 1.23,
@@ -286,87 +286,86 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
             'taskStatHistory' => []
         ];
 
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(200);
-        $this->oHttpResponse->json()->shouldBeCalledTimes(1)->willReturn($_aTestResult);
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(200);
+        $this->httpResponse->json()->shouldBeCalledTimes(1)->willReturn($testResult);
 
-        $this->oHttpClient->get(Argument::exact('/scheduler/job/stat/JobA'))
+        $this->httpClient->get(Argument::exact('/scheduler/job/stat/JobA'))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertEquals($_aTestResult, $_oApiClient->getJobStats('JobA'));
+        $this->assertEquals($testResult, $apiClient->getJobStats('JobA'));
     }
 
     public function testGetJobStatsFailure()
     {
-        $this->oHttpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
-        $this->oHttpResponse->json()->shouldNotBeCalled();
+        $this->httpResponse->getStatusCode()->shouldBeCalledTimes(1)->willReturn(500);
+        $this->httpResponse->json()->shouldNotBeCalled();
 
-        $this->oHttpClient->get(Argument::exact('/scheduler/job/stat/JobA'))
+        $this->httpClient->get(Argument::exact('/scheduler/job/stat/JobA'))
             ->shouldBeCalledTimes(1)
-            ->willReturn($this->oHttpResponse->reveal())
+            ->willReturn($this->httpResponse->reveal())
         ;
 
-        $_oApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $apiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertEquals([], $_oApiClient->getJobStats('JobA'));
+        $this->assertEquals([], $apiClient->getJobStats('JobA'));
     }
 
     public function testPingSuccess()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/scheduler/jobs'))
-            ->willReturn($this->oHttpResponse);
+            ->willReturn($this->httpResponse);
 
-        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $chronosApiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($oChronosApiClient->ping());
+        $this->assertTrue($chronosApiClient->ping());
     }
 
     public function testPingFailureForConnectError()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/scheduler/jobs'))
             ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_CONNECT_EXCEPTION));
 
-        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $chronosApiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($oChronosApiClient->ping());
+        $this->assertFalse($chronosApiClient->ping());
     }
 
     public function testPingFailureForRequestError()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/scheduler/jobs'))
             ->willThrow(new HttpConnectionException("somemessage", HttpConnectionException::ERROR_CODE_REQUEST_EXCEPTION));
 
-        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $chronosApiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertFalse($oChronosApiClient->ping());
+        $this->assertFalse($chronosApiClient->ping());
     }
 
     public function testPingSucessFor4xxErrors()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/scheduler/jobs'))
             ->willThrow(new HttpConnectionException("somemessage", 403));
 
-        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $chronosApiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($oChronosApiClient->ping());
+        $this->assertTrue($chronosApiClient->ping());
     }
 
     public function testPingSuccessFor5xxErrors()
     {
-        $this->oHttpClient
+        $this->httpClient
             ->get(Argument::exact('/scheduler/jobs'))
             ->willThrow(new HttpConnectionException("somemessage", 501));
 
-        $oChronosApiClient = new ChronosApiClient($this->oHttpClient->reveal());
+        $chronosApiClient = new ChronosApiClient($this->httpClient->reveal());
 
-        $this->assertTrue($oChronosApiClient->ping());
-
+        $this->assertTrue($chronosApiClient->ping());
     }
 }

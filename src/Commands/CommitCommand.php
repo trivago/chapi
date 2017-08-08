@@ -30,19 +30,16 @@ class CommitCommand extends AbstractCommand
      */
     protected function process()
     {
-        /** @var StoreJobBusinessCaseFactoryInterface $_oStoreJobBusinessCaseFactory */
-        $_oStoreJobBusinessCaseFactory = $this->getContainer()->get(StoreJobBusinessCaseFactoryInterface::DIC_NAME);
+        /** @var StoreJobBusinessCaseFactoryInterface $storeJobBUsinessCaseFactory */
+        $storeJobBUsinessCaseFactory = $this->getContainer()->get(StoreJobBusinessCaseFactoryInterface::DIC_NAME);
 
-        $_aStoreJobBusinessCase = $_oStoreJobBusinessCaseFactory->getAllStoreJobBusinessCase();
+        $storeJobBusinessCases = $storeJobBUsinessCaseFactory->getAllStoreJobBusinessCase();
 
-        /** @var StoreJobBusinessCaseInterface $_oStoreJobBusinessCase */
-        foreach ($_aStoreJobBusinessCase as $_oStoreJobBusinessCase)
-        {
-            $_oStoreJobBusinessCase->storeIndexedJobs();
+        /** @var StoreJobBusinessCaseInterface $storeJobBusinessCase */
+        foreach ($storeJobBusinessCases as $storeJobBusinessCase) {
+            $storeJobBusinessCase->storeIndexedJobs();
         }
 
         return 0;
     }
-
-
 }

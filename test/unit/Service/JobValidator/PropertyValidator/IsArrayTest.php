@@ -10,29 +10,28 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\IsArray;
 
 class IsArrayTest extends AbstractValidatorTest
 {
     public function testIsValidSuccess()
     {
-        $_oPropertyValidator = new IsArray();
-        $this->handleValidTestCase($_oPropertyValidator, 'parents', [1, 2, 3]);
+        $propertyValidator = new IsArray();
+        $this->handleValidTestCase($propertyValidator, 'parents', [1, 2, 3]);
     }
 
     public function testIsValidFailure()
     {
-        $_oPropertyValidator = new IsArray();
-        $this->handleInvalidTestCase($_oPropertyValidator, 'parents', 'foo');
-        $this->handleInvalidTestCase($_oPropertyValidator, 'parents', new \stdClass());
-        $this->handleInvalidTestCase($_oPropertyValidator, 'parents', 1);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'parents', false);
+        $propertyValidator = new IsArray();
+        $this->handleInvalidTestCase($propertyValidator, 'parents', 'foo');
+        $this->handleInvalidTestCase($propertyValidator, 'parents', new \stdClass());
+        $this->handleInvalidTestCase($propertyValidator, 'parents', 1);
+        $this->handleInvalidTestCase($propertyValidator, 'parents', false);
     }
 
     public function testGetLastErrorMessageMulti()
     {
-        $_oPropertyValidator = new IsArray();
-        $this->handleErrorMessageMultiTestCase($_oPropertyValidator, 'parents', [1, 2, 3], 1);
+        $propertyValidator = new IsArray();
+        $this->handleErrorMessageMultiTestCase($propertyValidator, 'parents', [1, 2, 3], 1);
     }
 }

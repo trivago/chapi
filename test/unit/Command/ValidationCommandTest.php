@@ -10,9 +10,7 @@
 
 namespace unit\Command;
 
-use Chapi\Commands\ValidationCommand;
 use Chapi\Component\Command\JobUtilsInterface;
-use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 use Chapi\Service\JobValidator\JobValidatorServiceInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
@@ -25,139 +23,124 @@ class ValidationCommandTest extends \PHPUnit_Framework_TestCase
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobEntityValidatorService;
+    private $jobEntityValidatorService;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryLocale;
+    private $jobRepositoryLocal;
 
     public function setUp()
     {
         $this->setUpCommandDependencies();
 
-        $this->oJobEntityValidatorService = $this->prophesize('Chapi\Service\JobValidator\JobValidatorServiceInterface');
+        $this->jobEntityValidatorService = $this->prophesize('Chapi\Service\JobValidator\JobValidatorServiceInterface');
 
-        $this->oJobRepositoryLocale = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->jobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
     }
 
     public function testValidationWithWildcardSuccess()
     {
-        $this->oInput->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))->willReturn(['*'])->shouldBeCalledTimes(1);
+        $this->input->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))->willReturn(['*'])->shouldBeCalledTimes(1);
 
-        $_oJobCollection = $this->createJobCollection();
-        $this->oJobRepositoryLocale->getJobs()->shouldBeCalledTimes(1)->willReturn($_oJobCollection);
-        $this->oJobRepositoryLocale->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobA'));
-        $this->oJobRepositoryLocale->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobB'));
-        $this->oJobRepositoryLocale->getJob(Argument::exact('JobC'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobC'));
+        $jobCollection = $this->createJobCollection();
+        $this->jobRepositoryLocal->getJobs()->shouldBeCalledTimes(1)->willReturn($jobCollection);
+        $this->jobRepositoryLocal->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($jobCollection->offsetGet('JobA'));
+        $this->jobRepositoryLocal->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($jobCollection->offsetGet('JobB'));
+        $this->jobRepositoryLocal->getJob(Argument::exact('JobC'))->shouldBeCalledTimes(1)->willReturn($jobCollection->offsetGet('JobC'));
 
-        $this->oJobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(true);
+        $this->jobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(true);
 
-        $this->oContainer
+        $this->container
             ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS))
             ->shouldBeCalled()
-            ->willReturn($this->oJobRepositoryLocale->reveal())
+            ->willReturn($this->jobRepositoryLocal->reveal())
         ;
 
-        $this->oContainer
+        $this->container
             ->get(Argument::exact(JobValidatorServiceInterface::DIC_NAME))
             ->shouldBeCalled()
-            ->willReturn($this->oJobEntityValidatorService->reveal())
+            ->willReturn($this->jobEntityValidatorService->reveal())
         ;
 
-        $_oCommand = new ValidationCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new ValidationCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             0,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
     }
 
     public function testValidationWithWildcardFailure()
     {
-        $this->oInput->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))->willReturn(['*'])->shouldBeCalledTimes(1);
+        $this->input->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))->willReturn(['*'])->shouldBeCalledTimes(1);
 
-        $_oJobCollection = $this->createJobCollection();
+        $jobCollection = $this->createJobCollection();
 
-        $this->oJobRepositoryLocale->getJobs()->shouldBeCalledTimes(1)->willReturn($_oJobCollection);
-        $this->oJobRepositoryLocale->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobA'));
-        $this->oJobRepositoryLocale->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobB'));
-        $this->oJobRepositoryLocale->getJob(Argument::exact('JobC'))->shouldBeCalledTimes(1)->willReturn($_oJobCollection->offsetGet('JobC'));
+        $this->jobRepositoryLocal->getJobs()->shouldBeCalledTimes(1)->willReturn($jobCollection);
+        $this->jobRepositoryLocal->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($jobCollection->offsetGet('JobA'));
+        $this->jobRepositoryLocal->getJob(Argument::exact('JobB'))->shouldBeCalledTimes(1)->willReturn($jobCollection->offsetGet('JobB'));
+        $this->jobRepositoryLocal->getJob(Argument::exact('JobC'))->shouldBeCalledTimes(1)->willReturn($jobCollection->offsetGet('JobC'));
 
-        $this->oJobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(false);
-        $this->oJobEntityValidatorService->getInvalidProperties(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(['epsilon', 'command']);
+        $this->jobEntityValidatorService->isEntityValid(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(false);
+        $this->jobEntityValidatorService->getInvalidProperties(Argument::type('Chapi\Entity\JobEntityInterface'))->shouldBeCalledTimes(3)->willReturn(['epsilon', 'command']);
 
-        $this->oContainer
+        $this->container
             ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS))
             ->shouldBeCalled()
-            ->willReturn($this->oJobRepositoryLocale->reveal())
+            ->willReturn($this->jobRepositoryLocal->reveal())
         ;
 
-        $this->oContainer
+        $this->container
             ->get(Argument::exact(JobValidatorServiceInterface::DIC_NAME))
             ->shouldBeCalled()
-            ->willReturn($this->oJobEntityValidatorService->reveal())
+            ->willReturn($this->jobEntityValidatorService->reveal())
         ;
 
-        $_oCommand = new ValidationCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new ValidationCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             1,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
     }
 
     public function testValidationWithoutWildcardSuccess()
     {
-        $this->oInput->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))->willReturn(['JobA'])->shouldBeCalledTimes(1);
+        $this->input->getArgument(Argument::exact(JobUtilsInterface::ARGUMENT_JOBNAMES))->willReturn(['JobA'])->shouldBeCalledTimes(1);
 
-        $_oJobEntity = $this->getValidScheduledJobEntity();
-        $this->oJobRepositoryLocale->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($_oJobEntity);
+        $jobEntity = $this->getValidScheduledJobEntity();
+        $this->jobRepositoryLocal->getJob(Argument::exact('JobA'))->shouldBeCalledTimes(1)->willReturn($jobEntity);
 
-        $this->oJobEntityValidatorService->isEntityValid(Argument::exact($_oJobEntity))->shouldBeCalledTimes(1)->willReturn(true);
+        $this->jobEntityValidatorService->isEntityValid(Argument::exact($jobEntity))->shouldBeCalledTimes(1)->willReturn(true);
 
-        $this->oContainer
+        $this->container
             ->get(Argument::exact(JobRepositoryInterface::DIC_NAME_FILESYSTEM_CHRONOS))
             ->shouldBeCalled()
-            ->willReturn($this->oJobRepositoryLocale->reveal())
+            ->willReturn($this->jobRepositoryLocal->reveal())
         ;
 
-        $this->oContainer
+        $this->container
             ->get(Argument::exact(JobValidatorServiceInterface::DIC_NAME))
             ->shouldBeCalled()
-            ->willReturn($this->oJobEntityValidatorService->reveal())
+            ->willReturn($this->jobEntityValidatorService->reveal())
         ;
 
-        $_oCommand = new ValidationCommandDummy();
-        $_oCommand::$oContainerDummy = $this->oContainer->reveal();
+        $command = new ValidationCommandDummy();
+        $command::$containerDummy = $this->container->reveal();
 
         $this->assertEquals(
             0,
-            $_oCommand->run(
-                $this->oInput->reveal(),
-                $this->oOutput->reveal()
+            $command->run(
+                $this->input->reveal(),
+                $this->output->reveal()
             )
         );
-    }
-}
-
-class ValidationCommandDummy extends ValidationCommand
-{
-    public static $oContainerDummy;
-
-    protected function getContainer()
-    {
-        return self::$oContainerDummy;
-    }
-
-    protected function isAppRunable()
-    {
-        return true;
     }
 }

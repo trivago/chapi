@@ -10,32 +10,31 @@
 
 namespace unit\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Service\JobValidator\PropertyValidator\IsBoolean;
 
 class IsBooleanTest extends AbstractValidatorTest
 {
     public function testIsValidSuccess()
     {
-        $_oPropertyValidator = new IsBoolean();
+        $propertyValidator = new IsBoolean();
         
-        $this->handleValidTestCase($_oPropertyValidator, 'highPriority', true);
-        $this->handleValidTestCase($_oPropertyValidator, 'shell', false);
+        $this->handleValidTestCase($propertyValidator, 'highPriority', true);
+        $this->handleValidTestCase($propertyValidator, 'shell', false);
     }
 
     public function testIsValidFailure()
     {
-        $_oPropertyValidator = new IsBoolean();
+        $propertyValidator = new IsBoolean();
 
-        $this->handleInvalidTestCase($_oPropertyValidator, 'highPriority', 1);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'shell', null);
-        $this->handleInvalidTestCase($_oPropertyValidator, 'disabled', 'foo');
-        $this->handleInvalidTestCase($_oPropertyValidator, 'softError', []);
+        $this->handleInvalidTestCase($propertyValidator, 'highPriority', 1);
+        $this->handleInvalidTestCase($propertyValidator, 'shell', null);
+        $this->handleInvalidTestCase($propertyValidator, 'disabled', 'foo');
+        $this->handleInvalidTestCase($propertyValidator, 'softError', []);
     }
 
     public function testGetLastErrorMessageMulti()
     {
-        $_oPropertyValidator = new IsBoolean();
-        $this->handleErrorMessageMultiTestCase($_oPropertyValidator, 'highPriority', true, 'foo');
+        $propertyValidator = new IsBoolean();
+        $this->handleErrorMessageMultiTestCase($propertyValidator, 'highPriority', true, 'foo');
     }
 }

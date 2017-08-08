@@ -8,29 +8,28 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\DockerParameters;
 
 class DockerParametersTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAllKeysAreCorrect() {
-        $aKeys = ["key", "value"];
+    public function testAllKeysAreCorrect()
+    {
+        $keys = ["key", "value"];
 
-        $oDockerParameters = new DockerParameters();
+        $dockerParameters = new DockerParameters();
 
-        foreach ($aKeys as $sProperty) {
-            $this->assertObjectHasAttribute($sProperty, $oDockerParameters);
+        foreach ($keys as $property) {
+            $this->assertObjectHasAttribute($property, $dockerParameters);
         }
     }
 
-    public function testDockerParameterIsSetCorrectly() {
-        $aData = ["key" => "someKey", "value" => "somevalue"];
+    public function testDockerParameterIsSetCorrectly()
+    {
+        $data = ["key" => "someKey", "value" => "somevalue"];
 
-        $oDockerParameters = new DockerParameters($aData);
+        $dockerParameters = new DockerParameters($data);
 
-        $this->assertEquals("someKey", $oDockerParameters->key);
-        $this->assertEquals("somevalue", $oDockerParameters->value);
-
+        $this->assertEquals("someKey", $dockerParameters->key);
+        $this->assertEquals("somevalue", $dockerParameters->value);
     }
-
 }

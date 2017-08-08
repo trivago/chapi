@@ -8,7 +8,6 @@
 
 namespace Chapi\BusinessCase\Comparison;
 
-
 use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\JobCollection;
 use Chapi\Entity\JobEntityInterface;
@@ -19,15 +18,15 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
     /**
      * @var JobRepositoryInterface
      */
-    protected $oRemoteRepository;
+    protected $remoteRepository;
     /**
      * @var JobRepositoryInterface
      */
-    protected $oLocalRepository;
+    protected $localRepository;
     /**
      * @var DiffCompareInterface
      */
-    protected $oDiffCompare;
+    protected $diffCompare;
 
     /**
      * @inheritdoc
@@ -35,8 +34,8 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
     public function getLocalMissingJobs()
     {
         return $this->getMissingJobsInCollectionA(
-            $this->oLocalRepository->getJobs(),
-            $this->oRemoteRepository->getJobs()
+            $this->localRepository->getJobs(),
+            $this->remoteRepository->getJobs()
         );
     }
 
@@ -46,131 +45,122 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
     public function getRemoteMissingJobs()
     {
         return $this->getMissingJobsInCollectionA(
-            $this->oRemoteRepository->getJobs(),
-            $this->oLocalRepository->getJobs()
+            $this->remoteRepository->getJobs(),
+            $this->localRepository->getJobs()
         );
     }
 
     /**
      * @inheritdoc
      */
-    public function isJobAvailable($sJobName)
+    public function isJobAvailable($jobName)
     {
-        $_bLocallyAvailable = $this->oLocalRepository->getJob($sJobName);
-        $_bRemotelyAvailable = $this->oRemoteRepository->getJob($sJobName);
-        return $_bLocallyAvailable || $_bRemotelyAvailable;
+        $locallyAvailable = $this->localRepository->getJob($jobName);
+        $remotelyAvailable = $this->remoteRepository->getJob($jobName);
+        return $locallyAvailable || $remotelyAvailable;
     }
 
 
     /**
-     * @param JobCollection $oJobCollectionA
-     * @param JobCollection $oJobCollectionB
+     * @param JobCollection $jobCollectionA
+     * @param JobCollection $jobCollectionB
      * @return array<string>
      */
-    protected function getMissingJobsInCollectionA(JobCollection $oJobCollectionA, JobCollection $oJobCollectionB)
+    protected function getMissingJobsInCollectionA(JobCollection $jobCollectionA, JobCollection $jobCollectionB)
     {
         return array_diff(
-            array_keys($oJobCollectionB->getArrayCopy()),
-            array_keys($oJobCollectionA->getArrayCopy())
+            array_keys($jobCollectionB->getArrayCopy()),
+            array_keys($jobCollectionA->getArrayCopy())
         );
     }
 
-    protected function getDifference(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
+    protected function getDifference(JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB)
     {
-        $aJobACopy = [];
-        $aJobBCopy = [];
+        $jobACopy = [];
+        $jobBCopy = [];
 
-        if ($oJobEntityA)
-        {
-            $aJobACopy = $oJobEntityA->getSimpleArrayCopy();
+        if ($jobEntityA) {
+            $jobACopy = $jobEntityA->getSimpleArrayCopy();
         }
 
-        if ($oJobEntityB)
-        {
-            $aJobBCopy = $oJobEntityB->getSimpleArrayCopy();
+        if ($jobEntityB) {
+            $jobBCopy = $jobEntityB->getSimpleArrayCopy();
         }
 
         return array_merge(
             array_diff_assoc(
-                $aJobACopy,
-                $aJobBCopy
+                $jobACopy,
+                $jobBCopy
             ),
             array_diff_assoc(
-                $aJobBCopy,
-                $aJobACopy
+                $jobBCopy,
+                $jobACopy
             )
         );
     }
 
 
     /**
-     * @param JobEntityInterface $oJobEntityA
-     * @param JobEntityInterface $oJobEntityB
+     * @param JobEntityInterface $jobEntityA
+     * @param JobEntityInterface $jobEntityB
      * @return array
      */
-    protected function compareJobEntities(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB)
+    protected function compareJobEntities(JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB)
     {
-        $_aNonidenticalProperties = [];
+        $nonidenticalProperties = [];
 
-        $_aDiff = $this->getDifference($oJobEntityA, $oJobEntityB);
+        $differences = $this->getDifference($jobEntityA, $jobEntityB);
 
-        if (count($_aDiff) > 0)
-        {
-            $_aDiffKeys = array_keys($_aDiff);
+        if (count($differences) > 0) {
+            $diffKeys = array_keys($differences);
 
-            foreach ($_aDiffKeys as $_sDiffKey)
-            {
-                if (!$this->isEntityEqual($_sDiffKey, $oJobEntityA, $oJobEntityB))
-                {
-                    $_aNonidenticalProperties[] = $_sDiffKey;
+            foreach ($diffKeys as $diffKey) {
+                if (!$this->isEntityEqual($diffKey, $jobEntityA, $jobEntityB)) {
+                    $nonidenticalProperties[] = $diffKey;
                 }
             }
         }
 
-        return $_aNonidenticalProperties;
+        return $nonidenticalProperties;
     }
 
 
     /**
      * @inheritdoc
      */
-    public function getJobDiff($sJobName)
+    public function getJobDiff($jobName)
     {
-        $_aDifferences = [];
-        $_oLocalEntity = $this->oLocalRepository->getJob($sJobName);
-        $_oRemoteEntity = $this->oRemoteRepository->getJob($sJobName);
+        $differences = [];
+        $localEntity = $this->localRepository->getJob($jobName);
+        $remoteEntity = $this->remoteRepository->getJob($jobName);
 
-        if (!$_oLocalEntity && !$_oRemoteEntity)
-        {
+        if (!$localEntity && !$remoteEntity) {
             // return as jobs doesnt exist
             return [];
         }
 
-        if (!$_oLocalEntity)
-        {
-            $_oLocalEntity = $this->getEntitySetWithDefaults();
+        if (!$localEntity) {
+            $localEntity = $this->getEntitySetWithDefaults();
         }
 
-        if (!$_oRemoteEntity)
-        {
-            $_oRemoteEntity = $this->getEntitySetWithDefaults();
+        if (!$remoteEntity) {
+            $remoteEntity = $this->getEntitySetWithDefaults();
         }
 
-        $this->preCompareModifications($_oLocalEntity, $_oRemoteEntity);
-        $_aNonIdenticalProps = $this->compareJobEntities(
-            $_oLocalEntity,
-            $_oRemoteEntity
+        $this->preCompareModifications($localEntity, $remoteEntity);
+        $nonidenticalProperties = $this->compareJobEntities(
+            $localEntity,
+            $remoteEntity
         );
 
-        foreach ($_aNonIdenticalProps as $_sProperty)
-        {
-            $_aDifferences[$_sProperty] = $this->oDiffCompare->compare(
-                $_oRemoteEntity->{$_sProperty},
-                $_oLocalEntity->{$_sProperty}
+        foreach ($nonidenticalProperties as $property) {
+            $differences[$property] = $this->diffCompare->compare(
+                $remoteEntity->{$property},
+                $localEntity->{$property}
             );
         }
 
-        return $_aDifferences;
+        return $differences;
     }
 
 
@@ -180,31 +170,28 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
      */
     public function getLocalJobUpdates()
     {
-        $_aLocallyUpdatedJobs = [];
-        $_aLocalJobs = $this->oLocalRepository->getJobs();
+        $locallyUpdatedJobs = [];
+        $localJobs = $this->localRepository->getJobs();
 
-        /** @var JobEntityInterface $_oLocalJob */
-        foreach ($_aLocalJobs as $_oLocalJob)
-        {
+        /** @var JobEntityInterface $localJob */
+        foreach ($localJobs as $localJob) {
 
-            /** @var JobEntityInterface $_oRemoteJob */
-            $_oRemoteJob = $this->oRemoteRepository->getJob($_oLocalJob->getKey());
-            if (!$_oRemoteJob)
-            {
+            /** @var JobEntityInterface $remoteJob */
+            $remoteJob = $this->remoteRepository->getJob($localJob->getKey());
+            if (!$remoteJob) {
                 // if doesn't exist in remote, its not update. its new
                 continue;
             }
 
-            $this->preCompareModifications($_oLocalJob, $_oRemoteJob);
+            $this->preCompareModifications($localJob, $remoteJob);
 
-            $_aNonidenticalProperties = $this->compareJobEntities($_oLocalJob, $_oRemoteJob);
+            $nonidenticalProperties = $this->compareJobEntities($localJob, $remoteJob);
 
-            if (!empty($_aNonidenticalProperties))
-            {
-                $_aLocallyUpdatedJobs[] = $_oLocalJob->getKey();
+            if (!empty($nonidenticalProperties)) {
+                $locallyUpdatedJobs[] = $localJob->getKey();
             }
         }
-        return $_aLocallyUpdatedJobs;
+        return $locallyUpdatedJobs;
     }
 
 
@@ -216,11 +203,11 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
      *
      * Note: Should be careful with the parameters as they are passed by value.
      *
-     * @param JobEntityInterface $oLocalJob
-     * @param JobEntityInterface $oRemoteJob
+     * @param JobEntityInterface $localJob
+     * @param JobEntityInterface $remoteJob
      * @return null
      */
-    abstract protected function preCompareModifications(JobEntityInterface &$oLocalJob, JobEntityInterface &$oRemoteJob);
+    abstract protected function preCompareModifications(JobEntityInterface &$localJob, JobEntityInterface &$remoteJob);
 
     /**
      * Gets entity for each system with defaults set
@@ -231,17 +218,17 @@ abstract class AbstractJobComparisionBusinessCase implements JobComparisonInterf
     /**
      * Verify if two entities are equal.
      *
-     * @param $sProperty
-     * @param JobEntityInterface $oJobEntityA
-     * @param JobEntityInterface $oJobEntityB
+     * @param $property
+     * @param JobEntityInterface $jobEntityA
+     * @param JobEntityInterface $jobEntityB
      * @return mixed
      */
-    abstract protected function isEntityEqual($sProperty, JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
+    abstract protected function isEntityEqual($property, JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB);
 
     /**
-     * @param JobEntityInterface $oJobEntityA
-     * @param JobEntityInterface $oJobEntityB
+     * @param JobEntityInterface $jobEntityA
+     * @param JobEntityInterface $jobEntityB
      * @return bool
      */
-    abstract public function hasSameJobType(JobEntityInterface $oJobEntityA, JobEntityInterface $oJobEntityB);
+    abstract public function hasSameJobType(JobEntityInterface $jobEntityA, JobEntityInterface $jobEntityB);
 }

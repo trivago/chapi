@@ -10,7 +10,6 @@
 
 namespace Chapi\Service\JobIndex;
 
-
 use Chapi\Component\Cache\CacheInterface;
 
 class JobIndexService implements JobIndexServiceInterface
@@ -20,22 +19,21 @@ class JobIndexService implements JobIndexServiceInterface
     /**
      * @var CacheInterface
      */
-    private $oCache;
+    private $cache;
 
     /**
      * @var array
      */
-    private $aJobIndex = [];
+    private $jobIndex = [];
 
     /**
-     * @param CacheInterface $oCache
+     * @param CacheInterface $cache
      */
     public function __construct(
-        CacheInterface $oCache
-    )
-    {
-        $this->oCache = $oCache;
-        $this->aJobIndex = $this->getJobIndexFromStorage();
+        CacheInterface $cache
+    ) {
+        $this->cache = $cache;
+        $this->jobIndex = $this->getJobIndexFromStorage();
     }
 
     /**
@@ -47,52 +45,49 @@ class JobIndexService implements JobIndexServiceInterface
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return $this
      */
-    public function addJob($sJobName)
+    public function addJob($jobName)
     {
-        $this->aJobIndex[$sJobName] = $sJobName;
+        $this->jobIndex[$jobName] = $jobName;
         return $this;
     }
 
     /**
-     * @param array $aJobNames
+     * @param array $jobNames
      * @return $this
      */
-    public function addJobs(array $aJobNames)
+    public function addJobs(array $jobNames)
     {
-        foreach ($aJobNames as $_sJobName)
-        {
-            $this->addJob($_sJobName);
+        foreach ($jobNames as $jobName) {
+            $this->addJob($jobName);
         }
 
         return $this;
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return $this
      */
-    public function removeJob($sJobName)
+    public function removeJob($jobName)
     {
-        if (isset($this->aJobIndex[$sJobName]))
-        {
-            unset($this->aJobIndex[$sJobName]);
+        if (isset($this->jobIndex[$jobName])) {
+            unset($this->jobIndex[$jobName]);
         }
 
         return $this;
     }
 
     /**
-     * @param array $aJobNames
+     * @param array $jobNames
      * @return $this
      */
-    public function removeJobs(array $aJobNames)
+    public function removeJobs(array $jobNames)
     {
-        foreach ($aJobNames as $_sJobName)
-        {
-            $this->removeJob($_sJobName);
+        foreach ($jobNames as $jobName) {
+            $this->removeJob($jobName);
         }
 
         return $this;
@@ -103,7 +98,7 @@ class JobIndexService implements JobIndexServiceInterface
      */
     public function resetJobIndex()
     {
-        $this->aJobIndex = [];
+        $this->jobIndex = [];
         return $this;
     }
 
@@ -112,16 +107,16 @@ class JobIndexService implements JobIndexServiceInterface
      */
     public function getJobIndex()
     {
-        return $this->aJobIndex;
+        return $this->jobIndex;
     }
 
     /**
-     * @param $sJobName
+     * @param $jobName
      * @return bool
      */
-    public function isJobInIndex($sJobName)
+    public function isJobInIndex($jobName)
     {
-        return (isset($this->aJobIndex[$sJobName]));
+        return (isset($this->jobIndex[$jobName]));
     }
 
     /**
@@ -129,8 +124,8 @@ class JobIndexService implements JobIndexServiceInterface
      */
     private function getJobIndexFromStorage()
     {
-        $_aJobIndex = $this->oCache->get(self::JOB_INDEX_CACHE_KEY);
-        return (is_array($_aJobIndex)) ? $_aJobIndex : [];
+        $jobIndex = $this->cache->get(self::JOB_INDEX_CACHE_KEY);
+        return (is_array($jobIndex)) ? $jobIndex : [];
     }
 
     /**
@@ -138,6 +133,6 @@ class JobIndexService implements JobIndexServiceInterface
      */
     private function setJobIndexToStorage()
     {
-        $this->oCache->set(self::JOB_INDEX_CACHE_KEY, $this->aJobIndex);
+        $this->cache->set(self::JOB_INDEX_CACHE_KEY, $this->jobIndex);
     }
 }

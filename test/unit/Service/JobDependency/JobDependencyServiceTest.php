@@ -11,7 +11,6 @@
 
 namespace unit\Service\JobDependency;
 
-
 use Chapi\Service\JobDependencies\JobDependencyService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
@@ -20,50 +19,50 @@ class JobDependencyServiceTest extends \PHPUnit_Framework_TestCase
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryLocal;
+    private $jobRepositoryLocal;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oJobRepositoryChronos;
+    private $jobRepositoryChronos;
 
     public function setUp()
     {
-        $this->oJobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
-        $this->oJobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->jobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
+        $this->jobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
     }
 
     public function testCreateInstance()
     {
-        $_oJobDependencyService = new JobDependencyService($this->oJobRepositoryLocal->reveal(), $this->oJobRepositoryChronos->reveal());
-        $this->assertInstanceOf('Chapi\Service\JobDependencies\JobDependencyServiceInterface', $_oJobDependencyService);
+        $jobDependencyService = new JobDependencyService($this->jobRepositoryLocal->reveal(), $this->jobRepositoryChronos->reveal());
+        $this->assertInstanceOf('Chapi\Service\JobDependencies\JobDependencyServiceInterface', $jobDependencyService);
     }
 
     public function testGetChildJobsLocal()
     {
-        $this->oJobRepositoryLocal->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
-        $this->oJobRepositoryChronos->getJobs()->shouldNotBeCalled();
+        $this->jobRepositoryLocal->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
+        $this->jobRepositoryChronos->getJobs()->shouldNotBeCalled();
 
-        $_oJobDependencyService = new JobDependencyService($this->oJobRepositoryLocal->reveal(), $this->oJobRepositoryChronos->reveal());
-        $_aResult = $_oJobDependencyService->getChildJobs('JobA', JobDependencyService::REPOSITORY_LOCAL);
+        $jobDependencyService = new JobDependencyService($this->jobRepositoryLocal->reveal(), $this->jobRepositoryChronos->reveal());
+        $result = $jobDependencyService->getChildJobs('JobA', JobDependencyService::REPOSITORY_LOCAL);
 
-        $this->assertTrue(is_array($_aResult));
-        $this->assertTrue(in_array('JobB', $_aResult));
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(in_array('JobB', $result));
 
-        $this->assertTrue($_oJobDependencyService->hasChildJobs('JobA', JobDependencyService::REPOSITORY_LOCAL));
-        $this->assertFalse($_oJobDependencyService->hasChildJobs('JobB', JobDependencyService::REPOSITORY_LOCAL));
+        $this->assertTrue($jobDependencyService->hasChildJobs('JobA', JobDependencyService::REPOSITORY_LOCAL));
+        $this->assertFalse($jobDependencyService->hasChildJobs('JobB', JobDependencyService::REPOSITORY_LOCAL));
     }
 
     public function testGetChildJobsChronos()
     {
-        $this->oJobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
-        $this->oJobRepositoryLocal->getJobs()->shouldNotBeCalled();
+        $this->jobRepositoryChronos->getJobs()->shouldBeCalledTimes(1)->willReturn($this->createJobCollection());
+        $this->jobRepositoryLocal->getJobs()->shouldNotBeCalled();
 
-        $_oJobDependencyService = new JobDependencyService($this->oJobRepositoryLocal->reveal(), $this->oJobRepositoryChronos->reveal());
-        $_aResult = $_oJobDependencyService->getChildJobs('JobA', JobDependencyService::REPOSITORY_CHRONOS);
+        $jobDependencyService = new JobDependencyService($this->jobRepositoryLocal->reveal(), $this->jobRepositoryChronos->reveal());
+        $result = $jobDependencyService->getChildJobs('JobA', JobDependencyService::REPOSITORY_CHRONOS);
 
-        $this->assertTrue(is_array($_aResult));
-        $this->assertTrue(in_array('JobB', $_aResult));
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(in_array('JobB', $result));
 
-        $this->assertTrue($_oJobDependencyService->hasChildJobs('JobA', JobDependencyService::REPOSITORY_CHRONOS));
-        $this->assertFalse($_oJobDependencyService->hasChildJobs('JobB', JobDependencyService::REPOSITORY_CHRONOS));
+        $this->assertTrue($jobDependencyService->hasChildJobs('JobA', JobDependencyService::REPOSITORY_CHRONOS));
+        $this->assertFalse($jobDependencyService->hasChildJobs('JobB', JobDependencyService::REPOSITORY_CHRONOS));
     }
 }

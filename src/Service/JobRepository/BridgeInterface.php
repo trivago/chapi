@@ -19,20 +19,20 @@ interface BridgeInterface
     public function getJobs();
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function addJob(JobEntityInterface $oJobEntity);
+    public function addJob(JobEntityInterface $jobEntity);
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function updateJob(JobEntityInterface $oJobEntity);
+    public function updateJob(JobEntityInterface $jobEntity);
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function removeJob(JobEntityInterface $oJobEntity);
+    public function removeJob(JobEntityInterface $jobEntity);
 }

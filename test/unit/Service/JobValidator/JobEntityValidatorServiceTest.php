@@ -9,7 +9,6 @@
 
 namespace ChapiTest\unit\Service\JobValidator;
 
-
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Service\JobValidator\ChronosJobValidatorService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
@@ -20,112 +19,111 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
     use JobEntityTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oPropertyValidator;
+    private $propertyValidator;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
-    private $oValidatorFactory;
+    private $validatorFactory;
 
     public function setUp()
     {
-        $this->oPropertyValidator = $this->prophesize('Chapi\Service\JobValidator\PropertyValidatorInterface');
-        $this->oValidatorFactory = $this->prophesize('Chapi\Service\JobValidator\ValidatorFactoryInterface');
+        $this->propertyValidator = $this->prophesize('Chapi\Service\JobValidator\PropertyValidatorInterface');
+        $this->validatorFactory = $this->prophesize('Chapi\Service\JobValidator\ValidatorFactoryInterface');
     }
     
     public function testIsEntityValidSuccess()
     {
         // mock
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(true);
-        $this->oPropertyValidator->getLastErrorMessage()->willReturn('error message');
+        $this->propertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(true);
+        $this->propertyValidator->getLastErrorMessage()->willReturn('error message');
 
-        $this->oValidatorFactory->getValidator(Argument::type('int'))->willReturn($this->oPropertyValidator->reveal());
+        $this->validatorFactory->getValidator(Argument::type('int'))->willReturn($this->propertyValidator->reveal());
 
         // setup
-        $_oJobEntity = $this->getValidScheduledJobEntity();
-        $_oJobEntityValidatorService = new ChronosJobValidatorService(
-            $this->oValidatorFactory->reveal()
+        $jobEntity = $this->getValidScheduledJobEntity();
+        $jobEntityValidatorService = new ChronosJobValidatorService(
+            $this->validatorFactory->reveal()
         );
 
         // test
         $this->assertTrue(
-            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+            $jobEntityValidatorService->isEntityValid($jobEntity)
         );
 
         // Spies
-        $this->oValidatorFactory->getValidator(Argument::type('int'))->shouldHaveBeenCalled();
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->shouldHaveBeenCalled();
+        $this->validatorFactory->getValidator(Argument::type('int'))->shouldHaveBeenCalled();
+        $this->propertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->shouldHaveBeenCalled();
     }
 
     public function testIsEntityValidFailure()
     {
         // mock
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(false);
-        $this->oPropertyValidator->getLastErrorMessage()->willReturn('error message');
+        $this->propertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(false);
+        $this->propertyValidator->getLastErrorMessage()->willReturn('error message');
 
-        $this->oValidatorFactory->getValidator(Argument::type('int'))->willReturn($this->oPropertyValidator->reveal());
+        $this->validatorFactory->getValidator(Argument::type('int'))->willReturn($this->propertyValidator->reveal());
 
         // setup
-        $_oJobEntity = $this->getValidScheduledJobEntity();
-        $_oJobEntityValidatorService = new ChronosJobValidatorService(
-            $this->oValidatorFactory->reveal()
+        $jobEntity = $this->getValidScheduledJobEntity();
+        $jobEntityValidatorService = new ChronosJobValidatorService(
+            $this->validatorFactory->reveal()
         );
 
         // test
         $this->assertFalse(
-            $_oJobEntityValidatorService->isEntityValid($_oJobEntity)
+            $jobEntityValidatorService->isEntityValid($jobEntity)
         );
 
         // Spies
-        $this->oValidatorFactory->getValidator(Argument::type('int'))->shouldHaveBeenCalled();
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->shouldHaveBeenCalled();
-        $this->oPropertyValidator->getLastErrorMessage()->shouldHaveBeenCalled();
+        $this->validatorFactory->getValidator(Argument::type('int'))->shouldHaveBeenCalled();
+        $this->propertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->shouldHaveBeenCalled();
+        $this->propertyValidator->getLastErrorMessage()->shouldHaveBeenCalled();
     }
     
     public function testGetInvalidPropertiesSuccess()
     {
         // mock
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(true);
-        $this->oPropertyValidator->getLastErrorMessage()->willReturn('error message');
+        $this->propertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(true);
+        $this->propertyValidator->getLastErrorMessage()->willReturn('error message');
 
-        $this->oValidatorFactory->getValidator(Argument::type('int'))->willReturn($this->oPropertyValidator->reveal());
+        $this->validatorFactory->getValidator(Argument::type('int'))->willReturn($this->propertyValidator->reveal());
 
         // setup
-        $_oJobEntity = $this->getValidScheduledJobEntity();
-        $_oJobEntityValidatorService = new ChronosJobValidatorService(
-            $this->oValidatorFactory->reveal()
+        $jobEntity = $this->getValidScheduledJobEntity();
+        $jobEntityValidatorService = new ChronosJobValidatorService(
+            $this->validatorFactory->reveal()
         );
         
         // test
         $this->assertEquals(
             0,
-            count($_oJobEntityValidatorService->getInvalidProperties($_oJobEntity))
+            count($jobEntityValidatorService->getInvalidProperties($jobEntity))
         );
     }
 
     public function testGetInvalidPropertiesFailure()
     {
         // mock
-        $this->oPropertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(false);
-        $this->oPropertyValidator->getLastErrorMessage()->willReturn('error message');
+        $this->propertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->willReturn(false);
+        $this->propertyValidator->getLastErrorMessage()->willReturn('error message');
 
-        $this->oValidatorFactory->getValidator(Argument::type('int'))->willReturn($this->oPropertyValidator->reveal());
+        $this->validatorFactory->getValidator(Argument::type('int'))->willReturn($this->propertyValidator->reveal());
 
         // setup
-        $_oJobEntity = $this->getValidScheduledJobEntity();
-        $_oJobEntityValidatorService = new ChronosJobValidatorService(
-            $this->oValidatorFactory->reveal()
+        $jobEntity = $this->getValidScheduledJobEntity();
+        $jobEntityValidatorService = new ChronosJobValidatorService(
+            $this->validatorFactory->reveal()
         );
 
         // test
-        $_aResult = $_oJobEntityValidatorService->getInvalidProperties($_oJobEntity);
+        $result = $jobEntityValidatorService->getInvalidProperties($jobEntity);
         
         $this->assertGreaterThan(
             0,
-            count($_aResult)
+            count($result)
         );
         
-        foreach ($_aResult as $_sErrMsg)
-        {
-            $this->assertEquals('error message', $_sErrMsg);   
+        foreach ($result as $errorMessage) {
+            $this->assertEquals('error message', $errorMessage);
             break; // one check is enough
         }
     }

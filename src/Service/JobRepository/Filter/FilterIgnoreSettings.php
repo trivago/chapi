@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobRepository\Filter;
 
-
 use Chapi\Component\Config\ChapiConfigInterface;
 use Chapi\Entity\JobEntityInterface;
 use Psr\Log\LoggerInterface;
@@ -19,53 +18,49 @@ class FilterIgnoreSettings implements JobFilterInterface
     /**
      * @var array[]
      */
-    private $aSearchPatterns;
+    private $searchPatterns;
 
     /**
      * @var LoggerInterface
      */
-    private $oLogger;
+    private $logger;
 
     /**
      * @var ChapiConfigInterface
      */
-    private $oConfig;
+    private $config;
 
     /**
      * FilterIgnoreSettings constructor.
-     * @param LoggerInterface $oLogger
-     * @param ChapiConfigInterface $oConfig
+     * @param LoggerInterface $logger
+     * @param ChapiConfigInterface $config
      */
     public function __construct(
-        LoggerInterface $oLogger,
-        ChapiConfigInterface $oConfig
-    )
-    {
-        $this->oLogger = $oLogger;
-        $this->oConfig = $oConfig;
+        LoggerInterface $logger,
+        ChapiConfigInterface $config
+    ) {
+        $this->logger = $logger;
+        $this->config = $config;
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function isInteresting(JobEntityInterface $oJobEntity)
+    public function isInteresting(JobEntityInterface $jobEntity)
     {
-        $_aSearchPatterns = $this->getSearchPatterns();
+        $searchPatterns = $this->getSearchPatterns();
 
-        foreach ($_aSearchPatterns['ignore'] as $_sPatternIgnore)
-        {
-            if (fnmatch($_sPatternIgnore, $oJobEntity->getKey()))
-            {
-                $this->oLogger->debug(
-                    sprintf('FilterIgnoreSettings :: IGNORE "%s" FOR "%s"', $_sPatternIgnore, $oJobEntity->getKey())
+        foreach ($searchPatterns['ignore'] as $patternIgnore) {
+            if (fnmatch($patternIgnore, $jobEntity->getKey())) {
+                $this->logger->debug(
+                    sprintf('FilterIgnoreSettings :: IGNORE "%s" FOR "%s"', $patternIgnore, $jobEntity->getKey())
                 );
 
-                foreach ($_aSearchPatterns['ignore_not'] as $_sPatternIgnoreNot)
-                {
-                    if (fnmatch($_sPatternIgnoreNot, $oJobEntity->getKey())) {
-                        $this->oLogger->debug(
-                            sprintf('FilterIgnoreSettings ::   IGNORE NOT "%s" FOR "%s"', $_sPatternIgnoreNot, $oJobEntity->getKey())
+                foreach ($searchPatterns['ignore_not'] as $patternIgnoreNot) {
+                    if (fnmatch($patternIgnoreNot, $jobEntity->getKey())) {
+                        $this->logger->debug(
+                            sprintf('FilterIgnoreSettings ::   IGNORE NOT "%s" FOR "%s"', $patternIgnoreNot, $jobEntity->getKey())
                         );
 
                         return true;
@@ -84,33 +79,26 @@ class FilterIgnoreSettings implements JobFilterInterface
      */
     private function getSearchPatterns()
     {
-        if (!is_null($this->aSearchPatterns))
-        {
-            return $this->aSearchPatterns;
+        if (!is_null($this->searchPatterns)) {
+            return $this->searchPatterns;
         }
 
-        $_aProfileConfig = $this->oConfig->getProfileConfig();
-        $_aSearchPatterns = [
+        $profileConfig = $this->config->getProfileConfig();
+        $searchPatterns = [
             'ignore' => [],
             'ignore_not' => []
         ];
 
-        if (isset($_aProfileConfig['ignore']))
-        {
-
-            foreach ($_aProfileConfig['ignore'] as $_sSearchPattern)
-            {
-                if ('!' == substr($_sSearchPattern, 0, 1))
-                {
-                    $_aSearchPatterns['ignore_not'][] = substr($_sSearchPattern, 1);
-                }
-                else
-                {
-                    $_aSearchPatterns['ignore'][] = $_sSearchPattern;
+        if (isset($profileConfig['ignore'])) {
+            foreach ($profileConfig['ignore'] as $searchPattern) {
+                if ('!' == substr($searchPattern, 0, 1)) {
+                    $searchPatterns['ignore_not'][] = substr($searchPattern, 1);
+                } else {
+                    $searchPatterns['ignore'][] = $searchPattern;
                 }
             }
         }
 
-        return $this->aSearchPatterns = $_aSearchPatterns;
+        return $this->searchPatterns = $searchPatterns;
     }
 }

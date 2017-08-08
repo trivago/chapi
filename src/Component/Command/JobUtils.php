@@ -17,31 +17,30 @@ class JobUtils implements JobUtilsInterface
     /**
      * @inheritdoc
      */
-    public static function configureJobNamesArgument(Command $oCommand, $sDescription)
+    public static function configureJobNamesArgument(Command $command, $description)
     {
-        $oCommand->addArgument(self::ARGUMENT_JOBNAMES, InputArgument::IS_ARRAY, $sDescription);
+        $command->addArgument(self::ARGUMENT_JOBNAMES, InputArgument::IS_ARRAY, $description);
     }
 
     /**
      * @inheritdoc
      */
-    public static function getJobNames(InputInterface $oInput, Command $oCommand)
+    public static function getJobNames(InputInterface $input, Command $command)
     {
-        $_aJobNames = $oInput->getArgument(self::ARGUMENT_JOBNAMES);
+        $jobNames = $input->getArgument(self::ARGUMENT_JOBNAMES);
 
-        if (empty($_aJobNames))
-        {
-            throw new \InvalidArgumentException(sprintf('Nothing specified, nothing %sed. Maybe you wanted to say "%s ."?', $oCommand->getName(), $oCommand->getName()));
+        if (empty($jobNames)) {
+            throw new \InvalidArgumentException(sprintf('Nothing specified, nothing %sed. Maybe you wanted to say "%s ."?', $command->getName(), $command->getName()));
         }
 
-        return $_aJobNames;
+        return $jobNames;
     }
 
     /**
      * @inheritdoc
      */
-    public static function isWildcard(array $aJobNames)
+    public static function isWildcard(array $jobNames)
     {
-        return (isset($aJobNames[0]) && in_array($aJobNames[0], ['.', '*']));
+        return (isset($jobNames[0]) && in_array($jobNames[0], ['.', '*']));
     }
 }

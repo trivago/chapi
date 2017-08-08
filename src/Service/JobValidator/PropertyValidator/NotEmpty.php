@@ -9,7 +9,6 @@
 
 namespace Chapi\Service\JobValidator\PropertyValidator;
 
-
 use Chapi\Entity\Chronos\JobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
@@ -22,11 +21,11 @@ class NotEmpty extends AbstractPropertyValidator implements PropertyValidatorInt
     /**
      * @inheritDoc
      */
-    public function isValid($sProperty, JobEntityInterface $oJobEntity)
+    public function isValid($property, JobEntityInterface $jobEntity)
     {
         return $this->returnIsValidHelper(
-            !empty($oJobEntity->{$sProperty}),
-            $sProperty,
+            !empty($jobEntity->{$property}),
+            $property,
             self::MESSAGE_TEMPLATE
         );
     }

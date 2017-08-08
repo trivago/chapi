@@ -37,26 +37,24 @@ class HealthCheck implements \JsonSerializable
      */
     public $command = null;
 
-    public function __construct($aData = [])
+    public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($aData, $this);
+        MarathonEntityUtils::setAllPossibleProperties($data, $this);
 
-        if (isset($aData['command']))
-        {
-            $this->command = new HealthCheckCommand((array) $aData['command']);
+        if (isset($data['command'])) {
+            $this->command = new HealthCheckCommand((array) $data['command']);
         }
     }
 
     /**
      * @inheritdoc
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
-        $_aRet = (array) $this;
-        if (is_null($this->port))
-        {
-            unset($_aRet["port"]);
+        $return = (array) $this;
+        if (is_null($this->port)) {
+            unset($return["port"]);
         }
-        return $_aRet;
+        return $return;
     }
 }

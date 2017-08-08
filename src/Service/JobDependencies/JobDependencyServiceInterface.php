@@ -19,16 +19,16 @@ interface JobDependencyServiceInterface
     const REPOSITORY_CHRONOS = 2;
 
     /**
-     * @param string $sJobName
-     * @param int $iRepository
+     * @param string $jobName
+     * @param int $repository
      * @return string[]
      */
-    public function getChildJobs($sJobName, $iRepository);
+    public function getChildJobs($jobName, $repository);
 
     /**
-     * @param string $sJobName
-     * @param int $iRepository
+     * @param string $jobName
+     * @param int $repository
      * @return bool
      */
-    public function hasChildJobs($sJobName, $iRepository);
+    public function hasChildJobs($jobName, $repository);
 }

@@ -11,7 +11,6 @@
 
 namespace ChapiTest\src\TestTraits;
 
-
 use Chapi\Entity\Chronos\JobStatsEntity;
 
 trait JobStatsEntityTrait
@@ -21,7 +20,7 @@ trait JobStatsEntityTrait
      */
     private function createValidJobStatsEntity()
     {
-        $_aTestValues = [
+        $testValues = [
             'histogram' => [
                 '75thPercentile' => 60000.0,
                 '95thPercentile' => 70000.0,
@@ -34,6 +33,6 @@ trait JobStatsEntityTrait
             'taskStatHistory' => []
         ];
 
-        return new JobStatsEntity($_aTestValues);
+        return new JobStatsEntity($testValues);
     }
 }

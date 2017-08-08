@@ -22,47 +22,46 @@ class BridgeFileSystem implements BridgeInterface
     /**
      * @var Filesystem
      */
-    private $oFileSystemService;
+    private $fileSystemService;
 
     /**
      * @var CacheInterface
      */
-    private $oCache;
+    private $cache;
 
     /**
      * @var string
      */
-    private $sRepositoryDir = '';
+    private $repositoryDir = '';
 
     /**
      * @var string[]
      */
-    private $aDirectorySeparators = ['.', ':', '-', '\\'];
+    private $directorySeparators = ['.', ':', '-', '\\'];
 
     /**
      * @var array
      */
-    private $aJobFileMap = [];
+    private $jobFileMap = [];
 
     /**
      * @var array
      */
-    private $aGroupedApps = [];
+    private $groupedApps = [];
 
     /**
      * @param Filesystem $oFileSystemService
-     * @param CacheInterface $oCache
-     * @param string $sRepositoryDir
+     * @param CacheInterface $cache
+     * @param string $repositoryDir
      */
     public function __construct(
         Filesystem $oFileSystemService,
-        CacheInterface $oCache,
-        $sRepositoryDir
-    )
-    {
-        $this->oFileSystemService = $oFileSystemService;
-        $this->oCache = $oCache;
-        $this->sRepositoryDir = $sRepositoryDir;
+        CacheInterface $cache,
+        $repositoryDir
+    ) {
+        $this->fileSystemService = $oFileSystemService;
+        $this->cache = $cache;
+        $this->repositoryDir = $repositoryDir;
     }
 
     /**
@@ -70,27 +69,25 @@ class BridgeFileSystem implements BridgeInterface
      */
     public function getJobs()
     {
-        if (empty($this->aJobFileMap))
-        {
-            $_aJobFiles = $this->getJobFilesFromFileSystem($this->sRepositoryDir);
-            return $this->loadJobsFromFileContent($_aJobFiles, true);
+        if (empty($this->jobFileMap)) {
+            $jobFiles = $this->getJobFilesFromFileSystem($this->repositoryDir);
+            return $this->loadJobsFromFileContent($jobFiles, true);
         }
-        return $this->loadJobsFromFileContent($this->aJobFileMap, false);
+        return $this->loadJobsFromFileContent($this->jobFileMap, false);
     }
 
     /**
-     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $jobEntity
      * @return bool
      * @throws JobLoadException
      */
-    public function addJob(JobEntityInterface $oJobEntity)
+    public function addJob(JobEntityInterface $jobEntity)
     {
         // generate job file path by name
-        $_sJobFile = $this->generateJobFilePath($oJobEntity);
+        $jobFile = $this->generateJobFilePath($jobEntity);
 
-        if ($this->hasDumpFile($_sJobFile, $oJobEntity))
-        {
-            $this->setJobFileToMap($oJobEntity->getKey(), $_sJobFile);
+        if ($this->hasDumpFile($jobFile, $jobEntity)) {
+            $this->setJobFileToMap($jobEntity->getKey(), $jobFile);
             return true;
         }
 
@@ -98,329 +95,289 @@ class BridgeFileSystem implements BridgeInterface
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    public function updateJob(JobEntityInterface $oJobEntity)
+    public function updateJob(JobEntityInterface $jobEntity)
     {
-        if (in_array($oJobEntity->getKey(), $this->aGroupedApps))
-        {
+        if (in_array($jobEntity->getKey(), $this->groupedApps)) {
             // marathon's group case where app belongs to a group file
             return $this->dumpFileWithGroup(
-                $this->getJobFileFromMap($oJobEntity->getKey()),
-                $oJobEntity
+                $this->getJobFileFromMap($jobEntity->getKey()),
+                $jobEntity
             );
         }
         return $this->hasDumpFile(
-            $this->getJobFileFromMap($oJobEntity->getKey()),
-            $oJobEntity
+            $this->getJobFileFromMap($jobEntity->getKey()),
+            $jobEntity
         );
     }
 
     /**
-     * @param ChronosJobEntity|JobEntityInterface $oJobEntity
+     * @param ChronosJobEntity|JobEntityInterface $jobEntity
      * @return bool
      */
-    public function removeJob(JobEntityInterface $oJobEntity)
+    public function removeJob(JobEntityInterface $jobEntity)
     {
-        if (in_array($oJobEntity->getKey(), $this->aGroupedApps))
-        {
-            $_sJobFile = $this->getJobFileFromMap($oJobEntity->getKey());
+        if (in_array($jobEntity->getKey(), $this->groupedApps)) {
+            $jobFile = $this->getJobFileFromMap($jobEntity->getKey());
             $this->dumpFileWithGroup(
-                $_sJobFile,
-                $oJobEntity,
+                $jobFile,
+                $jobEntity,
                 false
             );
 
-            unset($this->aJobFileMap[$oJobEntity->getKey()]);
+            unset($this->jobFileMap[$jobEntity->getKey()]);
             return true;
         }
 
-        $_sJobFile = $this->getJobFileFromMap($oJobEntity->getKey());
-        $this->oFileSystemService->remove($_sJobFile);
+        $jobFile = $this->getJobFileFromMap($jobEntity->getKey());
+        $this->fileSystemService->remove($jobFile);
 
-        return $this->hasUnsetJobFileFromMap($oJobEntity->getKey(), $_sJobFile);
+        return $this->hasUnsetJobFileFromMap($jobEntity->getKey(), $jobFile);
     }
 
     /**
-     * @param JobEntityInterface $oJobEntity
+     * @param JobEntityInterface $jobEntity
      * @return string
      */
-    private function generateJobFilePath(JobEntityInterface $oJobEntity)
+    private function generateJobFilePath(JobEntityInterface $jobEntity)
     {
-        if ($oJobEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE)
-        {
-            $_sJobPath = str_replace(
-                $this->aDirectorySeparators,
+        if ($jobEntity->getEntityType() == JobEntityInterface::CHRONOS_TYPE) {
+            $jobPath = str_replace(
+                $this->directorySeparators,
                 DIRECTORY_SEPARATOR,
-                $oJobEntity->getKey()
+                $jobEntity->getKey()
             );
-        }
-        else
-        {
-            $_sJobPath = $oJobEntity->getKey();
+        } else {
+            $jobPath = $jobEntity->getKey();
         }
 
-        return $this->sRepositoryDir . DIRECTORY_SEPARATOR . $_sJobPath . '.json';
+        return $this->repositoryDir . DIRECTORY_SEPARATOR . $jobPath . '.json';
     }
 
     /**
-     * @param string $sPath
-     * @param array $aJobFiles
+     * @param string $path
+     * @param array $jobFiles
      * @return array
      */
-    private function getJobFilesFromFileSystem($sPath, array &$aJobFiles = [])
+    private function getJobFilesFromFileSystem($path, array &$jobFiles = [])
     {
-        if (!is_dir($sPath))
-        {
-            throw new \RuntimeException(sprintf('Path "%s" is not valid', $sPath));
+        if (!is_dir($path)) {
+            throw new \RuntimeException(sprintf('Path "%s" is not valid', $path));
         }
 
-        $_aTemp = Glob::glob(rtrim($sPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '*');
+        $temp = Glob::glob(rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '*');
 
-        foreach ($_aTemp as $_sPath)
-        {
-            if (is_file($_sPath) && preg_match('~\.json~i', $_sPath))
-            {
-                $aJobFiles[] = $_sPath;
-            }
-            elseif (is_dir($_sPath))
-            {
-                $this->getJobFilesFromFileSystem($_sPath, $aJobFiles);
+        foreach ($temp as $path) {
+            if (is_file($path) && preg_match('~\.json~i', $path)) {
+                $jobFiles[] = $path;
+            } elseif (is_dir($path)) {
+                $this->getJobFilesFromFileSystem($path, $jobFiles);
             }
         }
 
-        return $aJobFiles;
+        return $jobFiles;
     }
 
     /**
-     * @param string $sJobName
-     * @param string $sJobFile
+     * @param string $jobName
+     * @param string $jobFile
      * @throws JobLoadException
      */
-    private function setJobFileToMap($sJobName, $sJobFile)
+    private function setJobFileToMap($jobName, $jobFile)
     {
         // set path to job file map
-        if (isset($this->aJobFileMap[$sJobName]))
-        {
+        if (isset($this->jobFileMap[$jobName])) {
             throw new JobLoadException(
-                sprintf('The jobname "%s" already exists. Jobnames have to be unique - Please check your local jobfiles for duplicate entries.', $sJobName),
+                sprintf('The jobname "%s" already exists. Jobnames have to be unique - Please check your local jobfiles for duplicate entries.', $jobName),
                 JobLoadException::ERROR_CODE_DUPLICATE_JOB_ID
             );
         }
 
-        $this->aJobFileMap[$sJobName] = $sJobFile;
+        $this->jobFileMap[$jobName] = $jobFile;
     }
 
     /**
-     * @param string $sJobName
+     * @param string $jobName
      * @return string
      * @throws \RuntimeException
      */
-    private function getJobFileFromMap($sJobName)
+    private function getJobFileFromMap($jobName)
     {
-        if (!isset($this->aJobFileMap[$sJobName]))
-        {
-            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $sJobName));
+        if (!isset($this->jobFileMap[$jobName])) {
+            throw new \RuntimeException(sprintf('Can\'t find file for job "%s"', $jobName));
         }
-        return $this->aJobFileMap[$sJobName];
+        return $this->jobFileMap[$jobName];
     }
 
     /**
-     * @param string $sJobName
-     * @param string $sJobFile
+     * @param string $jobName
+     * @param string $jobFile
      * @return bool
      * @throws \RuntimeException
      */
-    private function hasUnsetJobFileFromMap($sJobName, $sJobFile = '')
+    private function hasUnsetJobFileFromMap($jobName, $jobFile = '')
     {
-        $_sJobFile = (!empty($sJobFile)) ? $sJobFile : $this->getJobFileFromMap($sJobName);
-        if (file_exists($_sJobFile))
-        {
-            throw new \RuntimeException(sprintf('Job file "%s" for job "%s" still exists.', $_sJobFile, $sJobName));
+        $jobFile = (!empty($jobFile)) ? $jobFile : $this->getJobFileFromMap($jobName);
+        if (file_exists($jobFile)) {
+            throw new \RuntimeException(sprintf('Job file "%s" for job "%s" still exists.', $jobFile, $jobName));
         }
 
         // unset path from job file map
-        unset($this->aJobFileMap[$sJobName]);
+        unset($this->jobFileMap[$jobName]);
         return true;
     }
 
     /**
-     * @param array $aJobFiles
-     * @param bool $bSetToFileMap
+     * @param array $jobFiles
+     * @param bool $setToFileMap
      * @return JobEntityInterface[]
      * @throws JobLoadException
      */
-    private function loadJobsFromFileContent(array $aJobFiles, $bSetToFileMap)
+    private function loadJobsFromFileContent(array $jobFiles, $setToFileMap)
     {
-        $_aJobs = [];
+        $jobs = [];
 
-        foreach ($aJobFiles as $_sJobFilePath)
-        {
-            $_aJobEntities = [];
+        foreach ($jobFiles as $jobFilePath) {
+            $jobEntities = [];
             // remove comment blocks
-            $_aTemp = json_decode(
+            $temp = json_decode(
                 preg_replace(
                     '~\/\*(.*?)\*\/~mis',
                     '',
-                    file_get_contents($_sJobFilePath)
+                    file_get_contents($jobFilePath)
                 )
             );
 
-            if ($_aTemp)
-            {
+            if ($temp) {
                 // chronos
-                if (property_exists($_aTemp, 'name'))
-                {
-                    $_aJobEntities[] = new ChronosJobEntity($_aTemp);
-
-                }
-                //marathon
-                else if (property_exists($_aTemp, 'id'))
-                {
-                    foreach ($this->getMarathonEntitiesForConfig($_aTemp) as $_oApp)
-                    {
-                        $_aJobEntities[] = $_oApp;
+                if (property_exists($temp, 'name')) {
+                    $jobEntities[] = new ChronosJobEntity($temp);
+                } //marathon
+                elseif (property_exists($temp, 'id')) {
+                    foreach ($this->getMarathonEntitiesForConfig($temp) as $app) {
+                        $jobEntities[] = $app;
                     }
-                }
-                else
-                {
+                } else {
                     throw new JobLoadException(
                         'Could not distinguish job as either chronos or marathon',
                         JobLoadException::ERROR_CODE_UNKNOWN_ENTITY_TYPE
                     );
                 }
 
-                /** @var JobEntityInterface $_oJobEntity */
-                foreach ($_aJobEntities as $_oJobEntity)
-                {
-                    if ($bSetToFileMap)
-                    {
+                /** @var JobEntityInterface $jobEntity */
+                foreach ($jobEntities as $jobEntity) {
+                    if ($setToFileMap) {
                         // set path to job file map
-                        $this->setJobFileToMap($_oJobEntity->getKey(), $_sJobFilePath);
+                        $this->setJobFileToMap($jobEntity->getKey(), $jobFilePath);
                     }
 
-                    $_aJobs[] = $_oJobEntity;
+                    $jobs[] = $jobEntity;
                 }
-
-            }
-            else
-            {
+            } else {
                 throw new JobLoadException(
-                    sprintf('Unable to load json job data from "%s". Please check if the json is valid.', $_sJobFilePath),
+                    sprintf('Unable to load json job data from "%s". Please check if the json is valid.', $jobFilePath),
                     JobLoadException::ERROR_CODE_NO_VALID_JSON
                 );
             }
         }
 
-        return $_aJobs;
+        return $jobs;
     }
 
 
-    private function getMarathonEntitiesForConfig($aEntityData)
+    private function getMarathonEntitiesForConfig($entityData)
     {
-        $_aRet = [];
-        if (property_exists($aEntityData, 'apps'))
-        {
+        $return = [];
+        if (property_exists($entityData, 'apps')) {
             // store individual apps like single apps
-            foreach ($aEntityData->apps as $_oApp)
-            {
-                $_oGroupEntity = new MarathonAppEntity($_oApp);
-                $this->aGroupedApps[] = $_oApp->id;
-                $_aRet[] = $_oGroupEntity;
+            foreach ($entityData->apps as $app) {
+                $groupEntity = new MarathonAppEntity($app);
+                $this->groupedApps[] = $app->id;
+                $return[] = $groupEntity;
             }
+        } else {
+            $return[] = new MarathonAppEntity($entityData);
         }
-        else
-        {
-            $_aRet[] = new MarathonAppEntity($aEntityData);
-        }
-        return $_aRet;
+        return $return;
     }
 
     /**
-     * @param string $sJobFile
-     * @param JobEntityInterface $oJobEntity
+     * @param string $jobFile
+     * @param JobEntityInterface $jobEntity
      * @return bool
      */
-    private function hasDumpFile($sJobFile, JobEntityInterface $oJobEntity)
+    private function hasDumpFile($jobFile, JobEntityInterface $jobEntity)
     {
-        $this->oFileSystemService->dumpFile(
-            $sJobFile,
-            json_encode($oJobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        $this->fileSystemService->dumpFile(
+            $jobFile,
+            json_encode($jobEntity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
         );
 
-        return (file_exists($sJobFile));
+        return (file_exists($jobFile));
     }
 
     /**
-     * @param string $sJobFile
-     * @param JobEntityInterface $oJobEntity
-     * @param bool $bAdd
+     * @param string $jobFile
+     * @param JobEntityInterface $jobEntity
+     * @param bool $add
      * @return bool
      */
-    private function dumpFileWithGroup($sJobFile, JobEntityInterface $oJobEntity, $bAdd = true)
+    private function dumpFileWithGroup($jobFile, JobEntityInterface $jobEntity, $add = true)
     {
-        $_sGroupConfig = file_get_contents($sJobFile);
+        $groupConfig = file_get_contents($jobFile);
 
-        $_oDecodedConfig = json_decode(preg_replace(
+        $decodedConfig = json_decode(preg_replace(
             '~\/\*(.*?)\*\/~mis',
             '',
-            $_sGroupConfig
+            $groupConfig
         ));
 
-        if (!property_exists($_oDecodedConfig, 'apps'))
-        {
+        if (!property_exists($decodedConfig, 'apps')) {
             throw new \RuntimeException(sprintf(
                 'Job file %s does not contain group configuration. But, "%s" belongs to group %s',
-                $sJobFile,
-                $oJobEntity->getKey(),
-                $_oDecodedConfig->id
+                $jobFile,
+                $jobEntity->getKey(),
+                $decodedConfig->id
             ));
         }
 
-        $_bAppFound = false;
-        foreach ($_oDecodedConfig->apps as $key => $_oApp)
-        {
-            if ($_oApp->id == $oJobEntity->getKey())
-            {
-                if (!$bAdd)
-                {
-                    array_splice($_oDecodedConfig->apps, $key, 1);
-                    if (count($_oDecodedConfig->apps) == 0)
-                    {
-                        $this->oFileSystemService->remove($sJobFile);
-                        $iIndex = array_search($oJobEntity->getKey(), $this->aGroupedApps);
-                        if ($iIndex)
-                        {
-                            unset($this->aGroupedApps[$iIndex]);
+        $appFound = false;
+        foreach ($decodedConfig->apps as $key => $app) {
+            if ($app->id == $jobEntity->getKey()) {
+                if (!$add) {
+                    array_splice($decodedConfig->apps, $key, 1);
+                    if (count($decodedConfig->apps) == 0) {
+                        $this->fileSystemService->remove($jobFile);
+                        $iIndex = array_search($jobEntity->getKey(), $this->groupedApps);
+                        if ($iIndex) {
+                            unset($this->groupedApps[$iIndex]);
                         }
                         return false;
                     }
+                } else {
+                    $decodedConfig->apps[$key] = $jobEntity;
                 }
-                else
-                {
-                    $_oDecodedConfig->apps[$key] = $oJobEntity;
-                }
-                $_bAppFound = true;
+                $appFound = true;
             }
         }
 
-        if (!$_bAppFound)
-        {
+        if (!$appFound) {
             throw new \RuntimeException(sprintf(
                 'Could update job. job %s could not be found in the group file %s.',
-                $oJobEntity->getKey(),
-                $sJobFile
+                $jobEntity->getKey(),
+                $jobFile
             ));
         }
 
-        $_sUpdatedConfig = json_encode($_oDecodedConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $updatedConfig = json_encode($decodedConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-        $this->oFileSystemService->dumpFile(
-            $sJobFile,
-            $_sUpdatedConfig
+        $this->fileSystemService->dumpFile(
+            $jobFile,
+            $updatedConfig
         );
 
-        return (file_exists($sJobFile));
+        return (file_exists($jobFile));
     }
 }

@@ -8,31 +8,31 @@
 
 namespace unit\Entity\Marathon\AppEntity;
 
-
 use Chapi\Entity\Marathon\AppEntity\ContainerVolume;
 
 class ContainerVolumeTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAllKeysAreCorrect() {
-        $_aKeys = ["containerPath", "hostPath", "mode"];
+    public function testAllKeysAreCorrect()
+    {
+        $keys = ["containerPath", "hostPath", "mode"];
 
-        $oContainerVolume = new ContainerVolume();
-        foreach ($_aKeys as $sProperty) {
-            $this->assertObjectHasAttribute($sProperty, $oContainerVolume);
+        $containerVolume = new ContainerVolume();
+        foreach ($keys as $property) {
+            $this->assertObjectHasAttribute($property, $containerVolume);
         }
     }
 
-    public function testContainerVolumeIsSetCorectly() {
-        $aData = [
+    public function testContainerVolumeIsSetCorectly()
+    {
+        $data = [
             "containerPath" => "some/container/path",
             "hostPath" => "some/host/path",
             "mode" => "RW"
         ];
 
-        $oContainerVolume = new ContainerVolume($aData);
-        $this->assertEquals("some/container/path", $oContainerVolume->containerPath);
-        $this->assertEquals("some/host/path", $oContainerVolume->hostPath);
-        $this->assertEquals("RW", $oContainerVolume->mode);
+        $containerVolume = new ContainerVolume($data);
+        $this->assertEquals("some/container/path", $containerVolume->containerPath);
+        $this->assertEquals("some/host/path", $containerVolume->hostPath);
+        $this->assertEquals("RW", $containerVolume->mode);
     }
-
 }
