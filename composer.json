@@ -51,5 +51,6 @@
   "config": {
     "bin-dir": "bin"
   },
+  "bin": ["bin/chapi"],
   "minimum-stability": "stable"
 }
