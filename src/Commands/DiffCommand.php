@@ -61,7 +61,6 @@ class DiffCommand extends AbstractCommand
 
         if (strpos($jobName, '*') !== false) {
             $jobs = $this->getJobsMatchingWildcard($jobName);
-            var_dump($jobs);die;
         }
 
         foreach ($jobs as $jobName) {
