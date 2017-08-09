@@ -10,6 +10,9 @@
 namespace unit\BusinessCase\Comparision;
 
 use Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase;
+use Chapi\Entity\Marathon\AppEntity\Container;
+use Chapi\Entity\Marathon\AppEntity\Docker;
+use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\MarathonAppEntity;
@@ -216,10 +219,15 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     public function testGetJobDiffCallsPreCompareModification()
     {
         $localEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $localEntity->container = new Container();
+        $localEntity->container->docker = new Docker();
+        $localEntity->container->docker->portMappings[] = new DockerPortMapping(["servicePort" => 0]);
 
         $remoteEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $remoteEntity->container = new Container();
+        $remoteEntity->container->docker = new Docker();
+        $remoteEntity->container->docker->portMappings[] = new DockerPortMapping(["servicePort" => 443]);
         $remoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
-
 
         $this->localRepository
             ->getJob(Argument::exact($localEntity->getKey()))
