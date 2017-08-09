@@ -116,13 +116,13 @@ class DiffCommand extends AbstractCommand
         foreach ($jobRepositories as $jobRepository) {
             foreach ($jobRepository->getJobs() as $job) {
                 if (fnmatch($jobName, $job->getKey())) {
-                    $jobNames[] = $job->getKey();
+                    $jobNames[$job->getKey()] = true;
                 }
             }
         }
 
-        sort($jobNames);
+        ksort($jobNames);
 
-        return array_values(array_unique($jobNames));
+        return array_keys($jobNames);
     }
 }
