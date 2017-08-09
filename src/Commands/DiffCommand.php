@@ -78,9 +78,9 @@ class DiffCommand extends AbstractCommand
                 $diffSign = substr($diffLine, 0, 1);
 
                 if ($diffSign == '+') {
-                    $this->output->writeln(sprintf("<info>%s\t%s: %s</info>", $diffSign, $property, substr($diffLine, 1)));
+                    $this->output->writeln(sprintf("<info>%s\t%s: %s</info>", $diffSign, $property, ' ' . substr($diffLine, 1)));
                 } elseif ($diffSign == '-') {
-                    $this->output->writeln(sprintf("<fg=red>%s\t%s: %s</>", $diffSign, $property, substr($diffLine, 1)));
+                    $this->output->writeln(sprintf("<fg=red>%s\t%s: %s</>", $diffSign, $property, ' ' . substr($diffLine, 1)));
                 } else {
                     $this->output->writeln(sprintf(" \t%s: %s", $property, $diffLine));
                 }
