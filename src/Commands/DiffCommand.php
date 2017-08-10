@@ -10,6 +10,7 @@
 namespace Chapi\Commands;
 
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
+use Chapi\Service\JobRepository\JobRepository;
 use Symfony\Component\Console\Input\InputArgument;
 
 class DiffCommand extends AbstractCommand
@@ -56,6 +57,23 @@ class DiffCommand extends AbstractCommand
         /** @var JobComparisonInterface  $jobComparisonBusinessCase */
         $jobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
 
+        $jobs = [ $jobName ];
+
+        if (strpos($jobName, '*') !== false) {
+            $jobs = $this->getJobsMatchingWildcard($jobName);
+        }
+
+        foreach ($jobs as $jobName) {
+            $this->printSingleJobDiff($jobComparisonBusinessCase, $jobName);
+        }
+    }
+
+    /**
+     * @param JobComparisonInterface $jobComparisonBusinessCase
+     * @param string $jobName
+     */
+    private function printSingleJobDiff(JobComparisonInterface $jobComparisonBusinessCase, $jobName)
+    {
         $this->output->writeln(sprintf("\n<comment>diff %s</comment>", $jobName));
 
         $jobDiff = $jobComparisonBusinessCase->getJobDiff($jobName);
@@ -77,5 +95,34 @@ class DiffCommand extends AbstractCommand
         }
 
         $this->output->writeln("\n");
+    }
+
+    /**
+     * @param string $jobName
+     * @return string[]
+     */
+    private function getJobsMatchingWildcard($jobName)
+    {
+        /** @var JobRepository[] $jobRepositories */
+        $jobRepositories = [
+            $this->getContainer()->get(JobRepository::DIC_NAME_CHRONOS),
+            $this->getContainer()->get(JobRepository::DIC_NAME_FILESYSTEM_CHRONOS),
+            $this->getContainer()->get(JobRepository::DIC_NAME_FILESYSTEM_MARATHON),
+            $this->getContainer()->get(JobRepository::DIC_NAME_MARATHON)
+        ];
+
+        $jobNames = [];
+
+        foreach ($jobRepositories as $jobRepository) {
+            foreach ($jobRepository->getJobs() as $job) {
+                if (fnmatch($jobName, $job->getKey())) {
+                    $jobNames[$job->getKey()] = true;
+                }
+            }
+        }
+
+        ksort($jobNames);
+
+        return array_keys($jobNames);
     }
 }
