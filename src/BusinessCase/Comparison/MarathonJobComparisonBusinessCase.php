@@ -13,6 +13,7 @@ namespace Chapi\BusinessCase\Comparison;
 use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
+use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
@@ -45,6 +46,32 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
         // otherwise we ignore the remote values.
         if (!$localJob->portDefinitions) {
             $remoteJob->portDefinitions = null;
+        }
+
+        if ($localJob->container && $localJob->container->docker &&
+            $remoteJob->container && $remoteJob->container->docker) {
+
+            foreach ($localJob->container->docker->portMappings as $index => $localPortMapping) {
+                if ($localPortMapping->servicePort !== 0) {
+                    continue;
+                }
+
+                if (!isset($remoteJob->container->docker->portMappings, $index)) {
+                    continue;
+                }
+
+                $remotePortMapping = $remoteJob->container->docker->portMappings[$index];
+
+                if ($remotePortMapping != $localPortMapping) {
+                    $fixedPortMapping = clone $remotePortMapping;
+                    $fixedPortMapping->servicePort = 0;
+
+                    if ($fixedPortMapping == $localPortMapping) {
+                        unset($localJob->container->docker->portMappings[$index]);
+                        unset($remoteJob->container->docker->portMappings[$index]);
+                    }
+                }
+            }
         }
     }
 
