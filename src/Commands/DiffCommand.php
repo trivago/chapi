@@ -79,17 +79,28 @@ class DiffCommand extends AbstractCommand
         $jobDiff = $jobComparisonBusinessCase->getJobDiff($jobName);
 
         foreach ($jobDiff as $property => $diff) {
-            $diffLines = array_reverse(explode(PHP_EOL, $diff));
+            $diffLines = explode(PHP_EOL, $diff);
+
+            // the first line might be missing some leading whitespace
+            if (count($diffLines) > 1) {
+                $lastLine = $diffLines[count($diffLines) - 1];
+
+                if (strpos($lastLine, ' ') === 0) {
+                    $length = strspn($lastLine, ' ');
+
+                    $diffLines[0] = substr($lastLine, 0, $length) . $diffLines[0];
+                }
+            }
 
             foreach ($diffLines as $diffLine) {
                 $diffSign = substr($diffLine, 0, 1);
 
                 if ($diffSign == '+') {
-                    $this->output->writeln(sprintf("<info>%s\t%s: %s</info>", $diffSign, $property, substr($diffLine, 1)));
+                    $this->output->writeln(sprintf("<info>%s\t%s: %s</info>", $diffSign, $property, ' ' . substr($diffLine, 1)));
                 } elseif ($diffSign == '-') {
-                    $this->output->writeln(sprintf("<fg=red>%s\t%s: %s</>", $diffSign, $property, substr($diffLine, 1)));
+                    $this->output->writeln(sprintf("<fg=red>%s\t%s: %s</>", $diffSign, $property, ' ' . substr($diffLine, 1)));
                 } else {
-                    $this->output->writeln(sprintf("\t%s: %s", $property, $diffLine));
+                    $this->output->writeln(sprintf(" \t%s: %s", $property, $diffLine));
                 }
             }
         }
