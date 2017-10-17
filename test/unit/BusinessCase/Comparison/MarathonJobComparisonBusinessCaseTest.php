@@ -250,6 +250,42 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDiff, $gotDiff, "Expected diff doesn't matched recieved diff");
     }
 
+    public function testJobDiffWithMissingRemotePortMappingSucceeds()
+    {
+        $localEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $localEntity->container = new Container();
+        $localEntity->container->docker = new Docker();
+        $localEntity->container->docker->portMappings[] = new DockerPortMapping(["servicePort" => 0]);
+
+        $remoteEntity = $this->getValidMarathonAppEntity('/main/id1');
+        $remoteEntity->container = new Container();
+        $remoteEntity->container->docker = new Docker();
+        $remoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
+
+        $this->localRepository
+            ->getJob(Argument::exact($localEntity->getKey()))
+            ->willReturn($localEntity);
+
+        $this->remoteRepository
+            ->getJob(Argument::exact($remoteEntity->getKey()))
+            ->willReturn($remoteEntity);
+
+
+        $marathonJobCompare = new MarathonJobComparisonBusinessCase(
+            $this->localRepository->reveal(),
+            $this->remoteRepository->reveal(),
+            $this->diffCompare->reveal()
+        );
+
+        $gotDiff = $marathonJobCompare->getJobDiff('/main/id1');
+
+        $expectedDiff = [
+            'container' => null
+        ];
+        $this->assertEquals($expectedDiff, $gotDiff, "Expected diff doesn't matched recieved diff");
+    }
+
+
     public function testIsJobAvailableSuccess()
     {
         $this->localRepository
