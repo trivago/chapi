@@ -56,7 +56,7 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
                     continue;
                 }
 
-                if (!isset($remoteJob->container->docker->portMappings, $index)) {
+                if (!isset($remoteJob->container->docker->portMappings[$index])) {
                     continue;
                 }
 
