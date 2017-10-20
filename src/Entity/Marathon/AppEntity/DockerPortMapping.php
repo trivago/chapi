@@ -28,4 +28,25 @@ class DockerPortMapping
     {
         MarathonEntityUtils::setAllPossibleProperties($data, $this);
     }
+
+    public static function less(DockerPortMapping $left, DockerPortMapping $right)
+    {
+        if ($left->containerPort != $right->containerPort) {
+            return $left->containerPort - $right->containerPort;
+        }
+
+        if ($left->hostPort != $right->hostPort) {
+            return $left->hostPort - $right->hostPort;
+        }
+
+        if ($left->servicePort != $right->servicePort) {
+            return $left->servicePort - $right->servicePort;
+        }
+
+        if ($left->protocol != $right->protocol) {
+            return strcmp($left->protocol, $right->protocol);
+        }
+
+        return strcmp($left->name, $right->name);
+    }
 }

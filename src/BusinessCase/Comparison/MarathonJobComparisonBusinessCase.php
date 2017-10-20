@@ -51,27 +51,36 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
         if ($localJob->container && $localJob->container->docker &&
             $remoteJob->container && $remoteJob->container->docker) {
 
-            foreach ($localJob->container->docker->portMappings as $index => $localPortMapping) {
+            $localPortMappings = $localJob->container->docker->portMappings;
+            $remotePortMappings = $remoteJob->container->docker->portMappings;
+
+            usort($localPortMappings, DockerPortMapping::class . '::less');
+            usort($remotePortMappings, DockerPortMapping::class . '::less');
+
+            foreach ($localPortMappings as $index => $localPortMapping) {
                 if ($localPortMapping->servicePort !== 0) {
                     continue;
                 }
 
-                if (!isset($remoteJob->container->docker->portMappings, $index)) {
+                if (!isset($remotePortMappings[$index])) {
                     continue;
                 }
 
-                $remotePortMapping = $remoteJob->container->docker->portMappings[$index];
+                $remotePortMapping = $remotePortMappings[$index];
 
-                if ($remotePortMapping != $localPortMapping) {
+                if (DockerPortMapping::less($remotePortMapping, $localPortMapping) != 0) {
                     $fixedPortMapping = clone $remotePortMapping;
                     $fixedPortMapping->servicePort = 0;
 
-                    if ($fixedPortMapping == $localPortMapping) {
-                        unset($localJob->container->docker->portMappings[$index]);
-                        unset($remoteJob->container->docker->portMappings[$index]);
+                    if (DockerPortMapping::less($fixedPortMapping, $localPortMapping) == 0) {
+                        unset($localPortMappings[$index]);
+                        unset($remotePortMappings[$index]);
                     }
                 }
             }
+
+            $localJob->container->docker->portMappings = array_values($localPortMappings);
+            $remoteJob->container->docker->portMappings = array_values($remotePortMappings);
         }
     }
 
