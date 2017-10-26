@@ -12,6 +12,7 @@ namespace Chapi\Commands;
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Service\JobRepository\JobRepository;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class DiffCommand extends AbstractCommand
 {
@@ -23,7 +24,13 @@ class DiffCommand extends AbstractCommand
         $this->setName('diff')
             ->setDescription('Show changes between jobs and working tree, etc')
             ->addArgument('jobName', InputArgument::OPTIONAL, 'Show changes for specific job')
-        ;
+            ->addOption(
+                'strict',
+                null,
+                InputOption::VALUE_NONE,
+                "Return a non-zero exit code when there are changes",
+                null
+            );
     }
 
     /**
@@ -35,15 +42,21 @@ class DiffCommand extends AbstractCommand
         $jobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
         $jobName = $this->input->getArgument('jobName');
 
+        $changed = false;
+
         if (!empty($jobName)) {
-            $this->printJobDiff($jobName);
+            $changed = $this->printJobDiff($jobName);
         } else {
             $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
             if (!empty($localJobUpdates)) {
                 foreach ($localJobUpdates as $jobName) {
-                    $this->printJobDiff($jobName);
+                    $changed = $changed || $this->printJobDiff($jobName);
                 }
             }
+        }
+
+        if ($this->input->getOption('strict') && $changed) {
+            return 1;
         }
 
         return 0;
@@ -63,9 +76,13 @@ class DiffCommand extends AbstractCommand
             $jobs = $this->getJobsMatchingWildcard($jobName);
         }
 
+        $changed = false;
+
         foreach ($jobs as $jobName) {
-            $this->printSingleJobDiff($jobComparisonBusinessCase, $jobName);
+            $changed = $changed || $this->printSingleJobDiff($jobComparisonBusinessCase, $jobName);
         }
+
+        return $changed;
     }
 
     /**
@@ -106,6 +123,8 @@ class DiffCommand extends AbstractCommand
         }
 
         $this->output->writeln("\n");
+
+        return !empty($jobDiff);
     }
 
     /**

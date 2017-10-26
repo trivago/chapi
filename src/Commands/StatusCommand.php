@@ -12,6 +12,7 @@ namespace Chapi\Commands;
 use Chapi\BusinessCase\Comparison\JobComparisonInterface;
 use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class StatusCommand extends AbstractCommand
@@ -29,7 +30,13 @@ class StatusCommand extends AbstractCommand
     {
         $this->setName('status')
             ->setDescription('Show the working tree status')
-        ;
+            ->addOption(
+                'strict',
+                null,
+                InputOption::VALUE_NONE,
+                "Return a non-zero exit code when there are changes",
+                null
+            );
     }
 
     /**
@@ -63,6 +70,10 @@ class StatusCommand extends AbstractCommand
         $this->output->writeln('');
 
         $this->printStatusView($changedJobs, false);
+
+        if ($this->input->getOption('strict') && !empty($changedJobs)) {
+            return 1;
+        }
 
         return 0;
     }
