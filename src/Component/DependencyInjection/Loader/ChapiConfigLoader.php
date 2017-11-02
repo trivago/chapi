@@ -50,14 +50,14 @@ class ChapiConfigLoader implements ChapiConfigLoaderInterface
             return;
         }
 
-        foreach ($content['parameters'] as &$parameter) {
-            if ($parameter === null || $parameter === 'null') {
-                $parameter = '';
-            }
-        }
-
         // parameters
         if (isset($content['parameters'])) {
+            foreach ($content['parameters'] as &$parameter) {
+                if ($parameter === null || $parameter === 'null') {
+                    $parameter = '';
+                }
+            }
+
             $this->validate($content);
             $this->setParameters($content['parameters']);
         }
