@@ -52,9 +52,11 @@ class ChapiConfigLoader implements ChapiConfigLoaderInterface
 
         // parameters
         if (isset($content['parameters'])) {
-            foreach ($content['parameters'] as &$parameter) {
-                if ($parameter === null || $parameter === 'null') {
-                    $parameter = '';
+            if (is_array($content['parameters'])) {
+                foreach ($content['parameters'] as &$parameter) {
+                    if ($parameter === null || $parameter === 'null') {
+                        $parameter = '';
+                    }
                 }
             }
 
