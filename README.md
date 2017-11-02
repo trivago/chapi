@@ -83,14 +83,14 @@ profiles:
     develop:
        parameters:
            chronos_url: http://your.chronos.url:chronos_api_port/
-           chronos_http_username: null
-           chronos_http_password: null
+           chronos_http_username: ''
+           chronos_http_password: ''
            repository_dir: /path/to/your/local/task/repository
       
-           marathon_url: null
-           marathon_http_username: null
-           marathon_http_password: null
-           repository_dir_marathon: null
+           marathon_url: ''
+           marathon_http_username: ''
+           marathon_http_password: ''
+           repository_dir_marathon: ''
       
            cache_dir: /path/to/chapi/cache/dir_dev
 ```
@@ -142,17 +142,17 @@ bin/chapi configure
 ### Disabling services
 
 To disable Chronos support and only use Marathon, set all the 
-Chronos parameters to `null`:
+Chronos parameters to `'''`:
 
 ```yaml
 profiles:
     default:
         parameters:
             # [....]
-            chronos_url: null
-            chronos_http_username: null
-            chronos_http_password: null
-            repository_dir: null
+            chronos_url: ''
+            chronos_http_username: ''
+            chronos_http_password: ''
+            repository_dir: ''
 ```
 
 ## Ignoring jobs
