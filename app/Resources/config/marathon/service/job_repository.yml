@@ -1,0 +1,60 @@
+services:
+  # --
+  # JobRepositories
+  # --
+  JobRepositoryFileSystemMarathon:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeFileSystemMarathon"
+      - "@FilterMarathonComposite"
+
+  JobRepositoryMarathon:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeMarathon"
+      - "@FilterMarathonComposite"
+
+  # --
+  # bridges
+  # --
+  JobRepositoryBridgeFileSystemMarathon:
+    class: Chapi\Service\JobRepository\BridgeFileSystem
+    factory: "BridgeFactory:getFilesystemBridge"
+    arguments:
+      - "@ExternalFileSystemService"
+      - "@CacheInterface"
+      - "%repository_dir_marathon%"
+      - "@LoggerInterface"
+
+  JobRepositoryBridgeMarathon:
+    class: Chapi\Service\JobRepository\BridgeMarathon
+    factory: "BridgeFactory:getMarathonBridge"
+    arguments:
+      - "@MarathonApiClientInterface"
+      - "@CacheInterface"
+      - "@JobValidatorServiceInterface"
+      - "@LoggerInterface"
+
+  # --
+  # filter setups
+  # --
+  FilterMarathonEntity:
+    class: Chapi\Service\JobRepository\Filter\FilterMarathonEntity
+
+  FilterMarathonJobIgnore:
+    class: Chapi\Service\JobRepository\Filter\FilterIgnoreSettings
+    arguments:
+      - "@LoggerInterface"
+      - "@FilterMarathonChapiConfig"
+
+  FilterMarathonComposite:
+    class: Chapi\Service\JobRepository\Filter\JobFilterComposite
+    arguments:
+      - ["@FilterMarathonEntity", "@FilterMarathonJobIgnore"]
+
+  FilterMarathonChapiConfig:
+    class: Chapi\Component\Config\ChapiConfig
+    arguments:
+      - ["%chapi_home%", "%chapi_work_dir%", "%repository_dir_marathon%"]
+      - "@ConfigYamlParser"
+      - "%chapi_profile%"

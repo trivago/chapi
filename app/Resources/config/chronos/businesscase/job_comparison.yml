@@ -1,0 +1,9 @@
+services:
+  ChronosJobComparisionBusinessCase:
+    class: Chapi\BusinessCase\Comparison\ChronosJobComparisonBusinessCase
+    arguments:
+      - "@JobRepositoryFileSystemChronos"
+      - "@JobRepositoryChronos"
+      - "@DiffCompareInterface"
+      - "@DatePeriodFactoryInterface"
+      - "@LoggerInterface"

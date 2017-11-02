@@ -1,0 +1,10 @@
+imports:
+    - { resource: "marathon/businesscase/job_comparison.yml" }
+    - { resource: "marathon/businesscase/job_management.yml" }
+    - { resource: "marathon/component/api_client.yml" }
+    - { resource: "marathon/component/http_client.yml" }
+    - { resource: "marathon/service/job_dependency.yml" }
+    - { resource: "marathon/service/job_index.yml" }
+    - { resource: "marathon/service/job_repository.yml" }
+    - { resource: "marathon/service/job_stats.yml" }
+    - { resource: "marathon/service/job_validator.yml" }

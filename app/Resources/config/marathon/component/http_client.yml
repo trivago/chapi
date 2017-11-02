@@ -1,0 +1,18 @@
+services:
+  MarathonHttpClientGuzzle:
+    class: Chapi\Component\Http\HttpGuzzleClient
+    arguments:
+      - "@ExternalMarathonGuzzleClient"
+      - "@MarathonHttpAuthEntity"
+
+  ExternalMarathonGuzzleClient:
+    class: GuzzleHttp\Client
+    arguments:
+      - base_uri: "%marathon_url%"
+
+
+  MarathonHttpAuthEntity:
+    class: Chapi\Entity\Http\AuthEntity
+    arguments:
+      - "%marathon_http_username%"
+      - "%marathon_http_password%"

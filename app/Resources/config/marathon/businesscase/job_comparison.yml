@@ -1,0 +1,7 @@
+services:
+  MarathonJobComparisionBusinessCase:
+    class: Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase
+    arguments:
+      - "@JobRepositoryFileSystemMarathon"
+      - "@JobRepositoryMarathon"
+      - "@DiffCompareInterface"

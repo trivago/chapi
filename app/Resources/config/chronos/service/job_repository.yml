@@ -1,0 +1,60 @@
+services:
+  # --
+  # JobRepositories
+  # --
+  JobRepositoryChronos:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeChronos"
+      - "@FilterChronosComposite"
+
+  JobRepositoryFileSystemChronos:
+    class: Chapi\Service\JobRepository\JobRepository
+    arguments:
+      - "@JobRepositoryBridgeFileSystemChronos"
+      - "@FilterChronosComposite"
+
+  # --
+  # bridges
+  # --
+  JobRepositoryBridgeChronos:
+    class: Chapi\Service\JobRepository\BridgeChronos
+    factory: "BridgeFactory:getChronosBridge"
+    arguments:
+      - "@ChronosApiClientInterface"
+      - "@CacheInterface"
+      - "@JobValidatorServiceInterface"
+      - "@LoggerInterface"
+
+  JobRepositoryBridgeFileSystemChronos:
+    class: Chapi\Service\JobRepository\BridgeFileSystem
+    factory: "BridgeFactory:getFilesystemBridge"
+    arguments:
+      - "@ExternalFileSystemService"
+      - "@CacheInterface"
+      - "%repository_dir%"
+      - "@LoggerInterface"
+
+  # --
+  # filter setups
+  # --
+  FilterChronosEntity:
+    class: Chapi\Service\JobRepository\Filter\FilterChronosEntity
+
+  FilterChronosJobIgnore:
+    class: Chapi\Service\JobRepository\Filter\FilterIgnoreSettings
+    arguments:
+      - "@LoggerInterface"
+      - "@FilterChronosChapiConfig"
+
+  FilterChronosComposite:
+    class: Chapi\Service\JobRepository\Filter\JobFilterComposite
+    arguments:
+      - ["@FilterChronosEntity", "@FilterChronosJobIgnore"]
+
+  FilterChronosChapiConfig:
+    class: Chapi\Component\Config\ChapiConfig
+    arguments:
+      - ["%chapi_home%", "%chapi_work_dir%", "%repository_dir%"]
+      - "@ConfigYamlParser"
+      - "%chapi_profile%"

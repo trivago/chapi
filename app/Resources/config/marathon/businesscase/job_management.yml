@@ -1,0 +1,9 @@
+services:
+  MarathonStoreBusinessCase:
+    class: Chapi\BusinessCase\JobManagement\MarathonStoreJobBusinessCase
+    arguments:
+      - "@JobIndexServiceInterface"
+      - "@JobRepositoryMarathon"
+      - "@JobRepositoryFileSystemMarathon"
+      - "@MarathonJobComparisionBusinessCase"
+      - "@LoggerInterface"
