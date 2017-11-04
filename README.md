@@ -142,7 +142,7 @@ bin/chapi configure
 ### Disabling services
 
 To disable Chronos support and only use Marathon, set all the 
-Chronos parameters to `'''`:
+Chronos parameters to `''`:
 
 ```yaml
 profiles:
