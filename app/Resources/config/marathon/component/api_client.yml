@@ -1,0 +1,4 @@
+services:
+  MarathonApiClientInterface:
+    class: Chapi\Component\RemoteClients\MarathonApiClient
+    arguments: ["@MarathonHttpClientGuzzle"]

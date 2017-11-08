@@ -1,0 +1,11 @@
+imports:
+    - { resource: "chronos/businesscase/job_comparison.yml" }
+    - { resource: "chronos/businesscase/job_management.yml" }
+    - { resource: "chronos/component/api_client.yml" }
+    - { resource: "chronos/component/http_client.yml" }
+    - { resource: "chronos/service/job_dependency.yml" }
+    - { resource: "chronos/service/job_index.yml" }
+    - { resource: "chronos/service/job_repository.yml" }
+    - { resource: "chronos/service/job_stats.yml" }
+    - { resource: "chronos/service/job_validator.yml" }
+
