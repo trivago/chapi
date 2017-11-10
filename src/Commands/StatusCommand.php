@@ -71,11 +71,27 @@ class StatusCommand extends AbstractCommand
 
         $this->printStatusView($changedJobs, false);
 
-        if ($this->input->getOption('strict') && !empty($changedJobs)) {
+        if ($this->input->getOption('strict') && $this->containsChangedAppJobs($changedJobs)) {
             return 1;
         }
 
         return 0;
+    }
+
+    /**
+     * @param array<string,array<string,array>> $jobs
+     * @return bool
+     */
+    private function containsChangedAppJobs(array $jobs) {
+        foreach (['new', 'missing', 'updates'] as $category) {
+            foreach ([self::LABEL_CHRONOS, self::LABEL_MARATHON] as $framework) {
+                if (!empty($jobs[$category][$framework])) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
