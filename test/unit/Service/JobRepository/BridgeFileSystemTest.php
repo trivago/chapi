@@ -64,6 +64,22 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    private function rmrf($path) {
+        foreach (glob($path."/*", GLOB_MARK) as $file) {
+            if (is_dir($file)) {
+                $this->rmrf($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($path);
+    }
+
+    public function tearDown()
+    {
+        $this->rmrf($this->tempTestDir);
+    }
+
     public function testCreateInstance()
     {
         $fileSystemRepository = new BridgeFileSystem(
