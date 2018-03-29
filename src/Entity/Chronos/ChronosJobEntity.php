@@ -197,7 +197,6 @@ class ChronosJobEntity implements JobEntityInterface
      */
     public function getIterator()
     {
-        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
         return new \ArrayIterator($this);
     }
 
