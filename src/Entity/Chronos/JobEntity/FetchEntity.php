@@ -2,13 +2,13 @@
 /**
  * @package: chapi
  *
- * @author:  msiebeneicher
- * @since:   2016-11-04
+ * @author:  sbrueggen
+ * @since:   2018-03-29
  */
 
 namespace Chapi\Entity\Chronos\JobEntity;
 
-class ContainerVolumeEntity
+class FetchEntity
 {
     /**
      * @param array|object $jobData
@@ -32,16 +32,17 @@ class ContainerVolumeEntity
     public $unknown_fields = [];
     
     /** @var string  */
-    public $containerPath = '';
-
+    public $uri = "";
+    
     /** @var string  */
-    public $hostPath = '';
-
-    /**
-     * @var string
-     *
-     * read-write and read-only.
-     * val RW, RO = Value
-     */
-    public $mode = '';
+    public $destPath = '';
+    
+    /** @var bool */
+    public $extract = false;
+    
+    /** @var bool  */
+    public $cache = false;
+    
+    /** @var bool  */
+    public $executable = false;
 }

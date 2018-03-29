@@ -10,6 +10,7 @@
 namespace Chapi\Entity\Chronos;
 
 use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
+use Chapi\Entity\Chronos\JobEntity\FetchEntity;
 use Chapi\Entity\JobEntityInterface;
 
 class ChronosJobEntity implements JobEntityInterface
@@ -66,6 +67,9 @@ class ChronosJobEntity implements JobEntityInterface
 
     public $uris = [];
 
+    /** @var FetchEntity */
+    public $fetch = [];
+
     public $environmentVariables = [];
 
     public $arguments = [];
@@ -79,6 +83,8 @@ class ChronosJobEntity implements JobEntityInterface
     /** @var ContainerEntity */
     public $container = null;
 
+    public $unknown_fields = [];
+
 
     /**
      * @param array|object $jobData
@@ -91,9 +97,15 @@ class ChronosJobEntity implements JobEntityInterface
                 if (property_exists($this, $key)) {
                     if ($key == 'container') {
                         $this->{$key} = new ContainerEntity($value);
+                    } else if ($key == 'fetch') {
+                        foreach($value as $fetch) {
+                            $this->{$key}[] = new FetchEntity($fetch);
+                        }
                     } else {
                         $this->{$key} = $value;
                     }
+                } else {
+                    $this->unknown_fields[$key] = $value;
                 }
             }
         } else {
@@ -148,7 +160,28 @@ class ChronosJobEntity implements JobEntityInterface
 
         if (empty($this->container)) {
             unset($return['container']);
+        } else {
+            $return["container"] = (array) $this->container
+                                   + (array) $this->container->unknown_fields;
+            unset($return["container"]["unknown_fields"]);
+
+            $return["container"]["volumes"] = [];
+            foreach($this->container->volumes as $volume) {
+                $fields = (array) $volume + (array) $volume->unknown_fields;
+                unset($fields["unknown_fields"]);
+                $return["container"]["volumes"][] = $fields;
+            }
         }
+
+        $return["fetch"] = [];
+        foreach($this->fetch as $fetch) {
+            $fields = (array) $fetch + (array) $fetch->unknown_fields;
+            unset($fields["unknown_fields"]);
+            $return["fetch"][] = $fields;
+        }
+
+        $return += $this->unknown_fields;
+        unset($return['unknown_fields']);
 
         unset($return['successCount']);
         unset($return['errorCount']);
@@ -164,6 +197,7 @@ class ChronosJobEntity implements JobEntityInterface
      */
     public function getIterator()
     {
+        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
         return new \ArrayIterator($this);
     }
 

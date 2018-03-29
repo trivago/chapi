@@ -401,6 +401,7 @@ If you find any further issues or edge case, please create an issue.
 ## Supported Chronos versions
 * v2.3
 * v2.4
+* v2.5
 
 ## Docker
 
