@@ -21,7 +21,7 @@ class FetchEntity
                 if (property_exists($this, $key)) {
                     $this->{$key} = $value;
                 } else {
-                    $this->unknown_fields[$key] = $value;
+                    $this->unknownFields[$key] = $value;
                 }
             }
         } else {
@@ -29,7 +29,7 @@ class FetchEntity
         }
     }
 
-    public $unknown_fields = [];
+    public $unknownFields = [];
     
     /** @var string  */
     public $uri = "";

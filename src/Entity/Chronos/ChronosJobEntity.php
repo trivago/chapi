@@ -67,7 +67,7 @@ class ChronosJobEntity implements JobEntityInterface
 
     public $uris = [];
 
-    /** @var FetchEntity */
+    /** @var FetchEntity[] */
     public $fetch = [];
 
     public $environmentVariables = [];
@@ -83,7 +83,7 @@ class ChronosJobEntity implements JobEntityInterface
     /** @var ContainerEntity */
     public $container = null;
 
-    public $unknown_fields = [];
+    public $unknownFields = [];
 
 
     /**
@@ -105,7 +105,7 @@ class ChronosJobEntity implements JobEntityInterface
                         $this->{$key} = $value;
                     }
                 } else {
-                    $this->unknown_fields[$key] = $value;
+                    $this->unknownFields[$key] = $value;
                 }
             }
         } else {
@@ -161,27 +161,27 @@ class ChronosJobEntity implements JobEntityInterface
         if (empty($this->container)) {
             unset($return['container']);
         } else {
-            $return["container"] = (array) $this->container
-                                   + (array) $this->container->unknown_fields;
-            unset($return["container"]["unknown_fields"]);
+            $return['container'] = (array) $this->container
+                                   + (array) $this->container->unknownFields;
+            unset($return['container']['unknownFields']);
 
-            $return["container"]["volumes"] = [];
+            $return['container']['volumes'] = [];
             foreach($this->container->volumes as $volume) {
-                $fields = (array) $volume + (array) $volume->unknown_fields;
-                unset($fields["unknown_fields"]);
-                $return["container"]["volumes"][] = $fields;
+                $fields = (array) $volume + (array) $volume->unknownFields;
+                unset($fields['unknownFields']);
+                $return['container']['volumes'][] = $fields;
             }
         }
 
-        $return["fetch"] = [];
+        $return['fetch'] = [];
         foreach($this->fetch as $fetch) {
-            $fields = (array) $fetch + (array) $fetch->unknown_fields;
-            unset($fields["unknown_fields"]);
-            $return["fetch"][] = $fields;
+            $fields = (array) $fetch + (array) $fetch->unknownFields;
+            unset($fields['unknownFields']);
+            $return['fetch'][] = $fields;
         }
 
-        $return += $this->unknown_fields;
-        unset($return['unknown_fields']);
+        $return += $this->unknownFields;
+        unset($return['unknownFields']);
 
         unset($return['successCount']);
         unset($return['errorCount']);

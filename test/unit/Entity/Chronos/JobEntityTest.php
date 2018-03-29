@@ -192,7 +192,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
             ],
             'container' => [
                 'image' => "hello-world",
-                'docker_feature_2020' => "docker for autonomous vehicles",
+                'docker_feature_2020' => 'docker for autonomous vehicles',
                 'volumes' => [
                     ['unique_label' => 'PRIVATE_CLOUD']
                 ]
@@ -207,9 +207,9 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($jobEntityTest->container, 'docker_feature_2020'));
         $this->assertTrue(property_exists($jobEntityTest->container->volumes[0], 'unique_label'));
 
-        $this->assertFalse(property_exists($jobEntityTest, 'unknown_fields'));
-        $this->assertFalse(property_exists($jobEntityTest->fetch[0], 'unknown_fields'));
-        $this->assertFalse(property_exists($jobEntityTest->container, 'unknown_fields'));
-        $this->assertFalse(property_exists($jobEntityTest->container->volumes[0], 'unknown_fields'));
+        $this->assertFalse(property_exists($jobEntityTest, 'unknownFields'));
+        $this->assertFalse(property_exists($jobEntityTest->fetch[0], 'unknownFields'));
+        $this->assertFalse(property_exists($jobEntityTest->container, 'unknownFields'));
+        $this->assertFalse(property_exists($jobEntityTest->container->volumes[0], 'unknownFields'));
     }
 }

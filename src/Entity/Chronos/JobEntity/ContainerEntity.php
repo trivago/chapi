@@ -30,7 +30,7 @@ class ContainerEntity
                         $this->{$key} = $value;
                     }
                 } else {
-                    $this->unknown_fields[$key] = $value;
+                    $this->unknownFields[$key] = $value;
                 }
             }
         } else {
@@ -38,7 +38,7 @@ class ContainerEntity
         }
     }
 
-    public $unknown_fields = [];
+    public $unknownFields = [];
     
     /** @var string  */
     public $type = '';
