@@ -84,6 +84,8 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $ipAddress = null;
 
+    public $unknownFields = [];
+
     public function __construct($data = null)
     {
         if (!$data) {
@@ -94,55 +96,34 @@ class MarathonAppEntity implements JobEntityInterface
         // make sure data is array
         $dataArray = (array) $data;
 
-        MarathonEntityUtils::setAllPossibleProperties($dataArray, $this);
+        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties(
+            $dataArray,
+            $this,
+            array(
+                'portDefinitions' => MarathonEntityUtils::convArrayOfClass(PortDefinition::class),
+                'container' => MarathonEntityUtils::convClass(Container::class),
+                'healthChecks' => MarathonEntityUtils::convArrayOfClass(HealthCheck::class),
+                'upgradeStrategy' => MarathonEntityUtils::convClass(UpgradeStrategy::class),
+                'ipAddress' => MarathonEntityUtils::convClass(IpAddress::class),
+                'env' => MarathonEntityUtils::convSortedObject(),
+                'labels' => MarathonEntityUtils::convSortedObject(),
 
-        if (isset($dataArray['portDefinitions'])) {
-            foreach ($dataArray['portDefinitions'] as $portDefinition) {
-                $this->portDefinitions[] = new PortDefinition((array) $portDefinition);
-            }
-        }
+                # don't skip assigning these just because they are arrays or objects in $dataArray
+                'constraints' => MarathonEntityUtils::noConv(),
+                'args' => MarathonEntityUtils::noConv(),
+                'uris' => MarathonEntityUtils::noConv(),
+                'acceptedResourceRoles' => MarathonEntityUtils::noConv(),
+                'dependencies' => MarathonEntityUtils::noConv()
+            )
+        );
 
-        if (isset($dataArray['container'])) {
-            $this->container = new Container((array) $dataArray['container']);
-        }
-
-        if (isset($dataArray['healthChecks'])) {
-            foreach ($dataArray['healthChecks'] as $healthCheck) {
-                $this->healthChecks[] = new HealthCheck((array) $healthCheck);
-            }
-        }
-
-        if (isset($dataArray['upgradeStrategy'])) {
-            $this->upgradeStrategy = new UpgradeStrategy((array) $dataArray['upgradeStrategy']);
-        } else {
+        if (!isset($dataArray['upgradeStrategy'])) {
             $this->upgradeStrategy = new UpgradeStrategy();
         }
 
-        if (isset($dataArray['ipAddress'])) {
-            $this->ipAddress = new IpAddress((array) $dataArray['ipAddress']);
+        if (!isset($dataArray['labels'])) {
+            $this->upgradeStrategy = (object) [];
         }
-
-        if (isset($dataArray['env'])) {
-            $env = (array) $dataArray['env'];
-
-            // sorting this makes the diff output a whole lot more readable
-            ksort($env);
-
-            $this->env = (object) $env;
-        } else {
-            $this->env = (object) [];
-        }
-
-        if (isset($dataArray['labels'])) {
-            $this->labels = (object) $dataArray['labels'];
-        } else {
-            $this->labels = (object) [];
-        }
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'constraints');
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'args');
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'uris');
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'acceptedResourceRoles');
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'dependencies');
     }
 
     /**
@@ -152,13 +133,19 @@ class MarathonAppEntity implements JobEntityInterface
     public function jsonSerialize()
     {
         $return = (array) $this;
+
+        $return += $this->unknownFields;
+        unset($return['unknownFields']);
+
+        // delete empty fields
         $return = array_filter(
             $return,
             function ($value, $key) {
                 return !is_null($value) || empty($value);
             },
-            ARRAY_FILTER_USE_BOTH
+            ARRAY_FILTER_USE_BOTH // there is no ARRAY_FILTER_USE_VALUE
         );
+
         return $return;
     }
 

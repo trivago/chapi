@@ -12,7 +12,7 @@ use Chapi\Entity\Marathon\MarathonEntityUtils;
 use Chapi\Entity\Marathon\AppEntity\ContainerVolume;
 use Chapi\Entity\Marathon\AppEntity\Docker;
 
-class Container
+class Container implements \JsonSerializable
 {
     const DIC = self::class;
 
@@ -29,22 +29,32 @@ class Container
      */
     public $volumes = [];
 
+    public $unknownFields = [];
+
     /**
      * Container constructor.
      * @param array $data
      */
     public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($data, $this);
 
-        if (isset($data['docker'])) {
-            $this->docker = new Docker((array) $data['docker']);
-        }
+        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties(
+            $data,
+            $this,
+            array(
+                'docker' => MarathonEntityUtils::convClass(Docker::class),
+                'volumes' => MarathonEntityUtils::convArrayOfClass(ContainerVolume::class)
+            )
+        );
+    }
 
-        if (isset($data['volumes'])) {
-            foreach ($data['volumes'] as $volume) {
-                $this->volumes[] = new ContainerVolume((array) $volume);
-            }
-        }
+    public function jsonSerialize()
+    {
+        $return = (array) $this;
+
+        $return += $this->unknownFields;
+        unset($return['unknownFields']);
+
+        return $return;
     }
 }

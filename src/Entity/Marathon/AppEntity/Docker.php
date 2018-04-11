@@ -12,7 +12,7 @@ use Chapi\Entity\Marathon\AppEntity\DockerParameters;
 use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 use Chapi\Entity\Marathon\MarathonEntityUtils;
 
-class Docker
+class Docker implements \JsonSerializable
 {
     const DIC = self::class;
 
@@ -35,20 +35,27 @@ class Docker
      */
     public $parameters = [];
 
+    public $unknownFields = [];
+
     public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($data, $this);
+        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties(
+            $data,
+            $this,
+            array(
+                'portMappings' => MarathonEntityUtils::convArrayOfClass(DockerPortMapping::class),
+                'parameters' => MarathonEntityUtils::convArrayOfClass(DockerParameters::class)
+            )
+        );
+    }
 
-        if (isset($data['portMappings'])) {
-            foreach ($data['portMappings'] as $portMapping) {
-                $this->portMappings[] = new DockerPortMapping((array) $portMapping);
-            }
-        }
+    public function jsonSerialize()
+    {
+        $return = (array) $this;
 
-        if (isset($data['parameters'])) {
-            foreach ($data['parameters'] as $parameter) {
-                $this->parameters[] = new DockerParameters((array) $parameter);
-            }
-        }
+        $return += $this->unknownFields;
+        unset($return['unknownFields']);
+
+        return $return;
     }
 }

@@ -34,4 +34,20 @@ class UpgradeStrategyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $upgradeStrategy->minimumHealthCapacity);
         $this->assertEquals(3, $upgradeStrategy->maximumOverCapacity);
     }
+
+    public function testUnknownFieldsInUpgradeStrategy()
+    {
+        $jobEntity = new UpgradeStrategy([
+            'unique_field' => "I feel like it's 2005",
+            'unique_array' => ['unique', 'values']
+        ]);
+
+        $jobEntityJson = json_encode($jobEntity);
+        $jobEntityTest = json_decode($jobEntityJson);
+
+        $this->assertTrue(property_exists($jobEntityTest, 'unique_field'));
+        $this->assertAttributeEquals(['unique', 'values'], 'unique_array', $jobEntityTest);
+
+        $this->assertFalse(property_exists($jobEntityTest, 'unknownFields'));
+    }
 }

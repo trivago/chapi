@@ -10,7 +10,7 @@ namespace Chapi\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\MarathonEntityUtils;
 
-class DockerPortMapping
+class DockerPortMapping implements \JsonSerializable
 {
     const DIC = self::class;
 
@@ -24,9 +24,11 @@ class DockerPortMapping
 
     public $name = null;
 
+    public $unknownFields = [];
+
     public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($data, $this);
+        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties($data, $this);
     }
 
     public static function less(DockerPortMapping $left, DockerPortMapping $right)
@@ -48,5 +50,15 @@ class DockerPortMapping
         }
 
         return strcmp($left->name, $right->name);
+    }
+
+    public function jsonSerialize()
+    {
+        $return = (array) $this;
+
+        $return += $this->unknownFields;
+        unset($return['unknownFields']);
+
+        return $return;
     }
 }
