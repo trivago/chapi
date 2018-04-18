@@ -37,30 +37,24 @@ class HealthCheck implements \JsonSerializable
      */
     public $command = null;
 
-    public $unknownFields = [];
-
     public function __construct($data = [])
     {
-        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties(
+        MarathonEntityUtils::setAllPossibleProperties(
             $data,
             $this,
             ['command' => MarathonEntityUtils::convClass(HealthCheckCommand::class)]
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function jsonSerialize()
     {
         $return = (array) $this;
 
-        $return += $this->unknownFields;
-        unset($return['unknownFields']);
 
         if (is_null($this->port)) {
             unset($return["port"]);
         }
+
         return $return;
     }
 }

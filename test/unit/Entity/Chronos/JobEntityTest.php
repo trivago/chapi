@@ -181,35 +181,4 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertTrue($jobEntity->fetch[0]->extract);
     }
-
-    public function testUnknownFieldsInJob()
-    {
-        $jobEntity = new ChronosJobEntity([
-            'name' => 'jobname',
-            'unique_field' => "I feel like it's 2005",
-            'fetch' => [
-                ['uri' => 'file:///etc/my_conf.tar.gz', 'also_unique' => true]
-            ],
-            'container' => [
-                'image' => "hello-world",
-                'docker_feature_2020' => 'docker for autonomous vehicles',
-                'volumes' => [
-                    ['unique_label' => 'PRIVATE_CLOUD']
-                ]
-            ]
-        ]);
-
-        $jobEntityJson = json_encode($jobEntity);
-        $jobEntityTest = json_decode($jobEntityJson);
-
-        $this->assertTrue(property_exists($jobEntityTest, 'unique_field'));
-        $this->assertTrue(property_exists($jobEntityTest->fetch[0], 'also_unique'));
-        $this->assertTrue(property_exists($jobEntityTest->container, 'docker_feature_2020'));
-        $this->assertTrue(property_exists($jobEntityTest->container->volumes[0], 'unique_label'));
-
-        $this->assertFalse(property_exists($jobEntityTest, 'unknownFields'));
-        $this->assertFalse(property_exists($jobEntityTest->fetch[0], 'unknownFields'));
-        $this->assertFalse(property_exists($jobEntityTest->container, 'unknownFields'));
-        $this->assertFalse(property_exists($jobEntityTest->container->volumes[0], 'unknownFields'));
-    }
 }

@@ -21,11 +21,9 @@ class PortDefinition implements \JsonSerializable
 
     public $labels = null;
 
-    public $unknownFields = [];
-
     public function __construct($data = [])
     {
-        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties(
+        MarathonEntityUtils::setAllPossibleProperties(
             (array) $data,
             $this,
             ['labels' => MarathonEntityUtils::convObject()]
@@ -42,14 +40,9 @@ class PortDefinition implements \JsonSerializable
     public function jsonSerialize()
     {
         $return = (array) $this;
-
-        $return += $this->unknownFields;
-        unset($return['unknownFields']);
-
         $return = array_filter($return, function ($value, $key) {
             return !is_null($value);
         }, ARRAY_FILTER_USE_BOTH);
-
         return $return;
     }
 }

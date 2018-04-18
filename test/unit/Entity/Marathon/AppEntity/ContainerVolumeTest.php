@@ -35,20 +35,4 @@ class ContainerVolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("some/host/path", $containerVolume->hostPath);
         $this->assertEquals("RW", $containerVolume->mode);
     }
-
-    public function testUnknownFieldsInVolume()
-    {
-        $jobEntity = new ContainerVolume([
-            'unique_field' => "I feel like it's 2005",
-            'unique_array' => ['unique', 'values']
-        ]);
-
-        $jobEntityJson = json_encode($jobEntity);
-        $jobEntityTest = json_decode($jobEntityJson);
-
-        $this->assertTrue(property_exists($jobEntityTest, 'unique_field'));
-        $this->assertAttributeEquals(['unique', 'values'], 'unique_array', $jobEntityTest);
-
-        $this->assertFalse(property_exists($jobEntityTest, 'unknownFields'));
-    }
 }

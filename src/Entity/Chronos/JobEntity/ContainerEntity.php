@@ -29,16 +29,12 @@ class ContainerEntity
                     } else {
                         $this->{$key} = $value;
                     }
-                } else {
-                    $this->unknownFields[$key] = $value;
                 }
             }
         } else {
             throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an array or object', __METHOD__));
         }
     }
-
-    public $unknownFields = [];
     
     /** @var string  */
     public $type = '';

@@ -83,8 +83,6 @@ class ChronosJobEntity implements JobEntityInterface
     /** @var ContainerEntity */
     public $container = null;
 
-    public $unknownFields = [];
-
 
     /**
      * @param array|object $jobData
@@ -105,7 +103,9 @@ class ChronosJobEntity implements JobEntityInterface
                         $this->{$key} = $value;
                     }
                 } else {
-                    $this->unknownFields[$key] = $value;
+                    /* We are ignoring fields that are unknown to us. This is bad and can lead to unexpected differences
+                     * when comparing the *.json on disk with the job definition from the Chronos API.
+                     */
                 }
             }
         } else {
@@ -161,27 +161,18 @@ class ChronosJobEntity implements JobEntityInterface
         if (empty($this->container)) {
             unset($return['container']);
         } else {
-            $return['container'] = (array) $this->container
-                                   + (array) $this->container->unknownFields;
-            unset($return['container']['unknownFields']);
+            $return['container'] = (array) $this->container;
 
             $return['container']['volumes'] = [];
             foreach($this->container->volumes as $volume) {
-                $fields = (array) $volume + (array) $volume->unknownFields;
-                unset($fields['unknownFields']);
-                $return['container']['volumes'][] = $fields;
+                $return['container']['volumes'][] = (array) $volume;
             }
         }
 
         $return['fetch'] = [];
         foreach($this->fetch as $fetch) {
-            $fields = (array) $fetch + (array) $fetch->unknownFields;
-            unset($fields['unknownFields']);
-            $return['fetch'][] = $fields;
+            $return['fetch'][] = (array) $fetch;
         }
-
-        $return += $this->unknownFields;
-        unset($return['unknownFields']);
 
         unset($return['successCount']);
         unset($return['errorCount']);

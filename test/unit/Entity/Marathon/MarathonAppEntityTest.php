@@ -60,20 +60,4 @@ class MarathonAppEntityTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(get_object_vars($app->env), array('b' => 'second', 'a' => 'first')); # equality
         $this->assertEquals(array_keys(get_object_vars($app->env)), array('a', 'b')); # order
     }
-
-    public function testUnknownFieldsInJob()
-    {
-        $jobEntity = new MarathonAppEntity([
-            'unique_field' => "I feel like it's 2005",
-            'unique_array' => ['unique', 'values']
-        ]);
-
-        $jobEntityJson = json_encode($jobEntity);
-        $jobEntityTest = json_decode($jobEntityJson);
-
-        $this->assertTrue(property_exists($jobEntityTest, 'unique_field'));
-        $this->assertAttributeEquals(['unique', 'values'], 'unique_array', $jobEntityTest);
-
-        $this->assertFalse(property_exists($jobEntityTest, 'unknownFields'));
-    }
 }

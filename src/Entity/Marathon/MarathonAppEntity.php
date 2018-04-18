@@ -84,8 +84,6 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $ipAddress = null;
 
-    public $unknownFields = [];
-
     public function __construct($data = null)
     {
         if (!$data) {
@@ -96,7 +94,7 @@ class MarathonAppEntity implements JobEntityInterface
         // make sure data is array
         $dataArray = (array) $data;
 
-        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties(
+        MarathonEntityUtils::setAllPossibleProperties(
             $dataArray,
             $this,
             array(
@@ -133,9 +131,6 @@ class MarathonAppEntity implements JobEntityInterface
     public function jsonSerialize()
     {
         $return = (array) $this;
-
-        $return += $this->unknownFields;
-        unset($return['unknownFields']);
 
         // delete empty fields
         $return = array_filter(

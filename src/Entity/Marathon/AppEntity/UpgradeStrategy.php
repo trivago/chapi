@@ -10,7 +10,7 @@ namespace Chapi\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\MarathonEntityUtils;
 
-class UpgradeStrategy implements \JsonSerializable
+class UpgradeStrategy
 {
     const DIC = self::class;
 
@@ -18,20 +18,8 @@ class UpgradeStrategy implements \JsonSerializable
 
     public $maximumOverCapacity = 1;
 
-    public $unknownFields = [];
-
     public function __construct($data = [])
     {
-        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties($data, $this);
-    }
-
-    public function jsonSerialize()
-    {
-        $return = (array) $this;
-
-        $return += $this->unknownFields;
-        unset($return['unknownFields']);
-
-        return $return;
+        MarathonEntityUtils::setAllPossibleProperties($data, $this);
     }
 }

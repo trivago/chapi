@@ -10,7 +10,7 @@ namespace Chapi\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\MarathonEntityUtils;
 
-class IpAddress implements \JsonSerializable
+class IpAddress
 {
     const DIC = self::class;
 
@@ -20,11 +20,9 @@ class IpAddress implements \JsonSerializable
 
     public $networkName = '';
 
-    public $unknownFields = [];
-
     public function __construct($data = [])
     {
-        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties(
+        MarathonEntityUtils::setAllPossibleProperties(
             $data,
             $this,
             [
@@ -32,15 +30,5 @@ class IpAddress implements \JsonSerializable
                 'labels' => MarathonEntityUtils::convObject()
             ]
         );
-    }
-
-    public function jsonSerialize()
-    {
-        $return = (array) $this;
-
-        $return += $this->unknownFields;
-        unset($return['unknownFields']);
-
-        return $return;
     }
 }

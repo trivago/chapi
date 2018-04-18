@@ -20,16 +20,12 @@ class ContainerVolumeEntity
             foreach ($jobData as $key => $value) {
                 if (property_exists($this, $key)) {
                     $this->{$key} = $value;
-                } else {
-                    $this->unknownFields[$key] = $value;
                 }
             }
         } else {
             throw new \InvalidArgumentException(sprintf('Argument 1 passed to "%s" must be an array or object', __METHOD__));
         }
     }
-
-    public $unknownFields = [];
     
     /** @var string  */
     public $containerPath = '';

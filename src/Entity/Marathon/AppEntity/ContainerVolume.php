@@ -10,7 +10,7 @@ namespace Chapi\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\MarathonEntityUtils;
 
-class ContainerVolume implements \JsonSerializable
+class ContainerVolume
 {
     const DIC = self::class;
 
@@ -20,20 +20,8 @@ class ContainerVolume implements \JsonSerializable
 
     public $mode = '';
 
-    public $unknownFields = [];
-
     public function __construct($data = [])
     {
-        $this->unknownFields = MarathonEntityUtils::setAllPossibleProperties($data, $this);
-    }
-
-    public function jsonSerialize()
-    {
-        $return = (array) $this;
-
-        $return += $this->unknownFields;
-        unset($return['unknownFields']);
-
-        return $return;
+        MarathonEntityUtils::setAllPossibleProperties($data, $this);
     }
 }
