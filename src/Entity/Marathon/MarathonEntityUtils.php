@@ -70,9 +70,9 @@ class MarathonEntityUtils
      */
     public static function convSortedObject() {
         return function($data) {
-            $a = (array)$data; // ksort is inplace, so we need a copy
+            $a = (array) $data; // ksort is inplace, so we need a copy
             ksort($a);
-            return (object)$a;
+            return (object) $a;
         };
     }
 
@@ -83,9 +83,9 @@ class MarathonEntityUtils
     public static function convArrayOfClass($class) {
         return function($data) use ($class) {
             $return = [];
-            if($data !== null) {
+            if ($data !== null) {
                 foreach ($data as $item) {
-                    $return[] = new $class((array)$item);
+                    $return[] = new $class((array) $item);
                 }
             }
             return $return;

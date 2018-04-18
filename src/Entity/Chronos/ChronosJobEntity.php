@@ -96,7 +96,7 @@ class ChronosJobEntity implements JobEntityInterface
                     if ($key == 'container') {
                         $this->{$key} = new ContainerEntity($value);
                     } else if ($key == 'fetch') {
-                        foreach($value as $fetch) {
+                        foreach ($value as $fetch) {
                             $this->{$key}[] = new FetchEntity($fetch);
                         }
                     } else {
@@ -164,13 +164,13 @@ class ChronosJobEntity implements JobEntityInterface
             $return['container'] = (array) $this->container;
 
             $return['container']['volumes'] = [];
-            foreach($this->container->volumes as $volume) {
+            foreach ($this->container->volumes as $volume) {
                 $return['container']['volumes'][] = (array) $volume;
             }
         }
 
         $return['fetch'] = [];
-        foreach($this->fetch as $fetch) {
+        foreach ($this->fetch as $fetch) {
             $return['fetch'][] = (array) $fetch;
         }
 
