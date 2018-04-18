@@ -51,8 +51,8 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
         if ($localJob->container && $localJob->container->docker &&
             $remoteJob->container && $remoteJob->container->docker) {
 
-            $localPortMappings = $localJob->container->docker->portMappings;
-            $remotePortMappings = $remoteJob->container->docker->portMappings;
+            $localPortMappings = $localJob->container->portMappings;
+            $remotePortMappings = $remoteJob->container->portMappings;
 
             usort($localPortMappings, DockerPortMapping::class . '::less');
             usort($remotePortMappings, DockerPortMapping::class . '::less');
@@ -79,8 +79,8 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
                 }
             }
 
-            $localJob->container->docker->portMappings = array_values($localPortMappings);
-            $remoteJob->container->docker->portMappings = array_values($remotePortMappings);
+            $localJob->container->portMappings = array_values($localPortMappings);
+            $remoteJob->container->portMappings = array_values($remotePortMappings);
         }
     }
 

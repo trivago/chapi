@@ -18,13 +18,6 @@ class Docker
 
     public $image = '';
 
-    public $network = '';
-
-    /**
-     * @var DockerPortMapping[]
-     */
-    public $portMappings = [];
-
 
     public $privileged = false;
 

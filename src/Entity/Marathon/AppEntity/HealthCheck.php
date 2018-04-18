@@ -32,6 +32,8 @@ class HealthCheck implements \JsonSerializable
 
     public $maxConsecutiveFailures = 3;
 
+    public $delaySeconds = 15;
+
     /**
      * @var HealthCheckCommand
      */
@@ -50,6 +52,12 @@ class HealthCheck implements \JsonSerializable
     {
         $return = (array) $this;
 
+        // remove HTTP and TCP specific values for COMMAND healthChecks
+        if ($return["protocol"] == "COMMAND") {
+            unset($return["path"]);
+            unset($return["portIndex"]);
+            unset($return["port"]);
+        }
 
         if (is_null($this->port)) {
             unset($return["port"]);

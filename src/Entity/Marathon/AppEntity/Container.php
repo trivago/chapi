@@ -23,6 +23,11 @@ class Container
      */
     public $docker = null;
 
+    /**
+     * @var DockerPortMapping[]
+     */
+    public $portMappings = [];
+
 
     /**
      * @var ContainerVolume[]
@@ -40,6 +45,7 @@ class Container
             $data,
             $this,
             array(
+                'portMappings' => MarathonEntityUtils::convArrayOfClass(DockerPortMapping::class),
                 'docker' => MarathonEntityUtils::convClass(Docker::class),
                 'volumes' => MarathonEntityUtils::convArrayOfClass(ContainerVolume::class)
             )

@@ -11,8 +11,10 @@ namespace Chapi\Entity\Marathon;
 
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\Marathon\AppEntity\Container;
+use Chapi\Entity\Marathon\AppEntity\Fetch;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\AppEntity\IpAddress;
+use Chapi\Entity\Marathon\AppEntity\Network;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
 
@@ -44,6 +46,11 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $container = null;
 
+    /**
+     * @var Network[]
+     */
+    public $networks = [];
+
     public $env = null;
 
     /**
@@ -51,12 +58,16 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $constraints = [];
 
-
     public $acceptedResourceRoles = null;
 
     public $labels = null;
 
     public $uris = [];
+
+    /**
+     * @var Fetch[]
+     */
+    public $fetch = [];
 
     public $dependencies = [];
 
@@ -100,6 +111,8 @@ class MarathonAppEntity implements JobEntityInterface
             array(
                 'portDefinitions' => MarathonEntityUtils::convArrayOfClass(PortDefinition::class),
                 'container' => MarathonEntityUtils::convClass(Container::class),
+                'networks' => MarathonEntityUtils::convArrayOfClass(Network::class),
+                'fetch' => MarathonEntityUtils::convArrayOfClass(Fetch::class),
                 'healthChecks' => MarathonEntityUtils::convArrayOfClass(HealthCheck::class),
                 'upgradeStrategy' => MarathonEntityUtils::convClass(UpgradeStrategy::class),
                 'ipAddress' => MarathonEntityUtils::convClass(IpAddress::class),
@@ -140,6 +153,14 @@ class MarathonAppEntity implements JobEntityInterface
             },
             ARRAY_FILTER_USE_BOTH // there is no ARRAY_FILTER_USE_VALUE
         );
+
+        if (isset($return["networks"])
+            && count($return["networks"]) == 1 // you can only have one bridge or host network
+            && $return["networks"][0]->mode != "container")
+        {
+            $return["networks"][0] = (array) $return["networks"][0];
+            unset($return["networks"][0]["name"]); // only "container" networks can have names
+        }
 
         return $return;
     }
