@@ -50,8 +50,6 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
             $remoteJob->portDefinitions = null;
         }
 
-        if ($localJob->container && $localJob->container->docker &&
-            $remoteJob->container && $remoteJob->container->docker) {
         // convert uris to fetchers
         foreach ($localJob->uris as $uri) {
             $localJob->fetch[] = new Fetch(["uri" => $uri, "extract" => true]);
