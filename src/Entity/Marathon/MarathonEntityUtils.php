@@ -35,11 +35,6 @@ class MarathonEntityUtils
         foreach ($data as $attributeName => $attributeValue) {
             // Don't set array or objects if no conversion method is specified.
             // Because this would need further type information to properly set.
-            #if ((is_array($attributeValue) || is_object($attributeValue))
-            #    && !isset($conversionMap[$attributeName])) {
-            #    $unknownProperties[$attributeName] = $attributeValue;
-            #    continue;
-            #}
             if (isset($conversionMap[$attributeName])) {
                 $data[$attributeName] = $conversionMap[$attributeName]($attributeValue);
             }
@@ -54,15 +49,21 @@ class MarathonEntityUtils
      * This is useful if you don't want an array or object to be skipped by setAllPossibleProperties().
      */
     public static function noConv() {
-        return function($data) { return $data; };
+        return function($data) {
+            return $data;
+        };
     }
 
     public static function convArray() {
-        return function($data) { return (array) $data; };
+        return function($data) {
+            return (array) $data;
+        };
     }
 
     public static function convObject() {
-        return function($data) { return (object) $data; };
+        return function($data) {
+            return (object) $data;
+        };
     }
 
     /**
@@ -77,7 +78,9 @@ class MarathonEntityUtils
     }
 
     public static function convClass($class) {
-        return function($data) use ($class) { return new $class((array) $data); };
+        return function($data) use ($class) {
+            return new $class((array) $data);
+        };
     }
 
     public static function convArrayOfClass($class) {

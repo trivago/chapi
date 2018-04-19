@@ -28,7 +28,7 @@ class FetchEntity
     }
     
     /** @var string  */
-    public $uri = "";
+    public $uri = '';
     
     /** @var string  */
     public $destPath = '';

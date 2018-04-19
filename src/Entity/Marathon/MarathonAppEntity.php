@@ -154,12 +154,12 @@ class MarathonAppEntity implements JobEntityInterface
             ARRAY_FILTER_USE_BOTH // there is no ARRAY_FILTER_USE_VALUE
         );
 
-        if (isset($return["networks"])
-            && count($return["networks"]) == 1 // you can only have one bridge or host network
-            && $return["networks"][0]->mode != "container")
+        if (isset($return['networks'])
+            && count($return['networks']) == 1 // you can only have one bridge or host network
+            && $return['networks'][0]->mode != 'container')
         {
-            $return["networks"][0] = (array) $return["networks"][0];
-            unset($return["networks"][0]["name"]); // only "container" networks can have names
+            $return['networks'][0] = (array) $return['networks'][0];
+            unset($return['networks'][0]['name']); // only "container" networks can have names
         }
 
         return $return;

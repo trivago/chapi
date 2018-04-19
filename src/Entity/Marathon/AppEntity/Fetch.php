@@ -14,7 +14,7 @@ use Chapi\Entity\Marathon\MarathonEntityUtils;
 class Fetch
 {
 
-    public $uri = "";
+    public $uri = '';
 
     public $extract = true;
 

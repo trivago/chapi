@@ -13,9 +13,9 @@ use Chapi\Entity\Marathon\MarathonEntityUtils;
 
 class Network
 {
-    public $mode = "";
+    public $mode = '';
 
-    public $name = "";
+    public $name = '';
 
     public function __construct($data = [])
     {
