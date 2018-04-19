@@ -14,6 +14,8 @@ use Chapi\Component\Comparison\DiffCompareInterface;
 use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
+use Chapi\Entity\Marathon\AppEntity\Fetch;
+use Chapi\Entity\Marathon\AppEntity\Network;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use Chapi\Service\JobRepository\JobRepositoryInterface;
 
@@ -50,6 +52,17 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
 
         if ($localJob->container && $localJob->container->docker &&
             $remoteJob->container && $remoteJob->container->docker) {
+        // convert uris to fetchers
+        foreach ($localJob->uris as $uri) {
+            $localJob->fetch[] = new Fetch(["uri" => $uri, "extract" => true]);
+        }
+        $localJob->uris = [];
+        foreach ($remoteJob->uris as $uri) {
+            $remoteJob->fetch[] = new Fetch(["uri" => $uri, "extract" => true]);
+        }
+        $remoteJob->uris = [];
+
+        if ($localJob->container && $remoteJob->container) {
 
             $localPortMappings = $localJob->container->portMappings;
             $remotePortMappings = $remoteJob->container->portMappings;
@@ -81,6 +94,14 @@ class MarathonJobComparisonBusinessCase extends AbstractJobComparisionBusinessCa
 
             $localJob->container->portMappings = array_values($localPortMappings);
             $remoteJob->container->portMappings = array_values($remotePortMappings);
+        }
+
+        // set network to "host" when not containerized
+        if (!$localJob->container) {
+            $localJob->networks = [new Network(["mode" => "host"])];
+        }
+        if (!$remoteJob->container) {
+            $remoteJob->networks = [new Network(["mode" => "host"])];
         }
     }
 
