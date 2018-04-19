@@ -65,8 +65,6 @@ class ChronosJobEntity implements JobEntityInterface
 
     public $dataProcessingJobType = false;
 
-    public $uris = [];
-
     /** @var FetchEntity[] */
     public $fetch = [];
 
