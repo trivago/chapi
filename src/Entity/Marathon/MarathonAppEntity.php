@@ -148,10 +148,9 @@ class MarathonAppEntity implements JobEntityInterface
         // delete empty fields
         $return = array_filter(
             $return,
-            function($value, $key) {
+            function($value) {
                 return !is_null($value) || empty($value);
-            },
-            ARRAY_FILTER_USE_BOTH // there is no ARRAY_FILTER_USE_VALUE
+            }
         );
 
         if (isset($return['networks'])

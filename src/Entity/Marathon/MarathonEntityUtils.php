@@ -85,13 +85,13 @@ class MarathonEntityUtils
 
     public static function convArrayOfClass($class) {
         return function($data) use ($class) {
-            $return = [];
+            $array = [];
             if ($data !== null) {
                 foreach ($data as $item) {
-                    $return[] = new $class((array) $item);
+                    $array[] = new $class((array) $item);
                 }
             }
-            return $return;
+            return $array;
         };
     }
 }
