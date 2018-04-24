@@ -22,13 +22,13 @@ class IpAddress
 
     public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($data, $this);
-
-        if (isset($data['groups'])) {
-            $this->groups = $data['groups'];
-        }
-        if (isset($data['labels'])) {
-            $this->labels = (object) $data['labels'];
-        }
+        MarathonEntityUtils::setAllPossibleProperties(
+            $data,
+            $this,
+            [
+                'groups' => MarathonEntityUtils::convArray(),
+                'labels' => MarathonEntityUtils::convObject()
+            ]
+        );
     }
 }

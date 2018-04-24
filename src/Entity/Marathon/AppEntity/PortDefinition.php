@@ -23,10 +23,13 @@ class PortDefinition implements \JsonSerializable
 
     public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties((array) $data, $this);
-        if (isset($data['labels'])) {
-            $this->labels = (object) $data['labels'];
-        } else {
+        MarathonEntityUtils::setAllPossibleProperties(
+            (array) $data,
+            $this,
+            ['labels' => MarathonEntityUtils::convObject()]
+        );
+
+        if (!isset($data['labels'])) {
             $this->labels = (object) [];
         }
     }

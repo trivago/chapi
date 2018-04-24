@@ -80,12 +80,23 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSimpleArrayCopyWithUris()
     {
-        $uris = ['http://a.url.com', 'http://b.url.com'];
-        $jobEntity = new ChronosJobEntity(['name' => 'jobname', 'uris' => $uris]);
+        $fetch = [
+            [
+                'uri' => 'file:///etc/my_conf.tar.gz',
+                'destPath' => '',
+                'extract' => true,
+                'cache' => false,
+                'executable' => false
+            ]
+        ];
+        $jobEntity = new ChronosJobEntity([
+            'name' => 'jobname',
+            'fetch' => $fetch
+        ]);
 
         $simpleArrayCopy = $jobEntity->getSimpleArrayCopy();
 
-        $this->assertEquals(json_encode($uris), $simpleArrayCopy['uris']);
+        $this->assertEquals(json_encode($fetch), $simpleArrayCopy['fetch']);
     }
 
     public function testGetSimpleArrayCopyWithEnvironmentVariables()
@@ -164,5 +175,21 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
         $jobEntity = new ChronosJobEntity(['name' => 'jobname', 'schedule' => 'R/2015-07-07T01:00:00Z/P1D', 'parents' => ['parentjob']]);
         $this->assertFalse($jobEntity->isDependencyJob());
         $this->assertFalse($jobEntity->isSchedulingJob());
+    }
+
+    public function testFetchersInJob()
+    {
+        $jobEntity = new ChronosJobEntity([
+            'name' => 'jobname',
+            'fetch' => [
+                ['uri' => 'file:///etc/my_conf.tar.gz', 'extract' => true]
+            ]
+        ]);
+
+        $this->assertEquals(
+            1,
+            count($jobEntity->fetch)
+        );
+        $this->assertTrue($jobEntity->fetch[0]->extract);
     }
 }

@@ -23,6 +23,11 @@ class Container
      */
     public $docker = null;
 
+    /**
+     * @var DockerPortMapping[]
+     */
+    public $portMappings = [];
+
 
     /**
      * @var ContainerVolume[]
@@ -35,16 +40,15 @@ class Container
      */
     public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($data, $this);
 
-        if (isset($data['docker'])) {
-            $this->docker = new Docker((array) $data['docker']);
-        }
-
-        if (isset($data['volumes'])) {
-            foreach ($data['volumes'] as $volume) {
-                $this->volumes[] = new ContainerVolume((array) $volume);
-            }
-        }
+        MarathonEntityUtils::setAllPossibleProperties(
+            $data,
+            $this,
+            array(
+                'portMappings' => MarathonEntityUtils::convArrayOfClass(DockerPortMapping::class),
+                'docker' => MarathonEntityUtils::convClass(Docker::class),
+                'volumes' => MarathonEntityUtils::convArrayOfClass(ContainerVolume::class)
+            )
+        );
     }
 }

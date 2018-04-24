@@ -11,8 +11,10 @@ namespace Chapi\Entity\Marathon;
 
 use Chapi\Entity\JobEntityInterface;
 use Chapi\Entity\Marathon\AppEntity\Container;
+use Chapi\Entity\Marathon\AppEntity\Fetch;
 use Chapi\Entity\Marathon\AppEntity\HealthCheck;
 use Chapi\Entity\Marathon\AppEntity\IpAddress;
+use Chapi\Entity\Marathon\AppEntity\Network;
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
 
@@ -44,6 +46,11 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $container = null;
 
+    /**
+     * @var Network[]
+     */
+    public $networks = [];
+
     public $env = null;
 
     /**
@@ -51,12 +58,16 @@ class MarathonAppEntity implements JobEntityInterface
      */
     public $constraints = [];
 
-
     public $acceptedResourceRoles = null;
 
     public $labels = null;
 
     public $uris = [];
+
+    /**
+     * @var Fetch[]
+     */
+    public $fetch = [];
 
     public $dependencies = [];
 
@@ -94,55 +105,36 @@ class MarathonAppEntity implements JobEntityInterface
         // make sure data is array
         $dataArray = (array) $data;
 
-        MarathonEntityUtils::setAllPossibleProperties($dataArray, $this);
+        MarathonEntityUtils::setAllPossibleProperties(
+            $dataArray,
+            $this,
+            array(
+                'portDefinitions' => MarathonEntityUtils::convArrayOfClass(PortDefinition::class),
+                'container' => MarathonEntityUtils::convClass(Container::class),
+                'networks' => MarathonEntityUtils::convArrayOfClass(Network::class),
+                'fetch' => MarathonEntityUtils::convArrayOfClass(Fetch::class),
+                'healthChecks' => MarathonEntityUtils::convArrayOfClass(HealthCheck::class),
+                'upgradeStrategy' => MarathonEntityUtils::convClass(UpgradeStrategy::class),
+                'ipAddress' => MarathonEntityUtils::convClass(IpAddress::class),
+                'env' => MarathonEntityUtils::convSortedObject(),
+                'labels' => MarathonEntityUtils::convSortedObject(),
 
-        if (isset($dataArray['portDefinitions'])) {
-            foreach ($dataArray['portDefinitions'] as $portDefinition) {
-                $this->portDefinitions[] = new PortDefinition((array) $portDefinition);
-            }
-        }
+                # don't skip assigning these just because they are arrays or objects in $dataArray
+                'constraints' => MarathonEntityUtils::noConv(),
+                'args' => MarathonEntityUtils::noConv(),
+                'uris' => MarathonEntityUtils::noConv(),
+                'acceptedResourceRoles' => MarathonEntityUtils::noConv(),
+                'dependencies' => MarathonEntityUtils::noConv()
+            )
+        );
 
-        if (isset($dataArray['container'])) {
-            $this->container = new Container((array) $dataArray['container']);
-        }
-
-        if (isset($dataArray['healthChecks'])) {
-            foreach ($dataArray['healthChecks'] as $healthCheck) {
-                $this->healthChecks[] = new HealthCheck((array) $healthCheck);
-            }
-        }
-
-        if (isset($dataArray['upgradeStrategy'])) {
-            $this->upgradeStrategy = new UpgradeStrategy((array) $dataArray['upgradeStrategy']);
-        } else {
+        if (!isset($dataArray['upgradeStrategy'])) {
             $this->upgradeStrategy = new UpgradeStrategy();
         }
 
-        if (isset($dataArray['ipAddress'])) {
-            $this->ipAddress = new IpAddress((array) $dataArray['ipAddress']);
+        if (!isset($dataArray['labels'])) {
+            $this->upgradeStrategy = (object) [];
         }
-
-        if (isset($dataArray['env'])) {
-            $env = (array) $dataArray['env'];
-
-            // sorting this makes the diff output a whole lot more readable
-            ksort($env);
-
-            $this->env = (object) $env;
-        } else {
-            $this->env = (object) [];
-        }
-
-        if (isset($dataArray['labels'])) {
-            $this->labels = (object) $dataArray['labels'];
-        } else {
-            $this->labels = (object) [];
-        }
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'constraints');
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'args');
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'uris');
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'acceptedResourceRoles');
-        MarathonEntityUtils::setPropertyIfExist($dataArray, $this, 'dependencies');
     }
 
     /**
@@ -152,13 +144,23 @@ class MarathonAppEntity implements JobEntityInterface
     public function jsonSerialize()
     {
         $return = (array) $this;
+
+        // delete empty fields
         $return = array_filter(
             $return,
-            function ($value, $key) {
+            function($value) {
                 return !is_null($value) || empty($value);
-            },
-            ARRAY_FILTER_USE_BOTH
+            }
         );
+
+        if (isset($return['networks'])
+            && count($return['networks']) == 1 // you can only have one bridge or host network
+            && $return['networks'][0]->mode != 'container')
+        {
+            $return['networks'][0] = (array) $return['networks'][0];
+            unset($return['networks'][0]['name']); // only "container" networks can have names
+        }
+
         return $return;
     }
 

@@ -18,13 +18,6 @@ class Docker
 
     public $image = '';
 
-    public $network = '';
-
-    /**
-     * @var DockerPortMapping[]
-     */
-    public $portMappings = [];
-
 
     public $privileged = false;
 
@@ -37,18 +30,12 @@ class Docker
 
     public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($data, $this);
-
-        if (isset($data['portMappings'])) {
-            foreach ($data['portMappings'] as $portMapping) {
-                $this->portMappings[] = new DockerPortMapping((array) $portMapping);
-            }
-        }
-
-        if (isset($data['parameters'])) {
-            foreach ($data['parameters'] as $parameter) {
-                $this->parameters[] = new DockerParameters((array) $parameter);
-            }
-        }
+        MarathonEntityUtils::setAllPossibleProperties(
+            $data,
+            $this,
+            array(
+                'parameters' => MarathonEntityUtils::convArrayOfClass(DockerParameters::class)
+            )
+        );
     }
 }

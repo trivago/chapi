@@ -53,7 +53,7 @@ class HealthCheckTest extends \PHPUnit_Framework_TestCase
 
     public function testHealthCheckGivesProperJson()
     {
-        $expectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"port":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"command":{"value":"someCommand"}}';
+        $expectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"port":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"delaySeconds":15,"command":{"value":"someCommand"}}';
 
         $data = [
             "protocol" => "HTTP",
@@ -76,7 +76,7 @@ class HealthCheckTest extends \PHPUnit_Framework_TestCase
 
     public function testHealthCheckHasPortUnsetWithNullValue()
     {
-        $expectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"command":{"value":"someCommand"}}';
+        $expectedData = '{"protocol":"HTTP","path":"\/","gracePeriodSeconds":10,"intervalSeconds":10,"portIndex":0,"timeoutSeconds":20,"maxConsecutiveFailures":3,"delaySeconds":15,"command":{"value":"someCommand"}}';
 
         $data = [
             "protocol" => "HTTP",

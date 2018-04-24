@@ -10,6 +10,7 @@
 namespace Chapi\Entity\Chronos;
 
 use Chapi\Entity\Chronos\JobEntity\ContainerEntity;
+use Chapi\Entity\Chronos\JobEntity\FetchEntity;
 use Chapi\Entity\JobEntityInterface;
 
 class ChronosJobEntity implements JobEntityInterface
@@ -64,7 +65,8 @@ class ChronosJobEntity implements JobEntityInterface
 
     public $dataProcessingJobType = false;
 
-    public $uris = [];
+    /** @var FetchEntity[] */
+    public $fetch = [];
 
     public $environmentVariables = [];
 
@@ -91,9 +93,17 @@ class ChronosJobEntity implements JobEntityInterface
                 if (property_exists($this, $key)) {
                     if ($key == 'container') {
                         $this->{$key} = new ContainerEntity($value);
+                    } else if ($key == 'fetch') {
+                        foreach ($value as $fetch) {
+                            $this->{$key}[] = new FetchEntity($fetch);
+                        }
                     } else {
                         $this->{$key} = $value;
                     }
+                } else {
+                    /* We are ignoring fields that are unknown to us. This is bad and can lead to unexpected differences
+                     * when comparing the *.json on disk with the job definition from the Chronos API.
+                     */
                 }
             }
         } else {
@@ -148,6 +158,18 @@ class ChronosJobEntity implements JobEntityInterface
 
         if (empty($this->container)) {
             unset($return['container']);
+        } else {
+            $return['container'] = (array) $this->container;
+
+            $return['container']['volumes'] = [];
+            foreach ($this->container->volumes as $volume) {
+                $return['container']['volumes'][] = (array) $volume;
+            }
+        }
+
+        $return['fetch'] = [];
+        foreach ($this->fetch as $fetch) {
+            $return['fetch'][] = (array) $fetch;
         }
 
         unset($return['successCount']);

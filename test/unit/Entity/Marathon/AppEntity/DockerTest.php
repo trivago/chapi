@@ -10,6 +10,7 @@ namespace unit\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\Docker;
 use Chapi\Entity\Marathon\AppEntity\DockerParameters;
+use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 
 class DockerTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,11 +18,7 @@ class DockerTest extends \PHPUnit_Framework_TestCase
     {
         $data = [
             "image" => "some/image",
-            "network" => "BRIDGE",
             "privileged" => true,
-            "portMappings" => [
-                ["hostPort" => "12011"]
-            ],
             "parameters" => [
                 ["key" => "keyname", "value" => "somevalue"]
             ]
@@ -30,16 +27,14 @@ class DockerTest extends \PHPUnit_Framework_TestCase
         $docker = new Docker($data);
 
         $this->assertEquals("some/image", $docker->image);
-        $this->assertEquals("BRIDGE", $docker->network);
         $this->assertEquals(true, $docker->privileged);
 
-        $this->assertTrue(isset($docker->portMappings));
         $this->assertTrue(isset($docker->parameters));
     }
 
     public function testAllKeysAreCorrect()
     {
-        $keys = ["image", "network", "privileged", "portMappings", "parameters"];
+        $keys = ["image", "privileged", "parameters"];
 
         $docker = new Docker();
 

@@ -38,6 +38,8 @@ class DiffCommand extends AbstractCommand
      */
     protected function process()
     {
+        $this->output->writeln("<info>+++ local</info>");
+        $this->output->writeln("<fg=red>--- remote</>");
         /** @var JobComparisonInterface  $jobComparisonBusinessCase */
         $jobComparisonBusinessCase = $this->getContainer()->get(JobComparisonInterface::DIC_NAME);
         $jobName = $this->input->getArgument('jobName');
@@ -50,7 +52,7 @@ class DiffCommand extends AbstractCommand
             $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
             if (!empty($localJobUpdates)) {
                 foreach ($localJobUpdates as $jobName) {
-                    $changed = $changed || $this->printJobDiff($jobName);
+                    $changed = $this->printJobDiff($jobName) || $changed;
                 }
             }
         }
@@ -79,7 +81,7 @@ class DiffCommand extends AbstractCommand
         $changed = false;
 
         foreach ($jobs as $jobName) {
-            $changed = $changed || $this->printSingleJobDiff($jobComparisonBusinessCase, $jobName);
+            $changed = $this->printSingleJobDiff($jobComparisonBusinessCase, $jobName) || $changed;
         }
 
         return $changed;

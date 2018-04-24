@@ -52,4 +52,12 @@ class MarathonAppEntityTest extends \PHPUnit_Framework_TestCase
             $this->assertObjectHasAttribute($property, $app);
         }
     }
+
+    public function testEnvIsSorted()
+    {
+        $app = new MarathonAppEntity(array('env' => array('b' => 'second', 'a' => 'first')));
+
+        $this->assertEquals(get_object_vars($app->env), array('b' => 'second', 'a' => 'first')); # equality
+        $this->assertEquals(array_keys(get_object_vars($app->env)), array('a', 'b')); # order
+    }
 }

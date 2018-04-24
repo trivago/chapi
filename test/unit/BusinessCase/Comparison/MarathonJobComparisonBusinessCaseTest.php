@@ -221,12 +221,12 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $localEntity = $this->getValidMarathonAppEntity('/main/id1');
         $localEntity->container = new Container();
         $localEntity->container->docker = new Docker();
-        $localEntity->container->docker->portMappings[] = new DockerPortMapping(["servicePort" => 0]);
+        $localEntity->container->portMappings[] = new DockerPortMapping(["servicePort" => 0]);
 
         $remoteEntity = $this->getValidMarathonAppEntity('/main/id1');
         $remoteEntity->container = new Container();
         $remoteEntity->container->docker = new Docker();
-        $remoteEntity->container->docker->portMappings[] = new DockerPortMapping(["servicePort" => 443]);
+        $remoteEntity->container->portMappings[] = new DockerPortMapping(["servicePort" => 443]);
         $remoteEntity->portDefinitions = new PortDefinition(["port" => 8080]);
 
         $this->localRepository

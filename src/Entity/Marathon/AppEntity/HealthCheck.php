@@ -32,6 +32,8 @@ class HealthCheck implements \JsonSerializable
 
     public $maxConsecutiveFailures = 3;
 
+    public $delaySeconds = 15;
+
     /**
      * @var HealthCheckCommand
      */
@@ -39,22 +41,28 @@ class HealthCheck implements \JsonSerializable
 
     public function __construct($data = [])
     {
-        MarathonEntityUtils::setAllPossibleProperties($data, $this);
-
-        if (isset($data['command'])) {
-            $this->command = new HealthCheckCommand((array) $data['command']);
-        }
+        MarathonEntityUtils::setAllPossibleProperties(
+            $data,
+            $this,
+            ['command' => MarathonEntityUtils::convClass(HealthCheckCommand::class)]
+        );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function jsonSerialize()
     {
         $return = (array) $this;
-        if (is_null($this->port)) {
-            unset($return["port"]);
+
+        // remove HTTP and TCP specific values for COMMAND healthChecks
+        if ($return['protocol'] == 'COMMAND') {
+            unset($return['path']);
+            unset($return['portIndex']);
+            unset($return['port']);
         }
+
+        if (is_null($this->port)) {
+            unset($return['port']);
+        }
+
         return $return;
     }
 }

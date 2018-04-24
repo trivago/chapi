@@ -20,6 +20,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             "docker" => [
                 "someDockerProperties" => "dockerValue"
             ],
+            "portMappings" => [
+                ["hostPort" => "12011"]
+            ],
             "volumes" => [
                 "volumeValues" => "volumeValue"
             ]
@@ -30,6 +33,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("DOCKER", $container->type);
         $this->assertTrue(isset($container->docker));
         $this->assertTrue(isset($container->volumes));
+        $this->assertTrue(isset($container->portMappings));
     }
 
     public function testAllKeysAreCorrect()
