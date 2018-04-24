@@ -26,7 +26,7 @@ class PortDefinition implements \JsonSerializable
         MarathonEntityUtils::setAllPossibleProperties(
             (array) $data,
             $this,
-            ['labels' => MarathonEntityUtils::convObject()]
+            ['labels' => MarathonEntityUtils::convertToObject()]
         );
 
         if (!isset($data['labels'])) {

@@ -44,7 +44,7 @@ class HealthCheck implements \JsonSerializable
         MarathonEntityUtils::setAllPossibleProperties(
             $data,
             $this,
-            ['command' => MarathonEntityUtils::convClass(HealthCheckCommand::class)]
+            ['command' => MarathonEntityUtils::convertToClass(HealthCheckCommand::class)]
         );
     }
 

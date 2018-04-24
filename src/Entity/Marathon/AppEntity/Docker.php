@@ -34,7 +34,7 @@ class Docker
             $data,
             $this,
             array(
-                'parameters' => MarathonEntityUtils::convArrayOfClass(DockerParameters::class)
+                'parameters' => MarathonEntityUtils::convertToArrayOfClass(DockerParameters::class)
             )
         );
     }

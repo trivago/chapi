@@ -48,19 +48,19 @@ class MarathonEntityUtils
     /**
      * This is useful if you don't want an array or object to be skipped by setAllPossibleProperties().
      */
-    public static function noConv() {
+    public static function dontConvert() {
         return function($data) {
             return $data;
         };
     }
 
-    public static function convArray() {
+    public static function convertToArray() {
         return function($data) {
             return (array) $data;
         };
     }
 
-    public static function convObject() {
+    public static function convertToObject() {
         return function($data) {
             return (object) $data;
         };
@@ -69,7 +69,7 @@ class MarathonEntityUtils
     /**
      * This is usefull for shorter and stable diff output.
      */
-    public static function convSortedObject() {
+    public static function convertToSortedObject() {
         return function($data) {
             $a = (array) $data; // ksort is inplace, so we need a copy
             ksort($a);
@@ -77,13 +77,13 @@ class MarathonEntityUtils
         };
     }
 
-    public static function convClass($class) {
+    public static function convertToClass($class) {
         return function($data) use ($class) {
             return new $class((array) $data);
         };
     }
 
-    public static function convArrayOfClass($class) {
+    public static function convertToArrayOfClass($class) {
         return function($data) use ($class) {
             $array = [];
             if ($data !== null) {

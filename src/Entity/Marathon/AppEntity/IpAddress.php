@@ -26,8 +26,8 @@ class IpAddress
             $data,
             $this,
             [
-                'groups' => MarathonEntityUtils::convArray(),
-                'labels' => MarathonEntityUtils::convObject()
+                'groups' => MarathonEntityUtils::convertToArray(),
+                'labels' => MarathonEntityUtils::convertToObject()
             ]
         );
     }

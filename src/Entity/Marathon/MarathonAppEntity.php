@@ -109,22 +109,22 @@ class MarathonAppEntity implements JobEntityInterface
             $dataArray,
             $this,
             array(
-                'portDefinitions' => MarathonEntityUtils::convArrayOfClass(PortDefinition::class),
-                'container' => MarathonEntityUtils::convClass(Container::class),
-                'networks' => MarathonEntityUtils::convArrayOfClass(Network::class),
-                'fetch' => MarathonEntityUtils::convArrayOfClass(Fetch::class),
-                'healthChecks' => MarathonEntityUtils::convArrayOfClass(HealthCheck::class),
-                'upgradeStrategy' => MarathonEntityUtils::convClass(UpgradeStrategy::class),
-                'ipAddress' => MarathonEntityUtils::convClass(IpAddress::class),
-                'env' => MarathonEntityUtils::convSortedObject(),
-                'labels' => MarathonEntityUtils::convSortedObject(),
+                'portDefinitions' => MarathonEntityUtils::convertToArrayOfClass(PortDefinition::class),
+                'container' => MarathonEntityUtils::convertToClass(Container::class),
+                'networks' => MarathonEntityUtils::convertToArrayOfClass(Network::class),
+                'fetch' => MarathonEntityUtils::convertToArrayOfClass(Fetch::class),
+                'healthChecks' => MarathonEntityUtils::convertToArrayOfClass(HealthCheck::class),
+                'upgradeStrategy' => MarathonEntityUtils::convertToClass(UpgradeStrategy::class),
+                'ipAddress' => MarathonEntityUtils::convertToClass(IpAddress::class),
+                'env' => MarathonEntityUtils::convertToSortedObject(),
+                'labels' => MarathonEntityUtils::convertToSortedObject(),
 
                 # don't skip assigning these just because they are arrays or objects in $dataArray
-                'constraints' => MarathonEntityUtils::noConv(),
-                'args' => MarathonEntityUtils::noConv(),
-                'uris' => MarathonEntityUtils::noConv(),
-                'acceptedResourceRoles' => MarathonEntityUtils::noConv(),
-                'dependencies' => MarathonEntityUtils::noConv()
+                'constraints' => MarathonEntityUtils::dontConvert(),
+                'args' => MarathonEntityUtils::dontConvert(),
+                'uris' => MarathonEntityUtils::dontConvert(),
+                'acceptedResourceRoles' => MarathonEntityUtils::dontConvert(),
+                'dependencies' => MarathonEntityUtils::dontConvert()
             )
         );
 

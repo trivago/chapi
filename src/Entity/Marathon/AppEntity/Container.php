@@ -45,9 +45,9 @@ class Container
             $data,
             $this,
             array(
-                'portMappings' => MarathonEntityUtils::convArrayOfClass(DockerPortMapping::class),
-                'docker' => MarathonEntityUtils::convClass(Docker::class),
-                'volumes' => MarathonEntityUtils::convArrayOfClass(ContainerVolume::class)
+                'portMappings' => MarathonEntityUtils::convertToArrayOfClass(DockerPortMapping::class),
+                'docker' => MarathonEntityUtils::convertToClass(Docker::class),
+                'volumes' => MarathonEntityUtils::convertToArrayOfClass(ContainerVolume::class)
             )
         );
     }
