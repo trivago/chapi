@@ -26,6 +26,7 @@
 # PHPUnit
 /app/phpunit.xml
 /phpunit.xml
+test/.phpunit.result.cache
 
 # Build data
 /build/
