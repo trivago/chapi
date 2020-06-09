@@ -48,40 +48,6 @@ class BridgeMarathonTest extends \PHPUnit\Framework\TestCase
         $this->logger = $this->prophesize('Psr\Log\LoggerInterface');
     }
 
-    public function testGetJobsSuccess()
-    {
-        $this->cache
-            ->get(Argument::exact(BridgeMarathon::CACHE_KEY_APP_LIST))
-            ->willReturn([]);
-
-        $this->cache
-            ->set(BridgeMarathon::CACHE_KEY_APP_LIST, Argument::exact($this->listingJobs["apps"]), BridgeMarathon::CACHE_TIME_JOB_LIST);
-
-        $marathonBridge = new BridgeMarathon(
-            $this->apiClient->reveal(),
-            $this->cache->reveal(),
-            $this->jobValidatorService->reveal(),
-            $this->logger->reveal()
-        );
-
-        $apps = $marathonBridge->getJobs();
-
-        foreach ($apps as $gotApp) {
-            $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', 'Entity expected to be fullfill of JobEntityInterface interface');
-            $this->assertInstanceOf('Chapi\Entity\Marathon\MarathonAppEntity', 'Entity expected to be instance of MarathonAppEntity');
-
-            $found = false;
-            foreach ($this->listingJobs["apps"] as $listedApp) {
-                if ($gotApp->getKey() == $listedApp["id"]) {
-                    $found = true;
-                    break;
-                }
-            }
-            $this->assertTrue($found, 'Expected job not found');
-        }
-    }
-
-
     public function testAddJobSuccess()
     {
         $app = $this->getValidMarathonAppEntity("/mygroup/myapp");
