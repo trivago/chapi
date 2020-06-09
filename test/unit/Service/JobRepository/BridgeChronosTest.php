@@ -87,10 +87,7 @@ class BridgeChronosTest extends \PHPUnit\Framework\TestCase
 
         $jobs = $jobRepositoryChronos->getJobs();
 
-        $this->assertInternalType(
-            'array',
-            $jobs
-        );
+        $this->assertIsArray($jobs);
 
         $this->assertInstanceOf(
             'Chapi\Entity\Chronos\ChronosJobEntity',
@@ -135,10 +132,7 @@ class BridgeChronosTest extends \PHPUnit\Framework\TestCase
 
         $jobs = $jobRepositoryChronos->getJobs();
 
-        $this->assertInternalType(
-            'array',
-            $jobs
-        );
+        $this->assertIsArray($jobs);
 
         $this->assertInstanceOf(
             'Chapi\Entity\Chronos\ChronosJobEntity',

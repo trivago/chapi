@@ -77,7 +77,7 @@ class HttpGuzzleResponseTest extends \PHPUnit\Framework\TestCase
         $httpGuzzleResponse = new HttpGuzzleResponse($this->responseInterface->reveal());
 
         $result = $httpGuzzleResponse->json();
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEquals($dummyBody, $result);
     }
 }
