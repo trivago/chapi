@@ -503,11 +503,10 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit\Framework\TestCase
         $this->logger->notice(Argument::type('string'))->shouldBeCalled();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testStoreJobsToLocalRepositoryFailureBecauseJobExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $jobEntityA1 = $this->getValidScheduledJobEntity('JobA');
         $jobEntityA2 = clone $jobEntityA1;
         $jobEntityA2->disabled = true;

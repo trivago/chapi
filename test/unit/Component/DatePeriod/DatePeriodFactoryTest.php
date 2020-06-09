@@ -33,11 +33,10 @@ class DatePeriodFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('PT1M', $iso8601Entity->interval);
     }
 
-    /**
-     * @expectedException \Chapi\Exception\DatePeriodException
-     */
     public function testParseIso8601StringFailure()
     {
+        $this->expectException(\Chapi\Exception\DatePeriodException::class);
+
         $datePeriodFactory = new DatePeriodFactory();
 
         $this->assertNull(
@@ -78,11 +77,10 @@ class DatePeriodFactoryTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Chapi\Exception\DatePeriodException
-     */
     public function testCreateDatePeriodFailure()
     {
+        $this->expectException(\Chapi\Exception\DatePeriodException::class);
+
         $datePeriodFactory = new DatePeriodFactory();
 
         $this->assertNull(

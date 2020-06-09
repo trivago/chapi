@@ -48,11 +48,10 @@ class JobUtilsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($jobs, JobUtils::getJobNames($input->reveal(), $command->reveal()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetJobNamesFailure()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $command = $this->prophesize('Symfony\Component\Console\Command\Command');
         $command->getName()->willReturn('CommandName')->shouldBeCalledTimes(2);
 

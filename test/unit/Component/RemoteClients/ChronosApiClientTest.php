@@ -137,11 +137,10 @@ class ChronosApiClientTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($apiClient->addingJob($testJobEntity));
     }
 
-    /**
-     * @expectedException \Chapi\Exception\ApiClientException
-     */
     public function testAddingJobFailure()
     {
+        $this->expectException(\Chapi\Exception\ApiClientException::class);
+
         $testJobEntity = new ChronosJobEntity();
 
         $this->httpClient->postJsonData()
@@ -224,11 +223,10 @@ class ChronosApiClientTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($apiClient->updatingJob($testJobEntity));
     }
 
-    /**
-     * @expectedException \Chapi\Exception\ApiClientException
-     */
     public function testUpdatingJobFailure()
     {
+        $this->expectException(\Chapi\Exception\ApiClientException::class);
+
         $testJobEntity = new ChronosJobEntity();
 
         $this->httpClient->postJsonData()

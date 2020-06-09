@@ -53,11 +53,10 @@ class ChapiConfigLoaderTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($chapiConfigLoader->loadProfileParameters());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testLoadProfileParametersFailure()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->config->getProfileConfig()->willReturn([
             'parameters' => 'not_valid'
         ]);

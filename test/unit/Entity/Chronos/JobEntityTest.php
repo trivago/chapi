@@ -21,11 +21,10 @@ class JobEntityTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(property_exists($jobEntity, 'unknownProperty'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInitFailure()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $jobEntity = new ChronosJobEntity('string');
     }
 
@@ -56,11 +55,10 @@ class JobEntityTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(property_exists($jobEntity->container, 'unknownProperty'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInitFailureForContainer()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $data = [
             'name' => 'jobname',
             'container' => 'foo'

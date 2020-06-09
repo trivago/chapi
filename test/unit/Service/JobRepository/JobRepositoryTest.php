@@ -334,11 +334,10 @@ class JobRepositoryTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testRemoveJobFailureException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->repositoryBridge
             ->removeJob(Argument::any())
             ->shouldNotBeCalled()

@@ -353,12 +353,10 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, count($remainingApps), 'Expected 1 app remaining after removal, found ' . count($remainingApps));
     }
 
-
-    /**
-     * @expectedException \Chapi\Exception\JobLoadException
-     */
     public function testJobLoadException()
     {
+        $this->expectException(\Chapi\Exception\JobLoadException::class);
+
         $structure = array(
             'directory' => array(
                 'jobA.json' => 'no-json-string',
@@ -378,11 +376,10 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($jobs);
     }
 
-    /**
-     * @expectedException \Chapi\Exception\JobLoadException
-     */
     public function testJobLoadExceptionForDuplicateJobNames()
     {
+        $this->expectException(\Chapi\Exception\JobLoadException::class);
+
         $structure = array(
             'directory' => array(
                 'jobA.json' => json_encode($this->getValidScheduledJobEntity('JobA')),

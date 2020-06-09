@@ -255,11 +255,10 @@ class MarathonStoreJobBusinessCaseTest extends \PHPUnit\Framework\TestCase
         $marathonStore->storeJobsToLocalRepository([], true);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testStoreJobsToLocalRepositoryWithUpdateFailureWithoutForce()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $remoteJobs = $this->createAppCollection(["/main/id1", "/main/id2"]);
         $localJobs = $this->createAppCollection(["/main/id1", "/main/id2"]);
 

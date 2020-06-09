@@ -73,11 +73,10 @@ class HttpGuzzlClientTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $response);
     }
 
-    /**
-     * @expectedException \Chapi\Exception\HttpConnectionException
-     */
     public function testGetFailure()
     {
+        $this->expectException(\Chapi\Exception\HttpConnectionException::class);
+
         $url = '/url/for/test';
 
         $authEntity = new AuthEntity("", "");
