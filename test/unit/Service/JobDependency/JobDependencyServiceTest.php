@@ -14,7 +14,7 @@ namespace unit\Service\JobDependency;
 use Chapi\Service\JobDependencies\JobDependencyService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
-class JobDependencyServiceTest extends \PHPUnit_Framework_TestCase
+class JobDependencyServiceTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 

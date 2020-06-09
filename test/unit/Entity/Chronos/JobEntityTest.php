@@ -11,7 +11,7 @@ namespace unit\Entity\Chronos;
 
 use Chapi\Entity\Chronos\ChronosJobEntity;
 
-class JobEntityTest extends \PHPUnit_Framework_TestCase
+class JobEntityTest extends \PHPUnit\Framework\TestCase
 {
     public function testInitSuccess()
     {
@@ -67,7 +67,7 @@ class JobEntityTest extends \PHPUnit_Framework_TestCase
         ];
         $jobEntity = new ChronosJobEntity($data);
     }
-    
+
     public function testGetSimpleArrayCopy()
     {
         $parents = ['jobA', 'jobB'];

@@ -11,7 +11,7 @@ namespace unit\Component\DatePeriod;
 
 use Chapi\Component\DatePeriod\DatePeriodFactory;
 
-class DatePeriodFactoryTest extends \PHPUnit_Framework_TestCase
+class DatePeriodFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testParseIso8601StringSuccess()
     {

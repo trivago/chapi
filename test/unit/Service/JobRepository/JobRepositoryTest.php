@@ -15,7 +15,7 @@ use Chapi\Service\JobRepository\JobRepository;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class JobRepositoryTest extends \PHPUnit_Framework_TestCase
+class JobRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 

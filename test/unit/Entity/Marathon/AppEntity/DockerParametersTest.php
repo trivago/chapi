@@ -10,7 +10,7 @@ namespace unit\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\DockerParameters;
 
-class DockerParametersTest extends \PHPUnit_Framework_TestCase
+class DockerParametersTest extends \PHPUnit\Framework\TestCase
 {
     public function testAllKeysAreCorrect()
     {

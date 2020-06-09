@@ -15,7 +15,7 @@ use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Service\Chronos\JobStatsService;
 use Prophecy\Argument;
 
-class JobStatsServiceTest extends \PHPUnit_Framework_TestCase
+class JobStatsServiceTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $apiClient;

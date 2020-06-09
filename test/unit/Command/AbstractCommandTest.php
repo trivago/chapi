@@ -14,7 +14,7 @@ use ChapiTest\src\TestTraits\CommandTestTrait;
 use org\bovigo\vfs\vfsStream;
 use Prophecy\Argument;
 
-class AbstractCommandTest extends \PHPUnit_Framework_TestCase
+class AbstractCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
 

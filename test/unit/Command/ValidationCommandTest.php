@@ -17,7 +17,7 @@ use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class ValidationCommandTest extends \PHPUnit_Framework_TestCase
+class ValidationCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
     use JobEntityTrait;

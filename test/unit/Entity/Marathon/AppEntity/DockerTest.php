@@ -12,7 +12,7 @@ use Chapi\Entity\Marathon\AppEntity\Docker;
 use Chapi\Entity\Marathon\AppEntity\DockerParameters;
 use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 
-class DockerTest extends \PHPUnit_Framework_TestCase
+class DockerTest extends \PHPUnit\Framework\TestCase
 {
     public function testDockerSetProperly()
     {

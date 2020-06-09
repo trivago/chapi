@@ -14,7 +14,7 @@ use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Exception\HttpConnectionException;
 use Prophecy\Argument;
 
-class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
+class ChronosApiClientTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $httpClient;

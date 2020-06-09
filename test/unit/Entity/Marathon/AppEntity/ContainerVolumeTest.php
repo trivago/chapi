@@ -10,7 +10,7 @@ namespace unit\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\ContainerVolume;
 
-class ContainerVolumeTest extends \PHPUnit_Framework_TestCase
+class ContainerVolumeTest extends \PHPUnit\Framework\TestCase
 {
     public function testAllKeysAreCorrect()
     {

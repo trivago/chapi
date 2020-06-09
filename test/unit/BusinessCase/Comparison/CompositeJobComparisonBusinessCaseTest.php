@@ -12,7 +12,7 @@ namespace ChapiTest\unit\BusinessCase\Comparison;
 use Chapi\BusinessCase\Comparison\CompositeJobComparisonBusinessCase;
 use Prophecy\Argument;
 
-class CompositeJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class CompositeJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */

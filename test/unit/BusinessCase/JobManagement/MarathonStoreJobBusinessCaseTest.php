@@ -15,7 +15,7 @@ use Exception;
 use InvalidArgumentException;
 use Prophecy\Argument;
 
-class MarathonStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class MarathonStoreJobBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
     use AppEntityTrait;
 

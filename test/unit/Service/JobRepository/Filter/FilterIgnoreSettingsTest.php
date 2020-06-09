@@ -13,7 +13,7 @@ use Chapi\Service\JobRepository\Filter\FilterIgnoreSettings;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
-class FilterIgnoreSettingsTest extends \PHPUnit_Framework_TestCase
+class FilterIgnoreSettingsTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
     use AppEntityTrait;

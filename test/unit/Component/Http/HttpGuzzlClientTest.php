@@ -14,7 +14,7 @@ use Chapi\Component\Http\HttpGuzzleClient;
 use Chapi\Entity\Http\AuthEntity;
 use Prophecy\Argument;
 
-class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
+class HttpGuzzlClientTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $guzzleClient;

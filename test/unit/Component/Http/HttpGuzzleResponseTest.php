@@ -10,7 +10,7 @@ namespace unit\Component\Http;
 
 use Chapi\Component\Http\HttpGuzzleResponse;
 
-class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
+class HttpGuzzleResponseTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $responseInterface;

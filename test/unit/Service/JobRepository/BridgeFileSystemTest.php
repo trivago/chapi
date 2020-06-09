@@ -17,7 +17,7 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStreamWrapper;
 
-class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
+class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
     use AppEntityTrait;

@@ -14,7 +14,7 @@ use Chapi\Exception\HttpConnectionException;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
 
-class MarathonApiClientTest extends \PHPUnit_Framework_TestCase
+class MarathonApiClientTest extends \PHPUnit\Framework\TestCase
 {
     use AppEntityTrait;
     /** @var \Prophecy\Prophecy\ObjectProphecy */

@@ -13,7 +13,7 @@ namespace unit\Command;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use Prophecy\Argument;
 
-class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
+class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
 

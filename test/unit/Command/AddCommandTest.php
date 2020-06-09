@@ -15,7 +15,7 @@ use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use Prophecy\Argument;
 
-class AddCommandTest extends \PHPUnit_Framework_TestCase
+class AddCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
 

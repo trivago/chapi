@@ -13,7 +13,7 @@ use Chapi\Service\JobRepository\BridgeMarathon;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
 
-class BridgeMarathonTest extends \PHPUnit_Framework_TestCase
+class BridgeMarathonTest extends \PHPUnit\Framework\TestCase
 {
     use AppEntityTrait;
 

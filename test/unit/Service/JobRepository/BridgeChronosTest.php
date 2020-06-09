@@ -15,7 +15,7 @@ use Chapi\Service\JobRepository\BridgeChronos;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class BridgeChronosTest extends \PHPUnit_Framework_TestCase
+class BridgeChronosTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 

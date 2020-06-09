@@ -11,7 +11,7 @@ namespace unit\Component\Config;
 
 use Chapi\Component\DependencyInjection\Loader\ChapiConfigLoader;
 
-class ChapiConfigLoaderTest extends \PHPUnit_Framework_TestCase
+class ChapiConfigLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $container;

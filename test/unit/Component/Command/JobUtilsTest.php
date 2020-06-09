@@ -14,7 +14,7 @@ use Chapi\Component\Command\JobUtilsInterface;
 use Prophecy\Argument;
 use Symfony\Component\Console\Input\InputArgument;
 
-class JobUtilsTest extends \PHPUnit_Framework_TestCase
+class JobUtilsTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testConfigureJobNamesArgument()

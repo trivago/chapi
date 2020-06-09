@@ -15,7 +15,7 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 
-class ChapiConfigTest extends \PHPUnit_Framework_TestCase
+class ChapiConfigTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  vfsStreamDirectory */
     private $vfsRoot;

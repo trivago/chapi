@@ -20,7 +20,7 @@ use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
 use Symfony\Component\Console\Tests\Input\ArgvInputTest;
 
-class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class MarathonJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
     use AppEntityTrait;
 

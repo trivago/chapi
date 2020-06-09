@@ -17,7 +17,7 @@ use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class ChronosStoreJobBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 
