@@ -23,7 +23,7 @@ class MarathonApiClientTest extends \PHPUnit\Framework\TestCase
     /**  @var \Prophecy\Prophecy\ObjectProphecy */
     private $httpResponse;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->httpClient = $this->prophesize('Chapi\Component\Http\HttpClientInterface');
         $this->httpResponse = $this->prophesize('Chapi\Component\Http\HttpClientResponseInterface');

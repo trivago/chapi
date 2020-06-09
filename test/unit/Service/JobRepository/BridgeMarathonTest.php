@@ -32,7 +32,8 @@ class BridgeMarathonTest extends \PHPUnit\Framework\TestCase
     private $jsonApps = '{"apps":[{"id":"/bots/runner","cmd":"chmod +x run.sh && ./run.sh","args":null,"user":null,"env":{"APP_GROUP":"131441"},"instances":1,"cpus":0.5,"mem":128,"disk":30,"executor":"","constraints":[],"uris":["https://raw.githubusercontent.com/test/testrepo/master/run.sh"],"fetch":[{"uri":"https://raw.githubusercontent.com/test/testrepo/master/run.sh","extract":false,"executable":false,"cache":false}],"storeUrls":[],"ports":[10310],"portDefinitions":[{"port":10310,"protocol":"tcp","labels":{}}],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[{"path":"/health","protocol":"HTTP","portIndex":0,"gracePeriodSeconds":60,"intervalSeconds":10,"timeoutSeconds":10,"maxConsecutiveFailures":3,"ignoreHttp1xx":false}],"readinessChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1,"maximumOverCapacity":1},"labels":{"app_label":"operation"},"acceptedResourceRoles":null,"ipAddress":null,"version":"2016-08-02T08:15:37.666Z","residency":null,"versionInfo":{"lastScalingAt":"2016-08-02T08:15:37.666Z","lastConfigChangeAt":"2016-08-02T08:15:37.666Z"},"tasksStaged":0,"tasksRunning":1,"tasksHealthy":1,"tasksUnhealthy":0,"deployments":[]}]}';
 
     private $listingJobs;
-    public function setup()
+
+    protected function setUp(): void
     {
         $this->listingJobs = json_decode($this->jsonApps, true);
         $this->apiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');

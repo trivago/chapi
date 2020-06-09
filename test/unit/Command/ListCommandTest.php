@@ -28,7 +28,7 @@ class ListCommandTest extends \PHPUnit\Framework\TestCase
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
     private $jobRepositoryMarathon;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 

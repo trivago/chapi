@@ -21,7 +21,7 @@ class AbstractCommandTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $consoleHandler;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 

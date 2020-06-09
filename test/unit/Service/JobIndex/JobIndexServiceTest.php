@@ -19,7 +19,7 @@ class JobIndexServiceTest extends \PHPUnit\Framework\TestCase
     /** @var array  */
     private $testJobIndex = ['JobA' => 'JobA', 'JobB' => 'JobB'];
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->cacheInterface = $this->prophesize('Chapi\Component\Cache\CacheInterface');
 

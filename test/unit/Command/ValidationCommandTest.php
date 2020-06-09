@@ -28,7 +28,7 @@ class ValidationCommandTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $jobRepositoryLocal;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 

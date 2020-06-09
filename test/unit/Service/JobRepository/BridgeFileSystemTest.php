@@ -37,7 +37,7 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
     /** @var string  */
     private $tempTestDir = '';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->fileSystemService = $this->prophesize('Symfony\Component\Filesystem\Filesystem');
 
@@ -75,7 +75,7 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         rmdir($path);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->rmrf($this->tempTestDir);
     }

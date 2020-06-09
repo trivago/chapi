@@ -24,7 +24,7 @@ class FilterIgnoreSettingsTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $chapiConfig;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->logger = $this->prophesize('Psr\Log\LoggerInterface');
 

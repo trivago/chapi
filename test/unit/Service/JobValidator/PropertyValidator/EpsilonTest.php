@@ -22,16 +22,16 @@ class EpsilonTest extends AbstractValidatorTest
 
     use JobEntityTrait;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->datePeriodFactory = $this->prophesize('Chapi\Component\DatePeriod\DatePeriodFactoryInterface');
     }
-    
+
     public function testIsValidSuccess()
     {
         $jobEntity= $this->setUpEntityByInterval('PT30M');
         $propertyValidator = new Epsilon($this->datePeriodFactory->reveal());
-        
+
         $this->handleValidTestCase($propertyValidator, 'epsilon', 'PT5M', $jobEntity);
         $this->handleValidTestCase($propertyValidator, 'epsilon', 'PT15M', $jobEntity);
 
@@ -64,7 +64,7 @@ class EpsilonTest extends AbstractValidatorTest
     {
         $jobEntity= $this->setUpEntityByInterval('PT1H');
         $propertyValidator = new Epsilon($this->datePeriodFactory->reveal());
-        
+
         $this->handleErrorMessageMultiTestCase($propertyValidator, 'epsilon', 'PT15M', 'PT120M', $jobEntity);
     }
 

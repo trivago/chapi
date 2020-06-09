@@ -25,7 +25,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
      */
     private $tempTestDir = '';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 
@@ -41,7 +41,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
         ConfigureCommandDummy::$homeDirDummy = $this->tempTestDir;
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         if (file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig')) {
             unlink($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig');

@@ -25,7 +25,7 @@ class JobRepositoryTest extends \PHPUnit\Framework\TestCase
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
     private $entityFilter;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->repositoryBridge = $this->prophesize('Chapi\Service\JobRepository\BridgeInterface');
         $this->entityFilter = $this->prophesize('Chapi\Service\JobRepository\Filter\JobFilterInterface');

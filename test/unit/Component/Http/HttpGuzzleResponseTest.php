@@ -15,7 +15,7 @@ class HttpGuzzleResponseTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $responseInterface;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->responseInterface = $this->prophesize('Psr\Http\Message\ResponseInterface');
     }

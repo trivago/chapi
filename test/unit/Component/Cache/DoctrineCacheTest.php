@@ -21,7 +21,7 @@ class DoctrineCacheTest extends \PHPUnit\Framework\TestCase
     /**
      * set up default mocks
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->cache = $this->prophesize('Doctrine\Common\Cache\Cache');
     }

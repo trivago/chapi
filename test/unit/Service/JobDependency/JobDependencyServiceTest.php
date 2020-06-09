@@ -24,7 +24,7 @@ class JobDependencyServiceTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $jobRepositoryChronos;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->jobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->jobRepositoryLocal = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');

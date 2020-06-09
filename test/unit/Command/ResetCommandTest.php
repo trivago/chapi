@@ -20,7 +20,7 @@ class ResetCommandTest extends \PHPUnit\Framework\TestCase
 
     private $jobIndexServiceInterface;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->jobIndexServiceInterface = $this->prophesize('Chapi\Service\JobIndex\JobIndexServiceInterface');
     }

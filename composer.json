@@ -1,17 +1,22 @@
 {
   "name": "chapi/chapi-client",
   "description": "chronos console client - Manage your jobs like a git repository",
-  "keywords": ["chronos", "api", "mesos"],
+  "keywords": [
+    "chronos",
+    "api",
+    "mesos"
+  ],
   "type": "project",
-  "authors": [{
-    "name": "Marc Siebeneicher",
-    "email": "marc.siebeneicher@trivago.com",
-    "role": "developer"
-  }],
+  "authors": [
+    {
+      "name": "Marc Siebeneicher",
+      "email": "marc.siebeneicher@trivago.com",
+      "role": "developer"
+    }
+  ],
   "license": "MIT",
   "require": {
     "php": ">=5.6.0",
-
     "symfony/console": "~3.0",
     "symfony/dependency-injection": "~3.0",
     "symfony/yaml": "~3.0",
@@ -19,21 +24,23 @@
     "symfony/config": "~3.0",
     "symfony/monolog-bridge": "~3.0",
     "symfony/event-dispatcher": "~3.0",
-
     "doctrine/cache": "~1.6",
     "guzzlehttp/guzzle": "~6.2",
     "psr/log": "~1.0",
     "webmozart/glob": "~4.1"
-
   },
   "require-dev": {
-    "phpunit/phpunit": "~7.0",
+    "phpunit/phpunit": "~8.0",
     "mikey179/vfsstream": "~1.5"
   },
   "autoload": {
     "psr-4": {
-      "Chapi\\": ["src/"],
-      "ChapiTest\\": ["test/"]
+      "Chapi\\": [
+        "src/"
+      ],
+      "ChapiTest\\": [
+        "test/"
+      ]
     },
     "classmap": [
       "src/vendor/class.Diff.php"
@@ -41,12 +48,16 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "unit\\": ["test/unit/"]
+      "unit\\": [
+        "test/unit/"
+      ]
     }
   },
   "config": {
     "bin-dir": "bin"
   },
-  "bin": ["bin/chapi"],
+  "bin": [
+    "bin/chapi"
+  ],
   "minimum-stability": "stable"
 }

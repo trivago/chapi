@@ -34,7 +34,7 @@ class MarathonStoreJobBusinessCaseTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $logger;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->jobIndexService = $this->prophesize('Chapi\Service\JobIndex\JobIndexServiceInterface');
         $this->jobRepositoryRemote = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');

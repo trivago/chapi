@@ -33,7 +33,7 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $diffCompare;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->remoteRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->localRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');

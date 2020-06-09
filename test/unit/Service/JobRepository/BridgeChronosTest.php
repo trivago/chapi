@@ -35,7 +35,7 @@ class BridgeChronosTest extends \PHPUnit\Framework\TestCase
 
     private $listingJobs = [];
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->listingJobs = json_decode($this->jsonListingJobs, true);
 

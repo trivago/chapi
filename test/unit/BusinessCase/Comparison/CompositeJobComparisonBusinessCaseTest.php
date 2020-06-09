@@ -21,7 +21,7 @@ class CompositeJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
     private $chronosCase;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->marathonCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
         $this->chronosCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');

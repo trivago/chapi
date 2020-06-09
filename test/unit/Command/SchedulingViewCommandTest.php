@@ -38,7 +38,7 @@ class SchedulingViewCommandTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $datePeriodFactory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 

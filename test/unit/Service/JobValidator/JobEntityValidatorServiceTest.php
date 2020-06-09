@@ -24,7 +24,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $validatorFactory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->propertyValidator = $this->prophesize('Chapi\Service\JobValidator\PropertyValidatorInterface');
         $this->validatorFactory = $this->prophesize('Chapi\Service\JobValidator\ValidatorFactoryInterface');

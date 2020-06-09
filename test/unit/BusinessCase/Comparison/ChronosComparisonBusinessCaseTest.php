@@ -32,7 +32,7 @@ class ChronosComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $logger;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->jobRepositoryLocalChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->jobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');

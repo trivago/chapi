@@ -23,7 +23,7 @@ class JobStatsServiceTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $cache;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->apiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
         $this->cache = $this->prophesize('Chapi\Component\Cache\CacheInterface');

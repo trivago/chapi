@@ -22,7 +22,7 @@ class HttpGuzzlClientTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $guzzleResponse;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->guzzleClient = $this->prophesize('GuzzleHttp\ClientInterface');
         $this->guzzleResponse = $this->prophesize('Psr\Http\Message\ResponseInterface');

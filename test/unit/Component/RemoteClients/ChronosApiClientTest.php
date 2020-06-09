@@ -25,7 +25,7 @@ class ChronosApiClientTest extends \PHPUnit\Framework\TestCase
     /**
      *
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->httpClient = $this->prophesize('Chapi\Component\Http\HttpClientInterface');
         $this->httpResponse = $this->prophesize('Chapi\Component\Http\HttpClientResponseInterface');

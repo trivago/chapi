@@ -19,7 +19,7 @@ class ChapiConfigLoaderTest extends \PHPUnit\Framework\TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $config;
 
-    public function setUp()
+    protected function setUp(): void
     {
         // Symfony\Component\DependencyInjection\ContainerInterface
         $this->container = $this->prophesize('Symfony\Component\DependencyInjection\ContainerBuilder');
