@@ -150,6 +150,6 @@ class ChapiConfigTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('update_user', $profileConfig['parameters']['chronos_http_username']);
         $this->assertEquals('new_user', $profileConfig['parameters']['marathon_http_username']);
 
-        $this->assertArraySubset(['*-stage', 'new-entry'], $profileConfig['ignore']);
+        $this->assertEquals(['*-stage', 'new-entry'], $profileConfig['ignore']);
     }
 }
