@@ -42,8 +42,8 @@ class AbstractCommandTest extends \PHPUnit\Framework\TestCase
         $command = new AbstractCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertContains('.chapi', $command->getHomeDirPub());
-        $this->assertContains($homeDir, $command->getHomeDirPub());
+        $this->assertStringContainsString('.chapi', $command->getHomeDirPub());
+        $this->assertStringContainsString($homeDir, $command->getHomeDirPub());
         $this->assertTrue(is_dir($command->getHomeDirPub()));
     }
 
@@ -52,7 +52,7 @@ class AbstractCommandTest extends \PHPUnit\Framework\TestCase
         $command = new AbstractCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertContains('cache', $command->getCacheDir());
+        $this->assertStringContainsString('cache', $command->getCacheDir());
         $this->assertTrue(is_dir($command->getCacheDir()));
     }
 

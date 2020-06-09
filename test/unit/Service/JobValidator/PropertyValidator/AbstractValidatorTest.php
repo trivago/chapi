@@ -38,7 +38,7 @@ abstract class AbstractValidatorTest extends \PHPUnit\Framework\TestCase
 
         $jobEntity->{$property} = $invalidValue;
         $this->assertFalse($validator->isValid($property, $jobEntity));
-        $this->assertContains($property, $validator->getLastErrorMessage());
+        $this->assertStringContainsString($property, $validator->getLastErrorMessage());
 
         $jobEntity->{$property} = $validValue;
         $this->assertTrue($validator->isValid($property, $jobEntity));
@@ -84,6 +84,6 @@ abstract class AbstractValidatorTest extends \PHPUnit\Framework\TestCase
 
         $jobEntity->{$property} = $invalidValue;
         $this->assertFalse($validator->isValid($property, $jobEntity));
-        $this->assertContains($property, $validator->getLastErrorMessage());
+        $this->assertStringContainsString($property, $validator->getLastErrorMessage());
     }
 }
