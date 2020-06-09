@@ -14,7 +14,7 @@ use Chapi\Entity\Chronos\ChronosJobEntity;
 use Chapi\Exception\HttpConnectionException;
 use Prophecy\Argument;
 
-class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
+class ChronosApiClientTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $httpClient;
@@ -25,7 +25,7 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->httpClient = $this->prophesize('Chapi\Component\Http\HttpClientInterface');
         $this->httpResponse = $this->prophesize('Chapi\Component\Http\HttpClientResponseInterface');
@@ -137,11 +137,10 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($apiClient->addingJob($testJobEntity));
     }
 
-    /**
-     * @expectedException \Chapi\Exception\ApiClientException
-     */
     public function testAddingJobFailure()
     {
+        $this->expectException(\Chapi\Exception\ApiClientException::class);
+
         $testJobEntity = new ChronosJobEntity();
 
         $this->httpClient->postJsonData()
@@ -224,11 +223,10 @@ class ChronosApiClientTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($apiClient->updatingJob($testJobEntity));
     }
 
-    /**
-     * @expectedException \Chapi\Exception\ApiClientException
-     */
     public function testUpdatingJobFailure()
     {
+        $this->expectException(\Chapi\Exception\ApiClientException::class);
+
         $testJobEntity = new ChronosJobEntity();
 
         $this->httpClient->postJsonData()

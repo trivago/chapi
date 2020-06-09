@@ -13,7 +13,7 @@ use Chapi\BusinessCase\Comparison\ChronosJobComparisonBusinessCase;
 use Chapi\Component\DatePeriod\DatePeriodFactory;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
-class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class ChronosComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 
@@ -32,7 +32,7 @@ class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $logger;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->jobRepositoryLocalChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->jobRepositoryChronos = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
@@ -270,7 +270,7 @@ class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $localJobUpdates
         );
     }
-    
+
     public function testGetLocalUpdatesForConstraintsDifference()
     {
         $jobEntityA1 = $this->getValidScheduledJobEntity('JobA');
@@ -305,7 +305,7 @@ class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
         );
 
         $localJobUpdates = $jobComparisonBusinessCase->getLocalJobUpdates();
-        
+
         $this->assertEquals(
             ['JobA'],
             $localJobUpdates
@@ -335,11 +335,11 @@ class ChronosComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
             $localJobUpdates
         );
     }
-    
+
     private function setupContainerDifference($sProperty, $mValue)
     {
         $this->setUp();
-        
+
         $jobEntityA1 = $this->getValidContainerJobEntity('JobA');
         $jobEntityA2 = $this->getValidContainerJobEntity('JobA');
 

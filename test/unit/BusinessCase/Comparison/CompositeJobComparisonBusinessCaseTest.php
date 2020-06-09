@@ -12,7 +12,7 @@ namespace ChapiTest\unit\BusinessCase\Comparison;
 use Chapi\BusinessCase\Comparison\CompositeJobComparisonBusinessCase;
 use Prophecy\Argument;
 
-class CompositeJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class CompositeJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
 
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
@@ -21,7 +21,7 @@ class CompositeJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
     private $chronosCase;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->marathonCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');
         $this->chronosCase = $this->prophesize('Chapi\BusinessCase\Comparison\JobComparisonInterface');

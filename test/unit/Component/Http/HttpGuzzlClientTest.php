@@ -14,7 +14,7 @@ use Chapi\Component\Http\HttpGuzzleClient;
 use Chapi\Entity\Http\AuthEntity;
 use Prophecy\Argument;
 
-class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
+class HttpGuzzlClientTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $guzzleClient;
@@ -22,7 +22,7 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $guzzleResponse;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->guzzleClient = $this->prophesize('GuzzleHttp\ClientInterface');
         $this->guzzleResponse = $this->prophesize('Psr\Http\Message\ResponseInterface');
@@ -73,11 +73,10 @@ class HttpGuzzlClientTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Chapi\Component\Http\HttpClientResponseInterface', $response);
     }
 
-    /**
-     * @expectedException \Chapi\Exception\HttpConnectionException
-     */
     public function testGetFailure()
     {
+        $this->expectException(\Chapi\Exception\HttpConnectionException::class);
+
         $url = '/url/for/test';
 
         $authEntity = new AuthEntity("", "");

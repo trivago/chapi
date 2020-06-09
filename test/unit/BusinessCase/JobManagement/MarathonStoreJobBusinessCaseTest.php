@@ -15,7 +15,7 @@ use Exception;
 use InvalidArgumentException;
 use Prophecy\Argument;
 
-class MarathonStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class MarathonStoreJobBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
     use AppEntityTrait;
 
@@ -34,7 +34,7 @@ class MarathonStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $logger;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->jobIndexService = $this->prophesize('Chapi\Service\JobIndex\JobIndexServiceInterface');
         $this->jobRepositoryRemote = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
@@ -255,11 +255,10 @@ class MarathonStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $marathonStore->storeJobsToLocalRepository([], true);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testStoreJobsToLocalRepositoryWithUpdateFailureWithoutForce()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $remoteJobs = $this->createAppCollection(["/main/id1", "/main/id2"]);
         $localJobs = $this->createAppCollection(["/main/id1", "/main/id2"]);
 

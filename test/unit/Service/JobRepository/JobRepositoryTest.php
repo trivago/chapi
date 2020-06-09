@@ -15,7 +15,7 @@ use Chapi\Service\JobRepository\JobRepository;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class JobRepositoryTest extends \PHPUnit_Framework_TestCase
+class JobRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 
@@ -25,7 +25,7 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
     private $entityFilter;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->repositoryBridge = $this->prophesize('Chapi\Service\JobRepository\BridgeInterface');
         $this->entityFilter = $this->prophesize('Chapi\Service\JobRepository\Filter\JobFilterInterface');
@@ -334,11 +334,10 @@ class JobRepositoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testRemoveJobFailureException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->repositoryBridge
             ->removeJob(Argument::any())
             ->shouldNotBeCalled()

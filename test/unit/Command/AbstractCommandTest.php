@@ -14,14 +14,14 @@ use ChapiTest\src\TestTraits\CommandTestTrait;
 use org\bovigo\vfs\vfsStream;
 use Prophecy\Argument;
 
-class AbstractCommandTest extends \PHPUnit_Framework_TestCase
+class AbstractCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
 
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $consoleHandler;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 
@@ -42,8 +42,8 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
         $command = new AbstractCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertContains('.chapi', $command->getHomeDirPub());
-        $this->assertContains($homeDir, $command->getHomeDirPub());
+        $this->assertStringContainsString('.chapi', $command->getHomeDirPub());
+        $this->assertStringContainsString($homeDir, $command->getHomeDirPub());
         $this->assertTrue(is_dir($command->getHomeDirPub()));
     }
 
@@ -52,7 +52,7 @@ class AbstractCommandTest extends \PHPUnit_Framework_TestCase
         $command = new AbstractCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertContains('cache', $command->getCacheDir());
+        $this->assertStringContainsString('cache', $command->getCacheDir());
         $this->assertTrue(is_dir($command->getCacheDir()));
     }
 

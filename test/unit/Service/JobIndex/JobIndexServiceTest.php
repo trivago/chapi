@@ -11,7 +11,7 @@ namespace unit\Service\JobIndex;
 use Chapi\Service\JobIndex\JobIndexService;
 use Prophecy\Argument;
 
-class JobIndexServiceTest extends \PHPUnit_Framework_TestCase
+class JobIndexServiceTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $cacheInterface;
@@ -19,7 +19,7 @@ class JobIndexServiceTest extends \PHPUnit_Framework_TestCase
     /** @var array  */
     private $testJobIndex = ['JobA' => 'JobA', 'JobB' => 'JobB'];
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->cacheInterface = $this->prophesize('Chapi\Component\Cache\CacheInterface');
 

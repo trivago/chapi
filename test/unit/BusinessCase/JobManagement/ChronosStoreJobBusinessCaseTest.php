@@ -17,7 +17,7 @@ use Chapi\Service\JobDependencies\JobDependencyServiceInterface;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class ChronosStoreJobBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 
@@ -39,7 +39,7 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $logger;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->jobIndexService = $this->prophesize('Chapi\Service\JobIndex\JobIndexServiceInterface');
         $this->jobRepositoryRemote = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
@@ -503,11 +503,10 @@ class ChronosStoreJobBusinessCaseTest extends \PHPUnit_Framework_TestCase
         $this->logger->notice(Argument::type('string'))->shouldBeCalled();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testStoreJobsToLocalRepositoryFailureBecauseJobExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $jobEntityA1 = $this->getValidScheduledJobEntity('JobA');
         $jobEntityA2 = clone $jobEntityA1;
         $jobEntityA2->disabled = true;

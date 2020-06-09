@@ -20,7 +20,7 @@ use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 use ChapiTest\src\TestTraits\JobStatsEntityTrait;
 
-class SchedulingViewCommandTest extends \PHPUnit_Framework_TestCase
+class SchedulingViewCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
     use JobStatsEntityTrait;
@@ -38,7 +38,7 @@ class SchedulingViewCommandTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $datePeriodFactory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 

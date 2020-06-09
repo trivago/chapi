@@ -14,7 +14,7 @@ use Chapi\Entity\JobEntityInterface;
 use Chapi\Service\JobValidator\PropertyValidatorInterface;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 
-abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractValidatorTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 
@@ -35,10 +35,10 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
         if (is_null($jobEntity)) {
             $jobEntity = $this->getValidScheduledJobEntity();
         }
-        
+
         $jobEntity->{$property} = $invalidValue;
         $this->assertFalse($validator->isValid($property, $jobEntity));
-        $this->assertContains($property, $validator->getLastErrorMessage());
+        $this->assertStringContainsString($property, $validator->getLastErrorMessage());
 
         $jobEntity->{$property} = $validValue;
         $this->assertTrue($validator->isValid($property, $jobEntity));
@@ -60,7 +60,7 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
         if (is_null($jobEntity)) {
             $jobEntity = $this->getValidScheduledJobEntity();
         }
-        
+
         $jobEntity->{$property} = $validValue;
         $this->assertTrue($validator->isValid($property, $jobEntity));
         $this->assertEmpty($validator->getLastErrorMessage());
@@ -81,9 +81,9 @@ abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
         if (is_null($jobEntity)) {
             $jobEntity = $this->getValidScheduledJobEntity();
         }
-        
+
         $jobEntity->{$property} = $invalidValue;
         $this->assertFalse($validator->isValid($property, $jobEntity));
-        $this->assertContains($property, $validator->getLastErrorMessage());
+        $this->assertStringContainsString($property, $validator->getLastErrorMessage());
     }
 }

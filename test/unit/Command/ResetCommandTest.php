@@ -14,13 +14,13 @@ use Chapi\Service\JobIndex\JobIndexServiceInterface;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use Prophecy\Argument;
 
-class ResetCommandTest extends \PHPUnit_Framework_TestCase
+class ResetCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
 
     private $jobIndexServiceInterface;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->jobIndexServiceInterface = $this->prophesize('Chapi\Service\JobIndex\JobIndexServiceInterface');
     }

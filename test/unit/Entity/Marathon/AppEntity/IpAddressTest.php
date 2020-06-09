@@ -10,12 +10,12 @@ namespace unit\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\IpAddress;
 
-class IpAddressTest extends \PHPUnit_Framework_TestCase
+class IpAddressTest extends \PHPUnit\Framework\TestCase
 {
     public function testAllKeysAreCorrect()
     {
         $keys = ["groups", "labels", "networkName"];
-        
+
         $ipAddress = new IpAddress();
         foreach ($keys as $property) {
             $this->assertObjectHasAttribute($property, $ipAddress);

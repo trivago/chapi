@@ -16,7 +16,7 @@ use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class ListCommandTest extends \PHPUnit_Framework_TestCase
+class ListCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
     use JobEntityTrait;
@@ -28,7 +28,7 @@ class ListCommandTest extends \PHPUnit_Framework_TestCase
     /** @var  \Prophecy\Prophecy\ObjectProphecy */
     private $jobRepositoryMarathon;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 

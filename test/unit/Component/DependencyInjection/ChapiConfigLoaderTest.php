@@ -11,7 +11,7 @@ namespace unit\Component\Config;
 
 use Chapi\Component\DependencyInjection\Loader\ChapiConfigLoader;
 
-class ChapiConfigLoaderTest extends \PHPUnit_Framework_TestCase
+class ChapiConfigLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $container;
@@ -19,7 +19,7 @@ class ChapiConfigLoaderTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $config;
 
-    public function setUp()
+    protected function setUp(): void
     {
         // Symfony\Component\DependencyInjection\ContainerInterface
         $this->container = $this->prophesize('Symfony\Component\DependencyInjection\ContainerBuilder');
@@ -53,11 +53,10 @@ class ChapiConfigLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($chapiConfigLoader->loadProfileParameters());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testLoadProfileParametersFailure()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->config->getProfileConfig()->willReturn([
             'parameters' => 'not_valid'
         ]);

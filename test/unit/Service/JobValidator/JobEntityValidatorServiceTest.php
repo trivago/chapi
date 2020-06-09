@@ -14,7 +14,7 @@ use Chapi\Service\JobValidator\ChronosJobValidatorService;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
+class JobEntityValidatorServiceTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 
@@ -24,12 +24,12 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $validatorFactory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->propertyValidator = $this->prophesize('Chapi\Service\JobValidator\PropertyValidatorInterface');
         $this->validatorFactory = $this->prophesize('Chapi\Service\JobValidator\ValidatorFactoryInterface');
     }
-    
+
     public function testIsEntityValidSuccess()
     {
         // mock
@@ -78,7 +78,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
         $this->propertyValidator->isValid(Argument::type('string'), Argument::type('Chapi\Entity\Chronos\ChronosJobEntity'))->shouldHaveBeenCalled();
         $this->propertyValidator->getLastErrorMessage()->shouldHaveBeenCalled();
     }
-    
+
     public function testGetInvalidPropertiesSuccess()
     {
         // mock
@@ -92,7 +92,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
         $jobEntityValidatorService = new ChronosJobValidatorService(
             $this->validatorFactory->reveal()
         );
-        
+
         // test
         $this->assertEquals(
             0,
@@ -116,12 +116,12 @@ class JobEntityValidatorServiceTest extends \PHPUnit_Framework_TestCase
 
         // test
         $result = $jobEntityValidatorService->getInvalidProperties($jobEntity);
-        
+
         $this->assertGreaterThan(
             0,
             count($result)
         );
-        
+
         foreach ($result as $errorMessage) {
             $this->assertEquals('error message', $errorMessage);
             break; // one check is enough

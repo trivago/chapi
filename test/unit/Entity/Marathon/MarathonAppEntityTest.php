@@ -13,7 +13,7 @@ use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 use Chapi\Entity\Marathon\MarathonAppEntity;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 
-class MarathonAppEntityTest extends \PHPUnit_Framework_TestCase
+class MarathonAppEntityTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testLiteralValuesSetWithArray()

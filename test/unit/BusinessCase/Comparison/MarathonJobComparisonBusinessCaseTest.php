@@ -20,7 +20,7 @@ use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
 use Symfony\Component\Console\Tests\Input\ArgvInputTest;
 
-class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
+class MarathonJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 {
     use AppEntityTrait;
 
@@ -33,7 +33,7 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $diffCompare;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->remoteRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');
         $this->localRepository = $this->prophesize('Chapi\Service\JobRepository\JobRepositoryInterface');

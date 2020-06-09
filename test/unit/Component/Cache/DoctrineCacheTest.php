@@ -13,7 +13,7 @@ namespace unit\Component\Cache;
 use Chapi\Component\Cache\DoctrineCache;
 use Prophecy\Argument;
 
-class DoctrineCacheTest extends \PHPUnit_Framework_TestCase
+class DoctrineCacheTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $cache;
@@ -21,7 +21,7 @@ class DoctrineCacheTest extends \PHPUnit_Framework_TestCase
     /**
      * set up default mocks
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->cache = $this->prophesize('Doctrine\Common\Cache\Cache');
     }

@@ -10,7 +10,7 @@ namespace unit\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\PortDefinition;
 
-class PortDefinitionTest extends \PHPUnit_Framework_TestCase
+class PortDefinitionTest extends \PHPUnit\Framework\TestCase
 {
     public function testPortDefinitionsSetProperly()
     {

@@ -10,12 +10,12 @@ namespace unit\Component\Http;
 
 use Chapi\Component\Http\HttpGuzzleResponse;
 
-class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
+class HttpGuzzleResponseTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $responseInterface;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->responseInterface = $this->prophesize('Psr\Http\Message\ResponseInterface');
     }
@@ -77,7 +77,7 @@ class HttpGuzzleResponseTest extends \PHPUnit_Framework_TestCase
         $httpGuzzleResponse = new HttpGuzzleResponse($this->responseInterface->reveal());
 
         $result = $httpGuzzleResponse->json();
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEquals($dummyBody, $result);
     }
 }

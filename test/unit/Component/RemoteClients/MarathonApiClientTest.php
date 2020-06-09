@@ -14,7 +14,7 @@ use Chapi\Exception\HttpConnectionException;
 use ChapiTest\src\TestTraits\AppEntityTrait;
 use Prophecy\Argument;
 
-class MarathonApiClientTest extends \PHPUnit_Framework_TestCase
+class MarathonApiClientTest extends \PHPUnit\Framework\TestCase
 {
     use AppEntityTrait;
     /** @var \Prophecy\Prophecy\ObjectProphecy */
@@ -23,7 +23,7 @@ class MarathonApiClientTest extends \PHPUnit_Framework_TestCase
     /**  @var \Prophecy\Prophecy\ObjectProphecy */
     private $httpResponse;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->httpClient = $this->prophesize('Chapi\Component\Http\HttpClientInterface');
         $this->httpResponse = $this->prophesize('Chapi\Component\Http\HttpClientResponseInterface');

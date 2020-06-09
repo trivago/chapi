@@ -15,7 +15,7 @@ use Chapi\Component\RemoteClients\ApiClientInterface;
 use Chapi\Service\Chronos\JobStatsService;
 use Prophecy\Argument;
 
-class JobStatsServiceTest extends \PHPUnit_Framework_TestCase
+class JobStatsServiceTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $apiClient;
@@ -23,7 +23,7 @@ class JobStatsServiceTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $cache;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->apiClient = $this->prophesize('Chapi\Component\RemoteClients\ApiClientInterface');
         $this->cache = $this->prophesize('Chapi\Component\Cache\CacheInterface');

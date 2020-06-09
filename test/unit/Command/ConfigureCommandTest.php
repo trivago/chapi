@@ -13,7 +13,7 @@ namespace unit\Command;
 use ChapiTest\src\TestTraits\CommandTestTrait;
 use Prophecy\Argument;
 
-class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
+class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
 
@@ -25,7 +25,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
      */
     private $tempTestDir = '';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 
@@ -41,7 +41,7 @@ class ConfigureCommandTest extends \PHPUnit_Framework_TestCase
         ConfigureCommandDummy::$homeDirDummy = $this->tempTestDir;
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         if (file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig')) {
             unlink($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig');

@@ -15,7 +15,7 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 
-class ChapiConfigTest extends \PHPUnit_Framework_TestCase
+class ChapiConfigTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  vfsStreamDirectory */
     private $vfsRoot;
@@ -41,7 +41,7 @@ class ChapiConfigTest extends \PHPUnit_Framework_TestCase
      */
     private $testConfigA;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->parser = new Parser();
         $this->dumper = new Dumper();
@@ -150,6 +150,6 @@ class ChapiConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('update_user', $profileConfig['parameters']['chronos_http_username']);
         $this->assertEquals('new_user', $profileConfig['parameters']['marathon_http_username']);
 
-        $this->assertArraySubset(['*-stage', 'new-entry'], $profileConfig['ignore']);
+        $this->assertEquals(['*-stage', 'new-entry'], $profileConfig['ignore']);
     }
 }

@@ -10,7 +10,7 @@ namespace unit\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\UpgradeStrategy;
 
-class UpgradeStrategyTest extends \PHPUnit_Framework_TestCase
+class UpgradeStrategyTest extends \PHPUnit\Framework\TestCase
 {
     public function testAllKeysAreCorrect()
     {

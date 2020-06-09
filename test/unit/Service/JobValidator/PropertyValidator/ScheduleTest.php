@@ -22,7 +22,7 @@ class ScheduleTest extends AbstractValidatorTest
 
     use JobEntityTrait;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->datePeriodFactory = $this->prophesize('Chapi\Component\DatePeriod\DatePeriodFactoryInterface');
     }
@@ -39,7 +39,7 @@ class ScheduleTest extends AbstractValidatorTest
                 )
             )
         ;
-        
+
         $propertyValidator = new Schedule($this->datePeriodFactory->reveal());
 
         $this->handleValidTestCase($propertyValidator, 'schedule', 'foo');
@@ -63,10 +63,10 @@ class ScheduleTest extends AbstractValidatorTest
 
         $jobEntity = $this->getValidDependencyJobEntity();
         $this->handleInvalidTestCase($propertyValidator, 'parents', [], $jobEntity);
-        
+
         // test with createDatePeriod return value
         $this->handleInvalidTestCase($propertyValidator, 'schedule', 'foo');
-        
+
         // Spies
         $this->datePeriodFactory
             ->createDatePeriod(Argument::type('string'), Argument::type('string'))
@@ -90,7 +90,7 @@ class ScheduleTest extends AbstractValidatorTest
     public function testIsValidFailureForDependencyJobWithScheduling()
     {
         $propertyValidator = new Schedule($this->datePeriodFactory->reveal());
-        
+
         // test !empty schedule property
         $jobEntity = $this->getValidDependencyJobEntity();
         $jobEntity->schedule = 'R/2015-09-01T02:00:00Z/P1M';
@@ -109,9 +109,9 @@ class ScheduleTest extends AbstractValidatorTest
                 )
             )
         ;
-        
+
         $propertyValidator = new Schedule($this->datePeriodFactory->reveal());
-        
+
         $this->handleErrorMessageMultiTestCase($propertyValidator, 'schedule', 'foo', '');
     }
 }

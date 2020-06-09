@@ -15,7 +15,7 @@ use Chapi\Service\JobRepository\BridgeChronos;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class BridgeChronosTest extends \PHPUnit_Framework_TestCase
+class BridgeChronosTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
 
@@ -35,7 +35,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
 
     private $listingJobs = [];
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->listingJobs = json_decode($this->jsonListingJobs, true);
 
@@ -87,10 +87,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
 
         $jobs = $jobRepositoryChronos->getJobs();
 
-        $this->assertInternalType(
-            'array',
-            $jobs
-        );
+        $this->assertIsArray($jobs);
 
         $this->assertInstanceOf(
             'Chapi\Entity\Chronos\ChronosJobEntity',
@@ -135,10 +132,7 @@ class BridgeChronosTest extends \PHPUnit_Framework_TestCase
 
         $jobs = $jobRepositoryChronos->getJobs();
 
-        $this->assertInternalType(
-            'array',
-            $jobs
-        );
+        $this->assertIsArray($jobs);
 
         $this->assertInstanceOf(
             'Chapi\Entity\Chronos\ChronosJobEntity',

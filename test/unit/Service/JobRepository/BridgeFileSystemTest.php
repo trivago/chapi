@@ -17,7 +17,7 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStreamWrapper;
 
-class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
+class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
 {
     use JobEntityTrait;
     use AppEntityTrait;
@@ -37,7 +37,7 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
     /** @var string  */
     private $tempTestDir = '';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->fileSystemService = $this->prophesize('Symfony\Component\Filesystem\Filesystem');
 
@@ -75,7 +75,7 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         rmdir($path);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->rmrf($this->tempTestDir);
     }
@@ -353,12 +353,10 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($remainingApps), 'Expected 1 app remaining after removal, found ' . count($remainingApps));
     }
 
-
-    /**
-     * @expectedException \Chapi\Exception\JobLoadException
-     */
     public function testJobLoadException()
     {
+        $this->expectException(\Chapi\Exception\JobLoadException::class);
+
         $structure = array(
             'directory' => array(
                 'jobA.json' => 'no-json-string',
@@ -378,11 +376,10 @@ class BridgeFileSystemTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($jobs);
     }
 
-    /**
-     * @expectedException \Chapi\Exception\JobLoadException
-     */
     public function testJobLoadExceptionForDuplicateJobNames()
     {
+        $this->expectException(\Chapi\Exception\JobLoadException::class);
+
         $structure = array(
             'directory' => array(
                 'jobA.json' => json_encode($this->getValidScheduledJobEntity('JobA')),

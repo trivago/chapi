@@ -15,7 +15,7 @@ use ChapiTest\src\TestTraits\CommandTestTrait;
 use ChapiTest\src\TestTraits\JobEntityTrait;
 use Prophecy\Argument;
 
-class InfoCommandTest extends \PHPUnit_Framework_TestCase
+class InfoCommandTest extends \PHPUnit\Framework\TestCase
 {
     use CommandTestTrait;
     use JobEntityTrait;
@@ -23,7 +23,7 @@ class InfoCommandTest extends \PHPUnit_Framework_TestCase
     /** @var \Prophecy\Prophecy\ObjectProphecy */
     private $jobRepositoryChronos;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->setUpCommandDependencies();
 

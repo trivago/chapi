@@ -10,7 +10,7 @@ namespace unit\Entity\Marathon\AppEntity;
 
 use Chapi\Entity\Marathon\AppEntity\DockerPortMapping;
 
-class DockerPortMappingTest extends \PHPUnit_Framework_TestCase
+class DockerPortMappingTest extends \PHPUnit\Framework\TestCase
 {
     public function testAllKeysAreCorrect()
     {
