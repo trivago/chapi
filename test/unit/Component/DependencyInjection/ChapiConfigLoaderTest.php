@@ -7,7 +7,7 @@
  *
  */
 
-namespace unit\Component\Config;
+namespace unit\Component\DependencyInjection;
 
 use Chapi\Component\DependencyInjection\Loader\ChapiConfigLoader;
 

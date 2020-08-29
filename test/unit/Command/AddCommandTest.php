@@ -42,7 +42,7 @@ class AddCommandTest extends \PHPUnit\Framework\TestCase
         $command = new AddCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -77,7 +77,7 @@ class AddCommandTest extends \PHPUnit\Framework\TestCase
         $command = new AddCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),

@@ -40,7 +40,7 @@ class InfoCommandTest extends \PHPUnit\Framework\TestCase
         $command = new InfoCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),

@@ -44,7 +44,7 @@ class AbstractCommandTest extends \PHPUnit\Framework\TestCase
 
         $this->assertStringContainsString('.chapi', $command->getHomeDirPub());
         $this->assertStringContainsString($homeDir, $command->getHomeDirPub());
-        $this->assertTrue(is_dir($command->getHomeDirPub()));
+        $this->assertDirectoryExists($command->getHomeDirPub());
     }
 
     public function testGetCacheDir()
@@ -53,7 +53,7 @@ class AbstractCommandTest extends \PHPUnit\Framework\TestCase
         $command::$containerDummy = $this->container->reveal();
 
         $this->assertStringContainsString('cache', $command->getCacheDir());
-        $this->assertTrue(is_dir($command->getCacheDir()));
+        $this->assertDirectoryExists($command->getCacheDir());
     }
 
     public function testIsAppRuanableWithLocalConfig()
@@ -130,6 +130,6 @@ class AbstractCommandTest extends \PHPUnit\Framework\TestCase
             $this->output->reveal()
         );
 
-        $this->assertEquals('.chapiconfig', $command->getParameterFileNamePub());
+        $this->assertSame('.chapiconfig', $command->getParameterFileNamePub());
     }
 }

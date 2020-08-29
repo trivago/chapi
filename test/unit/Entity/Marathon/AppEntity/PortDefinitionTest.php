@@ -27,7 +27,7 @@ class PortDefinitionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($portDefinition->name, "myport");
         $this->assertEquals($portDefinition->protocol, "udp");
         $this->assertObjectHasAttribute("key", $portDefinition->labels);
-        $this->assertEquals("somelabel", $portDefinition->labels->key);
+        $this->assertSame("somelabel", $portDefinition->labels->key);
     }
 
     public function testAllKeysAreCorrect()

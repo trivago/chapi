@@ -29,7 +29,7 @@ class DockerParametersTest extends \PHPUnit\Framework\TestCase
 
         $dockerParameters = new DockerParameters($data);
 
-        $this->assertEquals("someKey", $dockerParameters->key);
-        $this->assertEquals("somevalue", $dockerParameters->value);
+        $this->assertSame("someKey", $dockerParameters->key);
+        $this->assertSame("somevalue", $dockerParameters->value);
     }
 }

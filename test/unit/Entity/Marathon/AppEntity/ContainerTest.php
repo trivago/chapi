@@ -30,7 +30,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
         $container = new Container($data);
 
-        $this->assertEquals("DOCKER", $container->type);
+        $this->assertSame("DOCKER", $container->type);
         $this->assertTrue(isset($container->docker));
         $this->assertTrue(isset($container->volumes));
         $this->assertTrue(isset($container->portMappings));

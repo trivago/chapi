@@ -60,13 +60,13 @@ class JobStatsServiceTest extends \PHPUnit\Framework\TestCase
         $result = $jobStatsService->getJobStats('JobA');
 
         $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $result);
-        $this->assertEquals($testResult['histogram']['75thPercentile'], $result->histogram->percentile75th);
-        $this->assertEquals($testResult['histogram']['95thPercentile'], $result->histogram->percentile95th);
-        $this->assertEquals($testResult['histogram']['98thPercentile'], $result->histogram->percentile98th);
-        $this->assertEquals($testResult['histogram']['99thPercentile'], $result->histogram->percentile99th);
-        $this->assertEquals($testResult['histogram']['median'], $result->histogram->median);
-        $this->assertEquals($testResult['histogram']['mean'], $result->histogram->mean);
-        $this->assertEquals($testResult['histogram']['count'], $result->histogram->count);
+        $this->assertSame($testResult['histogram']['75thPercentile'], $result->histogram->percentile75th);
+        $this->assertSame($testResult['histogram']['95thPercentile'], $result->histogram->percentile95th);
+        $this->assertSame($testResult['histogram']['98thPercentile'], $result->histogram->percentile98th);
+        $this->assertSame($testResult['histogram']['99thPercentile'], $result->histogram->percentile99th);
+        $this->assertSame($testResult['histogram']['median'], $result->histogram->median);
+        $this->assertSame($testResult['histogram']['mean'], $result->histogram->mean);
+        $this->assertSame($testResult['histogram']['count'], $result->histogram->count);
     }
 
     public function testGetJobStatsCacheSuccess()
@@ -94,13 +94,13 @@ class JobStatsServiceTest extends \PHPUnit\Framework\TestCase
         $result = $jobStatsService->getJobStats('JobA');
 
         $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $result);
-        $this->assertEquals($testResult['histogram']['75thPercentile'], $result->histogram->percentile75th);
-        $this->assertEquals($testResult['histogram']['95thPercentile'], $result->histogram->percentile95th);
-        $this->assertEquals($testResult['histogram']['98thPercentile'], $result->histogram->percentile98th);
-        $this->assertEquals($testResult['histogram']['99thPercentile'], $result->histogram->percentile99th);
-        $this->assertEquals($testResult['histogram']['median'], $result->histogram->median);
-        $this->assertEquals($testResult['histogram']['mean'], $result->histogram->mean);
-        $this->assertEquals($testResult['histogram']['count'], $result->histogram->count);
+        $this->assertSame($testResult['histogram']['75thPercentile'], $result->histogram->percentile75th);
+        $this->assertSame($testResult['histogram']['95thPercentile'], $result->histogram->percentile95th);
+        $this->assertSame($testResult['histogram']['98thPercentile'], $result->histogram->percentile98th);
+        $this->assertSame($testResult['histogram']['99thPercentile'], $result->histogram->percentile99th);
+        $this->assertSame($testResult['histogram']['median'], $result->histogram->median);
+        $this->assertSame($testResult['histogram']['mean'], $result->histogram->mean);
+        $this->assertSame($testResult['histogram']['count'], $result->histogram->count);
     }
 
     public function testDoNotCacheEmptyResults()
@@ -118,7 +118,7 @@ class JobStatsServiceTest extends \PHPUnit\Framework\TestCase
         $result = $jobStatsService->getJobStats('JobA');
 
         $this->assertInstanceOf('Chapi\Entity\Chronos\JobStatsEntity', $result);
-        $this->assertEquals(0.0, $result->histogram->percentile75th);
-        $this->assertEquals(0, $result->histogram->count);
+        $this->assertSame(0.0, $result->histogram->percentile75th);
+        $this->assertSame(0, $result->histogram->count);
     }
 }

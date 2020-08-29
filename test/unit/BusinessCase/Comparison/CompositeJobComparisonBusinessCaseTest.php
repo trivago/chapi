@@ -51,7 +51,7 @@ class CompositeJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 
         $missingJobs =  $compositeJobComparison->getLocalMissingJobs();
 
-        $this->assertEquals(2, count($missingJobs), "Expected 2 elements, got only " . count($missingJobs));
+        $this->assertCount(2, $missingJobs, "Expected 2 elements, got only " . count($missingJobs));
     }
 
     public function testGetRemoteMissingJobs()
@@ -77,7 +77,7 @@ class CompositeJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 
         $missingJobs =  $compositeJobComparison->getRemoteMissingJobs();
 
-        $this->assertEquals(2, count($missingJobs), "Expected 2 elements, got only " . count($missingJobs));
+        $this->assertCount(2, $missingJobs, "Expected 2 elements, got only " . count($missingJobs));
     }
 
     public function testGetLocalJobUpdates()
@@ -103,7 +103,7 @@ class CompositeJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 
         $updatedJobs = $compositeJobComparison->getLocalJobUpdates();
 
-        $this->assertEquals(2, count($updatedJobs), "Expected 2 elements, got only " . count($updatedJobs));
+        $this->assertCount(2, $updatedJobs, "Expected 2 elements, got only " . count($updatedJobs));
     }
 
     public function testGetJobDiffForMarathonCaseSuccess()

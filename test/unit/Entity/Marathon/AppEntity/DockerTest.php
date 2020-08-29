@@ -26,7 +26,7 @@ class DockerTest extends \PHPUnit\Framework\TestCase
 
         $docker = new Docker($data);
 
-        $this->assertEquals("some/image", $docker->image);
+        $this->assertSame("some/image", $docker->image);
         $this->assertEquals(true, $docker->privileged);
 
         $this->assertTrue(isset($docker->parameters));

@@ -17,7 +17,7 @@ class JobEntityTest extends \PHPUnit\Framework\TestCase
     {
         $jobEntity = new ChronosJobEntity(['name' => 'jobname', 'unknownProperty' => 'value']);
 
-        $this->assertEquals('jobname', $jobEntity->name);
+        $this->assertSame('jobname', $jobEntity->name);
         $this->assertFalse(property_exists($jobEntity, 'unknownProperty'));
     }
 
@@ -48,10 +48,10 @@ class JobEntityTest extends \PHPUnit\Framework\TestCase
         ];
         $jobEntity = new ChronosJobEntity($data);
 
-        $this->assertEquals('jobname', $jobEntity->name);
-        $this->assertEquals('docker', $jobEntity->container->type);
-        $this->assertEquals('foo/bar', $jobEntity->container->image);
-        $this->assertTrue(is_array($jobEntity->container->volumes));
+        $this->assertSame('jobname', $jobEntity->name);
+        $this->assertSame('docker', $jobEntity->container->type);
+        $this->assertSame('foo/bar', $jobEntity->container->image);
+        $this->assertIsArray($jobEntity->container->volumes);
         $this->assertFalse(property_exists($jobEntity->container, 'unknownProperty'));
     }
 
@@ -118,8 +118,8 @@ class JobEntityTest extends \PHPUnit\Framework\TestCase
         $jobEntityTest = json_decode($jobEntityJson);
 
 
-        $this->assertEquals('jobname', $jobEntityTest->name);
-        $this->assertEquals('R/2015-07-07T01:00:00Z/P1D', $jobEntityTest->schedule);
+        $this->assertSame('jobname', $jobEntityTest->name);
+        $this->assertSame('R/2015-07-07T01:00:00Z/P1D', $jobEntityTest->schedule);
 
         $this->assertFalse(property_exists($jobEntityTest, 'parents'));
 
@@ -140,7 +140,7 @@ class JobEntityTest extends \PHPUnit\Framework\TestCase
         $jobEntityTest = json_decode($jobEntityJson);
 
 
-        $this->assertEquals('jobname', $jobEntityTest->name);
+        $this->assertSame('jobname', $jobEntityTest->name);
         $this->assertEquals(['jobA', 'jobB'], $jobEntityTest->parents);
 
         $this->assertFalse(property_exists($jobEntityTest, 'schedule'));
@@ -184,9 +184,9 @@ class JobEntityTest extends \PHPUnit\Framework\TestCase
             ]
         ]);
 
-        $this->assertEquals(
+        $this->assertCount(
             1,
-            count($jobEntity->fetch)
+            $jobEntity->fetch
         );
         $this->assertTrue($jobEntity->fetch[0]->extract);
     }

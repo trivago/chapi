@@ -66,7 +66,7 @@ class SchedulingViewCommandTest extends \PHPUnit\Framework\TestCase
         $command = new SchedulingViewCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -87,7 +87,7 @@ class SchedulingViewCommandTest extends \PHPUnit\Framework\TestCase
         $command = new SchedulingViewCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),

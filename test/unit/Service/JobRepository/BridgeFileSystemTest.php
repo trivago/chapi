@@ -100,9 +100,9 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         );
 
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             4,
-            count($jobs)
+            $jobs
         );
 
         $this->assertInstanceOf('Chapi\Entity\JobEntityInterface', $jobs[0]);
@@ -124,9 +124,9 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         );
 
         $entities = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             2,
-            count($entities)
+            $entities
         );
 
         $countMarathon = 0;
@@ -145,8 +145,8 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
             }
         }
 
-        $this->assertEquals(1, $countChronos, "Expected 1 chronos job, got $countChronos");
-        $this->assertEquals(1, $countMarathon, "Expected 1 marathon app, got $countMarathon");
+        $this->assertSame(1, $countChronos, "Expected 1 chronos job, got $countChronos");
+        $this->assertSame(1, $countMarathon, "Expected 1 marathon app, got $countMarathon");
     }
 
     public function testAddUpdateRemoveChronosJobSuccess()
@@ -163,20 +163,20 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
 
         // first check and init
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             0,
-            count($jobs),
+            $jobs,
             'Expected "0" jobs at first run'
         );
 
         // add job
         $this->assertTrue($fileSystemRepository->addJob($entity));
-        $this->assertTrue(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
+        $this->assertFileExists($this->tempTestDir . DIRECTORY_SEPARATOR . 'JobX.json');
 
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             1,
-            count($jobs),
+            $jobs,
             'Expected "1" job after adding'
         );
 
@@ -192,23 +192,23 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($fileSystemRepository->updateJob($entity));
 
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             1,
-            count($jobs),
+            $jobs,
             'Expected still "1" job after update'
         );
 
-        $this->assertEquals(123, $jobs[0]->mem);
+        $this->assertSame(123, $jobs[0]->mem);
         $this->assertTrue($jobs[0]->disabled);
 
         // remove job
         $this->assertTrue($fileSystemRepository->removeJob($entity));
-        $this->assertFalse(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . 'JobX.json'));
+        $this->assertFileNotExists($this->tempTestDir . DIRECTORY_SEPARATOR . 'JobX.json');
 
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             0,
-            count($jobs),
+            $jobs,
             'Expected "0" jobs after deletion'
         );
     }
@@ -227,20 +227,20 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
 
         // first check and init
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             0,
-            count($jobs),
+            $jobs,
             'Expected "0" app at first run'
         );
 
         // add app
         $this->assertTrue($fileSystemRepository->addJob($appEntity));
-        $this->assertTrue(file_exists($this->tempTestDir. DIRECTORY_SEPARATOR. 'testgroup'. DIRECTORY_SEPARATOR .'testapp.json'));
+        $this->assertFileExists($this->tempTestDir. DIRECTORY_SEPARATOR. 'testgroup'. DIRECTORY_SEPARATOR .'testapp.json');
 
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             1,
-            count($jobs),
+            $jobs,
             'Expected "1" app after adding'
         );
 
@@ -256,23 +256,23 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($fileSystemRepository->updateJob($appEntity));
 
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             1,
-            count($jobs),
+            $jobs,
             'Expected still "1" job after update'
         );
 
-        $this->assertEquals(2, $jobs[0]->cpus);
-        $this->assertEquals(1024, $jobs[0]->mem);
+        $this->assertSame(2, $jobs[0]->cpus);
+        $this->assertSame(1024, $jobs[0]->mem);
 
         // remove job
         $this->assertTrue($fileSystemRepository->removeJob($appEntity));
-        $this->assertFalse(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . 'testgroup'. DIRECTORY_SEPARATOR .'testapp.json'));
+        $this->assertFileNotExists($this->tempTestDir . DIRECTORY_SEPARATOR . 'testgroup'. DIRECTORY_SEPARATOR .'testapp.json');
 
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(
+        $this->assertCount(
             0,
-            count($jobs),
+            $jobs,
             'Expected "0" jobs after deletion'
         );
     }
@@ -296,7 +296,7 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         );
 
         $apps = $fileSystemRepository->getJobs();
-        $this->assertEquals(2, count($apps), "Expected 2 app, got ".count($apps));
+        $this->assertCount(2, $apps, "Expected 2 app, got ".count($apps));
 
         $updatedKey = $apps[0]->getKey();
         $apps[0]->mem = 1024;
@@ -305,17 +305,17 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($fileSystemRepository->updateJob($apps[0]), 'UpdateJob returned false, expected true');
 
         $appsAfterModification = $fileSystemRepository->getJobs();
-        $this->assertEquals(2, count($apps), "Expected 2 apps, got " . count($appsAfterModification));
+        $this->assertCount(2, $apps, "Expected 2 apps, got " . count($appsAfterModification));
 
         foreach ($appsAfterModification as $app) {
             if ($app->getKey() == $updatedKey) {
-                $this->assertEquals(
+                $this->assertSame(
                     1024,
                     $app->mem,
                     "Expected 1024, got $app->mem"
                 );
 
-                $this->assertEquals(
+                $this->assertSame(
                     2,
                     $app->cpus,
                     "Expected 2, got $app->cpus"
@@ -344,13 +344,13 @@ class BridgeFileSystemTest extends \PHPUnit\Framework\TestCase
         );
 
         $jobs = $fileSystemRepository->getJobs();
-        $this->assertEquals(2, count($jobs), 'Expected 2 app before removal, found '.count($jobs));
+        $this->assertCount(2, $jobs, 'Expected 2 app before removal, found '.count($jobs));
 
         $fileSystemRepository->removeJob($groupConfig["apps"][0]);
 
         $remainingApps = $fileSystemRepository->getJobs();
 
-        $this->assertEquals(1, count($remainingApps), 'Expected 1 app remaining after removal, found ' . count($remainingApps));
+        $this->assertCount(1, $remainingApps, 'Expected 1 app remaining after removal, found ' . count($remainingApps));
     }
 
     public function testJobLoadException()

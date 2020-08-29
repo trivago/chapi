@@ -94,9 +94,9 @@ class JobEntityValidatorServiceTest extends \PHPUnit\Framework\TestCase
         );
 
         // test
-        $this->assertEquals(
+        $this->assertCount(
             0,
-            count($jobEntityValidatorService->getInvalidProperties($jobEntity))
+            $jobEntityValidatorService->getInvalidProperties($jobEntity)
         );
     }
 
@@ -123,7 +123,7 @@ class JobEntityValidatorServiceTest extends \PHPUnit\Framework\TestCase
         );
 
         foreach ($result as $errorMessage) {
-            $this->assertEquals('error message', $errorMessage);
+            $this->assertSame('error message', $errorMessage);
             break; // one check is enough
         }
     }

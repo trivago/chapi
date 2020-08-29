@@ -73,7 +73,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ConfigureCommandDummy();
         $command::$questionHelperDummy = $this->questionHelper->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -81,7 +81,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
             )
         );
 
-        $this->assertTrue(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
+        $this->assertFileExists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig');
     }
 
     public function testConfigureWithArgumentsSuccess()
@@ -108,7 +108,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ConfigureCommandDummy();
         $command::$questionHelperDummy = $this->questionHelper->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -116,7 +116,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
             )
         );
 
-        $this->assertTrue(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
+        $this->assertFileExists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig');
     }
 
     public function testConfigureWithAndWithoutArgumentsSuccess()
@@ -144,7 +144,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ConfigureCommandDummy();
         $command::$questionHelperDummy = $this->questionHelper->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -152,7 +152,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
             )
         );
 
-        $this->assertTrue(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
+        $this->assertFileExists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig');
     }
 
     public function testConfigureWithoutArgumentsFailure()
@@ -180,7 +180,7 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ConfigureCommandDummy();
         $command::$questionHelperDummy = $this->questionHelper->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             1,
             $command->run(
                 $this->input->reveal(),
@@ -188,6 +188,6 @@ class ConfigureCommandTest extends \PHPUnit\Framework\TestCase
             )
         );
 
-        $this->assertFalse(file_exists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig'));
+        $this->assertFileNotExists($this->tempTestDir . DIRECTORY_SEPARATOR . '.chapiconfig');
     }
 }

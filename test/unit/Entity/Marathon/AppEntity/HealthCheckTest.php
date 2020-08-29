@@ -40,14 +40,14 @@ class HealthCheckTest extends \PHPUnit\Framework\TestCase
 
         $healthCheck = new HealthCheck($data);
 
-        $this->assertEquals("HTTP", $healthCheck->protocol);
-        $this->assertEquals("/health", $healthCheck->path);
-        $this->assertEquals(10, $healthCheck->gracePeriodSeconds);
-        $this->assertEquals(10, $healthCheck->intervalSeconds);
-        $this->assertEquals(2, $healthCheck->portIndex);
-        $this->assertEquals(8081, $healthCheck->port);
-        $this->assertEquals(40, $healthCheck->timeoutSeconds);
-        $this->assertEquals(4, $healthCheck->maxConsecutiveFailures);
+        $this->assertSame("HTTP", $healthCheck->protocol);
+        $this->assertSame("/health", $healthCheck->path);
+        $this->assertSame(10, $healthCheck->gracePeriodSeconds);
+        $this->assertSame(10, $healthCheck->intervalSeconds);
+        $this->assertSame(2, $healthCheck->portIndex);
+        $this->assertSame(8081, $healthCheck->port);
+        $this->assertSame(40, $healthCheck->timeoutSeconds);
+        $this->assertSame(4, $healthCheck->maxConsecutiveFailures);
         $this->assertTrue(isset($healthCheck->command));
     }
 
@@ -71,7 +71,7 @@ class HealthCheckTest extends \PHPUnit\Framework\TestCase
 
         $gotData = json_encode($healthCheck);
 
-        $this->assertEquals($expectedData, $gotData);
+        $this->assertSame($expectedData, $gotData);
     }
 
     public function testHealthCheckHasPortUnsetWithNullValue()
@@ -93,6 +93,6 @@ class HealthCheckTest extends \PHPUnit\Framework\TestCase
 
         $gotData = json_encode($healthCheck);
 
-        $this->assertEquals($expectedData, $gotData);
+        $this->assertSame($expectedData, $gotData);
     }
 }

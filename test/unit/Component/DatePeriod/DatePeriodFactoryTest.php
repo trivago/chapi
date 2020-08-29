@@ -19,18 +19,18 @@ class DatePeriodFactoryTest extends \PHPUnit\Framework\TestCase
 
         $iso8601Entity = $datePeriodFactory->createIso8601Entity('R/2015-07-07T01:00:00Z/P1D');
 
-        $this->assertEquals('R/2015-07-07T01:00:00Z/P1D', $iso8601Entity->iso8601);
-        $this->assertEquals('R', $iso8601Entity->repeat);
-        $this->assertEquals('2015-07-07T01:00:00Z', $iso8601Entity->startTime);
-        $this->assertEquals('P1D', $iso8601Entity->interval);
+        $this->assertSame('R/2015-07-07T01:00:00Z/P1D', $iso8601Entity->iso8601);
+        $this->assertSame('R', $iso8601Entity->repeat);
+        $this->assertSame('2015-07-07T01:00:00Z', $iso8601Entity->startTime);
+        $this->assertSame('P1D', $iso8601Entity->interval);
 
 
         $iso8601Entity = $datePeriodFactory->createIso8601Entity('R0/2015-07-07T01:00:00Z/PT1M');
 
-        $this->assertEquals('R0/2015-07-07T01:00:00Z/PT1M', $iso8601Entity->iso8601);
-        $this->assertEquals('R0', $iso8601Entity->repeat);
-        $this->assertEquals('2015-07-07T01:00:00Z', $iso8601Entity->startTime);
-        $this->assertEquals('PT1M', $iso8601Entity->interval);
+        $this->assertSame('R0/2015-07-07T01:00:00Z/PT1M', $iso8601Entity->iso8601);
+        $this->assertSame('R0', $iso8601Entity->repeat);
+        $this->assertSame('2015-07-07T01:00:00Z', $iso8601Entity->startTime);
+        $this->assertSame('PT1M', $iso8601Entity->interval);
     }
 
     public function testParseIso8601StringFailure()
@@ -56,22 +56,22 @@ class DatePeriodFactoryTest extends \PHPUnit\Framework\TestCase
             $datesA[] = $dateTime->format("Y-m-dH:i");
         }
 
-        $this->assertEquals(
+        $this->assertCount(
             3,
-            count($datesA)
+            $datesA
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             date('YmdHi', strtotime($testDate  . '01:00 -1day')),
             date('YmdHi', strtotime($datesA[0]))
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             date('YmdHi', strtotime($testDate  . '01:00')),
             date('YmdHi', strtotime($datesA[1]))
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             date('YmdHi', strtotime($testDate  . '01:00 +1day')),
             date('YmdHi', strtotime($datesA[2]))
         );

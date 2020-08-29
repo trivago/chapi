@@ -44,8 +44,8 @@ class JobDependencyServiceTest extends \PHPUnit\Framework\TestCase
         $jobDependencyService = new JobDependencyService($this->jobRepositoryLocal->reveal(), $this->jobRepositoryChronos->reveal());
         $result = $jobDependencyService->getChildJobs('JobA', JobDependencyService::REPOSITORY_LOCAL);
 
-        $this->assertTrue(is_array($result));
-        $this->assertTrue(in_array('JobB', $result));
+        $this->assertIsArray($result);
+        $this->assertContains('JobB', $result);
 
         $this->assertTrue($jobDependencyService->hasChildJobs('JobA', JobDependencyService::REPOSITORY_LOCAL));
         $this->assertFalse($jobDependencyService->hasChildJobs('JobB', JobDependencyService::REPOSITORY_LOCAL));
@@ -59,8 +59,8 @@ class JobDependencyServiceTest extends \PHPUnit\Framework\TestCase
         $jobDependencyService = new JobDependencyService($this->jobRepositoryLocal->reveal(), $this->jobRepositoryChronos->reveal());
         $result = $jobDependencyService->getChildJobs('JobA', JobDependencyService::REPOSITORY_CHRONOS);
 
-        $this->assertTrue(is_array($result));
-        $this->assertTrue(in_array('JobB', $result));
+        $this->assertIsArray($result);
+        $this->assertContains('JobB', $result);
 
         $this->assertTrue($jobDependencyService->hasChildJobs('JobA', JobDependencyService::REPOSITORY_CHRONOS));
         $this->assertFalse($jobDependencyService->hasChildJobs('JobB', JobDependencyService::REPOSITORY_CHRONOS));

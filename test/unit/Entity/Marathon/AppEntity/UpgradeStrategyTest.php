@@ -31,7 +31,7 @@ class UpgradeStrategyTest extends \PHPUnit\Framework\TestCase
         ];
         $upgradeStrategy = new UpgradeStrategy($data);
 
-        $this->assertEquals(2, $upgradeStrategy->minimumHealthCapacity);
-        $this->assertEquals(3, $upgradeStrategy->maximumOverCapacity);
+        $this->assertSame(2, $upgradeStrategy->minimumHealthCapacity);
+        $this->assertSame(3, $upgradeStrategy->maximumOverCapacity);
     }
 }

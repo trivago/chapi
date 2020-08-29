@@ -29,7 +29,7 @@ class HttpGuzzleResponseTest extends \PHPUnit\Framework\TestCase
 
         $httpGuzzleResponse = new HttpGuzzleResponse($this->responseInterface->reveal());
 
-        $this->assertEquals(200, $httpGuzzleResponse->getStatusCode());
+        $this->assertSame(200, $httpGuzzleResponse->getStatusCode());
     }
 
     public function testGetBodySuccess()
@@ -41,7 +41,7 @@ class HttpGuzzleResponseTest extends \PHPUnit\Framework\TestCase
 
         $httpGuzzleResponse = new HttpGuzzleResponse($this->responseInterface->reveal());
 
-        $this->assertEquals('string', $httpGuzzleResponse->getBody());
+        $this->assertSame('string', $httpGuzzleResponse->getBody());
     }
 
     public function testJsonSuccess()
