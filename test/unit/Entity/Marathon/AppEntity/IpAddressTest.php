@@ -31,11 +31,11 @@ class IpAddressTest extends \PHPUnit\Framework\TestCase
         ];
 
         $ipAddress = new IpAddress($data);
-        $this->assertEquals("datacenter", $ipAddress->networkName);
+        $this->assertSame("datacenter", $ipAddress->networkName);
         $this->assertEquals(["somegroup"], $ipAddress->groups);
         $this->assertTrue(isset($ipAddress->labels));
 
         $this->assertObjectHasAttribute("label1", $ipAddress->labels);
-        $this->assertEquals("somelabel", $ipAddress->labels->label1);
+        $this->assertSame("somelabel", $ipAddress->labels->label1);
     }
 }

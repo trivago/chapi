@@ -59,7 +59,7 @@ class JobRepositoryTest extends \PHPUnit\Framework\TestCase
             $jobEntity
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'JobA',
             $jobEntity->name
         );
@@ -214,7 +214,7 @@ class JobRepositoryTest extends \PHPUnit\Framework\TestCase
         $jobEntityResult = $jobRepository->getJob('JobA');
 
         // known job
-        $this->assertEquals(
+        $this->assertSame(
             'JobA',
             $jobEntityResult->name
         );

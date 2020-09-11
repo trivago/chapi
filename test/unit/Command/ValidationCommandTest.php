@@ -64,7 +64,7 @@ class ValidationCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ValidationCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -102,7 +102,7 @@ class ValidationCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ValidationCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             1,
             $command->run(
                 $this->input->reveal(),
@@ -135,7 +135,7 @@ class ValidationCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ValidationCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),

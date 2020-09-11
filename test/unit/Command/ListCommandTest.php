@@ -50,7 +50,7 @@ class ListCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ListCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -85,7 +85,7 @@ class ListCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ListCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -118,7 +118,7 @@ class ListCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ListCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),

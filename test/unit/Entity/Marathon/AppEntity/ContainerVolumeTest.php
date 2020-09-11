@@ -31,8 +31,8 @@ class ContainerVolumeTest extends \PHPUnit\Framework\TestCase
         ];
 
         $containerVolume = new ContainerVolume($data);
-        $this->assertEquals("some/container/path", $containerVolume->containerPath);
-        $this->assertEquals("some/host/path", $containerVolume->hostPath);
-        $this->assertEquals("RW", $containerVolume->mode);
+        $this->assertSame("some/container/path", $containerVolume->containerPath);
+        $this->assertSame("some/host/path", $containerVolume->hostPath);
+        $this->assertSame("RW", $containerVolume->mode);
     }
 }

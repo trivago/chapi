@@ -41,7 +41,7 @@ class ResetCommandTest extends \PHPUnit\Framework\TestCase
         $command = new ResetCommandDummy();
         $command::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $command->run(
                 $this->input->reveal(),
@@ -66,7 +66,7 @@ class ResetCommandTest extends \PHPUnit\Framework\TestCase
         $_oCommand = new ResetCommandDummy();
         $_oCommand::$containerDummy = $this->container->reveal();
 
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $_oCommand->run(
                 $this->input->reveal(),

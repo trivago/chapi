@@ -146,9 +146,9 @@ class ChapiConfigTest extends \PHPUnit\Framework\TestCase
 
         $profileConfig = $chapiConfig->getProfileConfig();
 
-        $this->assertEquals('/tmp/cache/update', $profileConfig['parameters']['cache_dir']);
-        $this->assertEquals('update_user', $profileConfig['parameters']['chronos_http_username']);
-        $this->assertEquals('new_user', $profileConfig['parameters']['marathon_http_username']);
+        $this->assertSame('/tmp/cache/update', $profileConfig['parameters']['cache_dir']);
+        $this->assertSame('update_user', $profileConfig['parameters']['chronos_http_username']);
+        $this->assertSame('new_user', $profileConfig['parameters']['marathon_http_username']);
 
         $this->assertEquals(['*-stage', 'new-entry'], $profileConfig['ignore']);
     }

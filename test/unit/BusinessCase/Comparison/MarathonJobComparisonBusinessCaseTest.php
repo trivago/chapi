@@ -7,7 +7,7 @@
  *
  */
 
-namespace unit\BusinessCase\Comparision;
+namespace unit\BusinessCase\Comparison;
 
 use Chapi\BusinessCase\Comparison\MarathonJobComparisonBusinessCase;
 use Chapi\Entity\Marathon\AppEntity\Container;
@@ -62,10 +62,10 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 
         $localMissingJobs = $marathonJobCompare->getLocalMissingJobs();
 
-        $this->assertEquals(1, count($localMissingJobs), 'Expected 1 job, got ' . count($localMissingJobs));
+        $this->assertCount(1, $localMissingJobs, 'Expected 1 job, got ' . count($localMissingJobs));
 
         $gotKey = $localMissingJobs[0];
-        $this->assertEquals("/main/id1", $gotKey, 'Expected ”/main/id1", received ' . $gotKey);
+        $this->assertSame("/main/id1", $gotKey, 'Expected ”/main/id1", received ' . $gotKey);
     }
 
     public function testGetRemoteMissingJobsSuccess()
@@ -90,10 +90,10 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 
         $remoteMissingJobs = $marathonJobCompare->getRemoteMissingJobs();
 
-        $this->assertEquals(1, count($remoteMissingJobs), 'Expected 1 job, got ' . count($remoteMissingJobs));
+        $this->assertCount(1, $remoteMissingJobs, 'Expected 1 job, got ' . count($remoteMissingJobs));
 
         $gotKey = $remoteMissingJobs[0];
-        $this->assertEquals("/main/id1", $gotKey, 'Expected ”/main/id1", received ' . $gotKey);
+        $this->assertSame("/main/id1", $gotKey, 'Expected ”/main/id1", received ' . $gotKey);
     }
 
     public function testGetLocalJobUpdatesSuccess()
@@ -127,9 +127,9 @@ class MarathonJobComparisonBusinessCaseTest extends \PHPUnit\Framework\TestCase
 
         $updatedApps = $marathonJobCompare->getLocalJobUpdates();
 
-        $this->assertEquals(1, count($updatedApps), 'Expected 1 job, got ' . count($updatedApps));
+        $this->assertCount(1, $updatedApps, 'Expected 1 job, got ' . count($updatedApps));
 
-        $this->assertEquals('/main/id2', $updatedApps[0], 'Expected "/main/id2", received ' . $updatedApps[0]);
+        $this->assertSame('/main/id2', $updatedApps[0], 'Expected "/main/id2", received ' . $updatedApps[0]);
     }
 
     public function testGetLocalUpdatesCallsPreCompareModification()

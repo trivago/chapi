@@ -83,7 +83,7 @@ class DoctrineCacheTest extends \PHPUnit\Framework\TestCase
 
         $doctrineCache = new DoctrineCache($this->cache->reveal(), 'cache_prefix');
 
-        $this->assertEquals(
+        $this->assertSame(
             $testValue,
             $doctrineCache->get($testKey)
         );

@@ -34,9 +34,9 @@ class DockerPortMappingTest extends \PHPUnit\Framework\TestCase
 
         $dockerPortMapping = new DockerPortMapping($data);
 
-        $this->assertEquals(10010, $dockerPortMapping->hostPort);
-        $this->assertEquals(10011, $dockerPortMapping->containerPort);
-        $this->assertEquals(10211, $dockerPortMapping->servicePort);
-        $this->assertEquals("udp", $dockerPortMapping->protocol);
+        $this->assertSame(10010, $dockerPortMapping->hostPort);
+        $this->assertSame(10011, $dockerPortMapping->containerPort);
+        $this->assertSame(10211, $dockerPortMapping->servicePort);
+        $this->assertSame("udp", $dockerPortMapping->protocol);
     }
 }

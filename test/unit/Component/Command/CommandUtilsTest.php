@@ -20,7 +20,7 @@ class CommandUtilsTest extends \PHPUnit\Framework\TestCase
     {
         putenv('HOME=/var/tmp/');
 
-        $this->assertEquals('/var/tmp', CommandUtils::getOsHomeDir());
+        $this->assertSame('/var/tmp', CommandUtils::getOsHomeDir());
     }
 
     public function testGetOsHomeDirWindows()
@@ -28,7 +28,7 @@ class CommandUtilsTest extends \PHPUnit\Framework\TestCase
         putenv('APPDATA=c:\user\directory\\');
         define('PHP_WINDOWS_VERSION_MAJOR', '8.1');
 
-        $this->assertEquals('c:/user/directory', CommandUtils::getOsHomeDir());
+        $this->assertSame('c:/user/directory', CommandUtils::getOsHomeDir());
     }
 
     public function testHasCreateDirectoryIfNotExists()
@@ -41,6 +41,6 @@ class CommandUtilsTest extends \PHPUnit\Framework\TestCase
             )
         );
 
-        $this->assertTrue(is_dir(vfsStream::url('root/directory')));
+        $this->assertDirectoryExists(vfsStream::url('root/directory'));
     }
 }
