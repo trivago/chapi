@@ -1,4 +1,9 @@
 # chapi [![Build Status](https://travis-ci.org/trivago/chapi.svg?branch=master)](http://travis-ci.org/trivago/chapi) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/trivago/chapi/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/trivago/chapi/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/trivago/chapi/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/trivago/chapi/?branch=master)
+
+> [!CAUTION]
+> This repository has been archived as of June 2026.  
+> If you wish to update or extend this project, please create a fork.
+
 Chronos and marathon api client for your console. 
 
 ## Description
